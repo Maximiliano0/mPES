@@ -117,7 +117,7 @@ def main():
     # --- Load best Q-table from disk cache (no retraining) ---
     section("Loading Best Q-table", width=80)
     artifacts: dict = {'Q': None, 'rewards': None, 'value': float('-inf')}
-    ok = _opt.load_best_artifacts(opt_dir, artifacts)
+    ok = _opt._load_best_artifacts(opt_dir, artifacts)
     if not ok:
         print(f"  ✗ Could not load {npz_path}")
         sys.exit(3)
@@ -157,7 +157,7 @@ def main():
 
     # --- Generate report + plots (best-effort) ---
     try:
-        _opt.save_report(study, opt_dir, opt_date, best_Q, best_rewards)
+        _opt._save_report(study, opt_dir, opt_date, best_Q, best_rewards)
     except Exception as e:
         info(f"Report/plot generation failed: {e}")
 
