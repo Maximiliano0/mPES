@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformer Deep Q-Network (TRF) â€” TeorÃ­a, Arquitectura e ImplementaciÃ³n</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <!-- markdownlint-disable MD051 -->
+<h1 id="transformer-deep-q-network-trf-a-teoraa-arquitectura-e-implementacia3n">Transformer Deep Q-Network (TRF) â€” TeorÃ­a, Arquitectura e ImplementaciÃ³n</h1>
+<blockquote>
+<p>Documento tÃ©cnico del paquete <strong><code>pes_trf</code></strong> del proyecto mPES.
+Relaciona cada concepto teÃ³rico con el cÃ³digo fuente correspondiente
+y compara con los algoritmos anteriores (<code>pes_ql</code>, <code>pes_dql</code>, <code>pes_a2c</code>).</p>
+</blockquote>
+<hr />
+<h2 id="andice">Ãndice</h2>
+<ol>
+<li><a href="#1-introducciÃ³n">IntroducciÃ³n</a></li>
+<li><a href="#2-componentes-del-mdp">Componentes del MDP</a></li>
+<li><a href="#3-por-quÃ©-trf-en-lugar-de-q-learning-tabular">Â¿Por quÃ© TRF en lugar de Q-Learning Tabular?</a></li>
+<li><a href="#4-arquitectura-de-la-red-q">Arquitectura de la Red Q</a></li>
+<li><a href="#5-teorÃ­a-del-trf">TeorÃ­a del TRF</a></li>
+<li><a href="#6-funciÃ³n-de-pÃ©rdida--huber-loss">FunciÃ³n de PÃ©rdida â€” Huber Loss</a></li>
+<li><a href="#7-exploraciÃ³n--Îµ-greedy-exponencial-con-warm-up">ExploraciÃ³n â€” Îµ-Greedy Exponencial con Warm-up</a></li>
+<li><a href="#8-bucle-de-entrenamiento">Bucle de Entrenamiento</a></li>
+<li><a href="#9-optimizaciÃ³n-bayesiana-de-hiperparÃ¡metros">OptimizaciÃ³n Bayesiana de HiperparÃ¡metros</a></li>
+<li><a href="#10-inferencia-en-tiempo-de-experimento">Inferencia en Tiempo de Experimento</a></li>
+<li><a href="#11-comparaciÃ³n-con-dql-double-q-learning">ComparaciÃ³n con DQL (Double Q-Learning)</a></li>
+<li><a href="#12-comparaciÃ³n-con-a2c-advantage-actor-critic">ComparaciÃ³n con A2C (Advantage Actor-Critic)</a></li>
+<li><a href="#13-comparaciÃ³n-general-entre-algoritmos">ComparaciÃ³n General entre Algoritmos</a></li>
+<li><a href="#14-optimizaciones-para-cpu">Optimizaciones para CPU</a></li>
+<li><a href="#15-reproducibilidad-cross-platform-colab--pc-local">Reproducibilidad Cross-Platform (Colab â†’ PC Local)</a></li>
+</ol>
+<hr />
+<h2 id="1-introduccia3n">1. IntroducciÃ³n</h2>
+<blockquote>
+<p>âš ï¸ <strong>Diferencia clave con <code>pes_dqn</code> y <code>pes_rdqn</code></strong> â€” <code>pes_trf</code> es una
+variante <strong>Transformer-DQN</strong> que sustituye el MLP de <code>pes_dqn</code> y la
+LSTM de <code>pes_rdqn</code> por una pila de <strong>bloques de codificador
+Transformer causal</strong> (Vaswani et al., 2017, <em>Attention Is All You
+Need</em>).  La red consume una <strong>ventana deslizante</strong> de los Ãºltimos
+<code>TRF_HISTORY_LEN</code> estados normalizados,
+$(s_{t-T+1}, \dots, s_t) \in \mathbb{R}^{T \times 3}$, con padding
+cero a la izquierda al comienzo de cada secuencia y una capa
+<code>Masking(0.0)</code> que marca esos pasos como ausentes.  Una proyecciÃ³n
+lineal eleva cada token a <code>TRF_D_MODEL</code> dimensiones, se le suma un
+<em>positional embedding</em> aprendido, y <code>TRF_NUM_LAYERS</code> bloques (MHSA
+causal + FFN, cada uno con conexiÃ³n residual + LayerNorm) resumen la
+secuencia.  SÃ³lo el <strong>Ãºltimo token</strong> alimenta la cabeza Q.</p>
+<p><strong>HiperparÃ¡metros nuevos (todos en <code>config/CONFIG.py</code>):</strong>
+- <code>TRF_HISTORY_LEN</code> (por defecto <code>6</code>) â€” longitud de la ventana.
+- <code>TRF_D_MODEL</code> (por defecto <code>32</code>) â€” ancho del <em>residual stream</em>.
+- <code>TRF_NUM_HEADS</code> (por defecto <code>4</code>) â€” cabezas de atenciÃ³n por bloque.
+- <code>TRF_KEY_DIM</code> (por defecto <code>16</code>) â€” dimensiÃ³n por cabeza.
+- <code>TRF_FF_DIM</code> (por defecto <code>64</code>) â€” ancho del FFN posiciÃ³n-a-posiciÃ³n.
+- <code>TRF_NUM_LAYERS</code> (por defecto <code>2</code>) â€” bloques apilados.
+- <code>TRF_DROPOUT</code> (por defecto <code>0.0</code>) â€” <em>dropout</em> en MHSA y FFN.</p>
+<p>Tanto el <code>ReplayBuffer</code> como el bucle de entrenamiento almacenan y
+muestrean <strong>ventanas 2-D</strong> $(T, d)$ en lugar de estados 1-D $(d,)$;
+ver <code>pes_trf/ext/transformer_model.py</code> y <code>TRFTraining</code> en
+<code>pes_trf/ext/pandemic.py</code>.  Durante la inferencia
+(<code>provide_trf_agent_response</code> en <code>pes_trf/src/pygameMediator.py</code>)
+un <code>HistoryDeque</code> cacheado por par <code>(session_no, sequence_no)</code>
+reconstruye la ventana ensayo a ensayo.</p>
+</blockquote>
+<p><strong>Transformer Deep Q-Network (TRF)</strong> (Mnih et al., 2015) es el primer algoritmo de
+reinforcement learning profundo que logrÃ³ rendimiento humano en tareas de
+alta dimensionalidad (Atari 2600).  Su idea central es reemplazar la tabla
+Q finita del Q-Learning clÃ¡sico por una <strong>red neuronal</strong> que aproxima la
+funciÃ³n $Q(s, a)$, permitiendo generalizaciÃ³n sobre estados similares.</p>
+<p>En el contexto del proyecto <strong>mPES</strong>, <code>pes_trf</code> toma la misma dinÃ¡mica
+pandÃ©mica que los paquetes anteriores (<code>pes_base</code>, <code>pes_ql</code>, <code>pes_dql</code>)
+pero sustituye la tabla Q de dimensiÃ³n $31 \times 11 \times 10 \times 11
+= 37\,510$ entradas por una red neuronal <strong>basada en Transformer</strong> que
+combina una pila de bloques de codificador causal con una cabeza Q densa
+(la configuraciÃ³n por defecto <code>TRF_NUM_LAYERS = 2</code>, <code>TRF_D_MODEL = 32</code>,
+<code>TRF_NUM_HEADS = 4</code>, <code>TRF_FF_DIM = 64</code> y <code>TRF_HIDDEN_UNITS = [64]</code>
+ronda los pocos miles de parÃ¡metros), ganando capacidad de
+generalizaciÃ³n y memoria de trayectoria gracias a la atenciÃ³n sobre la
+ventana de los Ãºltimos <code>TRF_HISTORY_LEN</code> estados.</p>
+<h3 id="archivos-clave-del-paquete">Archivos clave del paquete</h3>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>DescripciÃ³n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config/CONFIG.py</code></td>
+<td>HiperparÃ¡metros TRF (red, replay, target sync, Îµ)</td>
+</tr>
+<tr>
+<td><code>ext/transformer_model.py</code></td>
+<td>Red Q, normalizaciÃ³n, ReplayBuffer, <code>train_step_trf</code></td>
+</tr>
+<tr>
+<td><code>ext/pandemic.py</code></td>
+<td>Entorno Gymnasium, <code>TRFTraining</code>, <code>run_experiment</code></td>
+</tr>
+<tr>
+<td><code>ext/train_transformer.py</code></td>
+<td>Pipeline de entrenamiento + evaluaciÃ³n</td>
+</tr>
+<tr>
+<td><code>ext/optimize_tr.py</code></td>
+<td>OptimizaciÃ³n Bayesiana (Optuna)</td>
+</tr>
+<tr>
+<td><code>__main__.py</code></td>
+<td>EjecuciÃ³n del experimento (8 bloques Ã— 8 secuencias)</td>
+</tr>
+<tr>
+<td><code>src/pygameMediator.py</code></td>
+<td>IntegraciÃ³n con UI Pygame</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-componentes-del-mdp">2. Componentes del MDP</h2>
+<p>El entorno pandÃ©mico se modela como un <strong>Proceso de DecisiÃ³n de Markov
+(MDP)</strong> idÃ©ntico al de los paquetes anteriores:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>DefiniciÃ³n</th>
+<th>ImplementaciÃ³n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Estado</strong> $s$</td>
+<td>$(r, t, v)$ â€” recursos restantes, nÂº de trial, severidad</td>
+<td><code>[available_resources, trial_no, severity]</code></td>
+</tr>
+<tr>
+<td><strong>Espacio de estados</strong></td>
+<td>$31 \times 11 \times 10 = 3\,410$ estados posibles</td>
+<td><code>Pandemic.observation_shape</code></td>
+</tr>
+<tr>
+<td><strong>AcciÃ³n</strong> $a$</td>
+<td>Recursos a asignar: ${0, 1, \ldots, 10}$</td>
+<td><code>Pandemic.action_space = Discrete(11)</code></td>
+</tr>
+<tr>
+<td><strong>Recompensa</strong> $r$</td>
+<td>$-\sum_{i} \text{severity}_i$ (penaliza severidades altas)</td>
+<td><code>reward = (-1) * numpy.sum(env.severities)</code></td>
+</tr>
+<tr>
+<td><strong>TransiciÃ³n</strong></td>
+<td>$v' = \max(0,\; \beta \cdot v - \alpha \cdot a)$</td>
+<td><code>get_updated_severity()</code></td>
+</tr>
+<tr>
+<td><strong>ParÃ¡metros</strong></td>
+<td>$\alpha = 0.4,\; \beta = 1.4$</td>
+<td><code>CONFIG.PANDEMIC_PARAMETER</code></td>
+</tr>
+<tr>
+<td><strong>Descuento</strong> $\gamma$</td>
+<td>$0.9634$ (por defecto, mejor trial)</td>
+<td><code>CONFIG.TRF_DISCOUNT</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="normalizacia3n-del-estado">NormalizaciÃ³n del estado</h3>
+<p>A diferencia del Q-Learning tabular (que usa Ã­ndices enteros), TRF requiere
+un vector numÃ©rico continuo.  La funciÃ³n <code>normalize_state()</code> escala cada
+componente al rango $[0, 1]$:</p>
+<p>$$s_{\text{norm}} = \left(\frac{r}{r_{\max}},\; \frac{t}{t_{\max}},\; \frac{v}{v_{\max}}\right)$$</p>
+<pre><code class="language-python"># ext/transformer_model.py
+def normalize_state(state, max_resources, max_trials, max_severity):
+    return numpy.array([
+        state[0] / max(max_resources, 1),
+        state[1] / max(max_trials, 1),
+        state[2] / max(max_severity, 1),
+    ], dtype=numpy.float32)
+</code></pre>
+<p>Valores por defecto: $r_{\max} = 30$, $t_{\max} = 10$, $v_{\max} = 9$.</p>
+<hr />
+<h2 id="3-apor-qua-trf-en-lugar-de-q-learning-tabular">3. Â¿Por quÃ© TRF en lugar de Q-Learning Tabular?</h2>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Q-Learning Tabular</th>
+<th>TRF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RepresentaciÃ³n</strong></td>
+<td>Tabla de $</td>
+<td>S</td>
+</tr>
+<tr>
+<td><strong>GeneralizaciÃ³n</strong></td>
+<td>Ninguna â€” cada estado es independiente</td>
+<td>Comparte pesos â†’ generaliza sobre estados similares</td>
+</tr>
+<tr>
+<td><strong>Escalabilidad</strong></td>
+<td>Exponencial en dimensiÃ³n del estado</td>
+<td>Lineal en parÃ¡metros de la red</td>
+</tr>
+<tr>
+<td><strong>Memoria</strong></td>
+<td>37 510 escalares (Q-table)</td>
+<td>pocos miles de parÃ¡metros (Transformer encoder + cabeza Q <code>[64]</code>)</td>
+</tr>
+<tr>
+<td><strong>Estabilidad</strong></td>
+<td>Convergencia garantizada (Robbins-Monro)</td>
+<td>Requiere replay buffer + target network</td>
+</tr>
+<tr>
+<td><strong>Complejidad</strong></td>
+<td>MÃ­nima</td>
+<td>Mayor (backpropagation, batching)</td>
+</tr>
+</tbody>
+</table>
+<p>En este MDP con solo 3 410 estados, la tabla Q es perfectamente viable.
+Sin embargo, TRF ofrece:</p>
+<ul>
+<li><strong>GeneralizaciÃ³n</strong>: estados cercanos (p.ej. severidad 3 vs 4) comparten
+  informaciÃ³n a travÃ©s de los pesos de la red.</li>
+<li><strong>Extensibilidad</strong>: si se ampliase el espacio de estados (mÃ¡s ciudades,
+  mÃ¡s dimensiones), TRF escalarÃ­a sin cambios.</li>
+<li><strong>Comparabilidad</strong>: permite evaluar empÃ­ricamente cuÃ¡nto aporta la
+  aproximaciÃ³n funcional frente al mÃ©todo tabular.</li>
+</ul>
+<hr />
+<h2 id="4-arquitectura-de-la-red-q">4. Arquitectura de la Red Q</h2>
+<h3 id="41-topologaa">4.1 TopologÃ­a</h3>
+<p>A diferencia de <code>pes_dqn</code> (MLP de 1-3 capas) y <code>pes_rdqn</code> (LSTM), la red
+Q de <code>pes_trf</code> consume una <strong>ventana deslizante</strong> de los Ãºltimos
+<code>TRF_HISTORY_LEN</code> estados normalizados $(s_{t-T+1}, \dots, s_t)$ con
+padding cero a la izquierda al comienzo de cada secuencia, una <code>Masking</code>
+para descartar el prefijo, una proyecciÃ³n lineal a <code>TRF_D_MODEL</code>
+dimensiones, un <em>positional embedding</em> aprendido y <code>TRF_NUM_LAYERS</code>
+<strong>bloques de codificador Transformer causal</strong> (MHSA + FFN, residual +
+LayerNorm).  SÃ³lo el <strong>Ãºltimo token</strong> alimenta una pequeÃ±a cabeza Q
+densa (<code>TRF_HIDDEN_UNITS</code>) y la salida lineal de 11 Q-values:</p>
+<pre><code>Q-Network:  Input(history_len, 3)
+              -&gt; Masking(0.0)
+              -&gt; Dense(d_model)  (token embedding) + PosEmb
+              -&gt; [ MultiHeadAttention(num_heads, key_dim, causal)
+                   -&gt; Add &amp; LayerNorm
+                   -&gt; FFN(ff_dim, ReLU) -&gt; Dense(d_model)
+                   -&gt; Add &amp; LayerNorm ] x num_layers
+              -&gt; last token
+              -&gt; Dense(64, ReLU)        # TRF_HIDDEN_UNITS = [64]
+              -&gt; Dense(11, linear)
+</code></pre>
+<pre><code class="language-python"># ext/transformer_model.py
+def build_q_network(state_dim, action_dim, hidden_units,
+                    history_len=6, d_model=32, num_heads=4,
+                    key_dim=16, ff_dim=64, num_layers=2,
+                    dropout=0.0, seed=None):
+    inputs = tf.keras.layers.Input(shape=(history_len, state_dim))
+    x = tf.keras.layers.Masking(mask_value=0.0)(inputs)
+    x = tf.keras.layers.Dense(d_model, name=&quot;token_embed&quot;)(x)
+    pos = tf.keras.layers.Embedding(history_len, d_model)(tf.range(history_len))
+    x = x + pos
+    for blk in range(num_layers):
+        attn = tf.keras.layers.MultiHeadAttention(
+            num_heads=num_heads, key_dim=key_dim, dropout=dropout
+        )(x, x, use_causal_mask=True)
+        x = tf.keras.layers.LayerNormalization(epsilon=1e-6)(x + attn)
+        ffn = tf.keras.layers.Dense(ff_dim, activation=&quot;relu&quot;)(x)
+        ffn = tf.keras.layers.Dense(d_model)(ffn)
+        x = tf.keras.layers.LayerNormalization(epsilon=1e-6)(x + ffn)
+    last_token = tf.keras.layers.Lambda(lambda t: t[:, -1, :])(x)
+    h = last_token
+    for units in hidden_units:
+        h = tf.keras.layers.Dense(units, activation=&quot;relu&quot;)(h)
+    outputs = tf.keras.layers.Dense(action_dim, activation=&quot;linear&quot;)(h)
+    return tf.keras.Model(inputs=inputs, outputs=outputs)
+</code></pre>
+<p>El parÃ¡metro <code>seed</code> siembra un <code>GlorotUniform(seed=seed+idx)</code> distinto en
+cada capa, produciendo una inicializaciÃ³n totalmente determinista entre
+llamadas a <code>TRFTraining</code> con el mismo <code>SEED</code>.</p>
+<h3 id="42-entrada-y-salida">4.2 Entrada y salida</h3>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Forma</th>
+<th>DescripciÃ³n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Input</td>
+<td>$(T, 3)$</td>
+<td>Ventana de los Ãºltimos $T = $ <code>TRF_HISTORY_LEN</code> estados normalizados $(r, t, v)$, zero-padded al comienzo del episodio</td>
+</tr>
+<tr>
+<td>Masking</td>
+<td>$(T, 3)$</td>
+<td>Marca como ausentes los pasos con todos los componentes a 0</td>
+</tr>
+<tr>
+<td>Token embed</td>
+<td>$(T, d_{\text{model}})$</td>
+<td>ProyecciÃ³n lineal de cada estado a la dimensiÃ³n del <em>residual stream</em></td>
+</tr>
+<tr>
+<td>+ PosEmb</td>
+<td>$(T, d_{\text{model}})$</td>
+<td>Embedding posicional aprendido sumado por token</td>
+</tr>
+<tr>
+<td>Encoder $\times$ N</td>
+<td>$(T, d_{\text{model}})$</td>
+<td>$N = $ <code>TRF_NUM_LAYERS</code> bloques (MHSA causal + FFN + residual + LN)</td>
+</tr>
+<tr>
+<td>Last token</td>
+<td>$(d_{\text{model}},)$</td>
+<td>Se descarta toda la secuencia salvo el paso $t$</td>
+</tr>
+<tr>
+<td>Hidden</td>
+<td>$(64,)$</td>
+<td>Cabeza densa con <code>TRF_HIDDEN_UNITS = [64]</code> (ReLU)</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>$(11,)$</td>
+<td>$Q(s, a)$ para cada $a \in {0, \ldots, 10}$ (activaciÃ³n lineal)</td>
+</tr>
+</tbody>
+</table>
+<p>La activaciÃ³n de salida es <strong>lineal</strong> porque los Q-values pueden ser
+negativos (la recompensa es $-\sum \text{severities}$).</p>
+<h3 id="43-hiperparametros-de-la-red-defaults-de-configpy">4.3 HiperparÃ¡metros de la red (defaults de <code>CONFIG.py</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Valor</th>
+<th>DescripciÃ³n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TRF_HISTORY_LEN</code></td>
+<td>$6$</td>
+<td>Longitud de la ventana deslizante</td>
+</tr>
+<tr>
+<td><code>TRF_D_MODEL</code></td>
+<td>$32$</td>
+<td>Ancho del <em>residual stream</em> (token embedding)</td>
+</tr>
+<tr>
+<td><code>TRF_NUM_HEADS</code></td>
+<td>$4$</td>
+<td>Cabezas de atenciÃ³n por bloque</td>
+</tr>
+<tr>
+<td><code>TRF_KEY_DIM</code></td>
+<td>$16$</td>
+<td>DimensiÃ³n por cabeza (query/key)</td>
+</tr>
+<tr>
+<td><code>TRF_FF_DIM</code></td>
+<td>$64$</td>
+<td>Ancho del FFN posiciÃ³n-a-posiciÃ³n</td>
+</tr>
+<tr>
+<td><code>TRF_NUM_LAYERS</code></td>
+<td>$2$</td>
+<td>Bloques de codificador apilados</td>
+</tr>
+<tr>
+<td><code>TRF_DROPOUT</code></td>
+<td>$0.0$</td>
+<td>Dropout dentro de MHSA / FFN</td>
+</tr>
+<tr>
+<td><code>TRF_HIDDEN_UNITS</code></td>
+<td>$[64]$</td>
+<td>Anchuras de la cabeza Q tras el codificador</td>
+</tr>
+</tbody>
+</table>
+<p>La bÃºsqueda bayesiana explora el espacio Transformer completo
+(<code>history_len</code>, <code>d_model</code>, <code>num_heads</code>, <code>key_dim</code>, <code>ff_dim</code>,
+<code>num_layers</code>, <code>dropout</code>) ademÃ¡s de las anchuras y profundidad de la
+cabeza densa â€” ver <a href="#91-espacio-de-bÃºsqueda">SecciÃ³n 9.1</a>.</p>
+<hr />
+<h2 id="5-teoraa-del-trf">5. TeorÃ­a del TRF</h2>
+<h3 id="51-ecuacia3n-de-bellman">5.1 EcuaciÃ³n de Bellman</h3>
+<p>El valor Ã³ptimo de acciÃ³n $Q^*(s, a)$ satisface la ecuaciÃ³n de Bellman:</p>
+<p>$$Q^<em>(s, a) = \mathbb{E}\left[r + \gamma \max_{a'} Q^</em>(s', a') \mid s, a\right]$$</p>
+<p>TRF aproxima $Q^*(s, a) \approx Q_\theta(s, a)$ con una red neuronal
+parametrizada por $\theta$.</p>
+<h3 id="52-td-targets-target-network-y-double-trf">5.2 TD Targets, Target Network y Double TRF</h3>
+<p>El <strong>target</strong> para la actualizaciÃ³n usa el esquema <strong>Double TRF</strong>
+(van Hasselt et al., 2016) con enmascaramiento de acciones infactibles:</p>
+<p>$$a^{*}<em>{i} = \arg\max</em>{a' \in \mathcal{F}(s'<em>i)} Q</em>\theta(s'<em>i, a')
+\qquad
+y_i = r_i + \gamma \, Q</em>{\theta^-}(s'_i, a^{*}_i) \cdot (1 - d_i)$$</p>
+<p>donde:</p>
+<ul>
+<li>$Q_\theta$ (online network) <strong>selecciona</strong> la acciÃ³n del bootstrap.</li>
+<li>$Q_{\theta^-}$ (target network) <strong>evalÃºa</strong> esa acciÃ³n.</li>
+<li>$\mathcal{F}(s'_i) = {a : a \le r'_i}$ es el conjunto de acciones
+  factibles dado el nÃºmero de recursos restantes en $s'_i$ (los recursos
+  son la primera componente del <em>Ãºltimo</em> token de la ventana
+  normalizada, recuperada con
+  <code>tf.round(next_states[:, -1, 0] * max_resources)</code>).</li>
+<li>$d_i \in {0, 1}$ es el indicador de episodio terminado.</li>
+</ul>
+<p>Esta separaciÃ³n entre selecciÃ³n y evaluaciÃ³n elimina el sesgo de
+<strong>sobreestimaciÃ³n</strong> del operador $\max$ del TRF vanilla, y la mÃ¡scara de
+factibilidad evita que la red bootstrappee desde acciones que no podrÃ­an
+haberse tomado.</p>
+<pre><code class="language-python"># ext/transformer_model.py â€” train_step_trf()  (Double TRF + feasibility mask)
+next_q_online = online_net(next_states, training=False)            # selecciÃ³n
+next_q_target = target_net(next_states, training=False)            # evaluaciÃ³n
+
+# Reconstruir recursos restantes desde el Ãºltimo paso de la ventana normalizada.
+# La ventana es 3-D: (batch, history_len, state_dim); el Ã­ndice -1 toma el
+# token mÃ¡s reciente, y el Ã­ndice 0 sobre state_dim corresponde a `resources_left`.
+resources_left = tf.round(next_states[:, -1, 0] * max_resources)    # (B,)
+actions_idx    = tf.range(action_dim, dtype=tf.float32)             # (A,)
+feasible       = actions_idx[None, :] &lt;= resources_left[:, None]    # (B, A)
+next_q_online_masked = tf.where(feasible, next_q_online, -1e9)
+
+best_actions = tf.argmax(next_q_online_masked, axis=1, output_type=tf.int32)
+max_next_q   = tf.gather(next_q_target, best_actions, batch_dims=1)
+
+td_targets = rewards + discount * max_next_q * (1.0 - dones)
+</code></pre>
+<p>Sin la target network los targets cambiarÃ­an con cada actualizaciÃ³n de
+$\theta$, creando un problema de <strong>moving targets</strong> que desestabiliza el
+aprendizaje.</p>
+<h3 id="53-experience-replay">5.3 Experience Replay</h3>
+<p>El <strong>replay buffer</strong> almacena transiciones $(s, a, r, s', d)$ en un buffer
+circular de capacidad fija y las muestrea uniformemente en mini-batches:</p>
+<pre><code class="language-python"># ext/transformer_model.py
+class ReplayBuffer:
+    def __init__(self, capacity, seed=None):
+        self._buffer = deque(maxlen=capacity)
+        self._rng = python_random.Random(seed)
+
+    def push(self, state, action, reward, next_state, done):
+        self._buffer.append((state, action, reward, next_state, done))
+
+    def sample(self, batch_size):
+        batch = self._rng.sample(list(self._buffer), batch_size)
+        states, actions, rewards, next_states, dones = zip(*batch)
+        return (numpy.array(states, ...), ...)
+</code></pre>
+<p><strong>Â¿Por quÃ© es necesario?</strong></p>
+<ol>
+<li><strong>Rompe la correlaciÃ³n temporal</strong>: las muestras consecutivas de un
+   episodio estÃ¡n altamente correlacionadas.  El sampling aleatorio
+   diversifica los mini-batches.</li>
+<li><strong>ReutilizaciÃ³n de datos</strong>: cada transiciÃ³n se usa mÃºltiples veces,
+   mejorando la eficiencia muestral frente al Q-Learning tabular que usa
+   cada transiciÃ³n una sola vez.</li>
+</ol>
+<p>ConfiguraciÃ³n por defecto: <code>TRF_REPLAY_BUFFER_SIZE = 20_000</code>.</p>
+<h3 id="54-sincronizacia3n-de-la-target-network">5.4 SincronizaciÃ³n de la Target Network</h3>
+<p>La target network se actualiza mediante <strong>hard sync</strong> (copia completa de
+pesos) cada <code>TRF_TARGET_SYNC_FREQ = 1_000</code> steps:</p>
+<pre><code class="language-python"># ext/transformer_model.py
+def sync_target_network(online_net, target_net):
+    target_net.set_weights(online_net.get_weights())
+</code></pre>
+<p>Alternativas no implementadas:</p>
+<ul>
+<li><strong>Soft update</strong> (Polyak): $\theta^- \leftarrow \tau \theta + (1-\tau) \theta^-$
+  â€” mÃ¡s suave pero mÃ¡s costoso por step.</li>
+</ul>
+<hr />
+<h2 id="6-funcia3n-de-pardida-a-huber-loss">6. FunciÃ³n de PÃ©rdida â€” Huber Loss</h2>
+<p>TRF utiliza <strong>Huber loss</strong> (tambiÃ©n llamada smooth L1 loss) en lugar de MSE:</p>
+<p>$$\mathcal{L}_\delta(e) = \begin{cases}
+\frac{1}{2} e^2 &amp; \text{si } |e| \leq \delta \
+\delta \cdot (|e| - \frac{1}{2}\delta) &amp; \text{si } |e| &gt; \delta
+\end{cases}$$</p>
+<p>con $e = Q_\theta(s_i, a_i) - y_i$ (error TD).</p>
+<p>La pÃ©rdida completa del mini-batch:</p>
+<p>$$\mathcal{L} = \frac{1}{B} \sum_{i=1}^{B} \text{Huber}\bigl(Q_\theta(s_i, a_i) - y_i\bigr)$$</p>
+<pre><code class="language-python"># ext/transformer_model.py â€” train_step_trf()
+with tf.GradientTape() as tape:
+    q_values = online_net(states, training=True)
+    action_mask = tf.one_hot(actions, depth=tf.shape(q_values)[1])
+    predicted_q = tf.reduce_sum(q_values * action_mask, axis=1)
+    loss = tf.reduce_mean(tf.keras.losses.huber(td_targets, predicted_q))
+</code></pre>
+<p><strong>Â¿Por quÃ© Huber en lugar de MSE?</strong></p>
+<ul>
+<li><strong>MSE</strong> ($e^2$) amplifica errores grandes, causando gradientes explosivos
+  ante outliers en las recompensas.</li>
+<li><strong>Huber</strong> es cuadrÃ¡tica cerca de 0 (buen gradiente para errores pequeÃ±os)
+  pero lineal para errores grandes (robusta a outliers).</li>
+</ul>
+<h3 id="gradient-clipping">Gradient Clipping</h3>
+<p>Adicionalmente, se aplica <strong>clipping de norma global</strong> al gradiente:</p>
+<p>$$\hat{g} = \frac{g}{\max(1,\; |g| / c)}$$</p>
+<p>con $c = 1.0$ (por defecto):</p>
+<pre><code class="language-python">grads = tape.gradient(loss, online_net.trainable_variables)
+grads, _ = tf.clip_by_global_norm(grads, max_grad_norm)
+optimizer.apply_gradients(zip(grads, online_net.trainable_variables))
+</code></pre>
+<hr />
+<h2 id="7-exploracia3n-a-i-greedy-exponencial-con-warm-up">7. ExploraciÃ³n â€” Îµ-Greedy Exponencial con Warm-up</h2>
+<p>TRF usa una polÃ­tica Îµ-greedy con <strong>warm-up + decaimiento exponencial</strong>
+(adaptado de <code>pes_a2c</code> / <code>pes_dql</code>), en dos fases:</p>
+<ol>
+<li><strong>Fase 1 (warm-up):</strong> durante los primeros $W = r_{\text{warm}} \cdot N$
+   episodios, $\varepsilon$ se mantiene constante en $\varepsilon_0$
+   (exploraciÃ³n pura).</li>
+<li><strong>Fase 2 (decay exponencial):</strong> $\varepsilon$ decae exponencialmente
+   hasta alcanzar $\varepsilon_{\min}$ exactamente en el episodio
+   $T = r_{\text{target}} \cdot N$:</li>
+</ol>
+<p>$$\varepsilon_t = \begin{cases}
+\varepsilon_0 &amp; \text{si } t &lt; W \
+\max\left(\varepsilon_{\min},\; \varepsilon_0 \cdot \lambda^{t - W}\right) &amp; \text{si } t \geq W
+\end{cases}$$</p>
+<p>donde la tasa de decaimiento $\lambda$ se calcula automÃ¡ticamente:</p>
+<p>$$\lambda = \left(\frac{\varepsilon_{\min}}{\varepsilon_0}\right)^{\frac{1}{(r_{\text{target}} - r_{\text{warm}}) \cdot N}}$$</p>
+<pre><code class="language-python"># ext/pandemic.py â€” TRFTraining()
+epsilon_initial = epsilon
+warmup_episodes = int(warmup_ratio * episodes)
+resolved_decay_rate = (min_eps / max(epsilon, 1e-8)) ** (
+    1.0 / max(1, int((target_ratio - warmup_ratio) * episodes))
+)
+
+for i in range(episodes):
+    # ... training loop ...
+
+    # Exponential Îµ-decay with warm-up
+    if i &lt; warmup_episodes:
+        epsilon = epsilon_initial                # Phase 1: pure exploration
+    else:
+        epsilon = max(min_eps,                   # Phase 2: exponential decay
+                      epsilon_initial * (resolved_decay_rate ** (i - warmup_episodes)))
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>ParÃ¡metro</th>
+<th>Valor por defecto</th>
+<th>Variable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\varepsilon_0$</td>
+<td>0.963</td>
+<td><code>TRF_EPSILON_INITIAL</code></td>
+</tr>
+<tr>
+<td>$\varepsilon_{\min}$</td>
+<td>0.069</td>
+<td><code>TRF_EPSILON_MIN</code></td>
+</tr>
+<tr>
+<td>$r_{\text{warm}}$</td>
+<td>0.278</td>
+<td><code>TRF_WARMUP_RATIO</code></td>
+</tr>
+<tr>
+<td>$r_{\text{target}}$</td>
+<td>0.629</td>
+<td><code>TRF_TARGET_RATIO</code></td>
+</tr>
+<tr>
+<td>$N$</td>
+<td>175 000</td>
+<td><code>TRF_EPISODES</code></td>
+</tr>
+</tbody>
+</table>
+<p>Con los valores por defecto: warm-up de â‰ˆ48 600 episodios, luego decay
+exponencial hasta el episodio â‰ˆ110 100, y $\varepsilon = \varepsilon_{\min}$
+durante los â‰ˆ64 900 episodios finales.</p>
+<h3 id="seleccia3n-de-accia3n-con-enmascaramiento">SelecciÃ³n de acciÃ³n con enmascaramiento</h3>
+<p>Durante la selecciÃ³n greedy, las <strong>acciones infactibles</strong> ($a &gt; r$, donde
+$r$ son los recursos restantes) se enmascaran estableciendo su Q-value a
+$-10^9$ antes del $\arg\max$.  La rama aleatoria de $\varepsilon$-greedy
+<strong>tambiÃ©n</strong> se restringe a las acciones factibles, y el sorteo se hace con
+un <code>numpy.random.Generator</code> <strong>dedicado</strong> sembrado con <code>SEED</code>, de manera que
+el RNG global de NumPy (que alimenta <code>env.random_sequence()</code>) no se vea
+desplazado:</p>
+<pre><code class="language-python"># ext/pandemic.py â€” TRFTraining()  (paso de selecciÃ³n de acciÃ³n)
+eps_rng = numpy.random.default_rng(seed)        # RNG dedicado para Îµ-greedy
+feasible = numpy.arange(action_dim) &lt;= state[0]
+q_vals = online_net(norm_state[numpy.newaxis], training=False).numpy()[0]
+
+if eps_rng.random() &lt; epsilon:
+    feasible_actions = numpy.flatnonzero(feasible)
+    action = int(eps_rng.choice(feasible_actions))   # exploraciÃ³n enmascarada
+else:
+    q_masked = numpy.where(feasible, q_vals, -1e9)
+    action = int(numpy.argmax(q_masked))             # explotaciÃ³n enmascarada
+</code></pre>
+<h3 id="comparacia3n-con-otros-esquemas-de-decaimiento">ComparaciÃ³n con otros esquemas de decaimiento</h3>
+<table>
+<thead>
+<tr>
+<th>Esquema</th>
+<th>FÃ³rmula</th>
+<th>Paquete</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exponencial con warm-up (TRF)</td>
+<td>$\varepsilon_t = \max(\varepsilon_{\min},\; \varepsilon_0 \cdot \lambda^{t - W})$</td>
+<td><code>pes_trf</code></td>
+</tr>
+<tr>
+<td>Exponencial con warm-up (DQL)</td>
+<td>$\varepsilon_t = \max(\varepsilon_{\min},\; \varepsilon_0 \cdot \lambda^{t - W})$</td>
+<td><code>pes_dql</code></td>
+</tr>
+<tr>
+<td>Exponencial con warm-up (A2C)</td>
+<td>$\varepsilon_t = \max(\varepsilon_{\min},\; \varepsilon_0 \cdot \lambda^{t - W})$</td>
+<td><code>pes_a2c</code></td>
+</tr>
+</tbody>
+</table>
+<p>Los tres paquetes (<code>pes_dql</code>, <code>pes_trf</code>, <code>pes_a2c</code>) ahora comparten el
+mismo esquema de dos fases: warm-up constante seguido de decay
+exponencial.  La ventaja frente al decay lineal anterior es que la
+exploraciÃ³n pura inicial llena el replay buffer con experiencias diversas
+antes de empezar a explotar, y el decay exponencial permite una transiciÃ³n
+mÃ¡s suave hacia la explotaciÃ³n.</p>
+<hr />
+<h2 id="8-bucle-de-entrenamiento">8. Bucle de Entrenamiento</h2>
+<h3 id="81-pseudoca3digo">8.1 PseudocÃ³digo</h3>
+<pre><code>Inicializar online_net Î¸, target_net Î¸â» â† Î¸
+Inicializar replay_buffer (capacidad = 20 000)
+global_step â† 0
+warmup_episodes â† warmup_ratio Ã— N
+Î» â† (Îµ_min / Îµâ‚€) ^ (1 / ((target_ratio âˆ’ warmup_ratio) Ã— N))
+
+PARA episodio i = 1 hasta N:
+    env.random_sequence()
+    estado â† env.reset()
+
+    MIENTRAS no terminado:
+        s_norm â† normalize_state(estado)
+        Î¦(s) â† âˆ’Î£ max(0, severidades)   // PBRS: potencial ANTES del step
+
+        SI random() &lt; Îµ:
+            acciÃ³n â† random
+        SINO:
+            Q â† online_net(s_norm)
+            enmascarar acciones infactibles
+            acciÃ³n â† argmax(Q)
+
+        estado', recompensa, terminado â† env.step(acciÃ³n)
+        Î¦(s') â† âˆ’Î£ max(0, severidades')  si NO terminado, sino 0
+        recompensa â† recompensa + Î²Â·(Î³Â·Î¦(s') âˆ’ Î¦(s))   // reward shaping
+        s'_norm â† normalize_state(estado')
+
+        replay_buffer.push(s_norm, acciÃ³n, recompensa, s'_norm, terminado)
+
+        SI |replay_buffer| â‰¥ batch_size:
+            batch â† replay_buffer.sample(batch_size)
+            train_step_trf(online_net, target_net, optimizer, batch, Î³, max_grad_norm)
+
+        global_step += 1
+
+        SI global_step % target_sync_freq == 0:
+            target_net.set_weights(online_net.get_weights())
+
+        estado â† estado'
+
+    // Exponential Îµ-decay with warm-up
+    SI i &lt; warmup_episodes:
+        Îµ â† Îµâ‚€                           // Phase 1: pure exploration
+    SINO:
+        Îµ â† max(Îµ_min, Îµâ‚€ Â· Î»^(i âˆ’ warmup_episodes))  // Phase 2: exponential decay
+</code></pre>
+<h3 id="82-implementacia3n-completa">8.2 ImplementaciÃ³n completa</h3>
+<p>La funciÃ³n <code>TRFTraining()</code> en <code>ext/pandemic.py</code> implementa el bucle
+completo.  Sus componentes clave:</p>
+<pre><code class="language-python"># ext/pandemic.py â€” TRFTraining()
+def TRFTraining(env, learning_rate, discount, epsilon, min_eps, episodes,
+                hidden_units=None, batch_size=64, buffer_size=50_000,
+                target_sync_freq=1_000, max_grad_norm=1.0, seed=None,
+                penalty_coeff=0.0, compute_confidence=True,
+                pruning_callback=None,
+                warmup_ratio=0.05, target_ratio=0.60,
+                learning_starts=None,
+                history_len=6, d_model=32, num_heads=4, key_dim=16,
+                ff_dim=64, num_layers=2, dropout=0.0):
+
+    # 1. Construir redes online y target (inicializaciÃ³n sembrada)
+    ...
+</code></pre>
+<blockquote>
+<p><strong>Nota:</strong> Tanto <code>train_transformer.py</code> como <code>optimize_tr.py</code> llaman a
+<code>TRFTraining()</code> con <code>compute_confidence=False</code> para evitar consumir
+nÃºmeros aleatorios de <code>numpy.random</code> que desplacen el RNG
+(ver <a href="#142-eliminaciÃ³n-del-forward-pass-de-confianza">SecciÃ³n 14.2</a>).
+    online_net = build_q_network(state_dim, action_dim, hidden_units, seed=seed)
+    target_net = build_q_network(state_dim, action_dim, hidden_units, seed=seed)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+    sync_target_network(online_net, target_net)   # Î¸â» â† Î¸</p>
+</blockquote>
+<pre><code># 2. Inicializar replay buffer
+replay_buffer = ReplayBuffer(buffer_size, seed=seed)
+
+# 3. Compilar train_step con tf.function (reduce_retracing minimiza recompilaciones)
+compiled_train_step = tf.function(train_step_trf, reduce_retracing=True)
+discount_t        = tf.constant(discount, dtype=tf.float32)
+max_grad_norm_t   = tf.constant(max_grad_norm, dtype=tf.float32)
+max_resources_t   = tf.constant(env.max_resources, dtype=tf.float32)
+
+# 4. Warm-up del replay buffer (Double TRF sin datos suficientes es ruido)
+if learning_starts is None:
+    learning_starts = max(10 * batch_size, buffer_size // 10)
+# 5. Exponential Îµ-decay with warm-up
+eps_rng = numpy.random.default_rng(seed)      # RNG dedicado para Îµ-greedy
+epsilon_initial = epsilon
+warmup_episodes = int(warmup_ratio * episodes)
+resolved_decay_rate = (min_eps / max(epsilon, 1e-8)) ** (
+    1.0 / max(1, int((target_ratio - warmup_ratio) * episodes))
+)
+global_step = 0
+
+for i in range(episodes):
+    env.random_sequence()
+    state, _ = env.reset()
+    done = False
+
+    while not done:
+        # Îµ-greedy con enmascaramiento (rama aleatoria tambiÃ©n enmascarada)
+        ...
+        replay_buffer.push(norm_state, action, reward, norm_state2, done)
+
+        # Actualizar sÃ³lo cuando el buffer ha calentado
+        if len(replay_buffer) &gt;= learning_starts:
+            s_b, a_b, r_b, ns_b, d_b = replay_buffer.sample(batch_size)
+            compiled_train_step(online_net, target_net, optimizer,
+                tf.constant(s_b), tf.constant(a_b),
+                tf.constant(r_b), tf.constant(ns_b),
+                tf.constant(d_b),
+                discount_t, max_grad_norm_t, max_resources_t)
+
+        global_step += 1
+        if global_step % target_sync_freq == 0:
+            sync_target_network(online_net, target_net)
+
+    # Exponential Îµ-decay with warm-up
+    if i &lt; warmup_episodes:
+        epsilon = epsilon_initial
+    else:
+        epsilon = max(min_eps,
+                      epsilon_initial * (resolved_decay_rate ** (i - warmup_episodes)))
+
+return ave_reward_list, online_net, conf_list
+</code></pre>
+<pre><code>
+### 8.3 HiperparÃ¡metros por defecto
+
+Los valores actuales en `config/CONFIG.py` provienen del mejor trial de la
+bÃºsqueda bayesiana (trial #41, 2026-04-23) y se usan tanto como defaults de
+`train_transformer.py` como warm-start de la prÃ³xima optimizaciÃ³n:
+
+| HiperparÃ¡metro | Valor | Variable (`CONFIG.py`) |
+|----------------|-------|------------------------|
+| Learning rate (Adam) | $0.001508$ | `TRF_LEARNING_RATE` |
+| Discount $\gamma$ | $0.9634$ | `TRF_DISCOUNT` |
+| $\varepsilon_0$ | $0.9627$ | `TRF_EPSILON_INITIAL` |
+| $\varepsilon_{\min}$ | $0.0691$ | `TRF_EPSILON_MIN` |
+| Warmup ratio $r_{\text{warm}}$ | $0.2779$ | `TRF_WARMUP_RATIO` |
+| Target ratio $r_{\text{target}}$ | $0.6290$ | `TRF_TARGET_RATIO` |
+| Episodios | $175\,000$ | `TRF_EPISODES` |
+| Hidden units (cabeza Q) | $[64]$ | `TRF_HIDDEN_UNITS` |
+| Batch size | $128$ | `TRF_BATCH_SIZE` |
+| Replay buffer | $20\,000$ | `TRF_REPLAY_BUFFER_SIZE` |
+| Target sync freq | $1\,000$ | `TRF_TARGET_SYNC_FREQ` |
+| Gradient clipping | $3.953$ | `TRF_MAX_GRAD_NORM` |
+| PBRS $\beta$ | $0.02258$ | `TRF_PENALTY_COEFF` |
+| Learning starts (warm-up del buffer) | fracciÃ³n $0.1615$ del buffer | `TRF_LEARNING_STARTS_FRAC` |
+| History length | $6$ | `TRF_HISTORY_LEN` |
+| $d_{\text{model}}$ | $32$ | `TRF_D_MODEL` |
+| Cabezas de atenciÃ³n | $4$ | `TRF_NUM_HEADS` |
+| DimensiÃ³n por cabeza | $16$ | `TRF_KEY_DIM` |
+| Ancho FFN | $64$ | `TRF_FF_DIM` |
+| Bloques de codificador | $2$ | `TRF_NUM_LAYERS` |
+| Dropout | $0.0$ | `TRF_DROPOUT` |
+| Seed | $42$ | `SEED` |
+
+---
+
+## 9. OptimizaciÃ³n Bayesiana de HiperparÃ¡metros
+
+`ext/optimize_tr.py` utiliza **Optuna** (TPE sampler) para buscar
+hiperparÃ¡metros Ã³ptimos del TRF.
+
+### 9.1 Espacio de BÃºsqueda
+
+| ParÃ¡metro | Rango | Tipo |
+|-----------|-------|------|
+| `learning_rate` | $[10^{-4},\; 5 \cdot 10^{-3}]$ | log-uniforme |
+| `discount_factor` | $[0.92,\; 0.995]$ | uniforme |
+| `epsilon_initial` | $[0.80,\; 1.0]$ | uniforme |
+| `epsilon_min` | $[0.01,\; 0.20]$ | uniforme |
+| `num_episodes` | $[20\,000,\; 60\,000]$ | entero (paso 10k, sÃ³lo opt) |
+| `hidden_layer_size` | $\{32, 64, 96, 128\}$ | categÃ³rico |
+| `num_hidden_layers` | $\{1, 2, 3\}$ | entero |
+| `batch_size` | $\{32, 64, 128, 256\}$ | categÃ³rico |
+| `buffer_size` | $[20\,000,\; 100\,000]$ | entero (paso 10k) |
+| `target_sync_freq` | $[500,\; 5\,000]$ | entero (paso 500) |
+| `max_grad_norm` | $[0.5,\; 5.0]$ | uniforme |
+| `use_pbrs` | $\{\text{True}, \text{False}\}$ | categÃ³rico |
+| `penalty_coeff` | $[10^{-4},\; 0.1]$ | log-uniforme (sÃ³lo si `use_pbrs=True`) |
+| `warmup_ratio` | $[0.05,\; 0.30]$ | uniforme (Îµ-warmup) |
+| `target_ratio` | $[0.50,\; 0.95]$ | uniforme (Îµ-decay target) |
+| `learning_starts_frac` | $[0.05,\; 0.25]$ | uniforme (warm-up del buffer) |
+| `history_len` | $[3,\; 10]$ | entero (longitud de la ventana) |
+| `d_model` | $\{16, 32, 64, 128\}$ | categÃ³rico |
+| `num_heads` | $\{2, 4, 8\}$ | categÃ³rico |
+| `key_dim` | $\{8, 16, 32\}$ | categÃ³rico |
+| `ff_dim` | $\{32, 64, 128, 256\}$ | categÃ³rico |
+| `num_layers` | $[1,\; 4]$ | entero (bloques de codificador) |
+| `dropout` | $[0.0,\; 0.3]$ | uniforme (MHSA / FFN) |
+
+```python
+# ext/optimize_tr.py â€” objective()
+learning_rate    = trial.suggest_float('learning_rate', 1e-4, 5e-3, log=True)
+discount_factor  = trial.suggest_float('discount_factor', 0.92, 0.995)
+epsilon_initial  = trial.suggest_float('epsilon_initial', 0.80, 1.0)
+epsilon_min      = trial.suggest_float('epsilon_min', 0.01, 0.20)
+num_episodes     = trial.suggest_int('num_episodes', 20_000, 60_000, step=10_000)
+hidden_layer_size = trial.suggest_categorical('hidden_layer_size', [32, 64, 96, 128])
+num_hidden_layers = trial.suggest_int('num_hidden_layers', 1, 3)
+batch_size       = trial.suggest_categorical('batch_size', [32, 64, 128, 256])
+buffer_size      = trial.suggest_int('buffer_size', 20_000, 100_000, step=10_000)
+target_sync_freq = trial.suggest_int('target_sync_freq', 500, 5_000, step=500)
+max_grad_norm    = trial.suggest_float('max_grad_norm', 0.5, 5.0)
+use_pbrs         = trial.suggest_categorical('use_pbrs', [True, False])
+penalty_coeff    = (trial.suggest_float('penalty_coeff', 1e-4, 0.1, log=True)
+                    if use_pbrs else 0.0)
+warmup_ratio     = trial.suggest_float('warmup_ratio', 0.05, 0.30)
+target_ratio     = trial.suggest_float('target_ratio', 0.50, 0.95)
+learning_starts_frac = trial.suggest_float('learning_starts_frac', 0.05, 0.25)
+# Transformer-specific knobs
+history_len      = trial.suggest_int('history_len', 3, 10)
+d_model          = trial.suggest_categorical('d_model', [16, 32, 64, 128])
+num_heads        = trial.suggest_categorical('num_heads', [2, 4, 8])
+key_dim          = trial.suggest_categorical('key_dim', [8, 16, 32])
+ff_dim           = trial.suggest_categorical('ff_dim', [32, 64, 128, 256])
+num_layers       = trial.suggest_int('num_layers', 1, 4)
+dropout          = trial.suggest_float('dropout', 0.0, 0.3)
+</code></pre>
+<p><strong>Diferencias frente al espacio de A2C:</strong></p>
+<ul>
+<li>TRF tiene <strong>un Ãºnico learning rate</strong> (para la Q-network) vs. dos en A2C
+  (actor_lr + critic_lr).</li>
+<li>TRF incluye <code>batch_size</code>, <code>buffer_size</code> y <code>target_sync_freq</code> â€” conceptos
+  exclusivos de off-policy con replay buffer.</li>
+<li>A2C incluye <code>entropy_coeff</code>, <code>gae_lambda</code>, <code>lr_min_ratio</code>
+  â€” conceptos exclusivos del actor-critic.</li>
+<li>Ambos comparten <code>penalty_coeff</code> (PBRS), <code>max_grad_norm</code>,
+  <code>warmup_ratio</code> y <code>target_ratio</code>.</li>
+</ul>
+<h3 id="92-funcia3n-objetivo">9.2 FunciÃ³n Objetivo</h3>
+<p>Se entrena un agente TRF con los hiperparÃ¡metros sugeridos y se evalÃºa
+en las <strong>64 secuencias fijas</strong> (las mismas que usa <code>__main__.py</code>).  El score
+reportado a Optuna es el <strong>rendimiento normalizado medio</strong> (a maximizar),
+calculado con <code>calculate_normalised_final_severity_performance_metric()</code>.
+Se aplica enmascaramiento de acciones infactibles (<code>actions &gt; resources_left</code>)
+para que la mÃ©trica coincida con el comportamiento del agente en el
+experimento.</p>
+<pre><code class="language-python"># ext/optimize_tr.py â€” objective()
+def qf(_env, state, _seqid):
+    norm_s = normalize_state(state, max_res, max_seq, max_sev)
+    q_vals = model(norm_s[numpy.newaxis], training=False).numpy()[0].copy()
+    response, _conf, _rt_h, _rt_r = trf_agent_meta_cognitive(
+        q_vals, state[0], 10000
+    )
+    return response
+
+_, perfs, _ = run_experiment(env_eval, qf, False, _trials_per_sequence, _sevs)
+mean_perf = float(numpy.mean(perfs))
+</code></pre>
+<h3 id="93-persistencia-del-mejor-modelo">9.3 Persistencia del Mejor Modelo</h3>
+<p>A diferencia del re-entrenamiento al final (que serÃ­a lossy), se preservan
+los <strong>pesos del mejor modelo</strong> encontrado durante la optimizaciÃ³n:</p>
+<pre><code class="language-python">if mean_perf &gt; _best_artifacts['value']:
+    _best_artifacts['weights'] = model.get_weights()
+    _best_artifacts['rewards'] = list(rewards)
+    _best_artifacts['value'] = mean_perf
+    _best_artifacts['hidden_units'] = hidden_units
+</code></pre>
+<p>Esto se serializa a disco como <strong>NPZ + JSON sidecar</strong> (no pickle, CWE-502)
+para que <code>--resume</code> pueda recuperarlo sin reentrenar.</p>
+<h3 id="94-poda-temprana-medianpruner">9.4 Poda Temprana (MedianPruner)</h3>
+<p>El estudio incorpora un <strong>MedianPruner</strong> que descarta trials cuyo reward
+intermedio (reportado cada 10 000 episodios) es inferior a la mediana de
+trials previos.  Esto ahorra un ~40-60 % del tiempo total al no completar
+trials prometedoramente malos:</p>
+<pre><code class="language-python">study = optuna.create_study(
+    ...
+    pruner=optuna.pruners.MedianPruner(
+        n_startup_trials=5, n_warmup_steps=1, interval_steps=1),
+)
+</code></pre>
+<p>El callback de poda se pasa a <code>TRFTraining</code> vÃ­a <code>pruning_callback</code>:</p>
+<pre><code class="language-python">def _pruning_cb(episode_idx, avg_reward):
+    trial.report(avg_reward, step_counter)
+    return trial.should_prune()
+</code></pre>
+<h3 id="95-warm-start">9.5 Warm-Start</h3>
+<p>La bÃºsqueda comienza con un <strong>trial semilla</strong> usando los valores de
+<code>CONFIG.py</code>, asegurando que al menos un trial alcance un rendimiento
+razonable y sirva de referencia para el pruner:</p>
+<pre><code class="language-python">if len(study.trials) == 0:
+    study.enqueue_trial({
+        'learning_rate': TRF_LEARNING_RATE,
+        'discount_factor': TRF_DISCOUNT, ...
+        'max_grad_norm': TRF_MAX_GRAD_NORM,
+        'penalty_coeff': TRF_PENALTY_COEFF,
+        'warmup_ratio': TRF_WARMUP_RATIO,
+        'target_ratio': TRF_TARGET_RATIO,
+    })
+</code></pre>
+<h3 id="96-pbrs-potential-based-reward-shaping">9.6 PBRS (Potential-Based Reward Shaping)</h3>
+<p>Siguiendo a Ng et al. (1999), se aÃ±ade una seÃ±al de reward shaping:</p>
+<p>$$r' = r + \beta \cdot (\gamma \cdot \Phi(s') - \Phi(s))$$</p>
+<p>donde $\Phi(s) = -\sum_i \max(0, S_i)$ y $\Phi(s_{\text{terminal}}) = 0$.</p>
+<p>Esta forma <strong>telescÃ³pica</strong> garantiza que la polÃ­tica Ã³ptima es invariable
+respecto a $\beta$.  El coeficiente $\beta$ (<code>penalty_coeff</code>) se optimiza
+en $[10^{-4}, 0.1]$ (escala logarÃ­tmica) y se activa con la categÃ³rica
+<code>use_pbrs âˆˆ {True, False}</code>: cuando <code>use_pbrs=False</code> el shaping se desactiva
+(equivalente a $\beta = 0$), permitiendo a Optuna comparar directamente la
+utilidad del shaping frente a su ausencia.</p>
+<h3 id="97-optimizacia3n-de-velocidad">9.7 OptimizaciÃ³n de Velocidad</h3>
+<p>Durante la optimizaciÃ³n, se desactiva el cÃ¡lculo de confianza
+meta-cognitiva (<code>compute_confidence=False</code>), ahorrando ~33 % de tiempo
+de forward-pass por step.</p>
+<h3 id="98-sqlite-resume">9.8 SQLite + Resume</h3>
+<p>El estudio de Optuna se almacena en una base de datos SQLite:</p>
+<pre><code class="language-python">db_path = os.path.join(opt_dir, f'optuna_study_{opt_date}.db')
+storage = f'sqlite:///{db_path}'
+study = optuna.create_study(
+    direction='maximize',
+    sampler=optuna.samplers.TPESampler(seed=42),
+    pruner=optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=2),
+    storage=storage,
+    load_if_exists=True,
+)
+</code></pre>
+<p>Para reanudar una optimizaciÃ³n previa:</p>
+<pre><code>python -m pes_trf.ext.optimize_tr 100 --resume 2026-03-14
+</code></pre>
+<hr />
+<h2 id="10-inferencia-en-tiempo-de-experimento">10. Inferencia en Tiempo de Experimento</h2>
+<h3 id="101-carga-del-modelo">10.1 Carga del Modelo</h3>
+<p><code>src/pygameMediator.py</code> â†’ <code>provide_trf_agent_response()</code>:</p>
+<pre><code class="language-python">model = tf.keras.models.load_model(model_path)
+</code></pre>
+<p>Se carga la <strong>Q-network completa</strong> (un solo modelo). A diferencia de A2C
+(que solo carga el Actor, descartando el Critic), en TRF toda la inferencia
+se hace con la misma red que se entrenÃ³.</p>
+<h3 id="102-seleccia3n-de-accia3n">10.2 SelecciÃ³n de AcciÃ³n</h3>
+<pre><code class="language-python"># src/pygameMediator.py â€” provide_trf_agent_response()
+# Los denominadores se leen del propio entorno para que coincidan SIEMPRE
+# con los usados durante el entrenamiento, eliminando el riesgo de drift
+# si AVAILABLE_RESOURCES_PER_SEQUENCE cambiara en CONFIG.
+from ..ext.pandemic import Pandemic, trf_agent_meta_cognitive
+_env_for_norm = Pandemic()
+max_res = _env_for_norm.max_resources
+state = normalize_state([resources_val, city_val, sever_val],
+                        max_res, NUM_MAX_TRIALS, MAX_SEVERITY)
+
+# Mantener una ventana deslizante de los últimos TRF_HISTORY_LEN
+# estados normalizados, cacheada por par (session_no, sequence_no).
+cache_key = (int(session_no), int(sequence_no))
+history = _history_cache.get(cache_key)
+if history is None:
+    history = HistoryDeque(TRF_HISTORY_LEN, 3)
+    _history_cache[cache_key] = history
+history.append_step(state)
+window = history.current_window()                              # (T, 3)
+state_tensor = window[numpy.newaxis]                           # (1, T, 3)
+q_values = trf_model(state_tensor, training=False).numpy().flatten()  # (11,)
+
+resp, confidence, rt_hold, rt_release = trf_agent_meta_cognitive(
+    q_values, resources_left, RESPONSE_TIMEOUT)
+resp = int(numpy.clip(resp, 0, int(resources_left)))
+</code></pre>
+<p>La funciÃ³n <code>trf_agent_meta_cognitive</code> aplica internamente el
+enmascaramiento de acciones infactibles (Q-values con $a &gt; r$ se ponen a
+$-10^9$) antes del $\arg\max_a Q_\theta(s, a)$, y devuelve ademÃ¡s la
+confianza basada en entropÃ­a y tiempos de respuesta simulados.</p>
+<blockquote>
+<p><strong>Nota de normalizaciÃ³n:</strong> Los denominadores de <code>normalize_state</code> se
+leen directamente de <code>env.max_resources</code>, <code>env.max_seq_length</code> y
+<code>env.max_severity</code>, exactamente las mismas magnitudes usadas en
+<code>TRFTraining</code> durante el entrenamiento.  Con la configuraciÃ³n actual
+ello equivale a $r_{\max} = 30$ (recursos asignables tras la
+pre-asignaciÃ³n), $t_{\max} = 10$ y $v_{\max} = 9$.</p>
+</blockquote>
+<h3 id="103-confianza-meta-cognitiva">10.3 Confianza Meta-Cognitiva</h3>
+<p>El vector de Q-values (11 valores) se transforma en una distribuciÃ³n de
+pseudo-probabilidades para calcular la entropÃ­a:</p>
+<p>$$H(Q) = -\sum_{a=0}^{10} p_a \log p_a$$</p>
+<p>donde $p_a$ es la probabilidad derivada de los Q-values (vÃ­a softmax
+implÃ­cita o normalizaciÃ³n en <code>entropy_from_pdf</code>).</p>
+<p>$$\text{confidence} = \frac{H - H_{\max}}{H_{\min} - H_{\max}}$$</p>
+<pre><code class="language-python"># ext/pandemic.py â€” trf_agent_meta_cognitive()
+dec_entropy = entropy_from_pdf(options)
+M_entropy = entropy_from_pdf(M_entropy)   # entropÃ­a mÃ¡xima (distribuciÃ³n uniforme)
+m_entropy = entropy_from_pdf(m_entropy)   # entropÃ­a mÃ­nima (distribuciÃ³n delta)
+confidence = (1. / (m_entropy - M_entropy)) * (dec_entropy - M_entropy)
+</code></pre>
+<p><strong>Nota importante:</strong> A diferencia de A2C donde $\pi_\theta(a|s)$ es una
+distribuciÃ³n de probabilidad genuina, los Q-values de TRF <strong>no son
+probabilidades</strong>.  La "confianza" aquÃ­ es una <strong>heurÃ­stica</strong> basada en la
+dispersiÃ³n de los Q-values â€” no tiene la misma justificaciÃ³n teÃ³rica que
+en A2C.</p>
+<hr />
+<h2 id="11-comparacia3n-con-dql-double-q-learning">11. ComparaciÃ³n con DQL (Double Q-Learning)</h2>
+<p><code>pes_dql</code> implementa <strong>Double Q-Learning</strong> (Hasselt, 2010) â€” un mÃ©todo
+<strong>tabular</strong> que aborda el sesgo de <strong>sobreestimaciÃ³n</strong> del Q-Learning
+estÃ¡ndar usando dos tablas Q independientes.</p>
+<h3 id="111-sobreestimacia3n-el-mismo-problema-distintas-soluciones">11.1 SobreestimaciÃ³n: el mismo problema, distintas soluciones</h3>
+<p>El operador $\max$ introduce un <strong>sesgo positivo</strong> en los TD targets:</p>
+<p>$$\mathbb{E}[\max_a Q(s', a)] \geq \max_a \mathbb{E}[Q(s', a)]$$</p>
+<table>
+<thead>
+<tr>
+<th>Algoritmo</th>
+<th>Estrategia contra sobreestimaciÃ³n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DQL</strong> (pes_dql)</td>
+<td>Dos Q-tables $Q_A$, $Q_B$. SelecciÃ³n con una, evaluaciÃ³n con la otra: $Q_A(s', \arg\max_{a'} Q_B(s', a'))$</td>
+</tr>
+<tr>
+<td><strong>TRF</strong> (pes_trf)</td>
+<td><strong>Double DQN</strong> sobre la red Transformer: la online network selecciona la acciÃ³n bootstrap (con mÃ¡scara de factibilidad) y la target network la evalÃºa, eliminando el sesgo del operador $\max$ y dando targets estables</td>
+</tr>
+</tbody>
+</table>
+<h3 id="112-arquitectura-comparada">11.2 Arquitectura comparada</h3>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>DQL (<code>pes_dql</code>)</th>
+<th>TRF (<code>pes_trf</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelo</td>
+<td>2 tablas Q: $Q_A$, $Q_B$ âˆˆ $\mathbb{R}^{31 \times 11 \times 10 \times 11}$</td>
+<td>2 redes: online $Q_\theta$, target $Q_{\theta^-}$ (encoder Transformer con cabeza densa <code>TRF_HIDDEN_UNITS = [64]</code>)</td>
+</tr>
+<tr>
+<td>ActualizaciÃ³n</td>
+<td>$Q_A(s,a) \leftarrow Q_A + \alpha[r + \gamma Q_B(s', \arg\max Q_A) - Q_A]$</td>
+<td>Huber loss + Adam entre $Q_\theta(s,a)$ y $r + \gamma \max Q_{\theta^-}(s', \cdot)$</td>
+</tr>
+<tr>
+<td>Datos por update</td>
+<td>1 transiciÃ³n â†’ 1 actualizaciÃ³n</td>
+<td>Batch de replay buffer â†’ 1 paso de gradiente</td>
+</tr>
+<tr>
+<td>ExploraciÃ³n (Îµ)</td>
+<td>Exponencial con warm-up</td>
+<td>Exponencial con warm-up</td>
+</tr>
+<tr>
+<td>PBRS</td>
+<td>âœ“ ($\Phi(s) = -\sum \max(0, S_i)$, $\beta = 0.1$)</td>
+<td>âœ“ ($\Phi(s) = -\sum \max(0, S_i)$, $\beta$ optimizable)</td>
+</tr>
+<tr>
+<td>Convergencia</td>
+<td>Garantizada (bajo condiciones de Robbins-Monro)</td>
+<td>Sin garantÃ­as teÃ³ricas (aprox. funcional no-lineal)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="113-ventajas-y-desventajas-relativas">11.3 Ventajas y desventajas relativas</h3>
+<p><strong>DQL es mejor si:</strong>
+- El espacio de estados es pequeÃ±o (como en este MDP: 3 410 estados).
+- Se desea convergencia garantizada.
+- Los recursos computacionales son limitados (no requiere GPU/backprop).</p>
+<p><strong>TRF es mejor si:</strong>
+- Se necesita generalizaciÃ³n entre estados.
+- Se planea escalar a espacios de estado mayores.
+- Se quiere reutilizar datos eficientemente (replay buffer).</p>
+<hr />
+<h2 id="12-comparacia3n-con-a2c-advantage-actor-critic">12. ComparaciÃ³n con A2C (Advantage Actor-Critic)</h2>
+<p><code>pes_a2c</code> implementa <strong>Advantage Actor-Critic</strong> â€” un mÃ©todo
+<strong>on-policy</strong> con dos redes separadas (Actor + Critic) y una polÃ­tica
+explÃ­cita $\pi_\theta(a|s)$.</p>
+<h3 id="121-diferencias-fundamentales">12.1 Diferencias fundamentales</h3>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>TRF (<code>pes_trf</code>)</th>
+<th>A2C (<code>pes_a2c</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tipo de polÃ­tica</strong></td>
+<td>ImplÃ­cita ($\arg\max Q$)</td>
+<td>ExplÃ­cita ($\pi_\theta$, softmax)</td>
+</tr>
+<tr>
+<td><strong>On/Off-policy</strong></td>
+<td>Off-policy (replay buffer)</td>
+<td>On-policy (batch de episodio)</td>
+</tr>
+<tr>
+<td><strong>Modelos</strong></td>
+<td>1 Q-network (+ target)</td>
+<td>Actor (491 params) + Critic (321 params)</td>
+</tr>
+<tr>
+<td><strong>Params totales</strong></td>
+<td>encoder Transformer + cabeza densa <code>[64]</code> (defaults de <code>CONFIG.py</code>)</td>
+<td>812</td>
+</tr>
+<tr>
+<td><strong>ActualizaciÃ³n</strong></td>
+<td>TD targets + Huber loss</td>
+<td>Policy gradient + MSE del Critic</td>
+</tr>
+<tr>
+<td><strong>Replay buffer</strong></td>
+<td>âœ“ (20 000 transiciones)</td>
+<td>âœ—</td>
+</tr>
+<tr>
+<td><strong>EntropÃ­a</strong></td>
+<td>HeurÃ­stica (Q-values)</td>
+<td>TeÃ³rica ($\pi_\theta$ es PDF)</td>
+</tr>
+<tr>
+<td><strong>GAE(Î»)</strong></td>
+<td>âœ—</td>
+<td>âœ“ ($\lambda = 0.95$)</td>
+</tr>
+<tr>
+<td><strong>Cosine LR</strong></td>
+<td>âœ—</td>
+<td>âœ“</td>
+</tr>
+<tr>
+<td><strong>PBRS</strong></td>
+<td>âœ“ ($\Phi(s) = -\sum \max(0, S_i)$)</td>
+<td>âœ“ ($\Phi(s) = -\sum \max(0, S_i)$)</td>
+</tr>
+<tr>
+<td><strong>Îµ-decay</strong></td>
+<td>Exponencial con warm-up</td>
+<td>Exponencial con warm-up</td>
+</tr>
+</tbody>
+</table>
+<h3 id="122-eficiencia-muestral-y-estabilidad">12.2 Eficiencia muestral y estabilidad</h3>
+<ul>
+<li><strong>TRF</strong> es mÃ¡s <strong>eficiente en datos</strong> porque reutiliza transiciones del
+  replay buffer.  Cada transiciÃ³n se muestrea ~$\frac{\text{buffer_size}}{\text{batch_size}}$
+  veces en promedio.</li>
+<li><strong>A2C</strong> es mÃ¡s <strong>eficiente en parÃ¡metros</strong> (812 params totales) pero requiere
+  que cada episodio genere datos frescos (on-policy), desperdiciando
+  experiencia pasada.</li>
+<li><strong>A2C</strong> tiene mayor estabilidad de entrenamiento gracias a GAE(Î»),
+  normalizaciÃ³n de advantage, cosine LR y entropy bonus.</li>
+</ul>
+<h3 id="123-calidad-de-la-confianza">12.3 Calidad de la confianza</h3>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>TRF</th>
+<th>A2C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vector de entrada</td>
+<td>$Q(s,\cdot)$ (11 Q-values)</td>
+<td>$\pi_\theta(\cdot</td>
+</tr>
+<tr>
+<td>Tipo</td>
+<td>HeurÃ­stica</td>
+<td>TeÃ³rica</td>
+</tr>
+<tr>
+<td>InterpretaciÃ³n</td>
+<td>DispersiÃ³n de Q-values</td>
+<td>EntropÃ­a de la distribuciÃ³n de polÃ­tica</td>
+</tr>
+<tr>
+<td>$\sum = 1$?</td>
+<td>No</td>
+<td>SÃ­ (softmax)</td>
+</tr>
+<tr>
+<td>JustificaciÃ³n</td>
+<td>Razonable pero ad-hoc</td>
+<td>Fundamentada en teorÃ­a de la informaciÃ³n</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-comparacia3n-general-entre-algoritmos">13. ComparaciÃ³n General entre Algoritmos</h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th><code>pes_base</code> (Q-tabular)</th>
+<th><code>pes_dql</code> (Double Q)</th>
+<th><code>pes_trf</code> (TRF)</th>
+<th><code>pes_a2c</code> (A2C)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelo</td>
+<td><code>numpy.ndarray</code> (q.npy)</td>
+<td>2 Ã— Q-table (.npy)</td>
+<td>Red Transformer encoder + cabeza densa <code>[64]</code> (.keras)</td>
+<td>Actor 491 + Critic 321 params (.keras)</td>
+</tr>
+<tr>
+<td>Update</td>
+<td>$Q + \alpha[r + \gamma \max Q - Q]$</td>
+<td>Doble tabla: selecciÃ³n/evaluaciÃ³n separadas</td>
+<td>Huber loss + replay</td>
+<td>Policy gradient + MSE + entropÃ­a</td>
+</tr>
+<tr>
+<td>Datos</td>
+<td>1 paso â†’ 1 update</td>
+<td>1 paso â†’ 1 update</td>
+<td>Replay buffer â†’ mini-batch</td>
+<td>Batch de episodio â†’ 1 update</td>
+</tr>
+<tr>
+<td>PolÃ­tica</td>
+<td>ImplÃ­cita ($\arg\max Q$)</td>
+<td>ImplÃ­cita ($\arg\max (Q_A + Q_B)$)</td>
+<td>ImplÃ­cita ($\arg\max Q_\theta$)</td>
+<td>ExplÃ­cita ($\pi_\theta$)</td>
+</tr>
+<tr>
+<td>Confianza</td>
+<td>EntropÃ­a de Q (heurÃ­stica)</td>
+<td>EntropÃ­a de Q (heurÃ­stica)</td>
+<td>EntropÃ­a de Q (heurÃ­stica)</td>
+<td>EntropÃ­a de $\pi$ (teÃ³rica)</td>
+</tr>
+<tr>
+<td>On/Off-policy</td>
+<td>â€”</td>
+<td>â€”</td>
+<td>Off-policy</td>
+<td>On-policy</td>
+</tr>
+<tr>
+<td>Target estable</td>
+<td>â€”</td>
+<td>2Âª tabla Q</td>
+<td>Target network</td>
+<td>â€” (baseline Critic)</td>
+</tr>
+<tr>
+<td>PBRS</td>
+<td>âœ—</td>
+<td>âœ“</td>
+<td>âœ“</td>
+<td>âœ“</td>
+</tr>
+<tr>
+<td>Îµ-decay</td>
+<td>Lineal</td>
+<td>Exp. con warm-up</td>
+<td>Exp. con warm-up</td>
+<td>Exp. con warm-up</td>
+</tr>
+<tr>
+<td>Episodios tÃ­picos</td>
+<td>900 000</td>
+<td>250 000</td>
+<td>175 000</td>
+<td>250 000</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="14-optimizaciones-para-cpu">14. Optimizaciones para CPU</h2>
+<h3 id="141-tffunction-por-trial-jit-compilado-reduce_retracingtrue">14.1 <code>tf.function</code> por Trial (JIT Compilado, <code>reduce_retracing=True</code>)</h3>
+<p><code>train_step_trf</code> se envuelve con <code>tf.function</code> <strong>localmente</strong> dentro de
+cada llamada a <code>TRFTraining</code>, creando un grafo JIT-compilado fresco por
+trial de Optuna:</p>
+<pre><code class="language-python">compiled_train_step = tf.function(train_step_trf, reduce_retracing=True)
+</code></pre>
+<p>Esto elimina el overhead de eager mode (significativo dado que cada step
+del replay buffer implica una pasada de forward + backward) y a la vez
+evita conflictos de <code>tf.Variable</code> entre trials sucesivos.  El argumento
+<code>reduce_retracing=True</code> minimiza recompilaciones cuando la forma o el
+tipo de los argumentos varÃ­an ligeramente entre llamadas.</p>
+<p>Los hiperparÃ¡metros escalares (<code>discount</code>, <code>max_grad_norm</code>,
+<code>max_resources</code>) se convierten a <code>tf.constant</code> antes del loop para evitar
+retrazado por cambio de valores.</p>
+<p>AdemÃ¡s, al finalizar cada <code>objective()</code> se libera memoria explÃ­citamente:</p>
+<pre><code class="language-python">del online_net, target_net, optimizer, replay_buffer
+tf.keras.backend.clear_session()
+gc.collect()
+</code></pre>
+<p>Esto evita que el grafo y los <code>tf.Variable</code> del trial anterior
+permanezcan vivos durante toda la bÃºsqueda bayesiana.</p>
+<h3 id="142-eliminacia3n-del-forward-pass-de-confianza">14.2 EliminaciÃ³n del Forward Pass de Confianza</h3>
+<p>El cÃ¡lculo de meta-cogniciÃ³n (<code>trf_agent_meta_cognitive</code>) durante
+entrenamiento requiere un <strong>forward pass adicional</strong> de la online network
+(separado del forward pass de selecciÃ³n de acciÃ³n).  Tanto <code>train_transformer.py</code>
+como <code>optimize_tr.py</code> pasan <code>compute_confidence=False</code> a <code>TRFTraining()</code>
+para desactivar este cÃ¡lculo, ahorrando ~33 % de tiempo de forward-pass.</p>
+<blockquote>
+<p><strong>Nota de reproducibilidad:</strong>  <code>compute_confidence=True</code> (el default)
+consume nÃºmeros aleatorios adicionales de <code>numpy.random</code> en cada step
+(para <code>rt_hold</code> y <code>rt_release</code>), desplazando el estado del RNG global.
+Dado que el mismo RNG alimenta a <code>env.random_sequence()</code>, activar la
+confianza durante el entrenamiento produce secuencias de episodios
+distintas a las de la optimizaciÃ³n, y el modelo resultante difiere del
+encontrado por Optuna.  Por tanto, <code>compute_confidence=False</code> es
+<strong>obligatorio</strong> para reproducir los hiperparÃ¡metros de la optimizaciÃ³n
+bayesiana.</p>
+</blockquote>
+<h3 id="143-configuracia3n-de-hilos-tensorflow">14.3 ConfiguraciÃ³n de Hilos TensorFlow</h3>
+<p>Al importar <code>ext/transformer_model.py</code> se fija un Ãºnico hilo intra/inter-op y se
+activa el modo determinista para que cada step produzca exactamente la
+misma salida ante la misma semilla:</p>
+<pre><code class="language-python">if not tf.config.list_physical_devices('GPU'):
+    tf.config.threading.set_intra_op_parallelism_threads(1)
+    tf.config.threading.set_inter_op_parallelism_threads(1)
+    tf.config.experimental.enable_op_determinism()
+</code></pre>
+<p>Esto sacrifica un pequeÃ±o margen de throughput a cambio de
+reproducibilidad bit-a-bit entre el entrenamiento y la bÃºsqueda
+bayesiana, requisito esencial para que <code>train_transformer.py</code> reconstruya con
+fidelidad el mejor modelo encontrado por Optuna.</p>
+<hr />
+<h2 id="15-reproducibilidad-cross-platform-colab-a-pc-local">15. Reproducibilidad Cross-Platform (Colab â†’ PC Local)</h2>
+<h3 id="151-motivacia3n">15.1 MotivaciÃ³n</h3>
+<p>La optimizaciÃ³n bayesiana de TRF es costosa: 60 trials Ã— 40kâ€“100k
+episodios consumen â‰ˆ12â€“20 horas en CPU.  El flujo recomendado es
+<strong>optimizar en Colab Pro+ con GPU</strong> (donde un trial dura minutos en
+lugar de horas) y <strong>reentrenar el ganador localmente en CPU</strong> para
+producir el modelo de inferencia final.</p>
+<p>Las diferencias numÃ©ricas entre CPU y GPU â€” inherentes al orden de
+reducciones en cuDNN â€” obligan a esta separaciÃ³n: la bÃºsqueda explora
+el espacio de hiperparÃ¡metros (donde la GPU brilla por throughput) y el
+reentrenamiento final fija un modelo determinista bit-a-bit
+reproducible (donde CPU + <code>enable_op_determinism</code> brilla).</p>
+<h3 id="152-switch-mpes_use_gpu">15.2 Switch <code>MPES_USE_GPU</code></h3>
+<p><code>pes_trf/__init__.py</code>, <code>ext/train_transformer.py</code> y <code>ext/optimize_tr.py</code>
+consultan la variable de entorno <code>MPES_USE_GPU</code> <strong>antes</strong> de importar
+submÃ³dulos de TensorFlow:</p>
+<pre><code class="language-python"># pes_trf/__init__.py
+import os
+if os.environ.get('MPES_USE_GPU', '0') != '1':
+    os.environ['CUDA_VISIBLE_DEVICES'] = ''        # pin CPU
+    os.environ['TF_DETERMINISTIC_OPS'] = '1'
+    os.environ['TF_CUDNN_DETERMINISTIC'] = '1'
+</code></pre>
+<p>El mismo cÃ³digo corre en CPU determinista o en GPU multi-hilo sÃ³lo
+cambiando una variable de entorno; no hay branches especÃ­ficos por
+dispositivo en el cÃ³digo de modelo.</p>
+<h3 id="153-persistencia-sin-pickle-cwe-502">15.3 Persistencia sin <code>pickle</code> (CWE-502)</h3>
+<p><code>_save_best_artifacts()</code> serializa el mejor trial como <strong>NPZ + JSON
+sidecar</strong> en <code>inputs/&lt;DATE&gt;_BAYESIAN_OPT/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Formato</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>_best_artifacts.npz</code></td>
+<td>NumPy compressed</td>
+<td>Pesos de la Q-network del mejor trial</td>
+</tr>
+<tr>
+<td><code>_best_artifacts.json</code></td>
+<td>JSON UTF-8</td>
+<td>Metadatos internos (valor, hidden_units, seed, n_weights)</td>
+</tr>
+<tr>
+<td><code>best_params_&lt;date&gt;.json</code></td>
+<td>JSON UTF-8</td>
+<td>HiperparÃ¡metros, seed, fecha, <code>mean_perf</code> (sidecar pÃºblico)</td>
+</tr>
+<tr>
+<td><code>trf_best_&lt;date&gt;.keras</code></td>
+<td>Keras nativo</td>
+<td>Modelo completo (arquitectura + pesos)</td>
+</tr>
+</tbody>
+</table>
+<p>Esto evita la deserializaciÃ³n insegura de <code>pickle</code> (CWE-502 â€” ejecuciÃ³n
+arbitraria de cÃ³digo al cargar artefactos no confiables) sin perder
+ninguna informaciÃ³n necesaria para reproducir el modelo.</p>
+<h3 id="154-bloque-aconfigpy-snippeta-auto-generado">15.4 Bloque â€œCONFIG.PY SNIPPETâ€ auto-generado</h3>
+<p>Al finalizar la optimizaciÃ³n, <code>_save_report()</code> (<code>optimize_tr.py</code>)
+emite un bloque copy-paste-ready en <code>optimization_results_&lt;date&gt;.txt</code>:</p>
+<pre><code class="language-python"># CONFIG.PY SNIPPET (copy-paste into pes_trf/config/CONFIG.py)
+TRF_LEARNING_RATE        = best.params['learning_rate']
+TRF_DISCOUNT             = best.params['discount']
+# ...
+TRF_LEARNING_STARTS_FRAC = best.params.get('learning_starts_frac', 0.1)
+TRF_EPISODES             = full_episodes   # NOT best.params['num_episodes']
+</code></pre>
+<p>La lÃ­nea crÃ­tica es la Ãºltima: durante la optimizaciÃ³n,
+<code>num_episodes âˆˆ [40k, 100k]</code> para mantener el coste bajo, pero el
+reentrenamiento final usa <code>TRF_EPISODES = 175 000</code> (el valor canon de
+<code>CONFIG.py</code>) para no sacrificar calidad.  El snippet reescribe esa
+longitud automÃ¡ticamente para que el usuario no copie un valor
+truncado.</p>
+<h3 id="155-recuperacia3n-local-con-from-best">15.5 RecuperaciÃ³n local con <code>--from-best</code></h3>
+<p><code>train_transformer.py</code> acepta una fecha YYYY-MM-DD apuntando a un directorio
+<code>_BAYESIAN_OPT/</code> y reconstruye el modelo en local:</p>
+<pre><code class="language-bash">python -m pes_trf.ext.train_transformer --from-best 2026-04-20
+</code></pre>
+<p>El flujo interno es:</p>
+<ol>
+<li><code>_load_best_trial(date)</code> lee <code>best_params_&lt;date&gt;.json</code> (no <code>.npz</code>).</li>
+<li>Sobrescribe los hiperparÃ¡metros de <code>CONFIG.py</code> en memoria.</li>
+<li>Llama a <code>TRFTraining()</code> con <code>TRF_EPISODES</code> completo y
+   <code>compute_confidence=False</code>.</li>
+<li>Guarda el modelo final en <code>inputs/trf_model.keras</code> (canon usado por
+   <code>__main__.py</code>).</li>
+</ol>
+<p>Si no se especifica <code>--from-best</code>, <code>train_transformer.py</code> busca
+automÃ¡ticamente el directorio <code>_BAYESIAN_OPT/</code> mÃ¡s reciente y lo
+offrece (con un aviso).  Esto evita que el usuario olvide pasar la
+fecha y reentrene con valores obsoletos.</p>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "opt_date": "2026-04-21",
+  "best_trial_number": 3,
+  "mean_perf": 0.8963435995059954,
+  "std_perf": 0.047707536771505736,
+  "min_perf": 0.7767884935087838,
+  "max_perf": 1.0,
+  "trial_seed": 46,
+  "seed": 46,
+  "track_confidence": false,
+  "double_q": true,
+  "hyperparameters": {
+    "learning_rate": 0.11320391141177716,
+    "discount_factor": 0.9777324201779083,
+    "epsilon_initial": 0.5998368910791798,
+    "epsilon_min": 0.032676417657817626,
+    "num_episodes": 360000,
+    "warmup_ratio": 0.026038553653599705,
+    "target_ratio": 0.6430179407605754,
+    "penalty_coeff": 0.0003916814960230879
+  }
+}

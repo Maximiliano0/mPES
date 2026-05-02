@@ -1,0 +1,90 @@
+pes_ql — Pandemic Experiment Scenario with Bayesian Optimisation
+
+Variant of the pes experiment that adds Bayesian hyperparameter optimisation
+(Optuna / TPE) on top of Q-Learning.  A pre-trained RL-Agent allocates limited
+resources to cities to minimise disease spread; the Bayesian search finds the
+hyperparameters that maximise normalised performance over the 64 evaluation sequences.
+
+## Key Features:
+- Bayesian optimisation of Q-Learning hyperparameters (Optuna, TPE sampler)
+- Resumable optimisation via SQLite persistence (--resume YYYY-MM-DD)
+- Best Q-table preserved in memory during search (no lossy re-training)
+- Infeasible-action masking in evaluation (consistent with __main__.py)
+- RL-Agent based decision-making (Q-Learning with ε-greedy)
+- Single-agent architecture (no human interaction)
+- Console-based output with ANSI colour formatting
+- Training pipeline included (ext/train_rl.py) for standalone training
+
+## RL-Agent Technical Specification:
+- **State space**: (resources_left, city_number, severity)
+  - Resources: 0-30 (31 values)
+  - City/Trial number: 0-10 (11 values, NUM_MAX_TRIALS = 10)
+  - Severity: 0-9 (10 values, MAX_SEVERITY = 9)
+- **Action space**: Resource allocation (0-10, discrete, 11 choices)
+- **Training**: default 900 000 episodes (configurable via CLI)
+- **Q-Table dimensions**: 31 × 11 × 10 × 11 = 37 510 cells
+- **Policy**: Greedy (deterministic) with epsilon-decay during training
+- **Confidence estimation**: Entropy-based metacognitive scores
+- **Training seed**: CONFIG.SEED (default 42) — reproducible across runs
+
+## Bayesian Optimisation — Search Space:
+| Parameter        | Range               | Scale       |
+|------------------|---------------------|-------------|
+| learning_rate    | [0.10, 0.4]         | logarithmic |
+| discount_factor  | [0.80, 0.99]        | linear      |
+| epsilon_initial  | [0.40, 1.0]         | linear      |
+| epsilon_min      | [0.05, 0.10]        | linear      |
+| num_episodes     | [800 000, 1 000 000]| step 100 000|
+
+## Experiment Structure:
+- Total Experiment: 1
+- Blocks: 8
+- Sequences per Block: 8 (64 total sequences)
+- Trials per Sequence: 3-10 (approximately 360 total trials)
+- Decision per Trial: Resource allocation to a single city
+
+## Core Modules:
+- **pes_ql/__main__.py**: Experiment execution loop (RL-Agent)
+- **pes_ql/ext/optimize_rl.py**: Bayesian optimisation pipeline
+- **pes_ql/ext/train_rl.py**: Standalone RL-Agent training
+- **pes_ql/ext/pandemic.py**: Gym environment and Q-Learning algorithm
+- **pes_ql/src/exp_utils.py**: Severity calculations and aggregation
+- **pes_ql/src/log_utils.py**: Dual-stream logging (console + file)
+- **pes_ql/src/pygameMediator.py**: RL-Agent response generation with entropy-based confidence
+- **pes_ql/src/result_formatter.py**: Report generation and visualisation
+- **pes_ql/src/terminal_utils.py**: ANSI colour formatting utilities
+- **pes_ql/config/CONFIG.py**: Experiment configuration (incl. SEED)
+
+## Files Generated (optimisation):
+- q_best_<date>.npy: Best Q-Table from optimisation
+- rewards_best_<date>.npy: Reward history of the best training run
+- optimization_results_<date>.txt: Full report (all trials, best params)
+- optimization_history_<date>.png: Convergence plot
+- hyperparameter_importances_<date>.png: Parameter importance (fANOVA)
+- optuna_study_<date>.db: SQLite database (resumable)
+
+## Files Generated (experiment):
+- responses_*.txt: Agent decisions and confidence scores
+- info_*.txt: Experiment metadata and configuration
+- log_*.txt: Detailed execution logs
+
+## Usage:
+- Execute experiment:       python3 -m pes_ql
+- Train new RL-Agent:       python3 -m pes_ql.ext.train_rl
+- Run Bayesian optimisation: python3 -m pes_ql.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
+
+## Documentation:
+- **bayesian_optimization_guide.md**: Practical guide — launch, resume, logs
+- **optimize_rl_explained.md**: Theory ↔ code mapping of the optimisation pipeline
+
+## Configuration:
+Flexible configuration via config/CONFIG.py with parameters for:
+- Player type selection (RL-Agent)
+- Resource availability and severity bounds
+- Block/sequence/trial structure (8×8×3-10)
+- Reproducibility (SEED = 42 for Q-Learning training)
+- Output preferences and verbosity levels
+
+**Version**: pes_ql v2.0
+**Last Updated**: 26 de febrero de 2026
+**Status**: Production-ready

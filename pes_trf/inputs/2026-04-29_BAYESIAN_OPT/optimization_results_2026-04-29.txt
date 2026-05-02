@@ -1,0 +1,76 @@
+================================================================================
+BAYESIAN OPTIMIZATION RESULTS - TRF HYPERPARAMETERS
+================================================================================
+
+Date:              2026-04-29
+Total trials:      10
+Best trial:        #3
+Best mean perf:    0.924505
+Note:              Finalised offline with finalise_trf_opt.py
+                   (no .keras / .npy regenerated; use
+                   `train_transformer.py --from-best` for those).
+
+BEST HYPERPARAMETERS
+--------------------------------------------------------------------------------
+  learning_rate             = 0.000215262809722153
+  discount_factor           = 0.9233920466682904
+  epsilon_initial           = 0.8650660661526529
+  epsilon_min               = 0.08384868504100158
+  num_episodes              = 30000
+  hidden_layer_size         = 32
+  num_hidden_layers         = 1
+  batch_size                = 128
+  buffer_size               = 30000
+  target_sync_freq          = 500
+  max_grad_norm             = 4.169576428046754
+  use_pbrs                  = False
+  warmup_ratio              = 0.24281758667148645
+  target_ratio              = 0.5333200932803407
+  learning_starts_frac      = 0.12169314570885453
+  history_len               = 3
+  d_model                   = 16
+  num_heads                 = 8
+  key_dim                   = 16
+  ff_dim                    = 128
+  num_layers                = 4
+  dropout                   = 0.14813867890931723
+  hidden_units              = [32]
+
+CONFIG.PY SNIPPET (copy-paste into pes_trf/config/CONFIG.py)
+--------------------------------------------------------------------------------
+# Best hyperparameters from Bayesian Optimisation trial #3 (2026-04-29).
+# Performance: mean_perf = 0.924505 over 64 fixed sequences.
+TRF_HIDDEN_UNITS = [32]
+TRF_LEARNING_RATE = 0.000215262809722153
+TRF_BATCH_SIZE = 128
+TRF_REPLAY_BUFFER_SIZE = 30000
+TRF_TARGET_SYNC_FREQ = 500
+TRF_DISCOUNT = 0.9233920466682904
+TRF_EPSILON_INITIAL = 0.8650660661526529
+TRF_EPSILON_MIN = 0.08384868504100158
+TRF_EPISODES = 175000  # full retrain length
+TRF_MAX_GRAD_NORM = 4.169576428046754
+TRF_PENALTY_COEFF = 0.0
+TRF_WARMUP_RATIO = 0.24281758667148645
+TRF_TARGET_RATIO = 0.5333200932803407
+TRF_LEARNING_STARTS_FRAC = 0.12169314570885453
+
+BEST TRIAL STATISTICS
+--------------------------------------------------------------------------------
+  mean_perf            0.924505
+  std_perf             0.042977
+  min_perf             0.776788
+  max_perf             0.984145
+
+ALL TRIALS
+----------------------------------------------------------------------------------------------------
+   #   mean_perf          lr     gamma    eps0  eps_min  episodes  batch  buf_sz   sync
+----------------------------------------------------------------------------------------------------
+   3    0.924505    0.000215    0.9234   0.865   0.0838     30000    128   30000    500
+   4    0.921735    0.000773    0.9521   0.805   0.0305     20000     64   40000   1000
+   7    0.920010    0.000253    0.9444   0.949   0.1334     60000     64   70000   4000
+   5    0.893983    0.000761    0.9727   0.873   0.1946     60000     32  100000   1500
+   2    0.889915    0.000779    0.9524   0.858   0.1263     20000    256   30000    500
+   6    0.877983    0.000198    0.9718   0.877   0.1880     20000     64   40000    500
+   1    0.876614    0.001508    0.9634   0.963   0.0691     60000    128   20000   1000
+   9    0.871281    0.000433    0.9913   0.946   0.1237     20000     64   30000   1000

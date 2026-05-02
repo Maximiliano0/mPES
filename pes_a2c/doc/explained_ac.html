@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapeo Teoría Actor-Critic (A2C) ↔ Implementación en pes_a2c</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="mapeo-teoria-actor-critic-a2c-implementacion-en-pes_a2c">Mapeo Teoría Actor-Critic (A2C) ↔ Implementación en pes_a2c</h1>
+<h2 id="1-introduccion">1. Introducción</h2>
+<p>Este documento conecta la <strong>teoría de Advantage Actor-Critic (A2C)</strong> con su
+<strong>implementación concreta</strong> en el paquete <code>pes_a2c</code>.  Para cada
+concepto teórico se indica la variable, función o línea de código
+correspondiente.</p>
+<p><code>pes_a2c</code> reemplaza la red DQN de <code>pes_dqn</code> (y la tabla Q tabular
+de <code>pes_base</code> / <code>pes_ql</code>) por <strong>dos redes neuronales separadas</strong>:</p>
+<ul>
+<li>un <strong>Actor</strong> $\pi_\theta(a \mid s)$ que produce directamente una
+  distribución de probabilidad sobre las acciones, y</li>
+<li>un <strong>Critic</strong> $V_\phi(s)$ que estima el valor del estado actual.</li>
+</ul>
+<p>Conserva el mismo entorno Gymnasium (<code>Pandemic</code>), el mismo espacio de estados y
+acciones, y la misma integración con la UI de Pygame.</p>
+<hr />
+<h2 id="2-componentes-del-mdp-heredados-de-pes_base">2. Componentes del MDP (heredados de <code>pes_base</code>)</h2>
+<p>El MDP subyacente es idéntico al del paquete base:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Símbolo</th>
+<th>Implementación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Estados</td>
+<td>$S$</td>
+<td><code>(resources_left, trial_no, severity)</code> — 3 dimensiones discretas</td>
+</tr>
+<tr>
+<td>Acciones</td>
+<td>$A$</td>
+<td>${0, 1, 2, \dots, 10}$ — recursos a asignar</td>
+</tr>
+<tr>
+<td>Transiciones</td>
+<td>$P(s' \mid s, a)$</td>
+<td>Determinísticas: <code>env.step(action)</code> en <code>pandemic.py</code></td>
+</tr>
+<tr>
+<td>Recompensas</td>
+<td>$R(s, a)$</td>
+<td>$-\sum_{i} \text{severities}_i$</td>
+</tr>
+<tr>
+<td>Factor de descuento</td>
+<td>$\gamma$</td>
+<td><code>AC_DISCOUNT</code> (por defecto 0.8545 en <code>CONFIG.py</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cardinalidad del espacio de estados</strong> (con <code>MAX_SEVERITY = 9</code>):</p>
+<p>$$|S| = 31 \times 11 \times 10 = 3{,}410 \text{ estados}$$</p>
+<hr />
+<h2 id="3-por-que-actor-critic-en-lugar-de-dqn">3. ¿Por qué Actor-Critic en lugar de DQN?</h2>
+<h3 id="31-filosofia-del-enfoque">3.1 Filosofía del Enfoque</h3>
+<p>DQN aprende una <strong>función de valor-acción</strong> $Q(s, a)$ y deriva la política
+de forma implícita como $\pi(s) = \arg\max_a Q(s, a)$.  Actor-Critic
+aprende <strong>explícitamente</strong> una política $\pi_\theta(a \mid s)$ junto con
+una función de valor de estado $V_\phi(s)$, combinando las ventajas de
+métodos basados en política y basados en valor.</p>
+<h3 id="32-comparacion">3.2 Comparación</h3>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>DQN (<code>pes_dqn</code>)</th>
+<th>A2C (<code>pes_a2c</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Representación de la política</td>
+<td>Implícita: $\arg\max_a Q(s, a)$</td>
+<td>Explícita: $\pi_\theta(a \mid s)$</td>
+</tr>
+<tr>
+<td>Salida de la red</td>
+<td>Q-values para todas las acciones</td>
+<td>Actor: probabilidades; Critic: valor escalar</td>
+</tr>
+<tr>
+<td>Tipo de aprendizaje</td>
+<td>Off-policy (replay buffer)</td>
+<td>On-policy (sin replay buffer)</td>
+</tr>
+<tr>
+<td>Exploración</td>
+<td>ε-greedy sobre Q-values</td>
+<td>Muestreo on-policy de $\pi_\theta$ enmascarada + bono de entropía</td>
+</tr>
+<tr>
+<td>Estabilidad</td>
+<td>Target network</td>
+<td>Ventaja centrada (Advantage)</td>
+</tr>
+<tr>
+<td>Confianza meta-cognitiva</td>
+<td>Heurística (entropía de Q-values)</td>
+<td>Teóricamente fundamentada (entropía de $\pi$)</td>
+</tr>
+<tr>
+<td>Nº de redes</td>
+<td>2 (online + target)</td>
+<td>2 (Actor + Critic)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-ventaja-teorica-de-la-confianza-en-a2c">3.3 Ventaja Teórica de la Confianza en A2C</h3>
+<p>En <code>pes_dqn</code>, la "confianza" del agente se calcula como la entropía de
+los Q-values normalizados — una heurística, ya que los Q-values <strong>no son
+una distribución de probabilidad</strong>.</p>
+<p>En <code>pes_a2c</code>, la salida del Actor $\pi_\theta(a \mid s)$ <strong>es</strong> una
+distribución de probabilidad (softmax), por lo que la entropía tiene un
+significado teórico preciso:</p>
+<p>$$H(\pi_\theta(\cdot \mid s)) = -\sum_{a} \pi_\theta(a \mid s) \log \pi_\theta(a \mid s)$$</p>
+<ul>
+<li>$H$ bajo → el agente está <strong>seguro</strong> (la distribución se concentra en
+  pocas acciones).</li>
+<li>$H$ alto → el agente está <strong>inseguro</strong> (la distribución es casi uniforme).</li>
+</ul>
+<hr />
+<h2 id="4-arquitectura-de-las-redes-neuronales">4. Arquitectura de las Redes Neuronales</h2>
+<h3 id="41-actor-red-de-politica">4.1 Actor (Red de Política)</h3>
+<p>Implementada en <code>ext/ac_model.py</code> → <code>build_actor()</code>:</p>
+<pre><code>Input  (3)  →  Dense(128, ReLU)  →  Dense(11, softmax)
+               hidden_units[0]      action_dim
+</code></pre>
+<p>La arquitectura es configurable: <code>AC_ACTOR_HIDDEN_UNITS</code> define las capas
+ocultas (por defecto <code>[128]</code> — una sola capa de 128 neuronas, optimizada en
+trial #90 del 2026-04-23, mean_perf = 0.887236).</p>
+<pre><code class="language-python">model = tf.keras.Sequential(name=&quot;Actor&quot;)
+model.add(tf.keras.layers.Input(shape=(int(state_dim),)))
+for idx, units in enumerate(hidden_units):
+    layer_seed = None if seed is None else int(seed) + idx
+    model.add(tf.keras.layers.Dense(
+        int(units), activation=&quot;relu&quot;, name=f&quot;actor_hidden_{idx}&quot;,
+        kernel_initializer=tf.keras.initializers.GlorotUniform(seed=layer_seed)))
+out_seed = None if seed is None else int(seed) + len(hidden_units)
+
+# Sesgo personalizado: ceros excepto en la última acción (&quot;gastar el máximo&quot;).
+bias_vec = numpy.zeros((int(action_dim),), dtype=numpy.float32)
+if float(last_action_bias) != 0.0:
+    bias_vec[-1] = float(last_action_bias)
+bias_init = tf.keras.initializers.Constant(bias_vec)
+
+model.add(tf.keras.layers.Dense(
+    int(action_dim), activation=&quot;softmax&quot;, name=&quot;policy&quot;,
+    kernel_initializer=tf.keras.initializers.GlorotUniform(seed=out_seed),
+    bias_initializer=bias_init))
+</code></pre>
+<p>El parámetro opcional <code>seed=</code> propaga una semilla a <code>GlorotUniform</code> para
+que cada capa se inicialice de forma reproducible (cada capa recibe un
+offset distinto).  Esto es independiente del contador global de
+operaciones de TensorFlow y garantiza réplicas exactas entre procesos.</p>
+<p>El parámetro <code>last_action_bias</code> (por defecto $-1.389$ tras trial #90)
+inyecta un sesgo logit negativo en la última acción de la cabeza
+<em>policy</em>, reduciendo la probabilidad inicial de la acción "gastar el
+máximo factible" y rompiendo la simetría que conducía al colapso
+<code>argmax → max-feasible</code> observado en trials tempranos.</p>
+<p>La capa de salida <strong>softmax</strong> garantiza que $\sum_a \pi_\theta(a \mid s) = 1$
+y $\pi_\theta(a \mid s) \ge 0$, produciendo una distribución de
+probabilidad válida.</p>
+<p><strong>Parámetros</strong> (con <code>AC_ACTOR_HIDDEN_UNITS = [128]</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Forma</th>
+<th>Parámetros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actor_hidden_0</code></td>
+<td>3 → 128</td>
+<td>$3 \times 128 + 128 = 512$</td>
+</tr>
+<tr>
+<td><code>policy</code></td>
+<td>128 → 11</td>
+<td>$128 \times 11 + 11 = 1\,419$</td>
+</tr>
+<tr>
+<td><strong>Total Actor</strong></td>
+<td></td>
+<td><strong>1 931</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-critic-red-de-valor-de-estado">4.2 Critic (Red de Valor de Estado)</h3>
+<p>Implementada en <code>ext/ac_model.py</code> → <code>build_critic()</code>:</p>
+<pre><code>Input  (3)  →  Dense(128, ReLU)  →  Dense(1, linear)
+               hidden_units[0]      scalar value
+</code></pre>
+<pre><code class="language-python">model = tf.keras.Sequential(name=&quot;Critic&quot;)
+model.add(tf.keras.layers.Input(shape=(int(state_dim),)))
+for idx, units in enumerate(hidden_units):
+    layer_seed = None if seed is None else int(seed) + idx
+    model.add(tf.keras.layers.Dense(
+        int(units), activation=&quot;relu&quot;, name=f&quot;critic_hidden_{idx}&quot;,
+        kernel_initializer=tf.keras.initializers.GlorotUniform(seed=layer_seed)))
+out_seed = None if seed is None else int(seed) + len(hidden_units)
+model.add(tf.keras.layers.Dense(
+    1, activation=&quot;linear&quot;, name=&quot;value&quot;,
+    kernel_initializer=tf.keras.initializers.GlorotUniform(seed=out_seed)))
+</code></pre>
+<p>La capa de salida <strong>lineal</strong> permite que $V_\phi(s)$ tome cualquier valor
+real (las recompensas del entorno son negativas).</p>
+<p><strong>Parámetros</strong> (con <code>AC_CRITIC_HIDDEN_UNITS = [128]</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Forma</th>
+<th>Parámetros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>critic_hidden_0</code></td>
+<td>3 → 128</td>
+<td>$3 \times 128 + 128 = 512$</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>128 → 1</td>
+<td>$128 \times 1 + 1 = 129$</td>
+</tr>
+<tr>
+<td><strong>Total Critic</strong></td>
+<td></td>
+<td><strong>641</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="43-total-de-parametros">4.3 Total de Parámetros</h3>
+<p>$$|\Theta_\text{total}| = |\Theta_\text{Actor}| + |\Theta_\text{Critic}| = 1\,931 + 641 = 2\,572$$</p>
+<p>Con la arquitectura optimizada en trial #90 (una capa oculta de 128
+neuronas tanto para Actor como para Critic), A2C usa ~0.50× menos
+parámetros que DQN (~5 131).  Además, la mitad (Critic) solo se necesita
+durante entrenamiento; en inferencia solo se usa el Actor (1 931
+parámetros).</p>
+<h3 id="44-normalizacion-del-estado">4.4 Normalización del Estado</h3>
+<p>Antes de alimentar las redes, el estado entero se escala a $[0, 1]^3$:</p>
+<p>$$\hat{s} = \left(\frac{r}{30},\; \frac{t}{10},\; \frac{v}{9}\right)$$</p>
+<p>Implementada en <code>ext/ac_model.py</code> → <code>normalize_state()</code>:</p>
+<pre><code class="language-python">numpy.array([
+    state[0] / max(max_resources, 1),   # / (AVAILABLE_RESOURCES_PER_SEQUENCE - 9) = / 30
+    state[1] / max(max_trials, 1),      # / NUM_MAX_TRIALS = / 10
+    state[2] / max(max_severity, 1),    # / MAX_SEVERITY = / 9
+], dtype=numpy.float32)
+</code></pre>
+<p>Los divisores se derivan de <code>CONFIG.py</code>:
+<code>AVAILABLE_RESOURCES_PER_SEQUENCE = 39</code> menos los 9 recursos
+pre-asignados al inicio del bloque ⇒ <code>max_resources = 30</code>;
+<code>NUM_MAX_TRIALS = 10</code>; <code>MAX_SEVERITY = 9</code>.</p>
+<hr />
+<h2 id="5-fundamento-teorico-policy-gradient-y-advantage">5. Fundamento Teórico: Policy Gradient y Advantage</h2>
+<h3 id="51-el-teorema-del-gradiente-de-politica">5.1 El Teorema del Gradiente de Política</h3>
+<p>El objetivo del Actor es maximizar el retorno esperado:</p>
+<p>$$J(\theta) = \mathbb{E}<em>{\tau \sim \pi</em>\theta} \left[ \sum_{t=0}^{T} \gamma^t r_t \right]$$</p>
+<p>El <strong>Teorema del Gradiente de Política</strong> (Sutton et al., 1999) establece
+que:</p>
+<p>$$\nabla_\theta J(\theta) = \mathbb{E}<em>{\pi</em>\theta} \left[ \nabla_\theta \log \pi_\theta(a_t \mid s_t) \cdot \Psi_t \right]$$</p>
+<p>donde $\Psi_t$ es una señal de refuerzo genérica.  En REINFORCE,
+$\Psi_t = G_t$ (retorno desde $t$), lo que produce alta varianza.</p>
+<h3 id="52-la-funcion-de-ventaja-advantage">5.2 La Función de Ventaja (Advantage)</h3>
+<p>Actor-Critic reduce la varianza reemplazando $G_t$ por la <strong>ventaja</strong>
+(<em>advantage</em>):</p>
+<p>$$A(s_t, a_t) = Q(s_t, a_t) - V(s_t)$$</p>
+<p>La ventaja mide cuánto <strong>mejor (o peor)</strong> fue la acción $a_t$ respecto al
+valor promedio del estado $s_t$.  Usando la aproximación TD(0):</p>
+<p>$$\hat{A}(s_t, a_t) = r_t + \gamma V_\phi(s_{t+1}) \cdot (1 - d_t) - V_\phi(s_t)$$</p>
+<p>donde $d_t \in {0, 1}$ indica si el episodio terminó.</p>
+<p>Esta señal tiene <strong>media cero</strong> en expectativa, lo que reduce drásticamente
+la varianza del gradiente respecto a REINFORCE.</p>
+<h3 id="53-intuicion">5.3 Intuición</h3>
+<ul>
+<li>Si $A &gt; 0$: la acción fue <strong>mejor</strong> que el promedio → aumentar
+  $\pi_\theta(a_t \mid s_t)$.</li>
+<li>Si $A &lt; 0$: la acción fue <strong>peor</strong> que el promedio → disminuir
+  $\pi_\theta(a_t \mid s_t)$.</li>
+<li>Si $A \approx 0$: la acción fue <strong>típica</strong> → cambio mínimo.</li>
+</ul>
+<hr />
+<h2 id="6-funciones-de-perdida">6. Funciones de Pérdida</h2>
+<h3 id="61-perdida-del-critic-mse-sobre-td-target">6.1 Pérdida del Critic (MSE sobre TD Target)</h3>
+<p>El Critic se entrena para minimizar el error entre su predicción y el
+<em>target</em> de diferencia temporal:</p>
+<p>$$y_t = r_t + \gamma \cdot V_\phi(s_{t+1}) \cdot (1 - d_t)$$</p>
+<p>$$\mathcal{L}<em>\text{Critic} = \frac{1}{N} \sum</em>{t=1}^{N} \left( V_\phi(s_t) - y_t \right)^2$$</p>
+<p><strong>Nota:</strong> En la implementación, tanto <code>values</code> como <code>next_values</code> se calculan
+<strong>dentro</strong> del <code>GradientTape</code> del Critic.  Esto significa que el gradiente de
+<code>critic_loss</code> fluye a través de ambos términos — un enfoque de <em>semi-gradient</em>
+que funciona bien en la práctica y simplifica el código.  La ventaja
+(advantage) se calcula <strong>después</strong> de actualizar el Critic, usando los pesos
+recién actualizados para obtener una señal más limpia.</p>
+<h3 id="62-perdida-del-actor-policy-gradient-entropia">6.2 Pérdida del Actor (Policy Gradient + Entropía)</h3>
+<p>El Actor se actualiza siguiendo el gradiente de política con ventaja,
+<strong>más</strong> un bono de entropía que incentiva la exploración:</p>
+<p>$$\mathcal{L}<em>\text{Actor} = -\frac{1}{N} \sum</em>{t=1}^{N} \left[ \log \pi_\theta(a_t \mid s_t) \cdot \hat{A}<em>t \right] - c</em>\text{ent} \cdot H(\pi_\theta)$$</p>
+<p>donde:</p>
+<ul>
+<li>$\log \pi_\theta(a_t \mid s_t)$: log-probabilidad de la acción tomada.</li>
+<li>$\hat{A}<em>t = y_t - V</em>\phi(s_t)$: ventaja estimada (detached del Actor).</li>
+<li>$c_\text{ent}$: coeficiente de entropía (<code>AC_ENTROPY_COEFF</code>, default 0.005278).</li>
+<li>$H(\pi_\theta) = -\sum_a \pi_\theta(a \mid s) \log \pi_\theta(a \mid s)$:
+  entropía de la política.</li>
+</ul>
+<p>El signo negativo delante del primer término convierte el <strong>ascenso</strong> de
+gradiente de política en una <strong>minimización</strong> compatible con
+<code>optimizer.apply_gradients()</code>.</p>
+<h3 id="63-implementacion">6.3 Implementación</h3>
+<p><code>ext/ac_model.py</code> → <code>train_step_actor_critic()</code>:</p>
+<pre><code class="language-python">def train_step_actor_critic(actor, critic, actor_optimizer, critic_optimizer,
+                            states, actions, rewards, next_states, dones,
+                            discount, entropy_coeff, max_grad_norm, gae_lambda,
+                            masks=None):
+    # ---------- Critic update ----------
+    with tf.GradientTape() as critic_tape:
+        values = tf.squeeze(critic(states, training=True), axis=1)
+        next_values = tf.squeeze(critic(next_states, training=False), axis=1)
+        td_targets = rewards + discount * next_values * (1.0 - dones)
+        critic_loss = tf.reduce_mean(tf.square(td_targets - values))
+
+    critic_grads = critic_tape.gradient(critic_loss, critic.trainable_variables)
+    critic_grads, _ = tf.clip_by_global_norm(critic_grads, max_grad_norm)
+    critic_optimizer.apply_gradients(zip(critic_grads, critic.trainable_variables))
+
+    # ---------- GAE(λ) Advantage ----------
+    values_updated = tf.squeeze(critic(states, training=False), axis=1)
+    next_values_updated = tf.squeeze(critic(next_states, training=False), axis=1)
+    deltas = rewards + discount * next_values_updated * (1.0 - dones) - values_updated
+
+    T = tf.shape(deltas)[0]
+    gae_buffer = tf.TensorArray(dtype=tf.float32, size=T, dynamic_size=False)
+    last_gae = tf.constant(0.0)
+    for t in tf.range(T - 1, -1, -1):
+        last_gae = deltas[t] + discount * gae_lambda * (1.0 - dones[t]) * last_gae
+        gae_buffer = gae_buffer.write(t, last_gae)
+    advantages = gae_buffer.stack()
+
+    # Advantage normalisation
+    adv_mean = tf.reduce_mean(advantages)
+    adv_std = tf.math.reduce_std(advantages) + 1e-8
+    advantages = (advantages - adv_mean) / adv_std
+
+    # ---------- Actor update ----------
+    with tf.GradientTape() as actor_tape:
+        probs = actor(states, training=True)
+
+        # Infeasible-action masking: zero out actions &gt; resources_left
+        # and renormalise so that log_probs and entropy reflect only
+        # feasible actions — consistent with evaluation and __main__.
+        if masks is not None:
+            probs = probs * masks
+            probs = probs / (tf.reduce_sum(probs, axis=1, keepdims=True) + 1e-8)
+
+        probs_clipped = tf.clip_by_value(probs, 1e-8, 1.0)
+        action_mask = tf.one_hot(actions, depth=tf.shape(probs)[1])
+        log_probs = tf.reduce_sum(tf.math.log(probs_clipped) * action_mask, axis=1)
+
+        entropy = -tf.reduce_sum(probs_clipped * tf.math.log(probs_clipped), axis=1)
+        mean_entropy = tf.reduce_mean(entropy)
+
+        # Policy gradient loss: -E[ log π(a|s) · Â_GAE(s,a) ] - c_ent · H(π)
+        actor_loss = -tf.reduce_mean(log_probs * tf.stop_gradient(advantages))
+        actor_loss = actor_loss - entropy_coeff * mean_entropy
+
+    actor_grads = actor_tape.gradient(actor_loss, actor.trainable_variables)
+    actor_grads, _ = tf.clip_by_global_norm(actor_grads, max_grad_norm)
+    actor_optimizer.apply_gradients(zip(actor_grads, actor.trainable_variables))
+
+    return actor_loss, critic_loss, mean_entropy
+</code></pre>
+<p><strong>Notas de implementación</strong>:</p>
+<ul>
+<li><code>train_step_actor_critic</code> <strong>no</strong> lleva <code>@tf.function</code> a nivel de módulo
+  porque la optimización bayesiana (Optuna) ejecuta múltiples trials con
+  diferentes instancias de modelo y optimizador.  <code>@tf.function</code> prohíbe
+  crear nuevas <code>tf.Variable</code> dentro de un grafo ya trazado, lo que
+  provocaría un error al iniciar el segundo trial.</li>
+<li>En su lugar, <code>A2CTraining()</code> en <code>pandemic.py</code> envuelve la función con
+  <code>compiled_train_step = tf.function(train_step_actor_critic)</code> de forma
+  <strong>local</strong> a cada trial, asegurando que cada grafo sea independiente.</li>
+<li>Los optimizadores se pre-construyen con <code>optimizer.build()</code> antes del
+  loop de entrenamiento para que sus <code>tf.Variable</code> internas se creen
+  fuera del <code>@tf.function</code>.</li>
+<li><code>discount</code> y <code>entropy_coeff</code> se pasan como <code>tf.constant</code> (no como
+  <code>float</code> de Python) para evitar re-tracing cuando sus valores cambian
+  entre trials de Optuna.</li>
+<li>Los <code>td_targets</code> se calculan <strong>dentro</strong> del <code>GradientTape</code> del Critic
+  (semi-gradient), lo que simplifica el código y funciona bien en la
+  práctica.</li>
+<li>Tras actualizar el Critic, se <strong>recomputan</strong> los valores con los pesos
+  nuevos (<code>values_updated</code>, <code>next_values_updated</code>) para obtener una
+  ventaja más limpia.</li>
+<li><code>tf.stop_gradient(advantages)</code> impide que el gradiente del Actor fluya
+  hacia el Critic a través de la ventaja.</li>
+<li><code>tf.clip_by_value(probs, 1e-8, 1.0)</code> previene $\log(0)$ en estados
+  donde la política es casi determinística.</li>
+<li>Cuando se pasan <strong>masks</strong> (tensor de factibilidad), las probabilidades
+  del Actor se multiplican por la máscara y se renormalizan antes de
+  calcular <code>log_probs</code> y <code>entropy</code>, alineando el entrenamiento con la
+  inferencia enmascarada.</li>
+</ul>
+<hr />
+<h2 id="7-exploracion-muestreo-on-policy-bono-de-entropia">7. Exploración: Muestreo On-Policy + Bono de Entropía</h2>
+<h3 id="71-politica-de-exploracion">7.1 Política de Exploración</h3>
+<p>Durante el entrenamiento, A2C <strong>muestrea acciones directamente</strong> de la
+distribución del Actor enmascarada sobre acciones factibles — sin
+overlay $\varepsilon$-greedy.  Esto preserva la propiedad on-policy del
+gradiente de política: las acciones provienen de $\pi_\theta$, por lo
+que la actualización de $J(\theta)$ es no sesgada.</p>
+<p>$$a_t \sim \tilde{\pi}<em>\theta(\cdot \mid s_t),\qquad
+\tilde{\pi}</em>\theta(a \mid s_t) =
+\frac{\pi_\theta(a \mid s_t)\, m_a(s_t)}{\sum_{a'}\pi_\theta(a' \mid s_t)\, m_{a'}(s_t)}$$</p>
+<p>donde $m_a(s_t) \in {0, 1}$ es la máscara binaria de factibilidad
+($m_a = 1$ si y sólo si $a \le \text{resources_left}$).  Si todas las
+probabilidades enmascaradas son numéricamente cero (caso degenerado),
+se muestrea uniformemente sobre acciones factibles.</p>
+<p>La exploración se garantiza por dos mecanismos complementarios:</p>
+<ol>
+<li><strong>Aleatoriedad intrínseca de $\pi_\theta$</strong>: la softmax produce una
+   distribución con masa positiva en múltiples acciones, especialmente
+   al inicio del entrenamiento cuando los logits son pequeños.</li>
+<li><strong>Bono de entropía</strong> en la pérdida del Actor: penaliza
+   distribuciones puntiagudas a nivel de gradiente, incentivando la
+   diversificación.</li>
+</ol>
+<p><strong>Implementación</strong> (<code>ext/pandemic.py</code> → <code>A2CTraining()</code>):</p>
+<pre><code class="language-python">probs = actor_model(state_norm[numpy.newaxis, :], training=False)[0].numpy()
+feasibility_mask = numpy.zeros(action_dim, dtype=numpy.float32)
+feasibility_mask[:min(int(state[0]), action_dim - 1) + 1] = 1.0
+masked_probs = probs * feasibility_mask
+masked_sum = masked_probs.sum()
+if masked_sum &gt; 1e-8:
+    masked_probs = masked_probs / masked_sum
+else:
+    # Softmax degenerado → uniforme sobre acciones factibles
+    masked_probs = feasibility_mask / feasibility_mask.sum()
+action = int(numpy.random.choice(action_dim, p=masked_probs))
+</code></pre>
+<h3 id="72-parametros-varepsilon-legacy">7.2 Parámetros $\varepsilon$ Legacy</h3>
+<p>Los parámetros <code>AC_EPSILON_INITIAL</code>, <code>AC_EPSILON_MIN</code>, <code>AC_WARMUP_RATIO</code>
+y <code>AC_TARGET_RATIO</code> se conservan en <code>CONFIG.py</code> y en la firma de
+<code>A2CTraining()</code> por compatibilidad de API, pero <strong>no se usan</strong> en la
+selección de acciones bajo el esquema on-policy actual.  El bucle de
+entrenamiento sigue computando el cronograma de decaimiento de
+$\varepsilon$, pero su valor nunca se aplica a la rama de selección.</p>
+<p>En la optimización bayesíana (<code>optimize_a2c.py</code>) estos parámetros se
+fijan a 0/0/0/1 para no consumir presupuesto de búsqueda.</p>
+<h3 id="73-bono-de-entropia">7.3 Bono de Entropía</h3>
+<p>El término de entropía en $\mathcal{L}<em>\text{Actor}$ actúa como un
+<strong>regularizador de exploración</strong> a nivel de gradiente: si
+$c</em>\text{ent} &gt; 0$, el optimizador penaliza distribuciones demasiado
+concentradas, manteniendo la diversidad de acciones a lo largo del
+entrenamiento.  El espacio de búsqueda bayesíano ahora permite
+$c_\text{ent} = 0$, dejando que Optuna desactive el bono si lo prefiere.</p>
+<hr />
+<h2 id="8-bucle-de-entrenamiento-completo">8. Bucle de Entrenamiento Completo</h2>
+<p><code>ext/pandemic.py</code> → <code>A2CTraining()</code>:</p>
+<pre><code>Para cada episodio i = 1 … N:
+    env.random_sequence()          ← secuencia aleatoria
+    state, _ = env.reset()
+
+    batch_states, batch_actions, batch_rewards,
+    batch_next_states, batch_dones, batch_masks = [], [], [], [], [], []
+
+    Mientras no done:
+        1. Normalizar estado:     s_norm = normalize_state(state, 30, 10, 9)
+        2. Selección on-policy con enmascaramiento de acciones infactibles:
+              - probs = actor_predict(s_norm)            ← π_θ(·|s)  (tf.function JIT)
+              - feasibility_mask ∈ {0, 1}¹¹  con 1 en [0, min(resources_left, 10)]
+              - masked_probs = probs · feasibility_mask
+              - masked_probs /= masked_probs.sum()       ← renormalizar
+              - a ~ Multinomial(masked_probs)            ← numpy.random.choice
+           No se usa ε-greedy ni argmax: la exploración proviene de la
+           entropía natural de π_θ y del bono H(π_θ) en la pérdida del Actor.
+        3. (Opcional) Meta-cognición: confidence = ac_agent_meta_cognitive(π(·|s), ...)
+        4. PBRS: calcular Φ(s) = −Σ max(0, sev_i) ANTES del step
+        5. Paso del entorno:      s', r, done, truncated, info = env.step(action)
+        6. PBRS: r' = r + β·(γ·Φ(s') − Φ(s))  (si penalty_coeff &gt; 0)
+        7. Almacenar transición en batch de episodio:
+              batch_states.append(s_norm)
+              batch_actions.append(action)
+              batch_rewards.append(r')
+              batch_next_states.append(s'_norm)
+              batch_dones.append(done)
+              batch_masks.append(feasibility_mask)
+
+    ── Fin del episodio ──
+    8. Convertir batch a tensores:
+         states_t, actions_t, rewards_t, next_t, dones_t,
+         masks_t = cast_to_tensors(batch)
+    9. Actualizar Actor y Critic (con GAE(λ), gradient clipping,
+       normalización de ventaja y enmascaramiento de acciones infactibles):
+         actor_loss, critic_loss, entropy = compiled_train_step(
+             actor, critic, actor_opt, critic_opt,
+             states_t, actions_t, rewards_t, next_t, dones_t,
+             discount_t, entropy_coeff_t, max_grad_norm_t, gae_lambda_t,
+             masks_t)
+    10. Decaer ε (exponencial con warm-up)
+
+    Cada 10 000 episodios:
+        ─ Imprimir recompensa promedio
+
+    Retornar (ave_reward_list, actor_model, conf_list)
+</code></pre>
+<h3 id="81-diferencia-clave-on-policy-vs-off-policy">8.1 Diferencia Clave: On-Policy vs. Off-Policy</h3>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>DQN (off-policy)</th>
+<th>A2C (on-policy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Buffer</td>
+<td>Replay buffer de 20 000 transiciones</td>
+<td>Sin buffer; batch por episodio</td>
+</tr>
+<tr>
+<td>Reutilización de datos</td>
+<td>Cada transición se muestrea múltiples veces</td>
+<td>Cada transición se usa exactamente una vez</td>
+</tr>
+<tr>
+<td>Actualización</td>
+<td>Cada 4 env steps (mini-batch del buffer)</td>
+<td>Al final de cada episodio (batch completo)</td>
+</tr>
+<tr>
+<td>Correlación temporal</td>
+<td>Eliminada por muestreo aleatorio</td>
+<td>Presente dentro del episodio</td>
+</tr>
+<tr>
+<td>Eficiencia de datos</td>
+<td>Alta (reutilización)</td>
+<td>Baja (un solo uso)</td>
+</tr>
+<tr>
+<td>Estabilidad del gradiente</td>
+<td>Target network</td>
+<td>Advantage centrada + entropía</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-parametro-verbose">8.2 Parámetro <code>verbose</code></h3>
+<p><code>A2CTraining()</code> acepta un parámetro opcional <code>verbose</code> (por defecto <code>True</code>).
+Cuando está desactivado (<code>verbose=False</code>), se suprimen los mensajes
+periódicos de progreso que normalmente se imprimen cada 10 000 episodios.
+Esto es especialmente útil durante la optimización bayesiana, donde
+decenas de trials consecutivos generarían ruido excesivo en la terminal.</p>
+<p>De forma análoga, <code>run_experiment()</code> también acepta <code>verbose</code> (por defecto
+<code>True</code>).  Cuando <code>verbose=False</code>, se omiten las impresiones del estado
+inicial y de los valores de severidad por secuencia.</p>
+<h3 id="83-parametro-compute_confidence">8.3 Parámetro <code>compute_confidence</code></h3>
+<p>Al igual que <code>DQNTraining()</code>, <code>A2CTraining()</code> acepta <code>compute_confidence</code>
+(por defecto <code>False</code>).  Cuando está desactivado, se omite la llamada a
+<code>ac_agent_meta_cognitive()</code> durante entrenamiento, ahorrando cómputo.</p>
+<p>En A2C la meta-cognición <strong>no requiere un forward pass adicional</strong>: la
+distribución $\pi_\theta(a \mid s)$ ya se calculó para el muestreo
+on-policy y se reutiliza directamente.  No obstante,
+<code>ac_agent_meta_cognitive()</code> realiza operaciones adicionales
+(enmascaramiento, entropía, normalización) que se pueden omitir durante
+entrenamiento intensivo.</p>
+<h3 id="84-mejoras-de-entrenamiento">8.4 Mejoras de Entrenamiento</h3>
+<p>Las siguientes mejoras se incorporaron al A2C base para aumentar la
+estabilidad y convergencia del entrenamiento.  Todas son configurables
+mediante <code>CONFIG.py</code> y optimizables vía búsqueda Bayesiana.</p>
+<h4 id="841-gradient-clipping-recorte-de-gradientes">8.4.1 Gradient Clipping — Recorte de Gradientes</h4>
+<p><strong>Teoría</strong>: Los gradientes del Actor y Critic pueden explotar en
+episodios con recompensas atípicas.  El recorte por norma global
+(Mnih et al., 2016) limita el vector de gradientes completo a una
+norma máxima $g_{\max}$, sin alterar la dirección:</p>
+<p>$$\hat{g} = g \cdot \frac{g_{\max}}{\max(g_{\max},\; |g|_2)}$$</p>
+<p><strong>Código</strong> (<code>ext/ac_model.py</code> → <code>train_step_actor_critic()</code>):</p>
+<pre><code class="language-python">critic_grads, _ = tf.clip_by_global_norm(critic_grads, max_grad_norm)
+critic_optimizer.apply_gradients(zip(critic_grads, critic.trainable_variables))
+# ...
+actor_grads, _ = tf.clip_by_global_norm(actor_grads, max_grad_norm)
+actor_optimizer.apply_gradients(zip(actor_grads, actor.trainable_variables))
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>CONFIG</th>
+<th>Valor por defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC_MAX_GRAD_NORM</code></td>
+<td>Umbral de norma global</td>
+<td>1.200</td>
+</tr>
+</tbody>
+</table>
+<h4 id="842-normalizacion-de-la-ventaja-advantage-normalisation">8.4.2 Normalización de la Ventaja (Advantage Normalisation)</h4>
+<p><strong>Teoría</strong>: La escala de la ventaja varía según la magnitud de las
+recompensas.  Normalizar la ventaja a media cero y varianza unitaria
+estabiliza los gradientes del Actor independientemente de la escala
+de recompensa:</p>
+<p>$$\hat{A}_t^{\text{norm}} = \frac{\hat{A}_t - \mu_A}{\sigma_A + 10^{-8}}$$</p>
+<p><strong>Código</strong> (<code>ext/ac_model.py</code> → <code>train_step_actor_critic()</code>):</p>
+<pre><code class="language-python">adv_mean = tf.reduce_mean(advantages)
+adv_std = tf.math.reduce_std(advantages) + 1e-8
+advantages = (advantages - adv_mean) / adv_std
+</code></pre>
+<h4 id="843-gae-estimacion-generalizada-de-la-ventaja">8.4.3 GAE(λ) — Estimación Generalizada de la Ventaja</h4>
+<p><strong>Teoría</strong> (Schulman et al., 2016): GAE interpola entre el estimador
+TD(0) de baja varianza/alto sesgo ($\lambda=0$) y los retornos
+Monte-Carlo de alta varianza/bajo sesgo ($\lambda=1$):</p>
+<p>$$\hat{A}<em>t^{\text{GAE}} = \sum</em>{\ell=0}^{T-t-1} (\gamma \lambda)^\ell \delta_{t+\ell}$$</p>
+<p>donde $\delta_t = r_t + \gamma V(s_{t+1})(1 - d_t) - V(s_t)$ es el
+error TD de un paso.  La acumulación se realiza en reversa para
+eficiencia $O(T)$:</p>
+<p>$$G_t = \delta_t + \gamma \lambda (1 - d_t) \cdot G_{t+1}, \quad G_T = \delta_T$$</p>
+<p><strong>Código</strong> (<code>ext/ac_model.py</code> → <code>train_step_actor_critic()</code>):</p>
+<pre><code class="language-python">deltas = rewards + discount * next_values_updated * (1.0 - dones) - values_updated
+
+T = tf.shape(deltas)[0]
+gae_buffer = tf.TensorArray(dtype=tf.float32, size=T, dynamic_size=False)
+last_gae = tf.constant(0.0)
+for t in tf.range(T - 1, -1, -1):
+    last_gae = deltas[t] + discount * gae_lambda * (1.0 - dones[t]) * last_gae
+    gae_buffer = gae_buffer.write(t, last_gae)
+advantages = gae_buffer.stack()
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>CONFIG</th>
+<th>Valor por defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC_GAE_LAMBDA</code></td>
+<td>λ (bias-varianza)</td>
+<td>0.913</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Nota</strong>: El bucle <code>tf.range</code> se compila a <code>tf.while_loop</code> mediante
+autograph, manteniendo la compatibilidad con <code>@tf.function</code>.</p>
+</blockquote>
+<h4 id="844-decaimiento-exponencial-de-con-warm-up-legacy">8.4.4 Decaimiento Exponencial de ε con Warm-up (Legacy)</h4>
+<p>Esquema de decaimiento conservado por compatibilidad de API.  El código
+continúa actualizando $\varepsilon$ al final de cada episodio, pero el
+valor <strong>no se aplica</strong> en la nueva rama de selección on-policy descrita
+en la sección 7.1.</p>
+<h4 id="845-pbrs-reward-shaping-basado-en-potencial">8.4.5 PBRS — Reward Shaping Basado en Potencial</h4>
+<p><strong>Teoría</strong> (Ng et al., 1999): PBRS añade una recompensa de modelado que
+provee señal más densa sin alterar la política óptima.  La función de
+potencial $\Phi(s)$ codifica conocimiento del dominio:</p>
+<p>$$r'<em>t = r_t + \beta \left[ \gamma \cdot \Phi(s</em>{t+1}) - \Phi(s_t) \right]$$</p>
+<p>En el escenario Pandemic, usamos $\Phi(s) = -\sum_i \max(0,\; \text{sev}_i)$,
+que es mayor (menos negativo) cuando las severidades son bajas — alineado
+con el objetivo de minimizar la severidad.</p>
+<p><strong>Código</strong> (<code>ext/pandemic.py</code> → <code>A2CTraining()</code>, dentro del bucle de
+episodio):</p>
+<pre><code class="language-python"># ANTES del step
+phi_s = -sum(max(0.0, sv) for sv in env.severities)
+
+state2, reward, done, _trunc, _info = env.step(action)
+
+# DESPUÉS del step
+phi_s_prime = 0.0 if done else -sum(max(0.0, sv) for sv in env.severities)
+reward += penalty_coeff * (discount * phi_s_prime - phi_s)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>CONFIG</th>
+<th>Valor por defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC_PENALTY_COEFF</code></td>
+<td>β (coeficiente de shaping)</td>
+<td>0.153</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Cuando <code>AC_PENALTY_COEFF = 0</code>, PBRS se desactiva completamente.</p>
+</blockquote>
+<h4 id="846-enmascaramiento-de-acciones-infactibles-durante-entrenamiento">8.4.6 Enmascaramiento de Acciones Infactibles durante Entrenamiento</h4>
+<p><strong>Teoría</strong>: Durante la evaluación e inferencia, las acciones que exceden
+los recursos disponibles ($a &gt; \text{resources_left}$) se enmascaran
+estableciendo su probabilidad a cero y renormalizando.  Si el
+entrenamiento <strong>no</strong> aplica el mismo enmascaramiento, el gradiente de
+política refuerza acciones que nunca se ejecutarán, creando una
+discrepancia entrenamiento⟷evaluación.  Enmascarar durante el
+entrenamiento alinea ambos procesos y concentra la capacidad del Actor
+en el subconjunto de acciones legales.</p>
+<p><strong>Implementación</strong>: En cada transición del bucle de entrenamiento
+(<code>A2CTraining()</code> en <code>pandemic.py</code>) se genera una <strong>máscara de
+factibilidad</strong> binaria de dimensión 11 (una posición por acción):</p>
+<pre><code class="language-python">feasibility_mask = numpy.zeros(action_dim, dtype=numpy.float32)
+feasibility_mask[:min(int(state[0]), action_dim - 1) + 1] = 1.0
+</code></pre>
+<p>Las probabilidades del Actor se multiplican por la máscara y se
+renormalizan para obtener $\tilde{\pi}_\theta(\cdot \mid s_t)$, de la
+cual se muestrea la acción on-policy.  Si la suma renormalizada es
+numéricamente cero (caso degenerado), se aplica un fallback uniforme
+sobre acciones factibles.</p>
+<p>Todas las máscaras del episodio se acumulan en <code>ep_masks</code> y se pasan
+como tensor al paso de gradiente.  Dentro de
+<code>train_step_actor_critic()</code>, la máscara se aplica <strong>antes</strong> de calcular
+log-probabilidades y entropía:</p>
+<pre><code class="language-python">if masks is not None:
+    probs = probs * masks
+    probs = probs / (tf.reduce_sum(probs, axis=1, keepdims=True) + 1e-8)
+</code></pre>
+<p>De esta forma, $\log \pi_\theta(a_t \mid s_t)$ y $H(\pi_\theta)$ se
+calculan únicamente sobre acciones factibles, y el bono de entropía
+penaliza distribuciones uniformes <strong>dentro</strong> del rango factible, no
+sobre acciones inválidas.</p>
+<h4 id="847-cosine-annealing-programacion-de-tasa-de-aprendizaje">8.4.7 Cosine Annealing — Programación de Tasa de Aprendizaje</h4>
+<p><strong>Teoría</strong>: En lugar de mantener la tasa de aprendizaje constante, se
+aplica un decaimiento con curva coseno (Loshchilov &amp; Hutter, 2017):</p>
+<p>$$\eta_t = \eta_{\min} + \frac{1}{2}(\eta_0 - \eta_{\min})\left(1 + \cos\left(\frac{t}{T}\pi\right)\right)$$</p>
+<p>donde $\eta_{\min} = \alpha \cdot \eta_0$ y $T$ = total de episodios.
+Esto permite exploración agresiva al inicio (LR alta) y ajuste fino al
+final (LR baja).</p>
+<p><strong>Código</strong> (<code>ext/pandemic.py</code> → <code>A2CTraining()</code>):</p>
+<pre><code class="language-python">actor_schedule = tf.keras.optimizers.schedules.CosineDecay(
+    initial_learning_rate=actor_lr,
+    decay_steps=episodes,
+    alpha=lr_min_ratio,
+)
+actor_optimizer = tf.keras.optimizers.Adam(learning_rate=actor_schedule)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>CONFIG</th>
+<th>Valor por defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AC_LR_MIN_RATIO</code></td>
+<td>α (ratio mínimo)</td>
+<td>0.237</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Se aplican schedules <strong>independientes</strong> para Actor y Critic, cada uno
+con su propio step counter interno.</p>
+</blockquote>
+<hr />
+<h2 id="9-optimizacion-bayesiana-de-hiperparametros">9. Optimización Bayesiana de Hiperparámetros</h2>
+<p><code>ext/optimize_a2c.py</code> utiliza <strong>Optuna</strong> (TPE sampler) para buscar
+hiperparámetros óptimos del A2C.</p>
+<h3 id="91-espacio-de-busqueda">9.1 Espacio de Búsqueda</h3>
+<p>En modo <code>full</code> (por defecto en CONFIG), Optuna muestrea <strong>8 parámetros
+base</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Rango</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actor_lr</code></td>
+<td>$[10^{-4},\; 10^{-2}]$</td>
+<td>log-uniforme</td>
+</tr>
+<tr>
+<td><code>critic_lr</code></td>
+<td>$[10^{-4},\; 10^{-2}]$</td>
+<td>log-uniforme</td>
+</tr>
+<tr>
+<td><code>discount_factor</code></td>
+<td>$[0.85,\; 0.995]$</td>
+<td>uniforme</td>
+</tr>
+<tr>
+<td><code>entropy_coeff</code></td>
+<td>$[0.0,\; 0.1]$</td>
+<td>lineal (incluye 0)</td>
+</tr>
+<tr>
+<td><code>num_episodes</code></td>
+<td>$[50\,000,\; 250\,000]$</td>
+<td>entero (paso 25k)</td>
+</tr>
+<tr>
+<td><code>actor_hidden_dim</code></td>
+<td>${32, 64, 128, 256}$</td>
+<td>categórico</td>
+</tr>
+<tr>
+<td><code>critic_hidden_dim</code></td>
+<td>${32, 64, 128, 256}$</td>
+<td>categórico</td>
+</tr>
+<tr>
+<td><code>n_hidden_layers</code></td>
+<td>${1, 2, 3}$</td>
+<td>entero</td>
+</tr>
+</tbody>
+</table>
+<p>Los parámetros $\varepsilon$ (<code>epsilon_initial</code>, <code>epsilon_min</code>) ya <strong>no
+se muestrean</strong> — se fijan a 0 porque el entrenamiento es puramente
+on-policy (ver § 7).</p>
+<p>Adicionalmente, se optimizan <strong>6 hiperparámetros de mejora</strong> (siempre
+muestreados, tanto en modo <code>full</code> como <code>improvements_only</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Rango</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>penalty_coeff</code></td>
+<td>$[0.0,\; 0.3]$</td>
+<td>lineal (incluye 0)</td>
+</tr>
+<tr>
+<td><code>gae_lambda</code></td>
+<td>$[0.90,\; 0.99]$</td>
+<td>uniforme</td>
+</tr>
+<tr>
+<td><code>max_grad_norm</code></td>
+<td>$[0.3,\; 1.5]$</td>
+<td>uniforme</td>
+</tr>
+<tr>
+<td><code>lr_min_ratio</code></td>
+<td>$[0.05,\; 0.25]$</td>
+<td>uniforme</td>
+</tr>
+<tr>
+<td><code>spend_cost_coeff</code></td>
+<td>$[0.0,\; 0.05]$</td>
+<td>lineal (coste de gasto, solo entrenamiento; 0 desactiva)</td>
+</tr>
+<tr>
+<td><code>last_action_bias</code></td>
+<td>$[-2.0,\; 0.0]$</td>
+<td>uniforme (sesgo logit inicial de la acción "gastar máximo")</td>
+</tr>
+</tbody>
+</table>
+<p><code>warmup_ratio</code> y <code>target_ratio</code> se fijan a 0/1 (no se muestrean) porque
+gobiernan el cronograma legacy de $\varepsilon$ que no se aplica en la
+rama on-policy.</p>
+<h4 id="modos-de-optimizacion">Modos de Optimización</h4>
+<ul>
+<li><strong><code>full</code></strong> (por defecto en <code>CONFIG.AC_OPTIMIZE_MODE</code>): optimiza los
+  14 parámetros (8 base + 6 mejora).</li>
+<li><strong><code>improvements_only</code></strong>: fija los 8 parámetros base en los valores de
+  CONFIG.py y solo optimiza los 6 de mejora, reduciendo el espacio de
+  búsqueda de 14D a 6D.  Se selecciona con <code>AC_OPTIMIZE_MODE</code> en
+  CONFIG.py o <code>--mode</code> en la línea de comandos.</li>
+</ul>
+<p><strong>Diferencias frente al espacio de DQN:</strong></p>
+<ul>
+<li>A2C tiene <strong>dos learning rates</strong> (Actor y Critic) en lugar de uno solo.</li>
+<li>Se añade <code>entropy_coeff</code> — ausente en DQN.</li>
+<li>No existen <code>batch_size</code>, <code>replay_buffer_size</code>, ni <code>target_sync_freq</code>
+  (conceptos exclusivos de DQN off-policy).</li>
+</ul>
+<h3 id="92-funcion-objetivo">9.2 Función Objetivo</h3>
+<p>Se entrena un agente A2C con los hiperparámetros sugeridos y se evalúa
+en las <strong>64 secuencias fijas</strong> (las mismas que usa <code>__main__.py</code>).  El score
+reportado a Optuna es el <strong>rendimiento normalizado medio</strong> (a maximizar),
+calculado con <code>calculate_normalised_final_severity_performance_metric()</code>.</p>
+<p>A diferencia de una evaluación determinista basada en <code>argmax</code>, la
+evaluación se realiza de forma <strong>estocástica</strong> con
+<code>n_eval_replicates = 8</code> réplicas independientes: en cada réplica las
+acciones se muestrean de la <em>softmax enmascarada</em> (acciones $a &gt;$
+recursos disponibles puestas a probabilidad cero y renormalizadas) y se
+promedia el rendimiento sobre las 8 réplicas.  Esto:</p>
+<ul>
+<li>Refleja la verdadera distribución de retornos de la política
+  estocástica (no solo su moda).</li>
+<li>Inyecta varianza intra-configuración para que el TPE pueda estimar el
+  ruido del objetivo.</li>
+<li>Penaliza políticas que colapsan a la heurística trivial
+  <code>argmax → max-feasible</code> cuando esta no es óptima.</li>
+</ul>
+<p>Cada réplica utiliza un sub-RNG distinto derivado de la semilla del
+trial.</p>
+<p>Cada trial usa una <strong>semilla independiente</strong> derivada como
+<code>trial_seed = SEED + trial.number + 1</code>, de modo que distintos trials
+son réplicas estocásticas independientes — sin esto Optuna vería
+varianza cero por configuración y no podría estimar el ruido del
+objetivo.  La semilla se propaga a <code>numpy</code>, <code>random</code>, <code>tf.random</code> y a
+los inicializadores <code>GlorotUniform</code> de cada capa, y
+<code>tf.config.experimental.enable_op_determinism()</code> se invoca al comienzo
+de <code>A2CTraining()</code> para forzar grafos deterministas en CPU.</p>
+<p>Durante la evaluación, tanto <code>A2CTraining()</code> como <code>run_experiment()</code> se
+invocan con <code>verbose=False</code> para suprimir las impresiones de consola por
+episodio/secuencia, evitando ruido en la salida de terminal durante
+decenas de trials consecutivos.</p>
+<h3 id="93-poda-temprana-medianpruner">9.3 Poda Temprana (MedianPruner)</h3>
+<p>El estudio de Optuna incorpora un <strong>MedianPruner</strong> configurado con
+<code>n_startup_trials=10</code> y <code>n_warmup_steps=2</code>.  Este pruner descarta trials
+cuyo rendimiento intermedio es inferior a la mediana de trials anteriores,
+acelerando la búsqueda al evitar completar trials prometedoramente malos:</p>
+<pre><code class="language-python">study = optuna.create_study(
+    ...
+    pruner=optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=2),
+    ...
+)
+</code></pre>
+<h3 id="94-warm-start">9.4 Warm-Start</h3>
+<p>La búsqueda comienza con un <strong>trial semilla</strong> usando los valores de CONFIG.py
+(correspondientes al mejor trial #90 de la optimización previa,
+mean_perf = 0.887236), asegurando
+que al menos un trial alcance un rendimiento razonable.  En modo
+<code>improvements_only</code>, solo se incluyen los 6 parámetros de mejora
+sampleados; en modo <code>full</code>, se incluyen también los 8 parámetros base.
+Las claves del warm-start que ya no se muestrean (p. ej. <code>epsilon_*</code>,
+<code>warmup_ratio</code>, <code>target_ratio</code>) son ignoradas silenciosamente por
+Optuna:</p>
+<pre><code class="language-python">warmstart: dict = {}
+if _optimize_mode == 'full':
+    warmstart.update({
+        'actor_lr': AC_ACTOR_LR,
+        'critic_lr': AC_CRITIC_LR,
+        'discount_factor': AC_DISCOUNT,
+        'entropy_coeff': AC_ENTROPY_COEFF,
+        'epsilon_initial': AC_EPSILON_INITIAL,
+        'epsilon_min': AC_EPSILON_MIN,
+        'num_episodes': 250000,
+        'actor_hidden_dim': AC_ACTOR_HIDDEN_UNITS[0],
+        'critic_hidden_dim': AC_CRITIC_HIDDEN_UNITS[0],
+        'n_hidden_layers': len(AC_ACTOR_HIDDEN_UNITS),
+    })
+warmstart.update({
+    'warmup_ratio': AC_WARMUP_RATIO,
+    'target_ratio': AC_TARGET_RATIO,
+    'penalty_coeff': AC_PENALTY_COEFF,
+    'gae_lambda': AC_GAE_LAMBDA,
+    'max_grad_norm': AC_MAX_GRAD_NORM,
+    'lr_min_ratio': AC_LR_MIN_RATIO,
+    'spend_cost_coeff': AC_SPEND_COST_COEFF,
+    'last_action_bias': AC_LAST_ACTION_BIAS,
+})
+study.enqueue_trial(warmstart)
+</code></pre>
+<hr />
+<h2 id="10-inferencia-en-tiempo-de-experimento">10. Inferencia en Tiempo de Experimento</h2>
+<h3 id="101-carga-del-modelo-actor">10.1 Carga del Modelo Actor</h3>
+<p><code>src/pygameMediator.py</code> → <code>provide_ac_agent_response()</code>:</p>
+<pre><code class="language-python">model = tf.keras.models.load_model(model_path)
+</code></pre>
+<p>Solo se carga el <strong>Actor</strong> — el Critic no es necesario en inferencia.</p>
+<h3 id="102-seleccion-de-accion">10.2 Selección de Acción</h3>
+<pre><code class="language-python">s_norm = normalize_state([resources_left, city_trial_no, severity], 30, 10, 9)
+policy_probs = model(s_norm[numpy.newaxis, :], training=False)[0].numpy()
+action = int(numpy.argmax(policy_probs))
+</code></pre>
+<p>A diferencia de DQN (que toma $\arg\max$ de Q-values), aquí se toma
+$\arg\max$ de $\pi_\theta(a \mid s)$ — la acción más probable bajo la
+política aprendida.  Se aplica enmascaramiento de acciones infactibles
+(<code>action &gt; resources_left</code>) estableciendo su probabilidad a 0 antes del
+argmax.</p>
+<h3 id="103-confianza-meta-cognitiva">10.3 Confianza Meta-Cognitiva</h3>
+<p>El vector $\pi_\theta(a \mid s)$ (11 probabilidades) se pasa a
+<code>ac_agent_meta_cognitive()</code> que calcula entropía y la normaliza:</p>
+<p>$$H(\pi_\theta(\cdot \mid s)) = -\sum_{a=0}^{10} \pi_\theta(a \mid s) \log \pi_\theta(a \mid s)$$</p>
+<p>$$\text{confidence} = \frac{H - H_\text{max}}{H_\text{min} - H_\text{max}}$$</p>
+<p>donde $H_\text{min}$ y $H_\text{max}$ se calculan sobre las acciones
+factibles únicamente.</p>
+<hr />
+<h2 id="11-comparacion-con-algoritmos-anteriores">11. Comparación con Algoritmos Anteriores</h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th><code>pes_base</code> (Q-tabular)</th>
+<th><code>pes_dqn</code> (DQN)</th>
+<th><code>pes_a2c</code> (A2C)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelo</td>
+<td><code>numpy.ndarray</code> (q.npy)</td>
+<td>Red 5 131 params (.keras)</td>
+<td>Actor 1 931 + Critic 641 params</td>
+</tr>
+<tr>
+<td>Update</td>
+<td>$Q(s,a) \leftarrow Q + \alpha[r + \gamma \max Q - Q]$</td>
+<td>Huber loss + replay</td>
+<td>Policy gradient + MSE + entropía</td>
+</tr>
+<tr>
+<td>Datos</td>
+<td>Un paso → un update</td>
+<td>Replay buffer → mini-batch</td>
+<td>Batch de episodio → un update</td>
+</tr>
+<tr>
+<td>Política</td>
+<td>Implícita ($\arg\max Q$)</td>
+<td>Implícita ($\arg\max Q$)</td>
+<td>Explícita ($\pi_\theta$)</td>
+</tr>
+<tr>
+<td>Confianza</td>
+<td>Entropía de Q (heurística)</td>
+<td>Entropía de Q (heurística)</td>
+<td>Entropía de $\pi$ (teórica)</td>
+</tr>
+<tr>
+<td>Exploración</td>
+<td>ε-greedy</td>
+<td>ε-greedy</td>
+<td>Muestreo on-policy de $\pi$ + bono de entropía</td>
+</tr>
+<tr>
+<td>Episodios típicos</td>
+<td>900 000</td>
+<td>175 000</td>
+<td>250 000 (opt. bayesiana: 50k–250k)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-optimizaciones-para-cpu">12. Optimizaciones para CPU</h2>
+<h3 id="121-tffunction-por-trial-jit-compilado">12.1 <code>tf.function</code> por Trial (JIT Compilado)</h3>
+<p><code>train_step_actor_critic</code> se envuelve con <code>tf.function</code> <strong>localmente</strong>
+dentro de cada llamada a <code>A2CTraining</code>, creando un grafo JIT-compilado
+fresco por trial de Optuna.  Esto elimina el overhead de eager mode
+que sería particularmente costoso dado que A2C realiza una actualización
+por episodio (vs. cada 4 steps en DQN), y a la vez evita conflictos
+de <code>tf.Variable</code> entre trials.</p>
+<p>Además, los hiperparámetros escalares (<code>discount</code>, <code>entropy_coeff</code>,
+<code>max_grad_norm</code>, <code>gae_lambda</code>) se convierten a <code>tf.constant</code> antes del
+loop para que <code>tf.function</code> no retrace el grafo en cada trial con valores
+distintos.</p>
+<h3 id="122-reutilizacion-del-forward-pass-para-confianza">12.2 Reutilización del Forward Pass para Confianza</h3>
+<p>El parámetro <code>compute_confidence=False</code> (por defecto) omite el cálculo
+de meta-cognición durante entrenamiento.  En A2C esto <strong>no</strong> ahorra un
+forward pass adicional (la distribución del Actor ya se computa para
+el muestreo on-policy y simplemente se descarta sin invocar
+<code>ac_agent_meta_cognitive</code>), pero sí evita el cómputo de entropía,
+enmascaramiento y normalización por step.</p>
+<h3 id="123-configuracion-de-hilos-tensorflow">12.3 Configuración de Hilos TensorFlow</h3>
+<p>Al importar <code>ext/ac_model.py</code> se configuran los pools de hilos de TF:</p>
+<pre><code class="language-python">tf.config.threading.set_intra_op_parallelism_threads(0)   # auto-detect
+tf.config.threading.set_inter_op_parallelism_threads(2)
+</code></pre>
+<h3 id="124-solo-el-actor-en-inferencia">12.4 Solo el Actor en Inferencia</h3>
+<p>Durante el experimento (<code>__main__.py</code>), solo se carga y ejecuta el Actor.
+El Critic se descarta tras el entrenamiento, reduciendo la memoria en
+inferencia a ~50 % del total.</p>
+<hr />
+<h2 id="13-estructura-de-archivos">13. Estructura de Archivos</h2>
+<pre><code>pes_a2c/
+├── __init__.py              # Exporta constantes AC_*; configura variables de entorno TF
+├── __main__.py              # Valida ac_actor.keras antes de ejecutar
+├── config/CONFIG.py         # 17 constantes AC_* (arquitectura, training, mejoras, optimización)
+├── ext/
+│   ├── ac_model.py          # build_actor, build_critic, normalize_state,
+│   │                        #   train_step_actor_critic (masking + GAE(λ);
+│   │                        #   sin @tf.function, se envuelve por trial
+│   │                        #   en pandemic.py);
+│   │                        #   configura tf.config.threading al importar
+│   ├── pandemic.py          # Entorno Gymnasium Pandemic +
+│   │                        #   ac_agent_meta_cognitive (entropía → confianza),
+│   │                        #   run_experiment (evaluación sobre secuencias) y
+│   │                        #   A2CTraining (masking, PBRS, GAE, cosine LR)
+│   ├── train_a2c.py         # Pipeline de entrenamiento autónomo
+│   ├── optimize_a2c.py       # Búsqueda Bayesiana con Optuna
+│   └── tools.py             # Entropía, gráficas (sin cambios)
+├── src/
+│   ├── pygameMediator.py    # Carga ac_actor.keras, forward pass en experimento
+│   ├── exp_utils.py         # Severidades, secuencias
+│   ├── log_utils.py         # Logging dual
+│   ├── result_formatter.py  # Gráficas matplotlib
+│   └── terminal_utils.py    # UI de consola Rich
+└── doc/
+    ├── explained_ac.md              # ← este documento
+    └── how_to_train_and_test.md     # Guía práctica de entrenamiento y pruebas
+</code></pre>
+<hr />
+<h2 id="14-formulario-resumen-de-ecuaciones">14. Formulario Resumen de Ecuaciones</h2>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Ecuación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objetivo del Actor</td>
+<td>$J(\theta) = \mathbb{E}<em>{\pi</em>\theta}\left[\sum_t \gamma^t r_t\right]$</td>
+</tr>
+<tr>
+<td>Política gradiente</td>
+<td>$\nabla_\theta J = \mathbb{E}\left[\nabla_\theta \log \pi_\theta(a \mid s) \cdot \hat{A}\right]$</td>
+</tr>
+<tr>
+<td>Ventaja (Advantage)</td>
+<td>$\hat{A}<em>t = r_t + \gamma V</em>\phi(s_{t+1})(1 - d_t) - V_\phi(s_t)$</td>
+</tr>
+<tr>
+<td>TD Target</td>
+<td>$y_t = r_t + \gamma V_\phi(s_{t+1})(1 - d_t)$</td>
+</tr>
+<tr>
+<td>Pérdida del Critic</td>
+<td>$\mathcal{L}<em>\text{C} = \frac{1}{N}\sum_t (V</em>\phi(s_t) - y_t)^2$</td>
+</tr>
+<tr>
+<td>Pérdida del Actor</td>
+<td>$\mathcal{L}<em>\text{A} = -\frac{1}{N}\sum_t [\log \pi</em>\theta(a_t \mid s_t) \hat{A}<em>t] - c</em>\text{ent} H(\pi_\theta)$</td>
+</tr>
+<tr>
+<td>Entropía</td>
+<td>$H(\pi) = -\sum_a \pi(a \mid s) \log \pi(a \mid s)$</td>
+</tr>
+<tr>
+<td>Muestreo on-policy</td>
+<td>$a_t \sim \tilde{\pi}_\theta(\cdot \mid s_t)$, con $\tilde{\pi} \propto \pi \cdot m$</td>
+</tr>
+<tr>
+<td>GAE(λ)</td>
+<td>$\hat{A}<em>t^{\text{GAE}} = \sum</em>{\ell} (\gamma\lambda)^\ell \delta_{t+\ell}$</td>
+</tr>
+<tr>
+<td>PBRS</td>
+<td>$r'_t = r_t + \beta[\gamma \Phi(s') - \Phi(s)]$</td>
+</tr>
+<tr>
+<td>Potencial</td>
+<td>$\Phi(s) = -\sum_i \max(0, \text{sev}_i)$</td>
+</tr>
+<tr>
+<td>Cosine Annealing</td>
+<td>$\eta_t = \eta_{\min} + \tfrac{1}{2}(\eta_0 - \eta_{\min})(1 + \cos(\pi t / T))$</td>
+</tr>
+<tr>
+<td>Gradient Clipping</td>
+<td>$\hat{g} = g \cdot \min(1, g_{\max} / |g|_2)$</td>
+</tr>
+<tr>
+<td>Advantage Norm.</td>
+<td>$\hat{A}^{\text{norm}} = (\hat{A} - \mu_A) / (\sigma_A + 10^{-8})$</td>
+</tr>
+<tr>
+<td>Enmascaramiento</td>
+<td>$\tilde{\pi}(a \mid s) = \pi(a \mid s) \cdot m_a \;/\; \sum_{a'} \pi(a' \mid s) \cdot m_{a'}$</td>
+</tr>
+<tr>
+<td>Normalización</td>
+<td>$\hat{s} = (r/30, t/10, v/9)$</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="15-referencias">15. Referencias</h2>
+<ol>
+<li>Sutton, R. S. et al. (1999). <em>Policy gradient methods for reinforcement
+   learning with function approximation</em>. NeurIPS.</li>
+<li>Mnih, V. et al. (2016). <em>Asynchronous methods for deep reinforcement
+   learning</em>. ICML.  (Introduce A3C; A2C es la variante síncrona.)</li>
+<li>Williams, R. J. (1992). <em>Simple statistical gradient-following
+   algorithms for connectionist reinforcement learning</em>. Machine Learning,
+   8(3-4), 229–256.  (REINFORCE.)</li>
+<li>Kingma, D. P. &amp; Ba, J. (2015). <em>Adam: A Method for Stochastic
+   Optimization</em>. ICLR 2015.</li>
+<li>Akiba, T. et al. (2019). <em>Optuna: A next-generation hyperparameter
+   optimization framework</em>. KDD '19.</li>
+<li>Schulman, J. et al. (2016). <em>High-Dimensional Continuous Control Using
+   Generalized Advantage Estimation</em>. ICLR 2016.</li>
+<li>Ng, A. Y. et al. (1999). <em>Policy Invariance Under Reward Transformations:
+   Theory and Application to Reward Shaping</em>. ICML '99.</li>
+<li>Loshchilov, I. &amp; Hutter, F. (2017). <em>SGDR: Stochastic Gradient Descent
+   with Warm Restarts</em>. ICLR 2017.</li>
+</ol>
+</body>
+</html>

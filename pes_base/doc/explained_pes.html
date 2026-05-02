@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PES: Explicación Detallada del Funcionamiento del Proyecto</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="pes-explicacion-detallada-del-funcionamiento-del-proyecto">PES: Explicación Detallada del Funcionamiento del Proyecto</h1>
+<h2 id="1-introduccion">1. Introducción</h2>
+<p><strong>PES (Pandemic Experiment Scenario)</strong> es un paquete del workspace <strong>mPES</strong> que
+simula escenarios de respuesta a pandemias, donde un agente de
+<strong>Reinforcement Learning (Q-Learning tabular)</strong> aprende a optimizar la
+asignación limitada de recursos para minimizar la severidad de enfermedades en
+múltiples ciudades.</p>
+<h3 id="objetivo-principal">Objetivo Principal</h3>
+<p>Entrenar y ejecutar un agente inteligente que tome decisiones estratégicas sobre
+distribución de recursos médicos/sanitarios bajo restricciones de disponibilidad.</p>
+<hr />
+<h2 id="2-estructura-jerarquica-del-experimento">2. Estructura Jerárquica del Experimento</h2>
+<p>El experimento sigue una estructura anidada estricta definida en <code>__main__.py</code>:</p>
+<pre><code>1 EXPERIMENTO
+├─ NUM_BLOCKS = 8 BLOQUES
+│  ├─ NUM_SEQUENCES = 8 SECUENCIAS por bloque
+│  │  ├─ NUM_MIN_TRIALS a NUM_MAX_TRIALS (3–10) TRIALS por secuencia
+│  │  │  └─ 1 ACCIÓN DE ASIGNACIÓN DE RECURSOS (0–10)
+</code></pre>
+<h3 id="desglose-de-numeros">Desglose de Números</h3>
+<ul>
+<li><strong>Total de bloques</strong>: 8</li>
+<li><strong>Total de secuencias</strong>: 64 (8 bloques × 8 secuencias)</li>
+<li><strong>Trials por bloque</strong>: 45 (<code>TOTAL_NUM_TRIALS_IN_BLOCK</code>)</li>
+<li><strong>Trials totales</strong>: ~360 (8 bloques × 45 trials)</li>
+<li><strong>Total de decisiones</strong>: ~360</li>
+</ul>
+<h3 id="configuracion-en-configpy">Configuración en <code>CONFIG.py</code></h3>
+<pre><code class="language-python">NUM_BLOCKS = 8                      # Número de bloques experimentales
+NUM_SEQUENCES = 8                   # Secuencias por bloque
+NUM_MIN_TRIALS = 3                  # Trials mínimos por secuencia
+NUM_MAX_TRIALS = 10                 # Trials máximos por secuencia
+TOTAL_NUM_TRIALS_IN_BLOCK = 45      # Suma exacta de trials en un bloque
+AVAILABLE_RESOURCES_PER_SEQUENCE = 39  # Presupuesto total por secuencia
+INIT_NO_OF_CITIES = 2               # Ciudades visibles al inicio
+</code></pre>
+<h3 id="presupuesto-de-recursos">Presupuesto de Recursos</h3>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recursos totales por secuencia</td>
+<td>39 (<code>AVAILABLE_RESOURCES_PER_SEQUENCE</code>)</td>
+</tr>
+<tr>
+<td>Recursos pre-asignados (2 ciudades iniciales, seed fija)</td>
+<td>9 (3 + 6)</td>
+</tr>
+<tr>
+<td>Recursos disponibles para el agente</td>
+<td>30 (= 39 − 9)</td>
+</tr>
+<tr>
+<td>Rango de asignación por trial</td>
+<td>0–10 (<code>MIN/MAX_ALLOCATABLE_RESOURCES</code>)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Nota</strong>: Las 2 ciudades iniciales siempre reciben asignaciones de 3 y 6
+recursos respectivamente, porque <code>numpy.random.seed(3)</code> con
+<code>INIT_NO_OF_CITIES = 2</code> produce esos valores determinísticamente.</p>
+</blockquote>
+<hr />
+<h2 id="3-modelo-dinamico-del-escenario-pandemico">3. Modelo Dinámico del Escenario Pandémico</h2>
+<h3 id="31-la-formula-de-progresion-de-severidad">3.1 La Fórmula de Progresión de Severidad</h3>
+<p>Implementada en <code>src/exp_utils.py</code> → <code>get_updated_severity()</code>:</p>
+<pre><code>new_severity = max(0, β × initial_severity − α × allocated_resources)
+</code></pre>
+<p>Donde:</p>
+<ul>
+<li><strong>β</strong> (<code>SEVERITY_MULTIPLIER</code>) = 1 + <code>PANDEMIC_PARAMETER</code> = <strong>1.4</strong></li>
+<li>Representa el crecimiento natural de la pandemia sin intervención.</li>
+<li>
+<p>Tasa de crecimiento: 40 % por paso temporal.</p>
+</li>
+<li>
+<p><strong>α</strong> (<code>RESPONSE_MULTIPLIER</code>) = <code>PANDEMIC_PARAMETER</code> = <strong>0.4</strong></p>
+</li>
+<li>Representa la efectividad de los recursos asignados.</li>
+<li>Cada unidad de recurso reduce 0.4 puntos de severidad.</li>
+</ul>
+<p>Ambas constantes se derivan en <code>__init__.py</code>:</p>
+<pre><code class="language-python">RESPONSE_MULTIPLIER = PANDEMIC_PARAMETER        # α = 0.4
+SEVERITY_MULTIPLIER = 1 + PANDEMIC_PARAMETER     # β = 1.4
+</code></pre>
+<h3 id="32-ejemplo-numerico-una-sola-ciudad">3.2 Ejemplo Numérico (una sola ciudad)</h3>
+<pre><code>Entrada: severidad_inicial = 4, recursos_asignados = 5, α = 0.4, β = 1.4
+
+Paso 1: new_sev = 1.4 × 4   − 0.4 × 5 = 5.6  − 2.0 = 3.6
+Paso 2: new_sev = 1.4 × 3.6 − 0.4 × 5 = 5.04 − 2.0 = 3.04
+Paso 3: new_sev = 1.4 × 3.04− 0.4 × 5 = 4.256− 2.0 = 2.256
+</code></pre>
+<p>La severidad evoluciona a través de los trials, y el efecto de los recursos se
+acumula secuencialmente.</p>
+<h3 id="33-evolucion-temporal-en-una-secuencia-completa">3.3 Evolución Temporal en una Secuencia Completa</h3>
+<p>La función <code>get_array_of_sequence_severities_from_allocations()</code> en
+<code>src/exp_utils.py</code> calcula la evolución de severidad de <strong>todas</strong> las ciudades
+en una secuencia. En cada trial:</p>
+<ol>
+<li>Se añade una nueva ciudad con su severidad inicial.</li>
+<li>Se aplica la fórmula de actualización a <strong>todas</strong> las ciudades visibles
+   (nuevas y previas).</li>
+<li>El vector de severidades se actualiza con los nuevos valores.</li>
+</ol>
+<p><strong>Ejemplo con 3 ciudades</strong> (α = 0.4, β = 1.4):</p>
+<pre><code>Severidades iniciales: [3, 4, 8]
+Asignaciones:          [5, 6, 4]
+
+Trial 0 (entra Ciudad 1, severidad=3, alloc=5):
+  Ciudad 1: 1.4×3 − 0.4×5 = 2.20
+
+Trial 1 (entra Ciudad 2, severidad=4, alloc=6):
+  Ciudad 1: 1.4×2.20 − 0.4×5 = 1.08
+  Ciudad 2: 1.4×4    − 0.4×6 = 3.20
+
+Trial 2 (entra Ciudad 3, severidad=8, alloc=4):
+  Ciudad 1: 1.4×1.08 − 0.4×5 = 0    (clipeado a 0)
+  Ciudad 2: 1.4×3.20 − 0.4×6 = 2.08
+  Ciudad 3: 1.4×8    − 0.4×4 = 9.60
+
+Severidades finales: [0, 2.08, 9.60]
+</code></pre>
+<blockquote>
+<p><strong>Clave</strong>: La asignación de recursos a una ciudad se aplica en <strong>todos</strong> los
+pasos subsiguientes, no solo en el trial en que se asigna. Esto crea una
+dinámica temporal compuesta donde las decisiones tempranas tienen mayor
+impacto acumulativo.</p>
+</blockquote>
+<hr />
+<h2 id="4-flujo-principal-del-experimento">4. Flujo Principal del Experimento</h2>
+<h3 id="41-inicializacion-__main__py">4.1 Inicialización (<code>__main__.py</code>)</h3>
+<pre><code class="language-python">def main():
+    # 1. Validar archivos del RL-Agent
+    if PLAYER_TYPE == 'RL_AGENT':
+        q_file = os.path.join(INPUTS_PATH, 'q.npy')
+        rewards_file = os.path.join(INPUTS_PATH, 'rewards.npy')
+
+        if not os.path.isfile(q_file):
+            terminal_utils.error(&quot;Q-Table file not found!&quot;)
+            return
+
+        # Validar carga exitosa
+        Q = numpy.load(q_file)
+        rewards = numpy.load(rewards_file)
+</code></pre>
+<p><strong>Pasos</strong>:</p>
+<ol>
+<li>Verifica que <code>inputs/q.npy</code> (Q-table entrenada) exista.</li>
+<li>Verifica que <code>inputs/rewards.npy</code> (histórico de recompensas) exista.</li>
+<li>Carga ambos archivos y valida dimensiones/tipo de datos.</li>
+<li>Si alguno falta o falla, sugiere ejecutar <code>python3 -m pes_base.ext.train_rl</code>.</li>
+</ol>
+<blockquote>
+<p><strong>Nota sobre archivos de entrenamiento</strong>: El pipeline de entrenamiento
+(<code>train_rl.py</code>) guarda los archivos en <code>inputs/&lt;fecha&gt;_RL_TRAIN/q_&lt;fecha&gt;.npy</code>.
+El experimento busca <code>inputs/q.npy</code>. El usuario debe copiar manualmente la
+Q-table entrenada al directorio raíz de <code>inputs/</code>.</p>
+</blockquote>
+<h3 id="42-creacion-de-sesion">4.2 Creación de Sesión</h3>
+<pre><code class="language-python">experiment_date = datetime.date.today().strftime(&quot;%Y-%m-%d&quot;)
+MySubjectId = f&quot;{experiment_date}_{PLAYER_TYPE}&quot;
+# Ejemplo: &quot;2026-02-26_RL_AGENT&quot;
+
+session_outputs_path = os.path.join(OUTPUTS_PATH, MySubjectId)
+os.makedirs(session_outputs_path, exist_ok=True)
+
+log_utils.create_ConsoleLog_filehandle_singleton(MySubjectId)
+# Crea: outputs/PES_log_2026-02-26_RL_AGENT.txt
+</code></pre>
+<p>Se guardan dos archivos al inicio de la sesión:</p>
+<ul>
+<li><strong>SubjectInfo</strong>: <code>PES__&lt;SubjectId&gt;.txt</code> — parámetros de configuración.</li>
+<li><strong>Responses</strong>: <code>PES_responses_&lt;SubjectId&gt;.txt</code> — decisiones trial a trial.</li>
+</ul>
+<h3 id="43-asignacion-de-mapas-y-secuencias">4.3 Asignación de Mapas y Secuencias</h3>
+<p><strong>Estructuras de datos principales</strong>:</p>
+<pre><code class="language-python">NumTrials__blocks_x_sequences__2darray  = numpy.zeros((NUM_BLOCKS, NUM_SEQUENCES))
+MapIndices__blocks_x_sequences__2darray = numpy.zeros((NUM_BLOCKS, NUM_SEQUENCES))
+</code></pre>
+<p><strong>Lógica de asignación de índices de mapa</strong>:</p>
+<pre><code class="language-python">for blk in range(NUM_BLOCKS):
+    numpy.random.seed(100 + blk)          # Seed reproducible por bloque
+    for seq in range(NUM_SEQUENCES):
+        counter_seq = NUM_ATTEMPTS_TO_ASSIGN_SEQ
+
+        while counter_seq &gt; 0:
+            b = numpy.random.randint(0, 9)     # Índice aleatorio 0–8
+            if b not in MapIndices__blocks_x_sequences__2darray[blk, :]:
+                MapIndices__blocks_x_sequences__2darray[blk, seq] = b
+                break                          # Asignación exitosa, avanzar
+            counter_seq -= 1
+</code></pre>
+<blockquote>
+<p><strong>Nota de implementación</strong>: la semilla <code>numpy.random.seed(100 + blk)</code> se
+establece una vez por bloque (fuera del loop de secuencias), de modo que la
+secuencia pseudoaleatoria avanza continuamente entre secuencias. El <code>break</code>
+tras cada asignación exitosa garantiza que cada slot reciba el primer índice
+válido sin sobrescrituras. Esto produce 8 índices únicos por bloque de un
+pool de 9 posibles (0–8), con un patrón determinístico y específico por
+bloque.</p>
+</blockquote>
+<p><strong>Asignación de número de trials por secuencia</strong>:</p>
+<pre><code class="language-python">if USE_FIXED_BLOCK_SEQUENCES:
+    # Cargar desde sequence_lengths.csv (64 valores pre-definidos)
+    NumTrials__blocks_x_sequences__2darray[blk, :] = exp_utils.next_seq_length(
+        blk * NUM_SEQUENCES, NUM_SEQUENCES
+    )
+else:
+    # Generar aleatoriamente respetando constraint de 45 trials/bloque
+    NumTrials__blocks_x_sequences__2darray[blk, :] = exp_utils.sampler(
+        NUM_SEQUENCES, TOTAL_NUM_TRIALS_IN_BLOCK,
+        [NUM_MIN_TRIALS, NUM_MAX_TRIALS], rn=blk
+    )
+</code></pre>
+<h3 id="44-severidades-iniciales">4.4 Severidades Iniciales</h3>
+<pre><code class="language-python">if RANDOM_INITIAL_SEVERITY:
+    first_severity = exp_utils.random_severity_generator(
+        int(numpy.sum(NumTrials__blocks_x_sequences__2darray)), 2, 9
+    )
+else:
+    first_severity = numpy.loadtxt(os.path.join(INPUTS_PATH, INITIAL_SEVERITY_FILE))
+    first_severity = first_severity[0 : int(numpy.sum(NumTrials__blocks_x_sequences__2darray))]
+</code></pre>
+<p>El array <code>first_severity</code> es un vector plano con ~360 valores que se indexa
+secuencialmente a lo largo del experimento mediante <code>AbsoluteTrialIndex</code>.</p>
+<h3 id="45-ejecucion-de-bloques-secuencias-y-trials">4.5 Ejecución de Bloques, Secuencias y Trials</h3>
+<pre><code class="language-python">for CurrentBlockIndex in range(NUM_BLOCKS):
+    for CurrentSequenceIndex, CurrentSequenceMapIndex in enumerate(CurrentBlockMapIndices):
+
+        # Inicializar recursos y ciudades iniciales
+        resources_to_allocate = AVAILABLE_RESOURCES_PER_SEQUENCE  # 39
+        numpy.random.seed(3)  # → severidades iniciales [4, 3], allocs [3, 6]
+
+        for c in range(INIT_NO_OF_CITIES):
+            init_severity.append(numpy.random.randint(MIN_INIT_SEVERITY, 1 + MAX_INIT_SEVERITY))
+            ResourceAllocationsAtCurrentlyVisibleCities.append(
+                numpy.random.randint(MIN_INIT_RESOURCES, 1 + MAX_INIT_RESOURCES)
+            )
+
+        resources_left = resources_to_allocate - numpy.sum(
+            ResourceAllocationsAtCurrentlyVisibleCities
+        )  # 39 − 9 = 30
+
+        # Actualizar severidades de ciudades iniciales
+        SeveritiesOfCurrentlyVisibleCities = exp_utils.get_updated_severity(
+            INIT_NO_OF_CITIES,
+            ResourceAllocationsAtCurrentlyVisibleCities,
+            init_severity
+        )
+
+        # Loop de trials
+        for trial_no in range(int(NumTrials__blocks_x_sequences__2darray[blk, seq])):
+            # Consultar al agente RL
+            (pc, r, rt_h, rt_rel, mov) = pygameMediator.provide_rl_agent_response(
+                ResourceAllocationsAtCurrentlyVisibleCities,
+                resources_left,
+                CurrentBlockIndex,
+                CurrentSequenceIndex,
+                trial_no
+            )
+            # Actualizar severidades, registrar respuesta, reducir recursos
+            ...
+</code></pre>
+<h3 id="46-consulta-al-agente-rl-srcpygamemediatorpy">4.6 Consulta al Agente RL (<code>src/pygameMediator.py</code>)</h3>
+<p>La función <code>provide_rl_agent_response()</code> es la interfaz principal:</p>
+<ol>
+<li><strong>Carga</strong> la Q-table desde <code>inputs/q.npy</code>.</li>
+<li><strong>Obtiene</strong> la severidad de la ciudad actual a partir de las longitudes de
+   secuencia y el array global de severidades.</li>
+<li><strong>Construye</strong> el estado: <code>[resources_left, trial_no, severity]</code>.</li>
+<li><strong>Indexa</strong> la Q-table: <code>Q[resources_idx, city_idx, sever_idx]</code>.</li>
+<li><strong>Llama</strong> a <code>rl_agent_meta_cognitive()</code> para obtener la acción (argmax),
+   confianza (entropía) y tiempos de reacción simulados.</li>
+<li><strong>Retorna</strong> <code>(confidence, response, rt_hold, rt_release, movement)</code>.</li>
+</ol>
+<blockquote>
+<p><strong>Nota</strong>: La Q-table se carga desde disco en <strong>cada</strong> llamada a
+<code>provide_rl_agent_response()</code>. Esto es ineficiente pero funcional.</p>
+</blockquote>
+<hr />
+<h2 id="5-calculo-de-severidades-y-performance">5. Cálculo de Severidades y Performance</h2>
+<h3 id="51-severidad-final-por-secuencia">5.1 Severidad Final por Secuencia</h3>
+<p>Implementado en <code>get_sequence_severity_from_allocations()</code>:</p>
+<pre><code class="language-python">def get_sequence_severity_from_allocations(Allocations, InitialSeverities):
+    return numpy.sum(
+        get_array_of_sequence_severities_from_allocations(Allocations, InitialSeverities)
+    )
+</code></pre>
+<h3 id="52-metrica-de-performance-normalizado">5.2 Métrica de Performance Normalizado</h3>
+<p>Implementada en <code>calculate_normalised_final_severity_performance_metric()</code>:</p>
+<pre><code class="language-python">FinalSequenceSeverity     = numpy.sum(SeveritiesFromSequence)
+
+WorstCaseAllocations      = numpy.full_like(SeveritiesFromSequence, MIN_ALLOCATABLE_RESOURCES)
+# El &quot;best case&quot; es la asignación factible óptima bajo el presupuesto
+# real del agente (DP por presupuesto), no &quot;max_alloc en cada trial&quot;.
+BestCaseSequenceSeverity  = _best_feasible_sequence_severity(InitialSequenceSeverities)
+WorstCaseSequenceSeverity = get_sequence_severity_from_allocations(WorstCaseAllocations, InitialSequenceSeverities)
+
+Performance = (WorstCaseSequenceSeverity - FinalSequenceSeverity) / \
+              (WorstCaseSequenceSeverity - BestCaseSequenceSeverity)
+</code></pre>
+<p><strong>Interpretación</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Performance</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.0</td>
+<td>Resultado igual al peor caso (sin recursos)</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>Resultado intermedio</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>Resultado óptimo factible (oráculo DP bajo el presupuesto real)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Nota técnica</strong>: El "best case" se calcula con un DP de mochila acotada
+sobre asignaciones enteras por ciudad, sumando como mucho
+<code>_FEASIBLE_BUDGET_PER_SEQUENCE = AVAILABLE_RESOURCES_PER_SEQUENCE - 9</code>
+(=30 con la configuración por defecto). Una política factible puede
+efectivamente alcanzar <code>Performance = 1.0</code>.</p>
+</blockquote>
+<h3 id="53-ejemplo-numerico">5.3 Ejemplo Numérico</h3>
+<pre><code>Severidades iniciales: [3, 4, 8]
+Asignaciones reales:   [5, 6, 4]
+Severidades finales:   [0, 2.08, 9.60]  → FinalSeverity = 11.68
+
+Worst case (alloc = [0, 0, 0]):
+  Trial 0: [4.20]
+  Trial 1: [5.88, 5.60]
+  Trial 2: [8.232, 7.84, 11.20]  → WorstCase = 27.272
+
+Best case (óptimo factible vía DP de mochila acotada;
+            con budget=30 y 3 ciudades coincide con alloc = [10, 10, 10]):
+  Trial 0: [0.20]
+  Trial 1: [0, 1.60]
+  Trial 2: [0, 0, 7.20]  → BestCase = 7.20
+
+Performance = (27.272 − 11.68) / (27.272 − 7.20) = 15.592 / 20.072 ≈ 0.777
+</code></pre>
+<hr />
+<h2 id="6-modulo-de-confianza-meta-cognitiva">6. Módulo de Confianza Meta-cognitiva</h2>
+<h3 id="61-rl_agent_meta_cognitive">6.1 <code>rl_agent_meta_cognitive()</code></h3>
+<p>Esta función existe en <strong>dos ubicaciones</strong> con implementaciones similares:</p>
+<ul>
+<li><code>src/pygameMediator.py</code>: usada durante la <strong>ejecución</strong> del experimento
+  (<code>python3 -m pes_base</code>).</li>
+<li><code>ext/pandemic.py</code>: usada durante el <strong>entrenamiento</strong> (<code>python3 -m pes_base.ext.train_rl</code>).</li>
+</ul>
+<p><strong>Algoritmo</strong>:</p>
+<pre><code class="language-python">def rl_agent_meta_cognitive(options, resources_left, response_timeout):
+    # 1. Calcular entropías de referencia
+    m_entropy = entropy_from_pdf([1, 0, 0, ..., 0])   # Mínima (determinística)
+    M_entropy = entropy_from_pdf([1, 1, 1, ..., 1])   # Máxima (uniforme)
+
+    # 2. Filtrar opciones infactibles (acción &gt; recursos disponibles)
+    #    Se asigna un valor centinela muy negativo (-1e9) para que esas
+    #    acciones nunca ganen el argmax, incluso cuando los Q-values
+    #    aprendidos sean típicamente negativos.
+    options[acción &gt; resources_left] = -1e9
+
+    # 3. Calcular entropía de las opciones filtradas
+    dec_entropy = entropy_from_pdf(options)
+
+    # 4. Normalizar confianza a [0, 1]
+    confidence = (dec_entropy - M_entropy) / (m_entropy - M_entropy)
+
+    # 5. Seleccionar acción (greedy)
+    response = numpy.argmax(options)
+
+    # 6. Mapear confianza a tiempos de reacción
+    map_to_response_time = lambda x: x * (-2) + 1
+    mu = int(map_to_response_time(confidence) * 10)
+    rt_hold    = numpy.clip(numpy.random.normal(mu, 3, 1)[0], 0, response_timeout/1000)
+    rt_release = numpy.clip(rt_hold + numpy.random.normal(mu, 1, 1)[0], 0, response_timeout/1000)
+
+    return response, confidence, rt_hold, rt_release
+</code></pre>
+<p><strong>Propósito</strong>: Simular un agente que no solo toma decisiones óptimas, sino que
+refleja incertidumbre (baja confianza) con tiempos de reacción más largos.</p>
+<h3 id="62-entropia-entropy_from_pdf-en-exttoolspy">6.2 Entropía (<code>entropy_from_pdf()</code> en <code>ext/tools.py</code>)</h3>
+<pre><code class="language-python">def entropy_from_pdf(pdf):
+    pdf = pdf + numpy.abs(numpy.min(pdf))     # Desplazar a positivos
+    p = pdf / numpy.sum(pdf)                  # Normalizar a probabilidad
+    p[p == 0] += 0.000001                     # Evitar log(0)
+    H = -numpy.dot(p, numpy.log2(p))          # Entropía de Shannon (bits)
+    return H
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Distribución</th>
+<th>Entropía (11 acciones)</th>
+<th>Confianza</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Determinística <code>[1,0,...,0]</code></td>
+<td>≈ 0 bits</td>
+<td>≈ 1.0 (alta)</td>
+</tr>
+<tr>
+<td>Uniforme <code>[1,1,...,1]</code></td>
+<td>≈ 3.46 bits</td>
+<td>≈ 0.0 (baja)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-diferencias-entre-las-dos-implementaciones">6.3 Diferencias entre las dos implementaciones</h3>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th><code>pygameMediator.py</code></th>
+<th><code>pandemic.py</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tamaño vectores referencia</td>
+<td>Fijo: <code>numpy.zeros((11,))</code></td>
+<td>Dinámico: <code>numpy.zeros((len(options),))</code></td>
+</tr>
+<tr>
+<td>Clampeo de respuesta</td>
+<td><code>numpy.clip(response, 0, resources_left)</code></td>
+<td>Sin clampeo explícito</td>
+</tr>
+<tr>
+<td>Logging</td>
+<td>Sí (<code>log_utils.tee()</code>)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Uso</td>
+<td>Ejecución del experimento</td>
+<td>Entrenamiento y evaluación</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-agregacion-de-decisiones-multi-participante">7. Agregación de Decisiones (Multi-participante)</h2>
+<h3 id="71-metodos-disponibles">7.1 Métodos Disponibles</h3>
+<p>Seleccionados en <code>CONFIG.py</code>:</p>
+<pre><code class="language-python">AGGREGATION_METHOD = {
+    1: 'confidence_weighted_median',    # Robusto a outliers
+    2: 'confidence_weighted_mean',      # Promedio ponderado estándar
+    3: 'confidence_weighted_mode'       # No implementado (raises NotImplementedError)
+}[2]  # ← Selección activa: método 2
+</code></pre>
+<blockquote>
+<p><strong>Nota sobre agente único</strong>: Cuando el experimento se ejecuta con un solo
+agente RL (configuración <code>PLAYER_TYPE = 'RL_AGENT'</code>), <code>AllMessages</code> contiene
+un único participante, por lo que la agregación es trivial (el resultado es
+idéntico al del agente). Estas funciones se conservan por compatibilidad con
+escenarios multi-jugador futuros.</p>
+</blockquote>
+<h3 id="72-get_confidence_weighted_mean">7.2 <code>get_confidence_weighted_mean()</code></h3>
+<p>Implementada en <code>src/exp_utils.py</code>. Para cada trial:</p>
+<pre><code class="language-python">TrialResponses   = all_messages[:, t, 0]     # Asignaciones de todos los participantes
+TrialConfidences = all_messages[:, t, 1]     # Sus confianzas
+
+# Filtrar respuestas inválidas (confidence == -1)
+TrialResponses   = TrialResponses[TrialConfidences != -1]
+TrialConfidences = TrialConfidences[TrialConfidences != -1]
+
+# Si todas las confianzas son 0, asignar peso igual
+if numpy.sum(TrialConfidences) == 0:
+    TrialConfidences[:] = 1.0
+
+# Promedio ponderado
+ConfidenceWeightedMean = numpy.average(TrialResponses, weights=TrialConfidences)
+</code></pre>
+<h3 id="73-get_confidence_weighted_median">7.3 <code>get_confidence_weighted_median()</code></h3>
+<p>Implementada usando <code>statsmodels.stats.weightstats.DescrStatsW</code>:</p>
+<pre><code class="language-python">from statsmodels.stats.weightstats import DescrStatsW as WeightedStats
+
+# Para cada trial:
+TrialResponses   = TrialResponses[TrialConfidences != -1]
+TrialConfidences = TrialConfidences[TrialConfidences != -1]
+
+# Si solo una respuesta válida, se duplica para que WeightedStats funcione
+if numpy.size(TrialResponses) == 1:
+    TrialResponses   = numpy.repeat(TrialResponses, 2)
+    TrialConfidences = numpy.repeat(TrialConfidences, 2)
+
+ConfidenceWeightedMedian = WeightedStats(
+    data=TrialResponses,
+    weights=TrialConfidences
+).quantile(probs=[0.5], return_pandas=False)[0]
+</code></pre>
+<hr />
+<h2 id="8-generacion-de-reportes">8. Generación de Reportes</h2>
+<h3 id="81-result_formatterpy">8.1 <code>result_formatter.py</code></h3>
+<p>La función <code>generate_results_report()</code> produce dos archivos:</p>
+<p><strong>1. JSON</strong> (<code>PES_results_&lt;SubjectId&gt;.json</code>):</p>
+<pre><code class="language-json">{
+  &quot;metadata&quot;: {&quot;subject_id&quot;: &quot;...&quot;, &quot;timestamp&quot;: &quot;...&quot;, &quot;report_type&quot;: &quot;PES_Experiment_Results_v2&quot;},
+  &quot;configuration&quot;: {&quot;total_resources_per_sequence&quot;: 39, &quot;num_blocks&quot;: 8, &quot;num_sequences&quot;: 8},
+  &quot;performance_statistics&quot;: {
+    &quot;overall_mean&quot;: 0.72,
+    &quot;overall_median&quot;: 0.74,
+    &quot;overall_std&quot;: 0.08,
+    &quot;first_block_mean&quot;: 0.68,
+    &quot;last_block_mean&quot;: 0.76,
+    &quot;improvement&quot;: 0.08,
+    &quot;per_block_statistics&quot;: [{&quot;block_number&quot;: 1, &quot;mean&quot;: 0.68, &quot;std&quot;: 0.05, ...}, ...]
+  }
+}
+</code></pre>
+<p><strong>2. PNG multi-panel</strong> (<code>PES_results_&lt;SubjectId&gt;.png</code>) con 6 subplots:</p>
+<table>
+<thead>
+<tr>
+<th>Panel</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Tendencia de performance por secuencia + media + ±1σ</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Histograma de distribución de performance</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Box plot de performance por bloque</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Media acumulativa de performance</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Comparación de medias por bloque (barras)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Tabla resumen de estadísticas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-archivos-generados-por-experimento">8.2 Archivos Generados por Experimento</h3>
+<p><strong>En <code>outputs/&lt;SubjectId&gt;/</code></strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PES__&lt;SubjectId&gt;.txt</code></td>
+<td>Parámetros de configuración del experimento</td>
+</tr>
+<tr>
+<td><code>PES_responses_&lt;SubjectId&gt;.txt</code></td>
+<td>CSV: InitialSeverity, Response, Confidence, PressEvent_s, ReleaseEvent_s</td>
+</tr>
+<tr>
+<td><code>PES_results_&lt;SubjectId&gt;.json</code></td>
+<td>Estadísticas calculadas (media, mediana, std, por bloque)</td>
+</tr>
+<tr>
+<td><code>PES_results_&lt;SubjectId&gt;.png</code></td>
+<td>Visualización multi-panel (6 subplots)</td>
+</tr>
+<tr>
+<td><code>PES_movement_log_&lt;SubjectId&gt;.npy</code></td>
+<td>Datos de movimiento (dict de bloques → secuencias → trials)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>En <code>outputs/</code></strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PES_log_&lt;SubjectId&gt;.txt</code></td>
+<td>Log dual (timestamps UTC + mensajes sin color ANSI)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-entrada-de-datos">9. Entrada de Datos</h2>
+<h3 id="91-archivos-en-inputs">9.1 Archivos en <code>inputs/</code></h3>
+<p><strong><code>initial_severity.csv</code></strong></p>
+<ul>
+<li>Formato: CSV con un valor de severidad por línea.</li>
+<li>Total: ~360 valores (uno por trial del experimento completo).</li>
+<li>Rango: típicamente 2–9 (enteros).</li>
+<li>Cargado en: <code>__main__.py</code> vía <code>numpy.loadtxt()</code>.</li>
+</ul>
+<p><strong><code>sequence_lengths.csv</code></strong></p>
+<ul>
+<li>Formato: CSV con el número de trials por secuencia.</li>
+<li>Total: 64 valores (8 bloques × 8 secuencias).</li>
+<li>Rango: 3–10, con cada grupo de 8 sumando 45.</li>
+<li>Cargado en: <code>src/exp_utils.py</code> → <code>next_seq_length()</code>.</li>
+</ul>
+<h3 id="92-archivos-del-modelo-entrenado">9.2 Archivos del Modelo Entrenado</h3>
+<p><strong><code>q.npy</code></strong> (requerido para ejecutar el experimento):</p>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shape</td>
+<td><code>(31, 11, 10, 11)</code></td>
+</tr>
+<tr>
+<td>Dimensiones</td>
+<td>(recursos_disponibles, trial_no, severidad, acciones)</td>
+</tr>
+<tr>
+<td>Tipo</td>
+<td><code>float64</code></td>
+</tr>
+<tr>
+<td>Tamaño</td>
+<td>37,510 entradas</td>
+</tr>
+<tr>
+<td>Rango de recursos</td>
+<td>0–30 (39 total − 9 pre-asignados)</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>rewards.npy</code></strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shape</td>
+<td><code>(N / 10000,)</code> donde N = episodios de entrenamiento</td>
+</tr>
+<tr>
+<td>Contenido</td>
+<td>Recompensa promedio cada 10,000 episodios</td>
+</tr>
+<tr>
+<td>Uso</td>
+<td>Visualización de curva de aprendizaje</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-archivos-de-entrenamiento-en-inputsfecha_rl_train">9.3 Archivos de Entrenamiento (en <code>inputs/&lt;fecha&gt;_RL_TRAIN/</code>)</h3>
+<p>El pipeline <code>train_rl.py</code> genera:</p>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q_&lt;fecha&gt;.npy</code></td>
+<td>Q-table entrenada</td>
+</tr>
+<tr>
+<td><code>rewards_&lt;fecha&gt;.npy</code></td>
+<td>Histórico de recompensas promedio</td>
+</tr>
+<tr>
+<td><code>training_config_&lt;fecha&gt;.txt</code></td>
+<td>Hiperparámetros y metadatos</td>
+</tr>
+<tr>
+<td><code>confsrl_&lt;fecha&gt;.npy</code></td>
+<td>Confianza por trial durante evaluación</td>
+</tr>
+<tr>
+<td><code>*.png</code> (×8)</td>
+<td>Plots: baseline aleatorio, performance, confianza</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Workflow de deployment</strong>: Tras el entrenamiento, copiar
+<code>inputs/&lt;fecha&gt;_RL_TRAIN/q_&lt;fecha&gt;.npy</code> como <code>inputs/q.npy</code> y
+<code>inputs/&lt;fecha&gt;_RL_TRAIN/rewards_&lt;fecha&gt;.npy</code> como <code>inputs/rewards.npy</code>
+para que el experimento pueda ejecutarse.</p>
+</blockquote>
+<hr />
+<h2 id="10-tabla-de-referencia-codigo-y-experimento">10. Tabla de Referencia: Código y Experimento</h2>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Archivo</th>
+<th>Función / Sección</th>
+<th>Funcionalidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inicialización</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> inicio</td>
+<td>Validación Q-table</td>
+</tr>
+<tr>
+<td>Creación sesión</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> sesión</td>
+<td>ID único, logging</td>
+</tr>
+<tr>
+<td>Asignación mapas</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> asignación</td>
+<td>Seeds reproducibles</td>
+</tr>
+<tr>
+<td>Asignación trials</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> asignación</td>
+<td>Constraint 45/bloque</td>
+</tr>
+<tr>
+<td>Loop bloques</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> loop principal</td>
+<td>Iteración 8 bloques</td>
+</tr>
+<tr>
+<td>Loop secuencias</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> loop interno</td>
+<td>Iteración 8 secuencias</td>
+</tr>
+<tr>
+<td>Loop trials</td>
+<td><code>__main__.py</code></td>
+<td><code>main()</code> loop trials</td>
+<td>Iteración 3–10 trials</td>
+</tr>
+<tr>
+<td>Consulta Q-table</td>
+<td><code>src/pygameMediator.py</code></td>
+<td><code>provide_rl_agent_response()</code></td>
+<td>Obtener acción + confianza</td>
+</tr>
+<tr>
+<td>Update severidad</td>
+<td><code>src/exp_utils.py</code></td>
+<td><code>get_updated_severity()</code></td>
+<td>Aplicar fórmula β×sev − α×alloc</td>
+</tr>
+<tr>
+<td>Evolución secuencia</td>
+<td><code>src/exp_utils.py</code></td>
+<td><code>get_array_of_sequence_severities_from_allocations()</code></td>
+<td>Severidades finales</td>
+</tr>
+<tr>
+<td>Calc performance</td>
+<td><code>src/exp_utils.py</code></td>
+<td><code>calculate_normalised_...()</code></td>
+<td>Normalizar [0, 1]</td>
+</tr>
+<tr>
+<td>Confianza</td>
+<td><code>src/pygameMediator.py</code></td>
+<td><code>rl_agent_meta_cognitive()</code></td>
+<td>Entropía meta-cognitiva</td>
+</tr>
+<tr>
+<td>Entropía</td>
+<td><code>ext/tools.py</code></td>
+<td><code>entropy_from_pdf()</code></td>
+<td>Shannon entropy (bits)</td>
+</tr>
+<tr>
+<td>Reportes</td>
+<td><code>src/result_formatter.py</code></td>
+<td><code>generate_results_report()</code></td>
+<td>JSON + PNG</td>
+</tr>
+<tr>
+<td>Logging</td>
+<td><code>src/log_utils.py</code></td>
+<td><code>tee()</code>, <code>create_ConsoleLog_...()</code></td>
+<td>Dual terminal + archivo</td>
+</tr>
+<tr>
+<td>Terminal UI</td>
+<td><code>src/terminal_utils.py</code></td>
+<td><code>header()</code>, <code>section()</code>, ...</td>
+<td>Formato consola ANSI</td>
+</tr>
+<tr>
+<td>Env Gymnasium</td>
+<td><code>ext/pandemic.py</code></td>
+<td><code>Pandemic(Env)</code></td>
+<td>Ambiente Gymnasium</td>
+</tr>
+<tr>
+<td>Entrenamiento QL</td>
+<td><code>ext/pandemic.py</code></td>
+<td><code>QLearning()</code></td>
+<td>Q-Learning tabular</td>
+</tr>
+<tr>
+<td>Evaluación</td>
+<td><code>ext/pandemic.py</code></td>
+<td><code>run_experiment()</code></td>
+<td>Ejecutar secuencias en env</td>
+</tr>
+<tr>
+<td>Baseline aleatorio</td>
+<td><code>ext/train_rl.py</code></td>
+<td><code>random_qf()</code></td>
+<td>Política de comparación</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-flujo-temporal-resumido">11. Flujo Temporal Resumido</h2>
+<pre><code>Inicio
+  │
+  ├─ Cargar inputs/q.npy e inputs/rewards.npy
+  ├─ Inicializar logging → &quot;PES_log_&lt;fecha&gt;_RL_AGENT.txt&quot;
+  ├─ Guardar configuración → &quot;PES__&lt;fecha&gt;_RL_AGENT.txt&quot;
+  │
+  ├─ FOR bloque = 0 to 7:
+  │   ├─ Asignar 8 índices de mapa (0–8, sin repetición intra-bloque)
+  │   ├─ Asignar 8 cantidades de trials (sum = 45)
+  │   │
+  │   ├─ FOR secuencia = 0 to 7:
+  │   │   ├─ Inicializar 2 ciudades (seed=3 → sev=[4,3], alloc=[3,6])
+  │   │   ├─ resources_left = 39 − 9 = 30
+  │   │   │
+  │   │   ├─ FOR trial = 0 to num_trials:
+  │   │   │   ├─ Obtener severidad_nueva desde first_severity[abs_idx]
+  │   │   │   ├─ Llamar pygameMediator.provide_rl_agent_response()
+  │   │   │   │   ├─ Cargar Q-table desde inputs/q.npy
+  │   │   │   │   ├─ state = [resources_left, trial_no, severity]
+  │   │   │   │   ├─ Q_values = Q[state[0], state[1], state[2], :]
+  │   │   │   │   ├─ action = argmax(Q_values), clampear a resources_left
+  │   │   │   │   ├─ confidence = entropy_meta_cognitive(Q_values)
+  │   │   │   │   └─ Retornar (confidence, action, rt_hold, rt_release, [])
+  │   │   │   ├─ Registrar response, confidence, tiempos en responses.txt
+  │   │   │   ├─ Actualizar severidades: get_updated_severity()
+  │   │   │   └─ resources_left -= action
+  │   │   │
+  │   │   ├─ FIN trials
+  │   │   ├─ perf = (worst − actual) / (worst − best) → MyPerformances[]
+  │   │   ├─ Agregar decisiones (confidence_weighted_mean/median)
+  │   │   └─ Loguear performance de secuencia
+  │   │
+  │   └─ FIN secuencias
+  │
+  ├─ FIN bloques
+  │
+  ├─ Generar PES_results_&lt;id&gt;.json + PES_results_&lt;id&gt;.png
+  ├─ Guardar PES_movement_log_&lt;id&gt;.npy
+  ├─ Cerrar archivos y logging
+  │
+  └─ Fin
+</code></pre>
+<hr />
+<h2 id="12-reproducibilidad">12. Reproducibilidad</h2>
+<h3 id="121-seeds-reproducibles-solo-ejecucion">12.1 Seeds Reproducibles (solo ejecución)</h3>
+<pre><code class="language-python"># En asignación de mapas (__main__.py)
+numpy.random.seed(100 + blk)
+
+# En inicialización de ciudades (__main__.py)
+numpy.random.seed(3)  # → siempre produce severidades [4, 3] y allocs [3, 6]
+</code></pre>
+<h3 id="122-datos-fijos">12.2 Datos Fijos</h3>
+<pre><code class="language-python">USE_FIXED_BLOCK_SEQUENCES = True    # Cargar trials/secuencia desde CSV
+RANDOM_INITIAL_SEVERITY = False     # Cargar severidades desde CSV
+</code></pre>
+<h3 id="123-entrenamiento-reproducible-semilla-fija">12.3 Entrenamiento Reproducible (semilla fija)</h3>
+<p>La función <code>QLearning()</code> (en <code>ext/pandemic.py</code>) acepta un parámetro
+<code>seed</code>. Cuando se proporciona, fija las semillas de <code>numpy.random</code> y
+<code>random</code> antes de inicializar la Q-table, por lo que afecta a:</p>
+<ul>
+<li>La <strong>inicialización</strong> de la Q-table (<code>numpy.random.uniform</code>).</li>
+<li>La <strong>exploración ε-greedy</strong> (<code>numpy.random.random</code> /
+  <code>numpy.random.randint</code>).</li>
+<li>La <strong>generación de secuencias</strong> aleatorias durante el entrenamiento
+  (<code>numpy.random.choice</code>, <code>random.randrange</code>).</li>
+</ul>
+<p>El pipeline <code>train_rl.py</code> invoca <code>QLearning(..., seed=SEED)</code> con
+<code>SEED = 42</code> (definido en <code>config/CONFIG.py</code>), por lo que <strong>dos
+ejecuciones consecutivas con los mismos hiperparámetros producen la
+misma Q-table</strong>.</p>
+<p>Para obtener entrenamientos no determinísticos (p. ej. para promediar
+resultados sobre múltiples semillas), basta con cambiar <code>SEED</code> en
+<code>config/CONFIG.py</code> o llamar manualmente a <code>QLearning(..., seed=None)</code>.</p>
+<h3 id="124-configuracion-registrada">12.4 Configuración Registrada</h3>
+<p>Cada experimento guarda su archivo de configuración:</p>
+<pre><code>PES__&lt;SubjectId&gt;.txt
+</code></pre>
+<p>Contenido: todos los parámetros <code>CONFIG.*</code> usados en la ejecución, con formato
+tabular (nombre, valor).</p>
+<hr />
+<h2 id="13-estructura-de-archivos-del-paquete">13. Estructura de Archivos del Paquete</h2>
+<pre><code>pes_base/
+├── __init__.py          # Config loading, paths, ANSI, env setup, 36 exports
+├── __main__.py          # Experiment lifecycle (main function)
+├── config/
+│   └── CONFIG.py        # Todos los parámetros tunables (10 secciones)
+├── doc/
+│   ├── explained_pes.md # Este documento
+│   ├── explained_rl.md  # Mapeo teoría RL ↔ implementación
+│   ├── theory_rl.md     # Teoría de RL para científicos de datos
+│   └── pes.__doc__      # Resumen técnico del paquete
+├── ext/
+│   ├── pandemic.py      # Gymnasium Env (Pandemic), QLearning, run_experiment, meta_cognitive
+│   ├── tools.py         # entropy_from_pdf, convert_globalseq_to_seqs, plot_confidences
+│   └── train_rl.py      # Pipeline de entrenamiento RL (baseline → train → eval → plots)
+├── inputs/
+│   ├── initial_severity.csv
+│   ├── sequence_lengths.csv
+│   ├── q.npy            # Q-table para ejecución (copiar desde train output)
+│   ├── rewards.npy      # Rewards para ejecución (copiar desde train output)
+│   └── &lt;fecha&gt;_RL_TRAIN/  # Output del entrenamiento
+├── outputs/
+│   ├── PES_log_*.txt    # Logs globales
+│   └── &lt;fecha&gt;_RL_AGENT/  # Output del experimento
+└── src/
+    ├── exp_utils.py       # Severity, performance, aggregation, sampling (11 funciones)
+    ├── log_utils.py       # Dual-stream logging con singleton (5 funciones)
+    ├── pygameMediator.py  # Interfaz Q-table → response (2 funciones)
+    ├── result_formatter.py # JSON + PNG reports (5 funciones)
+    └── terminal_utils.py  # Formato consola con ANSI (12 funciones)
+</code></pre>
+<hr />
+<h2 id="conclusion">Conclusión</h2>
+<p>El experimento PES implementa un ciclo estructurado y repetible:</p>
+<ol>
+<li><strong>Configuración</strong> → Define parámetros fijos en <code>CONFIG.py</code>.</li>
+<li><strong>Asignación</strong> → Mapea índices de mapa y cantidades de trials a bloques/secuencias.</li>
+<li><strong>Ejecución</strong> → Consulta la Q-table entrenada para cada trial vía <code>pygameMediator</code>.</li>
+<li><strong>Cálculo</strong> → Actualiza severidades con la fórmula dinámica y calcula performance normalizado.</li>
+<li><strong>Logging</strong> → Registra todas las decisiones, confianzas y tiempos en archivos duales.</li>
+<li><strong>Reportes</strong> → Genera estadísticas JSON y visualizaciones PNG multi-panel.</li>
+</ol>
+<p>Este diseño permite reproducir el mismo experimento múltiples veces y comparar
+variaciones de agentes o parámetros de forma sistemática.</p>
+</body>
+</html>

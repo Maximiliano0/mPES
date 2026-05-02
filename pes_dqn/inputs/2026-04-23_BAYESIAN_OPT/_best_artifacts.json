@@ -1,0 +1,10 @@
+{
+  "value": 0.8937286762082891,
+  "hidden_units": [
+    64,
+    64
+  ],
+  "trial_seed": 84,
+  "trial_number": 41,
+  "n_weights": 6
+}

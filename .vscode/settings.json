@@ -1,0 +1,11 @@
+{
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "python.defaultInterpreterPath": "${workspaceFolder}/win_mpes_env/Scripts/python.exe",
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingModuleSource": "none"
+    },
+    "pylint.args": [
+        "--rcfile=${workspaceFolder}/utils/config/.pylintrc"
+    ],
+    "markdownlint.configFile": "${workspaceFolder}/utils/config/.markdownlint.json"
+}

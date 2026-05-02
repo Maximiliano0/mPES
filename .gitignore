@@ -1,0 +1,91 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+#  mPES — .gitignore
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Last updated: 2026-04-20
+#
+#  Packages: pes_base · pes_ql · pes_dql · pes_dqn · pes_a2c · pes_trf · utils
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Virtual environments ────────────────────────────────────────────────────
+linux_mpes_env/
+win_mpes_env/
+.venv/
+venv/
+env/
+
+# ── Python bytecode / build artefacts ───────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ── IDEs / editors ─────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Testing & coverage ─────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Jupyter ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+!colab/*.ipynb
+
+# ── OS metadata ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── PID / lock files ──────────────────────────────────────────────────────
+*.pid
+*.lock
+
+# ── Generated experiment artefacts (per package) ───────────────────────────
+#  Keep folder structure via .gitkeep; ignore everything else inside
+#  inputs/ and outputs/ across all packages.
+!pes_*/inputs/.gitkeep
+!pes_*/outputs/.gitkeep
+
+# ── Stand-alone training / log artefacts (any location) ────────────────────
+*.npy
+*.keras
+*.h5
+*.hdf5
+*.weights
+*.ckpt
+*.pkl
+*.joblib
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Run-time logs ──────────────────────────────────────────────────────────
+*.log
+bayesian_opt*.log
+watcher.log
+train_*_stdout.log
+train_*_stderr.log

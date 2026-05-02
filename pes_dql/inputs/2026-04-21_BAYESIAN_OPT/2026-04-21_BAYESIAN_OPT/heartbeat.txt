@@ -1,0 +1,7 @@
+timestamp:    2026-04-21T21:20:05
+pid:          19698
+alive:        False
+started_at:   2026-04-21T20:50:04
+elapsed_h:    0.50
+n_trials:     100
+last_trial:   Trial  14/100  |  perf=  PRUNED  |  best=0.8963  |  elapsed=1670s

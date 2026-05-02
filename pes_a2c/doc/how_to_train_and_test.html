@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Train and Test the A2C Model</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="how-to-train-and-test-the-a2c-model">How to Train and Test the A2C Model</h1>
+<blockquote>
+<p>Package: <strong>pes_a2c</strong> — Advantage Actor-Critic variant of the Pandemic Experiment Scenario</p>
+</blockquote>
+<hr />
+<h2 id="prerequisites">Prerequisites</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>3.12 (Windows) / 3.12 (Linux)</td>
+</tr>
+<tr>
+<td>Virtual environment</td>
+<td><code>win_mpes_env</code> (Windows) or <code>linux_mpes_env</code> (Linux)</td>
+</tr>
+<tr>
+<td>TensorFlow</td>
+<td>2.21.0 (CPU — no GPU required)</td>
+</tr>
+<tr>
+<td>Input data</td>
+<td><code>inputs/initial_severity.csv</code> and <code>inputs/sequence_lengths.csv</code></td>
+</tr>
+</tbody>
+</table>
+<p>Activate the environment once per terminal session:</p>
+<p><strong>Linux / macOS:</strong></p>
+<pre><code class="language-bash">source linux_mpes_env/bin/activate
+</code></pre>
+<p><strong>Windows (PowerShell):</strong></p>
+<pre><code class="language-powershell">win_mpes_env\Scripts\Activate.ps1
+</code></pre>
+<hr />
+<h2 id="1-training-the-a2c-agent">1. Training the A2C Agent</h2>
+<h3 id="11-quick-start">1.1 Quick Start</h3>
+<pre><code class="language-bash">python3 -m pes_a2c.ext.train_a2c
+</code></pre>
+<p>This runs the <strong>full training pipeline</strong> with default settings (250 000 episodes,
+hiperparámetros del mejor trial de la optimización bayesiana del 2026-04-23).</p>
+<h3 id="12-custom-episode-count">1.2 Custom Episode Count</h3>
+<p>Pass the number of episodes as the first argument:</p>
+<pre><code class="language-bash">python3 -m pes_a2c.ext.train_a2c 200000
+</code></pre>
+<h3 id="13-what-happens-during-training">1.3 What Happens During Training</h3>
+<p>The pipeline proceeds through these stages:</p>
+<ol>
+<li><strong>Load data</strong> — reads <code>initial_severity.csv</code> and <code>sequence_lengths.csv</code>
+   from <code>pes_a2c/inputs/</code>.</li>
+<li><strong>Random-player baseline</strong> — runs 64 evaluation sequences with a random
+   agent and saves performance plots.</li>
+<li><strong>A2C training</strong> — trains the Actor and Critic networks for the configured
+   number of episodes using on-policy batched updates with GAE(λ) advantage
+   estimation, gradient clipping, advantage normalisation, entropy bonus,
+   <strong>on-policy masked softmax sampling</strong> (no ε-greedy overlay; actions are
+   sampled from the Actor distribution renormalised over feasible actions),
+   PBRS reward shaping, infeasible-action masking inside the policy gradient,
+   and cosine annealing learning rate scheduling.</li>
+<li><strong>Save artefacts</strong> — writes the trained Actor Keras model (<code>.keras</code>),
+   reward history (<code>rewards.npy</code>), and a configuration summary to a dated
+   subdirectory.</li>
+<li><strong>Evaluate</strong> — runs the trained agent on the same 64 sequences and
+   generates performance, confidence, and cumulative-performance plots.</li>
+</ol>
+<h3 id="14-training-output-files">1.4 Training Output Files</h3>
+<p>All outputs are saved to <code>pes_a2c/inputs/&lt;YYYY-MM-DD&gt;_A2C_TRAIN/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ac_actor_&lt;date&gt;.keras</code></td>
+<td>Trained Actor Keras model (date-stamped copy)</td>
+</tr>
+<tr>
+<td><code>rewards_&lt;date&gt;.npy</code></td>
+<td>Average reward every 10 000 episodes</td>
+</tr>
+<tr>
+<td><code>training_config_&lt;date&gt;.txt</code></td>
+<td>Full hyperparameter record</td>
+</tr>
+<tr>
+<td><code>random_player_*.png</code></td>
+<td>Baseline performance plots</td>
+</tr>
+<tr>
+<td><code>ac_agent_rewards_vs_episodes_&lt;date&gt;.png</code></td>
+<td>Reward convergence curve</td>
+</tr>
+<tr>
+<td><code>ac_agent_sequence_performance_&lt;date&gt;.png</code></td>
+<td>Final severity per sequence</td>
+</tr>
+<tr>
+<td><code>ac_agent_normalised_performance_&lt;date&gt;.png</code></td>
+<td>Normalised performance</td>
+</tr>
+<tr>
+<td><code>ac_agent_cumulative_performance_&lt;date&gt;.png</code></td>
+<td>Cumulative performance trend</td>
+</tr>
+<tr>
+<td><code>ac_agent_confidences_&lt;date&gt;.png</code></td>
+<td>Entropy-based confidence scores</td>
+</tr>
+</tbody>
+</table>
+<p>Additionally, the Actor model and rewards are <strong>copied</strong> to the standard
+paths consumed by the experiment runner:</p>
+<ul>
+<li><code>pes_a2c/inputs/ac_actor.keras</code></li>
+<li><code>pes_a2c/inputs/rewards.npy</code></li>
+</ul>
+<h3 id="15-default-hyperparameters">1.5 Default Hyperparameters</h3>
+<p>Los hiperparámetros activos en <code>ext/train_a2c.py</code> corresponden al <strong>trial #90</strong>
+de la optimización bayesiana ejecutada el 2026-04-23 (mean_perf = 0.887236).
+Los valores de <code>CONFIG.py</code> (columna <em>CONFIG</em>) se actualizaron para coincidir
+con ese trial #90 y se usan también como línea base para la semilla
+(<em>warm-start</em>) de Optuna.</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor activo (<code>train_a2c.py</code>)</th>
+<th>CONFIG</th>
+<th>Fuente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Actor hidden layers</td>
+<td><code>[128]</code></td>
+<td><code>[128]</code></td>
+<td><code>CONFIG.AC_ACTOR_HIDDEN_UNITS</code></td>
+</tr>
+<tr>
+<td>Critic hidden layers</td>
+<td><code>[128]</code></td>
+<td><code>[128]</code></td>
+<td><code>CONFIG.AC_CRITIC_HIDDEN_UNITS</code></td>
+</tr>
+<tr>
+<td>Actor learning rate</td>
+<td>6.476 × 10⁻⁴</td>
+<td>6.476 × 10⁻⁴</td>
+<td><code>train_a2c.py</code> (Bayesian opt trial #90)</td>
+</tr>
+<tr>
+<td>Critic learning rate</td>
+<td>4.299 × 10⁻³</td>
+<td>4.299 × 10⁻³</td>
+<td><code>train_a2c.py</code> (Bayesian opt trial #90)</td>
+</tr>
+<tr>
+<td>Entropy coefficient</td>
+<td>5.278 × 10⁻³</td>
+<td>5.278 × 10⁻³</td>
+<td><code>train_a2c.py</code> (Bayesian opt trial #90)</td>
+</tr>
+<tr>
+<td>Discount γ</td>
+<td>0.8545</td>
+<td>0.8545</td>
+<td><code>train_a2c.py</code> (Bayesian opt trial #90)</td>
+</tr>
+<tr>
+<td>Initial ε <em>(legacy, unused)</em></td>
+<td>0.0</td>
+<td>0.0</td>
+<td><code>CONFIG.AC_EPSILON_INITIAL</code></td>
+</tr>
+<tr>
+<td>Min ε <em>(legacy, unused)</em></td>
+<td>0.0</td>
+<td>0.0</td>
+<td><code>CONFIG.AC_EPSILON_MIN</code></td>
+</tr>
+<tr>
+<td>Episodes</td>
+<td>250 000</td>
+<td>—</td>
+<td><code>train_a2c.py</code> (default; CLI override)</td>
+</tr>
+<tr>
+<td>Random seed</td>
+<td>42</td>
+<td>42</td>
+<td><code>CONFIG.SEED</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Note</strong>: <code>AC_EPSILON_INITIAL</code> and <code>AC_EPSILON_MIN</code> are kept in CONFIG
+for API compatibility but are <strong>not used</strong> — training samples actions
+on-policy from the Actor distribution.  Exploration is provided
+intrinsically by the softmax randomness plus the entropy bonus.</p>
+</blockquote>
+<p><strong>Hiperparámetros de mejora</strong> (configurables en <code>CONFIG.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>CONFIG</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Warmup ratio <em>(legacy, unused)</em></td>
+<td>0.05 (5%)</td>
+<td><code>AC_WARMUP_RATIO</code></td>
+</tr>
+<tr>
+<td>Target ratio <em>(legacy, unused)</em></td>
+<td>0.60 (60%)</td>
+<td><code>AC_TARGET_RATIO</code></td>
+</tr>
+<tr>
+<td>PBRS coeff (β)</td>
+<td>0.153</td>
+<td><code>AC_PENALTY_COEFF</code></td>
+</tr>
+<tr>
+<td>GAE(λ)</td>
+<td>0.913</td>
+<td><code>AC_GAE_LAMBDA</code></td>
+</tr>
+<tr>
+<td>Max grad norm</td>
+<td>1.200</td>
+<td><code>AC_MAX_GRAD_NORM</code></td>
+</tr>
+<tr>
+<td>LR min ratio (cosine)</td>
+<td>0.237</td>
+<td><code>AC_LR_MIN_RATIO</code></td>
+</tr>
+<tr>
+<td>Spend cost coeff</td>
+<td>0.0104</td>
+<td><code>AC_SPEND_COST_COEFF</code></td>
+</tr>
+<tr>
+<td>Last-action bias (logit)</td>
+<td>-1.389</td>
+<td><code>AC_LAST_ACTION_BIAS</code></td>
+</tr>
+<tr>
+<td>Optimization mode</td>
+<td><code>full</code></td>
+<td><code>AC_OPTIMIZE_MODE</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="16-expected-training-time">1.6 Expected Training Time</h3>
+<p>On a modest CPU (e.g. Intel i3-6006U @ 2 GHz, 4 threads), approximately
+<strong>40–80 minutes</strong> for 250 000 episodes with CPU optimisations enabled
+(<code>tf.function</code> per-trial compilation, no confidence computation during training,
+TensorFlow thread-pool tuning).  Training time scales linearly with
+episode count.</p>
+<p>A2C may be slightly slower than DQN per episode due to maintaining two
+networks and performing a full gradient update per episode (vs. DQN's
+periodic mini-batch updates).</p>
+<h3 id="17-cpu-training-optimisations">1.7 CPU Training Optimisations</h3>
+<p>The following optimisations are active by default and require no
+configuration:</p>
+<table>
+<thead>
+<tr>
+<th>Optimisation</th>
+<th>Effect</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tf.function</code> per-trial compiled training</td>
+<td>Eliminates eager overhead for per-episode updates</td>
+<td><code>ext/pandemic.py</code></td>
+</tr>
+<tr>
+<td><code>optimizer.build()</code> pre-initialisation</td>
+<td>Creates optimiser variables outside <code>tf.function</code> graph</td>
+<td><code>ext/pandemic.py</code></td>
+</tr>
+<tr>
+<td><code>tf.constant</code> scalar hyper-parameters</td>
+<td>Prevents costly retracing across Optuna trials</td>
+<td><code>ext/pandemic.py</code></td>
+</tr>
+<tr>
+<td>Infeasible-action masking during training</td>
+<td>Aligns training with masked inference; policy gradient trains only over legal actions</td>
+<td><code>ext/pandemic.py</code>, <code>ext/ac_model.py</code></td>
+</tr>
+<tr>
+<td>Skip confidence computation</td>
+<td><code>compute_confidence=False</code> skips entropy/masking per step</td>
+<td><code>ext/pandemic.py</code></td>
+</tr>
+<tr>
+<td>TF thread-pool tuning</td>
+<td><code>intra_op=0</code> (auto), <code>inter_op=2</code> for multi-core CPUs</td>
+<td><code>ext/ac_model.py</code></td>
+</tr>
+<tr>
+<td>Actor-only inference</td>
+<td>Only Actor loaded at experiment time (Critic discarded)</td>
+<td><code>src/pygameMediator.py</code></td>
+</tr>
+</tbody>
+</table>
+<p>To re-enable confidence tracking during training (at slightly slower speed):</p>
+<pre><code class="language-python">rewards, actor, confs = A2CTraining(
+    env, actor_lr, critic_lr, discount, entropy_coeff,
+    eps, min_eps, episodes,
+    ...,
+    compute_confidence=True,   # ← enables meta-cognitive observation
+)
+</code></pre>
+<hr />
+<h2 id="2-bayesian-hyperparameter-optimisation-optional">2. Bayesian Hyperparameter Optimisation (Optional)</h2>
+<p>If the default hyperparameters are not satisfactory, you can run an
+automated search using Optuna:</p>
+<pre><code class="language-bash">python3 -m pes_a2c.ext.optimize_a2c 30
+</code></pre>
+<p>The integer argument is the number of trials (default: 30).</p>
+<h3 id="201-optimization-mode">2.0.1 Optimization Mode</h3>
+<p>The optimizer supports two modes selectable via <code>--mode</code> (or
+<code>CONFIG.AC_OPTIMIZE_MODE</code>):</p>
+<ul>
+<li><strong><code>full</code></strong> (default in CONFIG) — optimizes all 14 sampled hyperparameters
+  (8 base + 6 improvements).</li>
+<li><strong><code>improvements_only</code></strong> — fixes the 8 base hyperparameters at the
+  CONFIG.py values (trial #90) and only optimizes the 6 improvement
+  parameters.  This reduces the search from 14D to 6D.</li>
+</ul>
+<pre><code class="language-bash"># Optimize all sampled hyperparameters (default mode)
+python3 -m pes_a2c.ext.optimize_a2c 50
+
+# Optimize only improvement params
+python3 -m pes_a2c.ext.optimize_a2c 50 --mode improvements_only
+</code></pre>
+<h3 id="21-resume-a-previous-search">2.1 Resume a Previous Search</h3>
+<p>Optimisation state is stored in an SQLite database.  To resume:</p>
+<pre><code class="language-bash">python3 -m pes_a2c.ext.optimize_a2c 50 --resume 2026-03-02
+</code></pre>
+<p>This loads the study from <code>inputs/&lt;date&gt;_BAYESIAN_OPT/optuna_study_&lt;date&gt;.db</code>
+and runs additional trials until the total reaches 50.</p>
+<h3 id="22-optimisation-outputs">2.2 Optimisation Outputs</h3>
+<p>Saved to <code>pes_a2c/inputs/&lt;YYYY-MM-DD&gt;_BAYESIAN_OPT/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ac_best_&lt;date&gt;.keras</code></td>
+<td>Best Actor model found</td>
+</tr>
+<tr>
+<td><code>rewards_best_&lt;date&gt;.npy</code></td>
+<td>Reward history of the best trial</td>
+</tr>
+<tr>
+<td><code>optimization_results_&lt;date&gt;.txt</code></td>
+<td>Full report with all trial results</td>
+</tr>
+<tr>
+<td><code>optimization_history_&lt;date&gt;.png</code></td>
+<td>Convergence plot</td>
+</tr>
+<tr>
+<td><code>hyperparameter_importances_&lt;date&gt;.png</code></td>
+<td>Parameter importance ranking</td>
+</tr>
+<tr>
+<td><code>optuna_study_&lt;date&gt;.db</code></td>
+<td>SQLite database (resumable)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-a2c-specific-search-space">2.3 A2C-Specific Search Space</h3>
+<p>The A2C optimisation searches over up to 14 sampled hyperparameters
+(8 base + 6 improvement).  In <strong><code>full</code></strong> mode (default) the base
+hyperparameters sampled are:</p>
+<pre><code>actor_lr             ∈ [1e-4, 1e-2]         (log scale)
+critic_lr            ∈ [1e-4, 1e-2]         (log scale)
+discount_factor      ∈ [0.85, 0.995]
+entropy_coeff        ∈ [0.0, 0.1]           (linear; 0 disables the bonus)
+num_episodes         ∈ [50000, 250000]      (step = 25000)
+actor_hidden_dim     ∈ {32, 64, 128, 256}   (categorical)
+critic_hidden_dim    ∈ {32, 64, 128, 256}   (categorical)
+n_hidden_layers      ∈ {1, 2, 3}
+</code></pre>
+<p>The ε-greedy parameters (<code>epsilon_initial</code>, <code>epsilon_min</code>) are <strong>fixed
+at 0</strong> and not sampled — training is now pure on-policy softmax sampling,
+so ε has no effect.</p>
+<p>The 6 always-sampled improvement parameters are:</p>
+<pre><code>penalty_coeff        ∈ [0.0, 0.3]           (linear; 0 disables PBRS)
+gae_lambda           ∈ [0.90, 0.99]
+max_grad_norm        ∈ [0.3, 1.5]
+lr_min_ratio         ∈ [0.05, 0.25]
+spend_cost_coeff     ∈ [0.0, 0.05]          (per-action training-only cost; 0 disables)
+last_action_bias     ∈ [-2.0, 0.0]          (init logit of the max-spend action)
+</code></pre>
+<p><code>warmup_ratio</code> and <code>target_ratio</code> are also fixed (0 / 1) since they only
+govern the unused legacy ε-decay schedule.</p>
+<p>In <strong><code>improvements_only</code></strong> mode, only the 6 improvement parameters are
+sampled; the 8 base parameters are held at CONFIG values.</p>
+<p>Each trial uses an independent seed (<code>SEED + trial.number + 1</code>) so that
+repeat sampling of the same configuration produces independent
+stochastic replicates — essential for TPE to estimate objective noise.</p>
+<p>Compared to DQN: A2C adds two separate learning rates (Actor and Critic)
+and <code>entropy_coeff</code>; it omits <code>batch_size</code>, <code>replay_buffer_size</code>, and
+<code>target_sync_freq</code> since A2C is on-policy.</p>
+<h3 id="24-running-on-google-colab-pro">2.4 Running on Google Colab Pro+</h3>
+<p>If the local machine does not have enough RAM (the full optimisation needs
+~900 MB per process), you can run it on Google Colab Pro+ using the
+launcher notebook <code>utils/colab/launch.ipynb</code>.  See
+<code>utils/colab/colab_workflow.md</code> for the complete step-by-step guide.</p>
+<p>The launcher notebook now exposes a <code>USE_GPU</code> parameter:</p>
+<table>
+<thead>
+<tr>
+<th><code>USE_GPU</code></th>
+<th>Meaning</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0</code> (default)</td>
+<td>Force TF onto CPU on Colab</td>
+<td>Recommended for the <strong>Colab → local PC reproducibility pipeline</strong> (§ 2.5).  CPU runs are bit-exact across Colab and the local Windows/Linux dev machines.</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>Use the Colab GPU runtime</td>
+<td>Faster optimisation when you only need the trained <code>.keras</code> file (you will copy it directly to <code>pes_a2c/inputs/</code>).  Local retraining will diverge in the LSB.</td>
+</tr>
+</tbody>
+</table>
+<p>When <code>USE_GPU=1</code>, also switch the runtime via <strong>Runtime → Change runtime
+type → T4 / A100 GPU</strong> before running cells.  The launcher prints a
+warning if no GPU is detected.</p>
+<p><code>TF_DETERMINISTIC_OPS=1</code> and <code>TF_CUDNN_DETERMINISTIC=1</code> are exported
+by <code>utils/colab/setup_colab.sh</code> so that even on GPU the same seed
+produces the same trajectory on the same hardware.</p>
+<h3 id="25-reproducing-a-colab-best-trial-locally">2.5 Reproducing a Colab Best Trial Locally</h3>
+<p>The end-to-end pipeline is:</p>
+<ol>
+<li>
+<p><strong>(Colab)</strong> Run the optimisation:
+   <code>python
+   PKG = 'ac'; N_TRIALS = 100; USE_GPU = 0  # CPU for reproducibility</code>
+   The launcher writes everything to
+   <code>Drive/MyDrive/mPES/pes_a2c/&lt;DATE&gt;_BAYESIAN_OPT/</code> including
+   <code>optuna_study_&lt;DATE&gt;.db</code> (the SQLite study) and
+   <code>optimization_results_&lt;DATE&gt;.txt</code> (now contains a
+   <strong>REPRODUCIBILITY</strong> block listing the best <code>trial_seed</code> and the
+   exact <code>train_a2c.py</code> command).</p>
+</li>
+<li>
+<p><strong>(Local)</strong> Copy the run directory from Drive into the workspace:
+   <code>text
+   Drive/MyDrive/mPES/pes_a2c/&lt;DATE&gt;_BAYESIAN_OPT/
+                     →  pes_a2c/inputs/&lt;DATE&gt;_BAYESIAN_OPT/</code></p>
+</li>
+<li>
+<p><strong>(Local)</strong> Train with the best params + best seed automatically:
+   <code>bash
+   python -m pes_a2c.ext.train_a2c --from-best &lt;DATE&gt;</code></p>
+<blockquote>
+<p><strong>Auto-load:</strong> Omitting <code>--from-best</code> makes <code>train_a2c.py</code>
+auto-discover the most recent <code>&lt;DATE&gt;_BAYESIAN_OPT/</code> directory
+under <code>inputs/</code> and reproduce its best trial.  This matches
+<code>pes_ql</code> / <code>pes_dql</code> behavior — a bare
+<code>python -m pes_a2c.ext.train_a2c</code> is enough after a Bayesian run.
+To fall back to the baked-in <code>CONFIG.py</code> values, remove or rename
+the <code>_BAYESIAN_OPT/</code> directory.</p>
+</blockquote>
+</li>
+</ol>
+<p>The script reads <code>optuna_study_&lt;DATE&gt;.db</code>, applies the best trial's
+   hyperparameters and <code>trial_seed</code>, and runs an extra <strong>parity
+   evaluation</strong> that uses the <em>exact same</em> <code>qf</code> as the optimiser.  Its
+   <code>mean_perf</code> is printed alongside the Optuna-reported value with the
+   absolute difference, classified as:</p>
+<table>
+<thead>
+<tr>
+<th><code>|Δ|</code></th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt; 1e-6</code></td>
+<td>bit-exact match</td>
+</tr>
+<tr>
+<td><code>&lt; 1e-3</code></td>
+<td>within FP tolerance (different TF build / hardware)</td>
+</tr>
+<tr>
+<td><code>≥ 1e-3</code></td>
+<td>mismatch — see Troubleshooting (§ 4)</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li><strong>(Local)</strong> Run the experiment with the freshly trained Actor:
+   <code>bash
+   python -m pes_a2c</code></li>
+</ol>
+<blockquote>
+<p><strong>Shortcut.</strong> If you do not need to retrain locally, simply copy
+<code>ac_best_&lt;DATE&gt;.keras</code> over <code>pes_a2c/inputs/ac_actor.keras</code> and
+jump to step 4.  This is the <strong>only</strong> way to guarantee <code>mean_perf</code>
+equality when Colab used a GPU runtime (<code>USE_GPU=1</code>).</p>
+</blockquote>
+<hr />
+<h2 id="3-testing-the-a2c-agent-running-the-experiment">3. Testing the A2C Agent (Running the Experiment)</h2>
+<h3 id="31-verify-training-files-exist">3.1 Verify Training Files Exist</h3>
+<p>Before running the experiment, ensure these files are present:</p>
+<pre><code>pes_a2c/inputs/ac_actor.keras    ← trained Actor Keras model
+pes_a2c/inputs/rewards.npy       ← reward history
+</code></pre>
+<p>Both are automatically created by the training pipeline (§ 1).</p>
+<h3 id="32-run-the-experiment">3.2 Run the Experiment</h3>
+<pre><code class="language-bash">python3 -m pes_a2c
+</code></pre>
+<p>This launches the full experiment lifecycle:</p>
+<ol>
+<li><strong>Validates</strong> the Actor model (loads it, checks parameter count and output
+   shape).</li>
+<li><strong>Sets up</strong> the experiment session with logging and dated output folders.</li>
+<li><strong>Iterates</strong> through 8 blocks × 8 sequences × 3–10 trials per sequence.</li>
+<li>At each trial, the A2C agent:</li>
+<li>Normalises the current state <code>(resources_left, trial_no, severity)</code> to
+     <code>[0, 1]³</code>.</li>
+<li>Performs a <strong>forward pass</strong> through the Actor to obtain
+     $\pi_\theta(a \mid s)$.</li>
+<li>Selects the action with the highest probability (masking infeasible
+     allocations where <code>action &gt; resources_left</code>).</li>
+<li>Computes <strong>meta-cognitive confidence</strong> from the entropy of the policy
+     distribution — a theoretically grounded measure.</li>
+<li>Simulates human-like <strong>response timing</strong> based on confidence.</li>
+<li><strong>Saves</strong> results (performance JSON, visualisation PNG, response logs) to
+   <code>pes_a2c/outputs/&lt;YYYY-MM-DD&gt;_A2C_AGENT/</code>.</li>
+</ol>
+<h3 id="33-experiment-outputs">3.3 Experiment Outputs</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PES__&lt;session_id&gt;.txt</code></td>
+<td>Experiment configuration snapshot</td>
+</tr>
+<tr>
+<td><code>PES_responses_&lt;session_id&gt;.txt</code></td>
+<td>Trial-by-trial responses</td>
+</tr>
+<tr>
+<td><code>PES_log_&lt;session_id&gt;.txt</code></td>
+<td>Console log (dual-stream)</td>
+</tr>
+<tr>
+<td><code>PES_movement_log_&lt;session_id&gt;.npy</code></td>
+<td>Movement data</td>
+</tr>
+<tr>
+<td><code>PES_results_&lt;session_id&gt;.json</code></td>
+<td>Performance summary JSON</td>
+</tr>
+<tr>
+<td><code>PES_results_&lt;session_id&gt;.png</code></td>
+<td>Performance plots</td>
+</tr>
+</tbody>
+</table>
+<h3 id="34-configuration">3.4 Configuration</h3>
+<p>All experiment parameters are in <code>config/CONFIG.py</code>.  Key settings:</p>
+<pre><code class="language-python">PLAYER_TYPE = {  # Decision maker type - SELECT ONE
+    1: 'RL_AGENT',     # Tabular Q-Learning agent (fallback / baseline comparison)
+    2: 'DQN_AGENT',    # Deep Q-Network (experience replay + target net)
+    3: 'A2C_AGENT'     # Advantage Actor-Critic (A2C) agent
+}[3]                   # &lt;-- change index to select
+AC_MODEL_ACTOR_FILE = 'ac_actor.keras'  # Actor model filename in inputs/
+NUM_BLOCKS = 8
+NUM_SEQUENCES = 8
+</code></pre>
+<h3 id="35-reproducibility-check-raw_mean_perf">3.5 Reproducibility check (<code>raw_mean_perf</code>)</h3>
+<p>After saving the results JSON, <code>__main__.py</code> prints a one-line consistency
+check between the freshly computed mean performance and the value reported
+by the Bayesian optimiser:</p>
+<pre><code class="language-text">raw_mean_perf = 0.898652  (std=0.045213, n=64)
+best_params.json mean_perf = 0.898652  |Δ| = 0.000000
+</code></pre>
+<p><code>raw_mean_perf</code> is the mean of <code>MyPerformances</code> across the full
+<code>NUM_BLOCKS × NUM_SEQUENCES</code> session. <code>best_params.json['mean_perf']</code> is
+the value Optuna recorded for the winning trial (loaded from
+<code>inputs/best_params.json</code>). A small <code>|Δ|</code> (&lt; 1e-3) confirms full
+reproducibility; a larger gap usually means the run used a different
+<code>SEED</code>, a different input CSV, or a different compute device (for
+example a GPU vs CPU kernel).</p>
+<hr />
+<h2 id="4-troubleshooting">4. Troubleshooting</h2>
+<h3 id="model-file-not-found">Model file not found</h3>
+<pre><code>A2C Actor model file not found!
+Expected path: .../pes_a2c/inputs/ac_actor.keras
+</code></pre>
+<p><strong>Solution:</strong> Run training first:</p>
+<pre><code class="language-bash">python3 -m pes_a2c.ext.train_a2c
+</code></pre>
+<h3 id="rewards-file-not-found">Rewards file not found</h3>
+<p>Same as above — the training pipeline generates both <code>ac_actor.keras</code> and
+<code>rewards.npy</code>.</p>
+<h3 id="tensorflow-warnings">TensorFlow warnings</h3>
+<p>TensorFlow GPU/CUDA warnings are suppressed by default
+(<code>TF_CPP_MIN_LOG_LEVEL=3</code>).  If you still see them, they are harmless — the
+model runs on CPU.</p>
+<h3 id="poor-agent-performance">Poor agent performance</h3>
+<ul>
+<li>Try increasing episodes: <code>python3 -m pes_a2c.ext.train_a2c 200000</code></li>
+<li>Run Bayesian optimisation to find better hyperparameters:
+  <code>python3 -m pes_a2c.ext.optimize_a2c 50</code></li>
+<li>Adjust <code>AC_ENTROPY_COEFF</code> in <code>CONFIG.py</code> — higher values encourage more
+  exploration, lower values favour exploitation.</li>
+<li>Check that <code>CONFIG.SEED = 42</code> for reproducible results.</li>
+</ul>
+<h3 id="slow-training-on-cpu">Slow training on CPU</h3>
+<p>The default configuration is already optimised for CPU.  If training is
+still too slow:</p>
+<ul>
+<li>Reduce episode count: <code>python3 -m pes_a2c.ext.train_a2c 50000</code></li>
+<li>Verify <code>compute_confidence=False</code> is set (default) in <code>train_a2c.py</code></li>
+</ul>
+<h3 id="actor-vs-critic-model-confusion">Actor vs. Critic model confusion</h3>
+<p>Only the <strong>Actor</strong> model (<code>ac_actor.keras</code>) is needed for the experiment.
+The Critic is used only during training and is not saved to the standard
+inputs path.</p>
+<hr />
+<h2 id="5-quick-reference">5. Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activate environment</td>
+<td><code>source linux_mpes_env/bin/activate</code></td>
+</tr>
+<tr>
+<td>Train A2C (default)</td>
+<td><code>python3 -m pes_a2c.ext.train_a2c</code></td>
+</tr>
+<tr>
+<td>Train A2C (custom)</td>
+<td><code>python3 -m pes_a2c.ext.train_a2c 200000</code></td>
+</tr>
+<tr>
+<td>Optimise hyperparams</td>
+<td><code>python3 -m pes_a2c.ext.optimize_a2c 30</code></td>
+</tr>
+<tr>
+<td>Resume optimisation</td>
+<td><code>python3 -m pes_a2c.ext.optimize_a2c 50 --resume YYYY-MM-DD</code></td>
+</tr>
+<tr>
+<td>Run experiment</td>
+<td><code>python3 -m pes_a2c</code></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json",
+
+  "// -- Project: mPES (scientific RL docs with KaTeX math) --": true,
+  "// -- Updated: 2026-03-06 --": true,
+
+  "// ── Disabled: not applicable to this project ──────────": true,
+
+  "MD013": false,
+  "// MD013 line-length: tables and math formulas routinely exceed 80 chars": true,
+
+  "MD024": { "siblings_only": true },
+  "// MD024 no-duplicate-heading: allow same heading in different sections (e.g. 'Ejemplo' under each topic)": true,
+
+  "MD033": { "allowed_elements": ["br", "sub", "sup", "kbd", "details", "summary", "img"] },
+  "// MD033 no-inline-html: allow common semantic HTML elements used in docs": true,
+
+  "MD040": false,
+  "// MD040 fenced-code-language: some pseudo-code and ASCII diagrams have no language tag": true,
+
+  "MD041": false,
+  "// MD041 first-line-heading: prompt files start with YAML frontmatter or comments, not headings": true,
+
+  "MD046": { "style": "fenced" },
+  "// MD046 code-block-style: enforce fenced (```) over indented code blocks": true,
+
+  "MD048": { "style": "backtick" },
+  "// MD048 code-fence-style: enforce backtick (```) over tilde (~~~)": true,
+
+  "MD049": { "style": "asterisk" },
+  "// MD049 emphasis-style: enforce *italic* over _italic_ (avoids conflicts inside math/variable names)": true,
+
+  "MD050": { "style": "asterisk" },
+  "// MD050 strong-style: enforce **bold** over __bold__": true,
+
+  "MD056": false,
+  "// MD056 table-column-count: KaTeX pipe symbols \\lvert inside tables cause false positives": true,
+
+  "MD058": false,
+  "// MD058 blanks-around-tables: some tables are adjacent to math blocks without blank lines": true,
+
+  "MD060": false,
+  "// MD060 table-column-spacing: relaxed — tables with math have varying column widths": true
+}

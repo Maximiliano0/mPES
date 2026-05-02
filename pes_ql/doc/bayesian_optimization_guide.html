@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guía de Optimización Bayesiana — Q-Learning</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="guia-de-optimizacion-bayesiana-q-learning">Guía de Optimización Bayesiana — Q-Learning</h1>
+<h2 id="1-lanzar-la-optimizacion">1. Lanzar la optimización</h2>
+<pre><code class="language-bash">cd /home/mecatronica/Documentos/maximiliano/mPES
+source linux_mpes_env/bin/activate
+
+# Lanzar con 100 trials (valor por defecto)
+python3 -m pes_ql.ext.optimize_rl
+
+# Lanzar con N trials en segundo plano (ejemplo: 200)
+nohup python3 -m pes_ql.ext.optimize_rl 200 \
+  &gt; pes_ql/inputs/bayesian_opt.log 2&gt;&amp;1 &amp;
+</code></pre>
+<p>Los resultados se guardan en <code>pes_ql/inputs/&lt;FECHA&gt;_BAYESIAN_OPT/</code>.</p>
+<hr />
+<h2 id="2-evitar-que-la-pc-se-suspenda">2. Evitar que la PC se suspenda</h2>
+<p>Inmediatamente después de lanzar la optimización:</p>
+<pre><code class="language-bash"># Obtener el PID del proceso
+pgrep -f &quot;pes_ql.ext.optimize_rl&quot;
+
+# Bloquear suspensión (reemplazar &lt;PID&gt; con el número obtenido)
+nohup systemd-inhibit \
+  --what=idle:sleep:handle-lid-switch \
+  --who=&quot;mPES Bayesian Optimization&quot; \
+  --why=&quot;Running Bayesian optimization&quot; \
+  --mode=block \
+  tail --pid=&lt;PID&gt; -f /dev/null &gt; /dev/null 2&gt;&amp;1 &amp;
+</code></pre>
+<p>El inhibidor se desactiva automáticamente cuando la optimización termina.</p>
+<p>Si GNOME sigue suspendiendo al cerrar la tapa, desactivar eso explícitamente:</p>
+<pre><code class="language-bash">gsettings set org.gnome.settings-daemon.plugins.power lid-close-ac-action 'nothing'
+</code></pre>
+<hr />
+<h2 id="3-reanudar-tras-interrupcion-resume">3. Reanudar tras interrupción (--resume)</h2>
+<p>Cada trial completado se guarda en una base de datos SQLite (<code>optuna_study_&lt;FECHA&gt;.db</code>).
+Si el proceso se interrumpe (suspensión, apagado, crash), los trials completados
+se conservan.</p>
+<h3 id="31-opciones-de-linea-de-comando">3.1 Opciones de línea de comando</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>n_trials</code> (posicional)</td>
+<td><code>100</code></td>
+<td>Número objetivo de trials Optuna.</td>
+</tr>
+<tr>
+<td><code>--resume YYYY-MM-DD</code></td>
+<td>(sin)</td>
+<td>Reanuda un estudio previo de esa fecha. Sin esta opción se crea uno nuevo con la fecha actual.</td>
+</tr>
+<tr>
+<td><code>--out-dir PATH</code></td>
+<td><code>inputs/&lt;fecha&gt;_BAYESIAN_OPT</code></td>
+<td>Directorio destino para artefactos. Útil para escribir en Google Drive desde Colab.</td>
+</tr>
+<tr>
+<td><code>--storage URL</code></td>
+<td><code>sqlite:///&lt;out-dir&gt;/optuna_study_&lt;fecha&gt;.db</code></td>
+<td>URL alternativo de Optuna storage (p.ej. SQLite en Drive).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Mismo día</strong> — re-ejecutar el mismo comando:</p>
+<pre><code class="language-bash">nohup python3 -m pes_ql.ext.optimize_rl 100 \
+  &gt; pes_ql/inputs/bayesian_opt.log 2&gt;&amp;1 &amp;
+</code></pre>
+<p><strong>Día diferente</strong> — usar <code>--resume</code> con la fecha original:</p>
+<pre><code class="language-bash">nohup python3 -m pes_ql.ext.optimize_rl 100 --resume 2026-02-12 \
+  &gt; pes_ql/inputs/bayesian_opt_resume.log 2&gt;&amp;1 &amp;
+</code></pre>
+<p>El script detecta los trials previos y ejecuta solo los restantes:</p>
+<pre><code>ℹ Resuming: 45 trials already completed, 55 remaining
+</code></pre>
+<hr />
+<h2 id="4-interpretar-los-logs">4. Interpretar los logs</h2>
+<h3 id="ver-progreso">Ver progreso</h3>
+<pre><code class="language-bash">grep &quot;Trial&quot; pes_ql/inputs/bayesian_opt.log | tail -10
+</code></pre>
+<h3 id="formato-de-salida">Formato de salida</h3>
+<pre><code>  Trial   1/100  |  value=0.7563  |  best=0.7563  |  elapsed=19s
+  Trial   2/100  |  value=0.6941  |  best=0.7563  |  elapsed=76s
+  Trial   8/100  |  value=0.8254  |  best=0.8254  |  elapsed=274s
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Trial N/100</code></td>
+<td>Número de trial actual / total solicitado</td>
+</tr>
+<tr>
+<td><code>value</code></td>
+<td>Rendimiento medio normalizado de este trial (0–1, mayor = mejor)</td>
+</tr>
+<tr>
+<td><code>best</code></td>
+<td>Mejor rendimiento encontrado hasta ahora entre todos los trials</td>
+</tr>
+<tr>
+<td><code>elapsed</code></td>
+<td>Tiempo transcurrido desde el inicio de esta corrida</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ver-log-en-tiempo-real">Ver log en tiempo real</h3>
+<pre><code class="language-bash">tail -f pes_ql/inputs/bayesian_opt.log
+</code></pre>
+<h3 id="verificar-que-el-proceso-sigue-vivo">Verificar que el proceso sigue vivo</h3>
+<pre><code class="language-bash">pgrep -f &quot;pes_ql.ext.optimize_rl&quot; -a
+</code></pre>
+<p>Si no devuelve nada, el proceso terminó (completó todos los trials o fue interrumpido).
+Revisar el final del log para determinar qué ocurrió:</p>
+<pre><code class="language-bash">tail -5 pes_ql/inputs/bayesian_opt.log
+</code></pre>
+<h3 id="tiempo-estimado">Tiempo estimado</h3>
+<p>Desde abril 2026 la optimización llama a <code>QLearning(...,
+track_confidence=False)</code>, lo que omite el cálculo de
+<code>rl_agent_meta_cognitive</code> por paso (no afecta a <code>mean_perf</code>) y reduce el
+coste de cada trial entre 5 y 10 ×. Combinado con <code>MedianPruner</code>, los
+tiempos típicos son:</p>
+<ul>
+<li>Decenas de segundos a pocos minutos por trial completado, dependiendo
+  del <code>num_episodes</code> muestreado entre 500k y 1.2M</li>
+<li>100 trials suele tomar entre 30 y 90 minutos</li>
+<li>200 trials puede tomar entre 1 y 3 horas</li>
+</ul>
+<p>Usar el script <code>utils/run_bayesian_opt.sh</code> para lanzar con inhibición de suspensión automática.</p>
+<hr />
+<h2 id="5-flujo-de-trabajo-completo">5. Flujo de trabajo completo</h2>
+<p>La optimización es el primer paso de un flujo de tres etapas:</p>
+<h3 id="paso-1-optimizar-hiperparametros">Paso 1 — Optimizar hiperparámetros</h3>
+<pre><code class="language-bash">python3 -m pes_ql.ext.optimize_rl 100
+</code></pre>
+<p>Genera la Q-table óptima y un reporte en <code>inputs/&lt;fecha&gt;_BAYESIAN_OPT/</code>,
+y además <strong>espeja</strong> automáticamente <code>q.npy</code>, <code>rewards.npy</code> y
+<code>best_params.json</code> a <code>pes_ql/inputs/</code> para que el experimento (paso 3)
+pueda ejecutarse sin pasos manuales adicionales tras la optimización.
+Anotar los mejores hiperparámetros del reporte
+(<code>optimization_results_&lt;fecha&gt;.txt</code>).</p>
+<h3 id="paso-2-entrenar-con-hiperparametros-optimos">Paso 2 — Entrenar con hiperparámetros óptimos</h3>
+<p><code>optimize_rl.py</code> escribe <code>best_params_&lt;fecha&gt;.json</code> y
+<code>repro_fingerprint_&lt;fecha&gt;.json</code> dentro de
+<code>inputs/&lt;fecha&gt;_BAYESIAN_OPT/</code>. <code>train_rl.py</code> los descubre automáticamente
+(busca el directorio con la fecha más reciente bajo <code>inputs/</code>), por lo que
+<strong>no es necesario copiar manualmente los hiperparámetros al código</strong>:</p>
+<pre><code class="language-bash">python3 -m pes_ql.ext.train_rl
+</code></pre>
+<p>El script:</p>
+<ul>
+<li>Carga los hiperparámetros y la semilla por‑trial (<code>SEED + best_trial_number + 1</code>)
+  desde el JSON.</li>
+<li>Verifica el <code>repro_fingerprint</code> contra el entorno actual; muestra una
+  advertencia si difiere (la <code>mean_perf</code> resultante podría no coincidir).</li>
+<li>Reentrena la Q‑table con esos hiperparámetros y guarda los artefactos en
+  <code>inputs/&lt;fecha&gt;_RL_TRAIN/</code>.</li>
+</ul>
+<p>Si no existe ningún <code>_BAYESIAN_OPT/</code>, <code>train_rl.py</code> cae en
+<code>_FALLBACK_PARAMS</code> (los valores históricos del trial #40) e informa el
+fallback antes de continuar.</p>
+<h3 id="paso-3-ejecutar-el-experimento">Paso 3 — Ejecutar el experimento</h3>
+<p><code>optimize_rl.py</code> ya espejó <code>q.npy</code>, <code>rewards.npy</code> y <code>best_params.json</code> a
+<code>pes_ql/inputs/</code> al finalizar la corrida (paso 1) y <code>train_rl.py</code>
+regeneró los mismos archivos tras el reentrenamiento local (paso 2). No
+hace falta copiar nada a mano:</p>
+<pre><code class="language-bash">python3 -m pes_ql
+</code></pre>
+<p><code>__main__.py</code> valida la existencia de <code>q.npy</code> y <code>rewards.npy</code> antes de iniciar;
+si no los encuentra, indica que se debe ejecutar <code>train_rl.py</code> primero.</p>
+</body>
+</html>

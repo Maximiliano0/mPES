@@ -1,0 +1,15 @@
+{
+  "best_trial_number": 63,
+  "expected_mean_perf": 0.8866404545110582,
+  "hyperparameters": {
+    "discount_factor": 0.8587190337561512,
+    "epsilon_initial": 0.6812833152351926,
+    "epsilon_min": 0.04373663936542156,
+    "learning_rate": 0.28623151195196195,
+    "num_episodes": 550000
+  },
+  "mean_perf": 0.8866404545110582,
+  "training_seed": 106,
+  "trial_number": 63,
+  "trial_seed": 106
+}

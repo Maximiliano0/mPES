@@ -1,0 +1,49 @@
+{
+  // ─────────────────────────────────────────────────────────────────────────
+  //  Pyright project configuration for mPES
+  //  Run from the workspace root:
+  //    pyright --project utils/config/pyrightconfig.json
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Workspace root, relative to this file (utils/config/ -> ../../)
+  "include": [
+    "../../pes_base",
+    "../../pes_ql",
+    "../../pes_dql",
+    "../../pes_dqn",
+    "../../pes_a2c",
+    "../../utils"
+  ],
+
+  // Pylance defaults + workspace-specific exclusions
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "../../**/inputs",
+    "../../**/outputs",
+    "../../win_mpes_env",
+    "../../linux_mpes_env"
+  ],
+
+  // Resolve third-party imports from the active virtual environment.
+  // Override per-OS with the PYRIGHT_VENV environment variable if needed.
+  "venvPath": "../..",
+  "venv": "win_mpes_env",
+
+  // Workspace root must be on the search path so cross-package imports
+  // such as ``utils.scripts.notify`` resolve as namespace packages
+  // (no ``__init__.py`` is required).
+  "extraPaths": ["../.."],
+
+  "pythonVersion": "3.12",
+  "pythonPlatform": "All",
+
+  "typeCheckingMode": "basic",
+  "useLibraryCodeForTypes": true,
+
+  // Suppress noisy diagnostics that conflict with project conventions
+  "reportMissingTypeStubs": "none",
+  "reportMissingModuleSource": "none",
+  "reportPrivateImportUsage": "none"
+}

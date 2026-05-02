@@ -1,0 +1,97 @@
+The PES Pandemic Experiment Scenario (v2.0) is an experimental paradigm for 
+investigating resource allocation decision-making under stress in pandemic contexts.
+
+In this version (v2.0), the system is powered by a pre-trained Reinforcement Learning 
+Agent (RL-Agent) that automatically allocates limited resources to cities to minimize 
+disease spread. The RL-Agent uses Q-Learning with a Q-Table trained via a configurable
+training pipeline (default: 1,000,000 episodes, adjustable via CLI).
+
+## Current Version (v2.0) - Key Features:
+- RL-Agent based decision-making (Reinforcement Learning with Q-Learning)
+- Single-agent architecture (no human interaction, no UDP/TCP lobby)
+- Fast execution mode (~3-5 minutes for 360 trials without visualization)
+- Automatic Q-Table validation before experiment execution
+- Console-based output with ANSI color formatting
+- Parallel execution capability (multiple independent runs supported)
+- Training pipeline included (ext/train_rl.py) for custom Q-Table generation
+
+## RL-Agent Technical Specification:
+- **State space**: (resources_left, trial_number, severity)
+  - Resources: 0-30 values (31 states)
+  - Trial number: 0-10 values (11 states)
+  - Severity: 0-9 values (10 states, MAX_SEVERITY = 9)
+- **Action space**: Resource allocation (0-10, discrete, 11 actions)
+- **Training**: Configurable episodes (default 1,000,000; CLI: `python3 -m pes_base.ext.train_rl [N]`)
+- **Q-Table dimensions**: 31 × 11 × 10 × 11 = 37,510 entries
+- **Hyperparameters**: α=0.2, γ=0.9, ε=0.8→0 (linear decay)
+- **Policy**: Greedy (deterministic) during execution; ε-greedy during training
+- **Confidence estimation**: Entropy-based metacognitive scores via `rl_agent_meta_cognitive()`
+
+## Experiment Structure:
+- Total Experiment: 1
+- Blocks: 8 (NUM_BLOCKS)
+- Sequences per Block: 8 (NUM_SEQUENCES), 64 total
+- Trials per Sequence: 3-10 (NUM_MIN_TRIALS - NUM_MAX_TRIALS)
+- Trials per Block: 45 (TOTAL_NUM_TRIALS_IN_BLOCK), ~360 total
+- Decision per Trial: Resource allocation to a single city (0-10)
+- Available resources per sequence: 39 (AVAILABLE_RESOURCES_PER_SEQUENCE)
+
+## Core Modules:
+- **pes_base/__init__.py**: Package init — config loading, path definitions, ANSI class, 36 exports
+- **pes_base/__main__.py**: Main entry point — experiment lifecycle orchestration (1 function)
+- **pes_base/config/CONFIG.py**: All experiment parameters, organised in 10 sections
+- **pes_base/ext/pandemic.py**: Pandemic Gym environment (13 methods), rl_agent_meta_cognitive, run_experiment, QLearning (16 total)
+- **pes_base/ext/tools.py**: entropy_from_pdf, convert_globalseq_to_seqs, plot_confidences (3 functions)
+- **pes_base/ext/train_rl.py**: RL training pipeline — baseline, Q-Learning, evaluation, plots (1 + 2 nested)
+- **pes_base/src/exp_utils.py**: Severity calculations, performance metrics, aggregation, sampling (11 functions)
+- **pes_base/src/log_utils.py**: Dual-stream logging with singleton pattern (5 functions)
+- **pes_base/src/pygameMediator.py**: RL-Agent response handler — Q-table lookup, confidence, timing (3 functions)
+- **pes_base/src/result_formatter.py**: JSON + 6-panel PNG report generation (5 functions)
+- **pes_base/src/terminal_utils.py**: ANSI-styled console formatting utilities (12 functions)
+
+**Totals**: 2 classes (ANSI, Pandemic), 59 function/method definitions across 11 modules.
+
+## Files Generated:
+
+### Training outputs (inputs/<date>_RL_TRAIN/):
+- q_<date>.npy: Trained Q-Table (31×11×11×11)
+- rewards_<date>.npy: Average rewards per 10k-episode windows
+- training_config_<date>.txt: Hyperparameters and training metadata
+- confsrl_<date>.npy: Raw confidence scores from evaluation
+- *.png: 8 plots (random baseline, agent performance, confidences)
+
+### Experiment outputs (outputs/<date>_RL_AGENT/):
+- PES_log_<date>_RL_AGENT.txt: Detailed execution log
+- PES_responses_<date>_RL_AGENT.txt: Agent decisions and confidence scores
+- PES_info_<date>_RL_AGENT.txt: Experiment metadata
+- PES_results_<date>_RL_AGENT.json: Statistical results (JSON)
+- PES_results_<date>_RL_AGENT.png: 6-panel performance visualisation
+- PES_movement_log_<date>.npy: Raw movement/decision data
+
+## Usage:
+- Execute experiment: `python3 -m pes_base`
+- Train new RL-Agent: `python3 -m pes_base.ext.train_rl [num_episodes]` (default: 1,000,000)
+
+## Documentation (4 files):
+- **PES.__doc__**: This file — project overview and quick reference
+- **explained_pes.md**: Detailed PES experiment explanation (Spanish)
+- **explained_rl.md**: Theory-to-code mapping for Q-Learning implementation
+- **theory_rl.md**: Pure RL theory — Markov chains, MDPs, Q-Learning, convergence
+
+## Configuration:
+The system supports flexible configuration via config/CONFIG.py with parameters for:
+- Player type selection (currently RL_AGENT only)
+- Resource availability and severity bounds
+- Block/sequence/trial structure (8×8×3-10)
+- Decision aggregation method (mean/median/mode)
+- Output preferences and verbosity levels
+
+## Pandemic Dynamics:
+- Severity update: new_severity = max(0, β·initial - α·resources)
+  - β = SEVERITY_MULTIPLIER = 1 + PANDEMIC_PARAMETER (1.4)
+  - α = RESPONSE_MULTIPLIER = PANDEMIC_PARAMETER (0.4)
+- Performance metric: (worst - actual) / (worst - best), range [0, 1]
+
+**Version**: PES v2.0
+**Last Updated**: 26 de febrero de 2026
+**Status**: Production-ready — 2 classes, 59 function definitions, NumPy-style docstrings
