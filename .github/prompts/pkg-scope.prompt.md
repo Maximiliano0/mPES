@@ -1,6 +1,6 @@
 # Package Scope — `<PKG>`
 
-> Last updated: 2026-04-28
+> Last updated: 2026-05-02
 
 Restrict the chat to a **single package** in the mPES workspace.
 
@@ -13,6 +13,7 @@ When invoking this prompt, specify the target package name. Examples:
 @pkg-scope pes_ql
 @pkg-scope pes_dql
 @pkg-scope pes_dqn
+@pkg-scope pes_rdqn
 @pkg-scope pes_a2c
 @pkg-scope pes_trf
 @pkg-scope pes_ens
@@ -35,6 +36,7 @@ any other package in this workspace.
 | `pes_ql` | Q-Learning + Bayesian optimisation (Optuna) | `ext/optimize_rl.py` |
 | `pes_dql` | Double Q-Learning, ε-decay warm-up, PBRS | `ext/pandemic.py`, `ext/optimize_rl.py` |
 | `pes_dqn` | Deep Q-Network (experience replay + target net) | `ext/dqn_model.py`, `ext/train_dqn.py`, `ext/optimize_dqn.py` |
+| `pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
 | `pes_a2c` | Advantage Actor-Critic (A2C, actor + critic nets) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
 | `pes_trf` | Causal Transformer encoder + DQN (sliding window) | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
 | `pes_ens` | Ensemble (soft voting of pes_dqn + pes_a2c + pes_rdqn + pes_trf) | `ext/ensemble_model.py` |

@@ -6,7 +6,7 @@ agent: "agent"
 
 # Create New mPES Package — `<NEW_PKG>`
 
-> Last updated: 2026-04-28
+> Last updated: 2026-05-02
 
 Generate a brand-new package inside the mPES workspace that follows the
 established `pes_*` structure, conventions, and end-to-end pipeline. The
@@ -27,7 +27,7 @@ Examples:
 ```text
 @create-pkg pes_ppo Proximal Policy Optimization (clipped surrogate, GAE)
 @create-pkg pes_sac Soft Actor-Critic with discrete action space
-@create-pkg pes_rdqn Recurrent DQN (LSTM over trial history)
+@create-pkg pes_ddqn Dueling Double DQN
 @create-pkg pes_tac Transformer-Actor-Critic
 @create-pkg pes_munch Munchausen DQN
 ```

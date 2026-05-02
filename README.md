@@ -120,6 +120,7 @@ python -m pes_a2c.ext.train_a2c 500000
 ./utils/linux/run_bayesian_opt.sh bayesian 100    # pes_ql, 100 trials
 ./utils/linux/run_bayesian_opt.sh dql 100         # pes_dql
 ./utils/linux/run_bayesian_opt.sh dqn 30          # pes_dqn
+./utils/linux/run_bayesian_opt.sh rdqn 30         # pes_rdqn
 ./utils/linux/run_bayesian_opt.sh ac 30           # pes_a2c
 ./utils/linux/run_bayesian_opt.sh transformer 30  # pes_trf
 

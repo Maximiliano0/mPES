@@ -1,6 +1,6 @@
 # Audit mPES — Code, Config, and Docs
 
-> Last updated: 2026-04-28
+> Last updated: 2026-05-02
 
 Perform a systematic correctness, consistency, and documentation audit of
 the mPES workspace.  Detect drift between code and documentation, stale
@@ -18,7 +18,10 @@ the keyword `all` to audit the entire project.  Examples:
 @audit-project pes_ql
 @audit-project pes_dql
 @audit-project pes_dqn
+@audit-project pes_rdqn
 @audit-project pes_a2c
+@audit-project pes_trf
+@audit-project pes_ens
 @audit-project utils
 @audit-project all
 ```

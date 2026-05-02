@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------
 #  Lanzar optimización Bayesiana
 #
-#  Script compartido para pes_ql, pes_dql, pes_dqn,
+#  Script compartido para pes_ql, pes_dql, pes_dqn, pes_rdqn,
 #  pes_a2c y pes_trf.  Todas las rutas se resuelven de forma
 #  relativa a la ubicación de este script (utils/ → mPES/).
 #

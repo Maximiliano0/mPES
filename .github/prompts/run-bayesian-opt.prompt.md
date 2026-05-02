@@ -1,6 +1,6 @@
 # Run Bayesian Optimisation
 
-> Last updated: 2026-04-28
+> Last updated: 2026-05-02
 
 Launch the Bayesian optimisation for a given package.
 
@@ -24,6 +24,7 @@ Each package has its own optimisation module:
 | `pes_ql` | `pes_ql.ext.optimize_rl` | `bayesian`, `bay`, `1` |
 | `pes_dql` | `pes_dql.ext.optimize_rl` | `dql`, `ql`, `2` |
 | `pes_dqn` | `pes_dqn.ext.optimize_dqn` | `dqn`, `3` |
+| `pes_rdqn` | `pes_rdqn.ext.optimize_rdqn` | `rdqn`, `7` |
 | `pes_a2c` | `pes_a2c.ext.optimize_a2c` | `ac`, `a2c`, `actor-critic`, `4` |
 | `pes_trf` | `pes_trf.ext.optimize_tr` | `transformer`, `tr`, `5` |
 

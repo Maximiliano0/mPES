@@ -1,6 +1,6 @@
 # Python 3 Script Template
 
-> Last updated: 2026-04-28
+> Last updated: 2026-05-02
 
 Generate a new Python 3 script following the mPES project conventions.
 
@@ -12,6 +12,7 @@ Generate a new Python 3 script following the mPES project conventions.
 | `pes_ql` | Q-Learning + Bayesian optimisation (Optuna) |
 | `pes_dql` | Double Q-Learning, ε-decay warm-up, PBRS |
 | `pes_dqn` | Deep Q-Network (experience replay + target net) |
+| `pes_rdqn` | Recurrent DQN (LSTM over trial history) |
 | `pes_a2c` | Advantage Actor-Critic (A2C, actor + critic nets) |
 | `pes_trf` | Causal Transformer encoder + DQN |
 | `pes_ens` | Ensemble (soft voting of pes_dqn + pes_a2c + pes_rdqn + pes_trf) |
