@@ -1,0 +1,184 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_TRF_AGENT",
+    "timestamp": "2026-05-04T18:16:55.042769",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "TRF_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 16,
+    "num_sequences": 4,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.9271801296208225,
+    "overall_median": 0.9336103112341091,
+    "overall_std": 0.045469255925100885,
+    "overall_min": 0.7860564129856308,
+    "overall_max": 1.0,
+    "total_sequences": 64,
+    "first_block_mean": 0.925949239696207,
+    "last_block_mean": 0.9345424071660675,
+    "improvement": 0.008593167469860497,
+    "percentile_25": 0.9077559892844369,
+    "percentile_75": 0.9592359833280215,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.9312203110022977,
+        "median": 0.9272714634348022,
+        "std": 0.022084900703017402,
+        "min": 0.9049346698583681,
+        "max": 0.9654036472812186,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 2,
+        "mean": 0.9206781683901162,
+        "median": 0.9075906834468916,
+        "std": 0.05401225801853406,
+        "min": 0.8675313066666815,
+        "max": 1.0,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 3,
+        "mean": 0.8876253566669983,
+        "median": 0.9029172269931878,
+        "std": 0.0478820020912497,
+        "min": 0.8102109526652247,
+        "max": 0.9344560200163927,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 4,
+        "mean": 0.9354466238921628,
+        "median": 0.9420513693696292,
+        "std": 0.02103185039018801,
+        "min": 0.9016076221295389,
+        "max": 0.9560761346998538,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 5,
+        "mean": 0.8648540159384145,
+        "median": 0.8623230054871253,
+        "std": 0.07169106583515694,
+        "min": 0.7860564129856308,
+        "max": 0.9487136397937765,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 6,
+        "mean": 0.9400114089251446,
+        "median": 0.9313725040271414,
+        "std": 0.041208742971294815,
+        "min": 0.8973006276462953,
+        "max": 1.0,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 7,
+        "mean": 0.9503124044922442,
+        "median": 0.946736620808247,
+        "std": 0.03208362194191258,
+        "min": 0.9157038788139722,
+        "max": 0.9920724975385105,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 8,
+        "mean": 0.9247403624339371,
+        "median": 0.9360914430865347,
+        "std": 0.05143817853161155,
+        "min": 0.846706821832906,
+        "max": 0.9800717417297728,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 9,
+        "mean": 0.9547016113351208,
+        "median": 0.9613211639439093,
+        "std": 0.01738783195112576,
+        "min": 0.9261604933552047,
+        "max": 0.9700036240974602,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 10,
+        "mean": 0.9509063352769322,
+        "median": 0.9457991703942339,
+        "std": 0.020833001958421554,
+        "min": 0.9289761528616342,
+        "max": 0.9830508474576272,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 11,
+        "mean": 0.8967657932251311,
+        "median": 0.905320472147078,
+        "std": 0.018147902835415643,
+        "min": 0.8657500478049572,
+        "max": 0.910672180801411,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 12,
+        "mean": 0.9439862071782842,
+        "median": 0.9420103092783505,
+        "std": 0.027793169772145878,
+        "min": 0.9118524684266629,
+        "max": 0.9800717417297728,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 13,
+        "mean": 0.9213286681274233,
+        "median": 0.9217183916266183,
+        "std": 0.04354231990043211,
+        "min": 0.860362177611355,
+        "max": 0.9815157116451018,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 14,
+        "mean": 0.9432199927168174,
+        "median": 0.9406408150394011,
+        "std": 0.007097629675555679,
+        "min": 0.9365881158395926,
+        "max": 0.9550102249488751,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 15,
+        "mean": 0.9427685727194708,
+        "median": 0.9673031517005131,
+        "std": 0.044498527809851626,
+        "min": 0.8657500478049572,
+        "max": 0.9707179396718999,
+        "num_sequences": 4
+      },
+      {
+        "block_number": 16,
+        "mean": 0.9263162416126642,
+        "median": 0.938766156449748,
+        "std": 0.036286380849039186,
+        "min": 0.8688614816959345,
+        "max": 0.9588711718552265,
+        "num_sequences": 4
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "TRF_AGENT",
+    "num_blocks": 16,
+    "num_sequences": 4,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_TRF_results_2026-05-04_TRF_AGENT.png",
+    "this_file": "PES_TRF_results_2026-05-04_TRF_AGENT.json"
+  }
+}

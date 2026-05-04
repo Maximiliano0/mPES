@@ -1,0 +1,2038 @@
+[ 2026-05-04 20:30:46.975516+00:00 ]: 
+====================================================================================================
+[ 2026-05-04 20:30:46.975516+00:00 ]:   STARTING EXPERIMENT: DQN_AGENT
+[ 2026-05-04 20:30:46.975516+00:00 ]:   Total: 8 Blocks × 8 Sequences = 64 Sessions
+[ 2026-05-04 20:30:46.975516+00:00 ]: ====================================================================================================
+
+[ 2026-05-04 20:30:46.975516+00:00 ]: 
+▶ BLOQUE 1 / 8
+[ 2026-05-04 20:30:46.975516+00:00 ]: Time elapsed: 0 minutes --  
+[ 2026-05-04 20:30:46.975516+00:00 ]:   └─ Secuencia 1/64 (Mapa #8) - Progreso: 1/8
+[ 2026-05-04 20:30:46.975516+00:00 ]:
+[ 2026-05-04 20:30:46.975516+00:00 ]: Current trial: 1 out of 3 in sequence (1 out of 360 overall)
+[ 2026-05-04 20:30:46.975516+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:46.975516+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:46.975516+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:47.125433+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.125433+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:47.125433+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.125433+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.125433+00:00 ]:
+[ 2026-05-04 20:30:47.125433+00:00 ]: Current trial: 2 out of 3 in sequence (2 out of 360 overall)
+[ 2026-05-04 20:30:47.125433+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:47.125433+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:47.125433+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:47.192214+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.192214+00:00 ]: Confidence was: 0.0680126119427074
+[ 2026-05-04 20:30:47.192214+00:00 ]: PressEvent_seconds was: 0.4507961040236479
+[ 2026-05-04 20:30:47.192214+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.192214+00:00 ]:
+[ 2026-05-04 20:30:47.192214+00:00 ]: Current trial: 3 out of 3 in sequence (3 out of 360 overall)
+[ 2026-05-04 20:30:47.192214+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:47.192214+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:47.192214+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.258746+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.258746+00:00 ]: Confidence was: 0.07642934603612485
+[ 2026-05-04 20:30:47.258746+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.258746+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.258746+00:00 ]: My Sequence Performances:  0.96
+[ 2026-05-04 20:30:47.258746+00:00 ]:
+[ 2026-05-04 20:30:47.258746+00:00 ]: Sequence 0: Performance = 0.9578
+[ 2026-05-04 20:30:47.258746+00:00 ]:   └─ Secuencia 2/64 (Mapa #3) - Progreso: 2/8
+[ 2026-05-04 20:30:47.258746+00:00 ]:
+[ 2026-05-04 20:30:47.258746+00:00 ]: Current trial: 1 out of 3 in sequence (4 out of 360 overall)
+[ 2026-05-04 20:30:47.258746+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:47.258746+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:47.258746+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.308733+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.308733+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:47.308733+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.308733+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.308733+00:00 ]:
+[ 2026-05-04 20:30:47.308733+00:00 ]: Current trial: 2 out of 3 in sequence (5 out of 360 overall)
+[ 2026-05-04 20:30:47.308733+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:47.308733+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:47.308733+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:47.358628+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.358628+00:00 ]: Confidence was: 0.0680126119427074
+[ 2026-05-04 20:30:47.358628+00:00 ]: PressEvent_seconds was: 0.4507961040236479
+[ 2026-05-04 20:30:47.358628+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.358628+00:00 ]:
+[ 2026-05-04 20:30:47.358628+00:00 ]: Current trial: 3 out of 3 in sequence (6 out of 360 overall)
+[ 2026-05-04 20:30:47.358628+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:47.358628+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:47.358628+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:47.408829+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.408829+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:47.408829+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.408829+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.408829+00:00 ]: My Sequence Performances:  0.96, 1.00
+[ 2026-05-04 20:30:47.408829+00:00 ]:
+[ 2026-05-04 20:30:47.408829+00:00 ]: Sequence 1: Performance = 1.0000
+[ 2026-05-04 20:30:47.408829+00:00 ]:   └─ Secuencia 3/64 (Mapa #7) - Progreso: 3/8
+[ 2026-05-04 20:30:47.408829+00:00 ]:
+[ 2026-05-04 20:30:47.408829+00:00 ]: Current trial: 1 out of 3 in sequence (7 out of 360 overall)
+[ 2026-05-04 20:30:47.408829+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:47.408829+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:47.408829+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:47.458779+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.458779+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:47.458779+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.458779+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.458779+00:00 ]:
+[ 2026-05-04 20:30:47.458779+00:00 ]: Current trial: 2 out of 3 in sequence (8 out of 360 overall)
+[ 2026-05-04 20:30:47.458779+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:47.458779+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:47.458779+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:47.508767+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.508767+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:47.508767+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.508767+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.508767+00:00 ]:
+[ 2026-05-04 20:30:47.508767+00:00 ]: Current trial: 3 out of 3 in sequence (9 out of 360 overall)
+[ 2026-05-04 20:30:47.508767+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:47.508767+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:47.508767+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:47.558765+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:47.558765+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:47.558765+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.558765+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.558765+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00
+[ 2026-05-04 20:30:47.558765+00:00 ]:
+[ 2026-05-04 20:30:47.558765+00:00 ]: Sequence 2: Performance = 1.0000
+[ 2026-05-04 20:30:47.558765+00:00 ]:   └─ Secuencia 4/64 (Mapa #4) - Progreso: 4/8
+[ 2026-05-04 20:30:47.558765+00:00 ]:
+[ 2026-05-04 20:30:47.558765+00:00 ]: Current trial: 1 out of 3 in sequence (10 out of 360 overall)
+[ 2026-05-04 20:30:47.558765+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:47.558765+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:47.558765+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.607598+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.607598+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:47.608197+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.608197+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.608197+00:00 ]:
+[ 2026-05-04 20:30:47.608197+00:00 ]: Current trial: 2 out of 3 in sequence (11 out of 360 overall)
+[ 2026-05-04 20:30:47.608197+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:47.608713+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:47.608713+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.641971+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.641971+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:47.641971+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.641971+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.641971+00:00 ]:
+[ 2026-05-04 20:30:47.641971+00:00 ]: Current trial: 3 out of 3 in sequence (12 out of 360 overall)
+[ 2026-05-04 20:30:47.641971+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:47.641971+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:47.641971+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:47.691979+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.691979+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:47.691979+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.691979+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.691979+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:47.691979+00:00 ]:
+[ 2026-05-04 20:30:47.691979+00:00 ]: Sequence 3: Performance = 1.0000
+[ 2026-05-04 20:30:47.691979+00:00 ]:   └─ Secuencia 5/64 (Mapa #2) - Progreso: 5/8
+[ 2026-05-04 20:30:47.691979+00:00 ]:
+[ 2026-05-04 20:30:47.691979+00:00 ]: Current trial: 1 out of 3 in sequence (13 out of 360 overall)
+[ 2026-05-04 20:30:47.691979+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:47.691979+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:47.691979+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:47.743579+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.743579+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:47.743579+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.743579+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.743579+00:00 ]:
+[ 2026-05-04 20:30:47.743579+00:00 ]: Current trial: 2 out of 3 in sequence (14 out of 360 overall)
+[ 2026-05-04 20:30:47.743579+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:47.743579+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:47.743579+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.775341+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.775341+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:47.775341+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.775341+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.775341+00:00 ]:
+[ 2026-05-04 20:30:47.775341+00:00 ]: Current trial: 3 out of 3 in sequence (15 out of 360 overall)
+[ 2026-05-04 20:30:47.775341+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.60
+[ 2026-05-04 20:30:47.775341+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:47.775341+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:47.825523+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:47.825523+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:47.825523+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.825523+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.825523+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:47.825523+00:00 ]:
+[ 2026-05-04 20:30:47.825523+00:00 ]: Sequence 4: Performance = 1.0000
+[ 2026-05-04 20:30:47.825523+00:00 ]:   └─ Secuencia 6/64 (Mapa #5) - Progreso: 6/8
+[ 2026-05-04 20:30:47.825523+00:00 ]:
+[ 2026-05-04 20:30:47.825523+00:00 ]: Current trial: 1 out of 3 in sequence (16 out of 360 overall)
+[ 2026-05-04 20:30:47.825523+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:47.825523+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:47.825523+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.875330+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.875330+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:47.875330+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.875330+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.875330+00:00 ]:
+[ 2026-05-04 20:30:47.875330+00:00 ]: Current trial: 2 out of 3 in sequence (17 out of 360 overall)
+[ 2026-05-04 20:30:47.875330+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:47.875330+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:47.875330+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:47.924276+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:47.924276+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:47.924276+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.924766+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.924766+00:00 ]:
+[ 2026-05-04 20:30:47.924766+00:00 ]: Current trial: 3 out of 3 in sequence (18 out of 360 overall)
+[ 2026-05-04 20:30:47.924766+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:47.924766+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:47.925413+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:47.958619+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:47.958619+00:00 ]: Confidence was: 0.07642934603612485
+[ 2026-05-04 20:30:47.958619+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.958619+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:47.958619+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97
+[ 2026-05-04 20:30:47.958619+00:00 ]:
+[ 2026-05-04 20:30:47.958619+00:00 ]: Sequence 5: Performance = 0.9718
+[ 2026-05-04 20:30:47.958619+00:00 ]:   └─ Secuencia 7/64 (Mapa #1) - Progreso: 7/8
+[ 2026-05-04 20:30:47.958619+00:00 ]:
+[ 2026-05-04 20:30:47.958619+00:00 ]: Current trial: 1 out of 3 in sequence (19 out of 360 overall)
+[ 2026-05-04 20:30:47.958619+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:47.958619+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:47.958619+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:48.008573+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.008573+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:48.008573+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.008573+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.008573+00:00 ]:
+[ 2026-05-04 20:30:48.008573+00:00 ]: Current trial: 2 out of 3 in sequence (20 out of 360 overall)
+[ 2026-05-04 20:30:48.008573+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:48.008573+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.008573+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:48.058105+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.058105+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:48.058708+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.058708+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.058708+00:00 ]:
+[ 2026-05-04 20:30:48.058708+00:00 ]: Current trial: 3 out of 3 in sequence (21 out of 360 overall)
+[ 2026-05-04 20:30:48.058708+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:48.058708+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:48.058708+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.092025+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:48.092025+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:48.092025+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.092025+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.092025+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00
+[ 2026-05-04 20:30:48.092025+00:00 ]:
+[ 2026-05-04 20:30:48.092025+00:00 ]: Sequence 6: Performance = 1.0000
+[ 2026-05-04 20:30:48.092025+00:00 ]:   └─ Secuencia 8/64 (Mapa #6) - Progreso: 8/8
+[ 2026-05-04 20:30:48.092025+00:00 ]:
+[ 2026-05-04 20:30:48.092025+00:00 ]: Current trial: 1 out of 3 in sequence (22 out of 360 overall)
+[ 2026-05-04 20:30:48.092025+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.092025+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.092025+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:48.142243+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.142243+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:48.142243+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.142243+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.142243+00:00 ]:
+[ 2026-05-04 20:30:48.142243+00:00 ]: Current trial: 2 out of 3 in sequence (23 out of 360 overall)
+[ 2026-05-04 20:30:48.142243+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:48.142243+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.142243+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:48.191975+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.191975+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:48.191975+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.191975+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.191975+00:00 ]:
+[ 2026-05-04 20:30:48.191975+00:00 ]: Current trial: 3 out of 3 in sequence (24 out of 360 overall)
+[ 2026-05-04 20:30:48.191975+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:48.191975+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:48.191975+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.225500+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:48.225500+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:48.225500+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.225500+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.225500+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00
+[ 2026-05-04 20:30:48.225500+00:00 ]:
+[ 2026-05-04 20:30:48.225500+00:00 ]: Sequence 7: Performance = 1.0000
+[ 2026-05-04 20:30:48.225500+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:48.225500+00:00 ]: 
+▶ BLOQUE 2 / 8
+[ 2026-05-04 20:30:48.225500+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:48.225500+00:00 ]:   └─ Secuencia 9/64 (Mapa #1) - Progreso: 1/8
+[ 2026-05-04 20:30:48.225500+00:00 ]:
+[ 2026-05-04 20:30:48.225500+00:00 ]: Current trial: 1 out of 3 in sequence (25 out of 360 overall)
+[ 2026-05-04 20:30:48.225500+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.225500+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.225500+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.258620+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.258620+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:48.258620+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.258620+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.258620+00:00 ]:
+[ 2026-05-04 20:30:48.258620+00:00 ]: Current trial: 2 out of 3 in sequence (26 out of 360 overall)
+[ 2026-05-04 20:30:48.258620+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:48.258620+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.258620+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.307738+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.307738+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:48.308085+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.308085+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.308085+00:00 ]:
+[ 2026-05-04 20:30:48.308085+00:00 ]: Current trial: 3 out of 3 in sequence (27 out of 360 overall)
+[ 2026-05-04 20:30:48.308085+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:48.308085+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:48.308588+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.341983+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.341983+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:48.341983+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:48.341983+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.341983+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97
+[ 2026-05-04 20:30:48.341983+00:00 ]:
+[ 2026-05-04 20:30:48.341983+00:00 ]: Sequence 8: Performance = 0.9683
+[ 2026-05-04 20:30:48.341983+00:00 ]:   └─ Secuencia 10/64 (Mapa #6) - Progreso: 2/8
+[ 2026-05-04 20:30:48.341983+00:00 ]:
+[ 2026-05-04 20:30:48.341983+00:00 ]: Current trial: 1 out of 3 in sequence (28 out of 360 overall)
+[ 2026-05-04 20:30:48.341983+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.341983+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.341983+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.375317+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.375317+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:48.375317+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.375317+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.375317+00:00 ]:
+[ 2026-05-04 20:30:48.375317+00:00 ]: Current trial: 2 out of 3 in sequence (29 out of 360 overall)
+[ 2026-05-04 20:30:48.375317+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:48.375317+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.375317+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.408854+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.408854+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:48.408854+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.408854+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.408854+00:00 ]:
+[ 2026-05-04 20:30:48.408854+00:00 ]: Current trial: 3 out of 3 in sequence (30 out of 360 overall)
+[ 2026-05-04 20:30:48.424474+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:48.424474+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:48.424474+00:00 ]: Current trial's initial severity: 5.0
+[ 2026-05-04 20:30:48.475326+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.475326+00:00 ]: Confidence was: 0.07558697651058216
+[ 2026-05-04 20:30:48.475326+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.475326+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.475326+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98
+[ 2026-05-04 20:30:48.475326+00:00 ]:
+[ 2026-05-04 20:30:48.475326+00:00 ]: Sequence 9: Performance = 0.9779
+[ 2026-05-04 20:30:48.475326+00:00 ]:   └─ Secuencia 11/64 (Mapa #7) - Progreso: 3/8
+[ 2026-05-04 20:30:48.475326+00:00 ]:
+[ 2026-05-04 20:30:48.475326+00:00 ]: Current trial: 1 out of 3 in sequence (31 out of 360 overall)
+[ 2026-05-04 20:30:48.475326+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.475326+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.475326+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.508846+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.508846+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:48.508846+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.508846+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.524467+00:00 ]:
+[ 2026-05-04 20:30:48.524753+00:00 ]: Current trial: 2 out of 3 in sequence (32 out of 360 overall)
+[ 2026-05-04 20:30:48.524753+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:48.525341+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.525341+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.575338+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.575338+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:48.575338+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.575338+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.575338+00:00 ]:
+[ 2026-05-04 20:30:48.575338+00:00 ]: Current trial: 3 out of 3 in sequence (33 out of 360 overall)
+[ 2026-05-04 20:30:48.575338+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:48.575338+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:48.575338+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.625323+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:48.625323+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:48.625323+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.625323+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.625323+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00
+[ 2026-05-04 20:30:48.625323+00:00 ]:
+[ 2026-05-04 20:30:48.625323+00:00 ]: Sequence 10: Performance = 1.0000
+[ 2026-05-04 20:30:48.625323+00:00 ]:   └─ Secuencia 12/64 (Mapa #8) - Progreso: 4/8
+[ 2026-05-04 20:30:48.625323+00:00 ]:
+[ 2026-05-04 20:30:48.625323+00:00 ]: Current trial: 1 out of 3 in sequence (34 out of 360 overall)
+[ 2026-05-04 20:30:48.625323+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.625323+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.625323+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.658972+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.658972+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:48.658972+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.658972+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.658972+00:00 ]:
+[ 2026-05-04 20:30:48.658972+00:00 ]: Current trial: 2 out of 3 in sequence (35 out of 360 overall)
+[ 2026-05-04 20:30:48.658972+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:48.658972+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.658972+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:48.708875+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.708875+00:00 ]: Confidence was: 0.08108712156682156
+[ 2026-05-04 20:30:48.708875+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.708875+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.708875+00:00 ]:
+[ 2026-05-04 20:30:48.708875+00:00 ]: Current trial: 3 out of 3 in sequence (36 out of 360 overall)
+[ 2026-05-04 20:30:48.708875+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 2.00
+[ 2026-05-04 20:30:48.708875+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:48.708875+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:48.742223+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.742223+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:48.742223+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.742223+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.742223+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00
+[ 2026-05-04 20:30:48.742223+00:00 ]:
+[ 2026-05-04 20:30:48.742223+00:00 ]: Sequence 11: Performance = 1.0000
+[ 2026-05-04 20:30:48.742223+00:00 ]:   └─ Secuencia 13/64 (Mapa #4) - Progreso: 5/8
+[ 2026-05-04 20:30:48.742223+00:00 ]:
+[ 2026-05-04 20:30:48.742223+00:00 ]: Current trial: 1 out of 3 in sequence (37 out of 360 overall)
+[ 2026-05-04 20:30:48.742223+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.742223+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.742223+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.808626+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.808626+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:48.808626+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.808626+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.808626+00:00 ]:
+[ 2026-05-04 20:30:48.808626+00:00 ]: Current trial: 2 out of 3 in sequence (38 out of 360 overall)
+[ 2026-05-04 20:30:48.808626+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:48.808626+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.808626+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.842165+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.842165+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:48.842165+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.842165+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.842165+00:00 ]:
+[ 2026-05-04 20:30:48.842165+00:00 ]: Current trial: 3 out of 3 in sequence (39 out of 360 overall)
+[ 2026-05-04 20:30:48.842165+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:48.842165+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:48.842165+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.891942+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.891942+00:00 ]: Confidence was: 0.07642934603612485
+[ 2026-05-04 20:30:48.891942+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.891942+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.891942+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95
+[ 2026-05-04 20:30:48.891942+00:00 ]:
+[ 2026-05-04 20:30:48.891942+00:00 ]: Sequence 12: Performance = 0.9540
+[ 2026-05-04 20:30:48.891942+00:00 ]:   └─ Secuencia 14/64 (Mapa #5) - Progreso: 6/8
+[ 2026-05-04 20:30:48.891942+00:00 ]:
+[ 2026-05-04 20:30:48.891942+00:00 ]: Current trial: 1 out of 3 in sequence (40 out of 360 overall)
+[ 2026-05-04 20:30:48.891942+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:48.891942+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:48.891942+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.925390+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:48.925390+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:48.925390+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.925390+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.925390+00:00 ]:
+[ 2026-05-04 20:30:48.925390+00:00 ]: Current trial: 2 out of 3 in sequence (41 out of 360 overall)
+[ 2026-05-04 20:30:48.925390+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:48.925390+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:48.925390+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:48.958682+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:48.958682+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:48.958682+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.958682+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.958682+00:00 ]:
+[ 2026-05-04 20:30:48.958682+00:00 ]: Current trial: 3 out of 3 in sequence (42 out of 360 overall)
+[ 2026-05-04 20:30:48.958682+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:48.958682+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:48.958682+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:48.991970+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:48.991970+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:48.991970+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.991970+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:48.991970+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00
+[ 2026-05-04 20:30:48.991970+00:00 ]:
+[ 2026-05-04 20:30:48.991970+00:00 ]: Sequence 13: Performance = 1.0000
+[ 2026-05-04 20:30:48.991970+00:00 ]:   └─ Secuencia 15/64 (Mapa #3) - Progreso: 7/8
+[ 2026-05-04 20:30:49.007591+00:00 ]:
+[ 2026-05-04 20:30:49.007591+00:00 ]: Current trial: 1 out of 3 in sequence (43 out of 360 overall)
+[ 2026-05-04 20:30:49.007591+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.007591+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.007591+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.042052+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.042052+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:49.042052+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.042052+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.042052+00:00 ]:
+[ 2026-05-04 20:30:49.042052+00:00 ]: Current trial: 2 out of 3 in sequence (44 out of 360 overall)
+[ 2026-05-04 20:30:49.042052+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:49.042052+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.042052+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.075478+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.075478+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:49.075478+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.075478+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.075478+00:00 ]:
+[ 2026-05-04 20:30:49.075478+00:00 ]: Current trial: 3 out of 3 in sequence (45 out of 360 overall)
+[ 2026-05-04 20:30:49.075478+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:49.075478+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:49.075478+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.108823+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.108823+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:49.108823+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.108823+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.108823+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00
+[ 2026-05-04 20:30:49.108823+00:00 ]:
+[ 2026-05-04 20:30:49.108823+00:00 ]: Sequence 14: Performance = 1.0000
+[ 2026-05-04 20:30:49.108823+00:00 ]:   └─ Secuencia 16/64 (Mapa #2) - Progreso: 8/8
+[ 2026-05-04 20:30:49.108823+00:00 ]:
+[ 2026-05-04 20:30:49.108823+00:00 ]: Current trial: 1 out of 3 in sequence (46 out of 360 overall)
+[ 2026-05-04 20:30:49.108823+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.108823+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.108823+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.142266+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.142266+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:49.142266+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.142266+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.142266+00:00 ]:
+[ 2026-05-04 20:30:49.142266+00:00 ]: Current trial: 2 out of 3 in sequence (47 out of 360 overall)
+[ 2026-05-04 20:30:49.142266+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:49.142266+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.142266+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.191934+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.191934+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:49.191934+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.191934+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.191934+00:00 ]:
+[ 2026-05-04 20:30:49.191934+00:00 ]: Current trial: 3 out of 3 in sequence (48 out of 360 overall)
+[ 2026-05-04 20:30:49.191934+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:49.191934+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:49.191934+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.225412+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.225412+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:49.225412+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:49.225412+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.225412+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98
+[ 2026-05-04 20:30:49.225412+00:00 ]:
+[ 2026-05-04 20:30:49.225412+00:00 ]: Sequence 15: Performance = 0.9752
+[ 2026-05-04 20:30:49.225412+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:49.225412+00:00 ]: 
+▶ BLOQUE 3 / 8
+[ 2026-05-04 20:30:49.225412+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:49.225412+00:00 ]:   └─ Secuencia 17/64 (Mapa #3) - Progreso: 1/8
+[ 2026-05-04 20:30:49.225412+00:00 ]:
+[ 2026-05-04 20:30:49.225412+00:00 ]: Current trial: 1 out of 3 in sequence (49 out of 360 overall)
+[ 2026-05-04 20:30:49.225412+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.225412+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.225412+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.275487+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.275487+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:49.275487+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.275487+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.275487+00:00 ]:
+[ 2026-05-04 20:30:49.275487+00:00 ]: Current trial: 2 out of 3 in sequence (50 out of 360 overall)
+[ 2026-05-04 20:30:49.275487+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:49.275487+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.275487+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.308595+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.308595+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:49.308595+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.308595+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.308595+00:00 ]:
+[ 2026-05-04 20:30:49.308595+00:00 ]: Current trial: 3 out of 3 in sequence (51 out of 360 overall)
+[ 2026-05-04 20:30:49.308595+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:49.308595+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:49.308595+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.358645+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.358645+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:49.358645+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:49.358645+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.358645+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97
+[ 2026-05-04 20:30:49.358645+00:00 ]:
+[ 2026-05-04 20:30:49.358645+00:00 ]: Sequence 16: Performance = 0.9702
+[ 2026-05-04 20:30:49.358645+00:00 ]:   └─ Secuencia 18/64 (Mapa #2) - Progreso: 2/8
+[ 2026-05-04 20:30:49.358645+00:00 ]:
+[ 2026-05-04 20:30:49.358645+00:00 ]: Current trial: 1 out of 3 in sequence (52 out of 360 overall)
+[ 2026-05-04 20:30:49.358645+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.358645+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.358645+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.408653+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.408653+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:49.408653+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.408653+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.408653+00:00 ]:
+[ 2026-05-04 20:30:49.408653+00:00 ]: Current trial: 2 out of 3 in sequence (53 out of 360 overall)
+[ 2026-05-04 20:30:49.408653+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:49.408653+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.408653+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:49.475294+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.475294+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:49.475294+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.475294+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.475294+00:00 ]:
+[ 2026-05-04 20:30:49.475294+00:00 ]: Current trial: 3 out of 3 in sequence (54 out of 360 overall)
+[ 2026-05-04 20:30:49.475294+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:49.475294+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:49.475294+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:49.525274+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:49.525274+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:49.525274+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.525274+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.525274+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00
+[ 2026-05-04 20:30:49.525274+00:00 ]:
+[ 2026-05-04 20:30:49.540896+00:00 ]: Sequence 17: Performance = 1.0000
+[ 2026-05-04 20:30:49.540896+00:00 ]:   └─ Secuencia 19/64 (Mapa #8) - Progreso: 3/8
+[ 2026-05-04 20:30:49.541383+00:00 ]:
+[ 2026-05-04 20:30:49.541383+00:00 ]: Current trial: 1 out of 3 in sequence (55 out of 360 overall)
+[ 2026-05-04 20:30:49.541383+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.541383+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.541383+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.575231+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.575231+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:49.575231+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.575231+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.575231+00:00 ]:
+[ 2026-05-04 20:30:49.575231+00:00 ]: Current trial: 2 out of 3 in sequence (56 out of 360 overall)
+[ 2026-05-04 20:30:49.575231+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:49.575231+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.575231+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:49.625263+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.625263+00:00 ]: Confidence was: 0.08108712156682156
+[ 2026-05-04 20:30:49.625263+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.625263+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.625263+00:00 ]:
+[ 2026-05-04 20:30:49.625263+00:00 ]: Current trial: 3 out of 3 in sequence (57 out of 360 overall)
+[ 2026-05-04 20:30:49.625263+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 2.00
+[ 2026-05-04 20:30:49.625263+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:49.625263+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:49.675249+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:49.675249+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:49.675249+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.675249+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.675249+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00
+[ 2026-05-04 20:30:49.675249+00:00 ]:
+[ 2026-05-04 20:30:49.675249+00:00 ]: Sequence 18: Performance = 1.0000
+[ 2026-05-04 20:30:49.675249+00:00 ]:   └─ Secuencia 20/64 (Mapa #7) - Progreso: 4/8
+[ 2026-05-04 20:30:49.675249+00:00 ]:
+[ 2026-05-04 20:30:49.675249+00:00 ]: Current trial: 1 out of 3 in sequence (58 out of 360 overall)
+[ 2026-05-04 20:30:49.675249+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.675249+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.675249+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.708691+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.708691+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:49.708691+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.708691+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.708691+00:00 ]:
+[ 2026-05-04 20:30:49.708691+00:00 ]: Current trial: 2 out of 3 in sequence (59 out of 360 overall)
+[ 2026-05-04 20:30:49.708691+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:49.708691+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.708691+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:49.758656+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.758656+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:49.758656+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.758656+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.758656+00:00 ]:
+[ 2026-05-04 20:30:49.758656+00:00 ]: Current trial: 3 out of 3 in sequence (60 out of 360 overall)
+[ 2026-05-04 20:30:49.758656+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:49.758656+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:49.758656+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:49.825221+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.825221+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:49.825221+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.825221+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.825221+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:49.825221+00:00 ]:
+[ 2026-05-04 20:30:49.825221+00:00 ]: Sequence 19: Performance = 1.0000
+[ 2026-05-04 20:30:49.840842+00:00 ]:   └─ Secuencia 21/64 (Mapa #4) - Progreso: 5/8
+[ 2026-05-04 20:30:49.840842+00:00 ]:
+[ 2026-05-04 20:30:49.840842+00:00 ]: Current trial: 1 out of 3 in sequence (61 out of 360 overall)
+[ 2026-05-04 20:30:49.840842+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.841395+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.841395+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.891918+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:49.891918+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:49.891918+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.891918+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.891918+00:00 ]:
+[ 2026-05-04 20:30:49.891918+00:00 ]: Current trial: 2 out of 3 in sequence (62 out of 360 overall)
+[ 2026-05-04 20:30:49.891918+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:49.891918+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:49.891918+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.942110+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.942110+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:49.942110+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.942110+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.942110+00:00 ]:
+[ 2026-05-04 20:30:49.942110+00:00 ]: Current trial: 3 out of 3 in sequence (63 out of 360 overall)
+[ 2026-05-04 20:30:49.942110+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:49.942110+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:49.942110+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:49.975350+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:49.975350+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:49.975350+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:49.975350+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:49.975350+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98
+[ 2026-05-04 20:30:49.975350+00:00 ]:
+[ 2026-05-04 20:30:49.975350+00:00 ]: Sequence 20: Performance = 0.9779
+[ 2026-05-04 20:30:49.975350+00:00 ]:   └─ Secuencia 22/64 (Mapa #6) - Progreso: 6/8
+[ 2026-05-04 20:30:49.975350+00:00 ]:
+[ 2026-05-04 20:30:49.975350+00:00 ]: Current trial: 1 out of 3 in sequence (64 out of 360 overall)
+[ 2026-05-04 20:30:49.975350+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:49.975350+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:49.975350+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.025281+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.025281+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:50.025281+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.025281+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.025281+00:00 ]:
+[ 2026-05-04 20:30:50.025281+00:00 ]: Current trial: 2 out of 3 in sequence (65 out of 360 overall)
+[ 2026-05-04 20:30:50.025281+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:50.025281+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.025281+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.058596+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.058596+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:50.058596+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.058596+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.058596+00:00 ]:
+[ 2026-05-04 20:30:50.058596+00:00 ]: Current trial: 3 out of 3 in sequence (66 out of 360 overall)
+[ 2026-05-04 20:30:50.058596+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:50.058596+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:50.058596+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.092037+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.092037+00:00 ]: Confidence was: 0.07642934603612485
+[ 2026-05-04 20:30:50.092037+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.092037+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.092037+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95
+[ 2026-05-04 20:30:50.092037+00:00 ]:
+[ 2026-05-04 20:30:50.092037+00:00 ]: Sequence 21: Performance = 0.9540
+[ 2026-05-04 20:30:50.092037+00:00 ]:   └─ Secuencia 23/64 (Mapa #0) - Progreso: 7/8
+[ 2026-05-04 20:30:50.092037+00:00 ]:
+[ 2026-05-04 20:30:50.092037+00:00 ]: Current trial: 1 out of 3 in sequence (67 out of 360 overall)
+[ 2026-05-04 20:30:50.107657+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.107657+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.107657+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:50.142044+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.142044+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:50.142044+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.142044+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.142044+00:00 ]:
+[ 2026-05-04 20:30:50.142044+00:00 ]: Current trial: 2 out of 3 in sequence (68 out of 360 overall)
+[ 2026-05-04 20:30:50.142044+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:50.142044+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.142044+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:50.175226+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.175226+00:00 ]: Confidence was: 0.0680126119427074
+[ 2026-05-04 20:30:50.175226+00:00 ]: PressEvent_seconds was: 0.4507961040236479
+[ 2026-05-04 20:30:50.175226+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.175226+00:00 ]:
+[ 2026-05-04 20:30:50.175226+00:00 ]: Current trial: 3 out of 3 in sequence (69 out of 360 overall)
+[ 2026-05-04 20:30:50.175226+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:50.175226+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:50.175226+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:50.225125+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:50.225125+00:00 ]: Confidence was: 0.0665410498628627
+[ 2026-05-04 20:30:50.225125+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.225125+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.225125+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00
+[ 2026-05-04 20:30:50.225125+00:00 ]:
+[ 2026-05-04 20:30:50.225125+00:00 ]: Sequence 22: Performance = 1.0000
+[ 2026-05-04 20:30:50.225125+00:00 ]:   └─ Secuencia 24/64 (Mapa #5) - Progreso: 8/8
+[ 2026-05-04 20:30:50.225125+00:00 ]:
+[ 2026-05-04 20:30:50.225125+00:00 ]: Current trial: 1 out of 3 in sequence (70 out of 360 overall)
+[ 2026-05-04 20:30:50.225125+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.225125+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.225125+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.275181+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.275181+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:50.275181+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.275181+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.275181+00:00 ]:
+[ 2026-05-04 20:30:50.275181+00:00 ]: Current trial: 2 out of 3 in sequence (71 out of 360 overall)
+[ 2026-05-04 20:30:50.275181+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:50.275181+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.275181+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.308725+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.308725+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:50.308725+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.308725+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.308725+00:00 ]:
+[ 2026-05-04 20:30:50.308725+00:00 ]: Current trial: 3 out of 3 in sequence (72 out of 360 overall)
+[ 2026-05-04 20:30:50.308725+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:50.308725+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:50.308725+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:50.341899+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.341899+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:50.341899+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.341899+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.341899+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00
+[ 2026-05-04 20:30:50.341899+00:00 ]:
+[ 2026-05-04 20:30:50.341899+00:00 ]: Sequence 23: Performance = 1.0000
+[ 2026-05-04 20:30:50.341899+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:50.341899+00:00 ]: 
+▶ BLOQUE 4 / 8
+[ 2026-05-04 20:30:50.341899+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:50.341899+00:00 ]:   └─ Secuencia 25/64 (Mapa #7) - Progreso: 1/8
+[ 2026-05-04 20:30:50.341899+00:00 ]:
+[ 2026-05-04 20:30:50.341899+00:00 ]: Current trial: 1 out of 3 in sequence (73 out of 360 overall)
+[ 2026-05-04 20:30:50.341899+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.341899+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.341899+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.376629+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.376629+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:50.376629+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.376629+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.376629+00:00 ]:
+[ 2026-05-04 20:30:50.376629+00:00 ]: Current trial: 2 out of 3 in sequence (74 out of 360 overall)
+[ 2026-05-04 20:30:50.376629+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:50.376629+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.376629+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.408729+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.408729+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:50.408729+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.408729+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.408729+00:00 ]:
+[ 2026-05-04 20:30:50.408729+00:00 ]: Current trial: 3 out of 3 in sequence (75 out of 360 overall)
+[ 2026-05-04 20:30:50.408729+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:50.408729+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:50.408729+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:50.458546+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.458546+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:50.458546+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.458546+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.458546+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:50.458546+00:00 ]:
+[ 2026-05-04 20:30:50.458546+00:00 ]: Sequence 24: Performance = 1.0000
+[ 2026-05-04 20:30:50.458546+00:00 ]:   └─ Secuencia 26/64 (Mapa #3) - Progreso: 2/8
+[ 2026-05-04 20:30:50.458546+00:00 ]:
+[ 2026-05-04 20:30:50.458546+00:00 ]: Current trial: 1 out of 3 in sequence (76 out of 360 overall)
+[ 2026-05-04 20:30:50.458546+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.458546+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.458546+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.492089+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.492089+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:50.492089+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.492089+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.492089+00:00 ]:
+[ 2026-05-04 20:30:50.492089+00:00 ]: Current trial: 2 out of 3 in sequence (77 out of 360 overall)
+[ 2026-05-04 20:30:50.492089+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:50.492089+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.492089+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:50.525385+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.525385+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:50.525385+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.525385+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.525385+00:00 ]:
+[ 2026-05-04 20:30:50.525385+00:00 ]: Current trial: 3 out of 3 in sequence (78 out of 360 overall)
+[ 2026-05-04 20:30:50.525385+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:50.525385+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:50.525385+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.575606+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.575606+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:50.575606+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:50.575606+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.575606+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98
+[ 2026-05-04 20:30:50.575606+00:00 ]:
+[ 2026-05-04 20:30:50.575606+00:00 ]: Sequence 25: Performance = 0.9752
+[ 2026-05-04 20:30:50.575606+00:00 ]:   └─ Secuencia 27/64 (Mapa #6) - Progreso: 3/8
+[ 2026-05-04 20:30:50.575606+00:00 ]:
+[ 2026-05-04 20:30:50.575606+00:00 ]: Current trial: 1 out of 3 in sequence (79 out of 360 overall)
+[ 2026-05-04 20:30:50.575606+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.575606+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.575606+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.608770+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.608770+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:50.608770+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.608770+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.608770+00:00 ]:
+[ 2026-05-04 20:30:50.608770+00:00 ]: Current trial: 2 out of 3 in sequence (80 out of 360 overall)
+[ 2026-05-04 20:30:50.608770+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:50.608770+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.608770+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.641937+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.641937+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:50.641937+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.641937+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.641937+00:00 ]:
+[ 2026-05-04 20:30:50.641937+00:00 ]: Current trial: 3 out of 3 in sequence (81 out of 360 overall)
+[ 2026-05-04 20:30:50.641937+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:50.641937+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:50.641937+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.675117+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:50.675117+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:50.675117+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.675117+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.675117+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00
+[ 2026-05-04 20:30:50.675117+00:00 ]:
+[ 2026-05-04 20:30:50.675117+00:00 ]: Sequence 26: Performance = 1.0000
+[ 2026-05-04 20:30:50.675117+00:00 ]:   └─ Secuencia 28/64 (Mapa #1) - Progreso: 4/8
+[ 2026-05-04 20:30:50.675117+00:00 ]:
+[ 2026-05-04 20:30:50.675117+00:00 ]: Current trial: 1 out of 3 in sequence (82 out of 360 overall)
+[ 2026-05-04 20:30:50.690737+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.690737+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.690737+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:50.708720+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.724340+00:00 ]: Confidence was: 0.06858253123633468
+[ 2026-05-04 20:30:50.724640+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.724640+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.724640+00:00 ]:
+[ 2026-05-04 20:30:50.725127+00:00 ]: Current trial: 2 out of 3 in sequence (83 out of 360 overall)
+[ 2026-05-04 20:30:50.725127+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:50.725127+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.725127+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.758496+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.758496+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:50.758496+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.758496+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.758496+00:00 ]:
+[ 2026-05-04 20:30:50.758496+00:00 ]: Current trial: 3 out of 3 in sequence (84 out of 360 overall)
+[ 2026-05-04 20:30:50.758496+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:50.758496+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:50.758496+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.791957+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:50.791957+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:50.791957+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.791957+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.791957+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00
+[ 2026-05-04 20:30:50.791957+00:00 ]:
+[ 2026-05-04 20:30:50.791957+00:00 ]: Sequence 27: Performance = 1.0000
+[ 2026-05-04 20:30:50.791957+00:00 ]:   └─ Secuencia 29/64 (Mapa #5) - Progreso: 5/8
+[ 2026-05-04 20:30:50.791957+00:00 ]:
+[ 2026-05-04 20:30:50.791957+00:00 ]: Current trial: 1 out of 3 in sequence (85 out of 360 overall)
+[ 2026-05-04 20:30:50.791957+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.791957+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.791957+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:50.825477+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.825477+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:50.825477+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.825477+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.825477+00:00 ]:
+[ 2026-05-04 20:30:50.825477+00:00 ]: Current trial: 2 out of 3 in sequence (86 out of 360 overall)
+[ 2026-05-04 20:30:50.825477+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:50.825477+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.825477+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.858582+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.858582+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:50.858582+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.858582+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.858582+00:00 ]:
+[ 2026-05-04 20:30:50.858582+00:00 ]: Current trial: 3 out of 3 in sequence (87 out of 360 overall)
+[ 2026-05-04 20:30:50.858582+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:50.858582+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:50.858582+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.892012+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.892012+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:50.892012+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:50.892012+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.892012+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97
+[ 2026-05-04 20:30:50.892012+00:00 ]:
+[ 2026-05-04 20:30:50.892012+00:00 ]: Sequence 28: Performance = 0.9740
+[ 2026-05-04 20:30:50.892012+00:00 ]:   └─ Secuencia 30/64 (Mapa #4) - Progreso: 6/8
+[ 2026-05-04 20:30:50.892012+00:00 ]:
+[ 2026-05-04 20:30:50.892012+00:00 ]: Current trial: 1 out of 3 in sequence (88 out of 360 overall)
+[ 2026-05-04 20:30:50.892012+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:50.892012+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:50.892012+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:50.925412+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:50.925412+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:50.925412+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.925412+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.925412+00:00 ]:
+[ 2026-05-04 20:30:50.925412+00:00 ]: Current trial: 2 out of 3 in sequence (89 out of 360 overall)
+[ 2026-05-04 20:30:50.925412+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:50.925412+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:50.925412+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:50.958720+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:50.958720+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:50.958720+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.958720+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.958720+00:00 ]:
+[ 2026-05-04 20:30:50.958720+00:00 ]: Current trial: 3 out of 3 in sequence (90 out of 360 overall)
+[ 2026-05-04 20:30:50.958720+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:50.958720+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:50.958720+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:50.992048+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:50.992048+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:50.992048+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.992048+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:50.992048+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00
+[ 2026-05-04 20:30:50.992048+00:00 ]:
+[ 2026-05-04 20:30:51.007666+00:00 ]: Sequence 29: Performance = 1.0000
+[ 2026-05-04 20:30:51.007666+00:00 ]:   └─ Secuencia 31/64 (Mapa #8) - Progreso: 7/8
+[ 2026-05-04 20:30:51.007666+00:00 ]:
+[ 2026-05-04 20:30:51.007978+00:00 ]: Current trial: 1 out of 3 in sequence (91 out of 360 overall)
+[ 2026-05-04 20:30:51.007978+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.007978+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.007978+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.041963+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.041963+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:51.041963+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.041963+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.041963+00:00 ]:
+[ 2026-05-04 20:30:51.041963+00:00 ]: Current trial: 2 out of 3 in sequence (92 out of 360 overall)
+[ 2026-05-04 20:30:51.041963+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:51.041963+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.041963+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:51.075445+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.075445+00:00 ]: Confidence was: 0.0680126119427074
+[ 2026-05-04 20:30:51.075445+00:00 ]: PressEvent_seconds was: 0.4507961040236479
+[ 2026-05-04 20:30:51.075445+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.075445+00:00 ]:
+[ 2026-05-04 20:30:51.075445+00:00 ]: Current trial: 3 out of 3 in sequence (93 out of 360 overall)
+[ 2026-05-04 20:30:51.075445+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:51.075445+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:51.075445+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.108788+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:51.108788+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:51.108788+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.108788+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.108788+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00
+[ 2026-05-04 20:30:51.108788+00:00 ]:
+[ 2026-05-04 20:30:51.108788+00:00 ]: Sequence 30: Performance = 1.0000
+[ 2026-05-04 20:30:51.108788+00:00 ]:   └─ Secuencia 32/64 (Mapa #0) - Progreso: 8/8
+[ 2026-05-04 20:30:51.108788+00:00 ]:
+[ 2026-05-04 20:30:51.108788+00:00 ]: Current trial: 1 out of 3 in sequence (94 out of 360 overall)
+[ 2026-05-04 20:30:51.108788+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.108788+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.108788+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:51.142053+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.142053+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:51.142053+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.142053+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.142053+00:00 ]:
+[ 2026-05-04 20:30:51.142053+00:00 ]: Current trial: 2 out of 3 in sequence (95 out of 360 overall)
+[ 2026-05-04 20:30:51.142053+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:51.142053+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.142053+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.175379+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.175379+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:51.175379+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.175379+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.175379+00:00 ]:
+[ 2026-05-04 20:30:51.175379+00:00 ]: Current trial: 3 out of 3 in sequence (96 out of 360 overall)
+[ 2026-05-04 20:30:51.175379+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:51.175379+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:51.175379+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.208727+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:51.208727+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:51.208727+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.208727+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.208727+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:51.208727+00:00 ]:
+[ 2026-05-04 20:30:51.208727+00:00 ]: Sequence 31: Performance = 1.0000
+[ 2026-05-04 20:30:51.208727+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:51.208727+00:00 ]: 
+▶ BLOQUE 5 / 8
+[ 2026-05-04 20:30:51.208727+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:51.208727+00:00 ]:   └─ Secuencia 33/64 (Mapa #5) - Progreso: 1/8
+[ 2026-05-04 20:30:51.208727+00:00 ]:
+[ 2026-05-04 20:30:51.208727+00:00 ]: Current trial: 1 out of 3 in sequence (97 out of 360 overall)
+[ 2026-05-04 20:30:51.208727+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.208727+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.208727+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:51.242013+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.242013+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:51.242013+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.242013+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.242013+00:00 ]:
+[ 2026-05-04 20:30:51.242013+00:00 ]: Current trial: 2 out of 3 in sequence (98 out of 360 overall)
+[ 2026-05-04 20:30:51.242013+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:51.242013+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.242013+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.275344+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.275344+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:51.275344+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.275344+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.275344+00:00 ]:
+[ 2026-05-04 20:30:51.275344+00:00 ]: Current trial: 3 out of 3 in sequence (99 out of 360 overall)
+[ 2026-05-04 20:30:51.275344+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:51.275344+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:51.275344+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:51.308684+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.308684+00:00 ]: Confidence was: 0.07642934603612485
+[ 2026-05-04 20:30:51.324336+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.324336+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.324616+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98
+[ 2026-05-04 20:30:51.325123+00:00 ]:
+[ 2026-05-04 20:30:51.325123+00:00 ]: Sequence 32: Performance = 0.9764
+[ 2026-05-04 20:30:51.325123+00:00 ]:   └─ Secuencia 34/64 (Mapa #1) - Progreso: 2/8
+[ 2026-05-04 20:30:51.325123+00:00 ]:
+[ 2026-05-04 20:30:51.325123+00:00 ]: Current trial: 1 out of 3 in sequence (100 out of 360 overall)
+[ 2026-05-04 20:30:51.325123+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.325123+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.325123+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.358668+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.358668+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:51.358668+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.358668+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.358668+00:00 ]:
+[ 2026-05-04 20:30:51.358668+00:00 ]: Current trial: 2 out of 3 in sequence (101 out of 360 overall)
+[ 2026-05-04 20:30:51.358668+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:51.358668+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.358668+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.391918+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.391918+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:51.391918+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.391918+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.391918+00:00 ]:
+[ 2026-05-04 20:30:51.391918+00:00 ]: Current trial: 3 out of 3 in sequence (102 out of 360 overall)
+[ 2026-05-04 20:30:51.391918+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:51.391918+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:51.391918+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.425416+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:51.425416+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:51.425416+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.425416+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.425416+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00
+[ 2026-05-04 20:30:51.425416+00:00 ]:
+[ 2026-05-04 20:30:51.425416+00:00 ]: Sequence 33: Performance = 1.0000
+[ 2026-05-04 20:30:51.425416+00:00 ]:   └─ Secuencia 35/64 (Mapa #6) - Progreso: 3/8
+[ 2026-05-04 20:30:51.425416+00:00 ]:
+[ 2026-05-04 20:30:51.425416+00:00 ]: Current trial: 1 out of 3 in sequence (103 out of 360 overall)
+[ 2026-05-04 20:30:51.425416+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.425416+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.425416+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.458691+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.458691+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:51.458691+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.458691+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.458691+00:00 ]:
+[ 2026-05-04 20:30:51.458691+00:00 ]: Current trial: 2 out of 3 in sequence (104 out of 360 overall)
+[ 2026-05-04 20:30:51.458691+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:51.458691+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.458691+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:51.508489+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.508489+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:51.508489+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.508489+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.508489+00:00 ]:
+[ 2026-05-04 20:30:51.508489+00:00 ]: Current trial: 3 out of 3 in sequence (105 out of 360 overall)
+[ 2026-05-04 20:30:51.508489+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:51.508489+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:51.508489+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:51.543212+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.543212+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:51.543212+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:51.543212+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.543212+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97
+[ 2026-05-04 20:30:51.543212+00:00 ]:
+[ 2026-05-04 20:30:51.543212+00:00 ]: Sequence 34: Performance = 0.9683
+[ 2026-05-04 20:30:51.543212+00:00 ]:   └─ Secuencia 36/64 (Mapa #8) - Progreso: 4/8
+[ 2026-05-04 20:30:51.543212+00:00 ]:
+[ 2026-05-04 20:30:51.543212+00:00 ]: Current trial: 1 out of 3 in sequence (106 out of 360 overall)
+[ 2026-05-04 20:30:51.543212+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.543212+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.543212+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.575463+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.575463+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:51.575463+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.575463+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.575463+00:00 ]:
+[ 2026-05-04 20:30:51.575463+00:00 ]: Current trial: 2 out of 3 in sequence (107 out of 360 overall)
+[ 2026-05-04 20:30:51.575463+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:51.575463+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.575463+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.608623+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.608623+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:51.608623+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.608623+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.624244+00:00 ]:
+[ 2026-05-04 20:30:51.624244+00:00 ]: Current trial: 3 out of 3 in sequence (108 out of 360 overall)
+[ 2026-05-04 20:30:51.624244+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:51.624244+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:51.624244+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.658378+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.658378+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:51.658378+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.658378+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.658378+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00
+[ 2026-05-04 20:30:51.658378+00:00 ]:
+[ 2026-05-04 20:30:51.658378+00:00 ]: Sequence 35: Performance = 1.0000
+[ 2026-05-04 20:30:51.658378+00:00 ]:   └─ Secuencia 37/64 (Mapa #4) - Progreso: 5/8
+[ 2026-05-04 20:30:51.658378+00:00 ]:
+[ 2026-05-04 20:30:51.658378+00:00 ]: Current trial: 1 out of 3 in sequence (109 out of 360 overall)
+[ 2026-05-04 20:30:51.658378+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.658378+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.658378+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:51.691788+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.691788+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:51.691788+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.691788+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.691788+00:00 ]:
+[ 2026-05-04 20:30:51.691788+00:00 ]: Current trial: 2 out of 3 in sequence (110 out of 360 overall)
+[ 2026-05-04 20:30:51.691788+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:51.691788+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.691788+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.725111+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.725111+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:51.725111+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.725111+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.725111+00:00 ]:
+[ 2026-05-04 20:30:51.725111+00:00 ]: Current trial: 3 out of 3 in sequence (111 out of 360 overall)
+[ 2026-05-04 20:30:51.725111+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:51.725111+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:51.725111+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.758436+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.758436+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:51.758436+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.758436+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.758436+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00
+[ 2026-05-04 20:30:51.758436+00:00 ]:
+[ 2026-05-04 20:30:51.758436+00:00 ]: Sequence 36: Performance = 1.0000
+[ 2026-05-04 20:30:51.758436+00:00 ]:   └─ Secuencia 38/64 (Mapa #3) - Progreso: 6/8
+[ 2026-05-04 20:30:51.758436+00:00 ]:
+[ 2026-05-04 20:30:51.758436+00:00 ]: Current trial: 1 out of 3 in sequence (112 out of 360 overall)
+[ 2026-05-04 20:30:51.758436+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.758436+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.758436+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:51.791776+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.791776+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:51.791776+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.791776+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.791776+00:00 ]:
+[ 2026-05-04 20:30:51.791776+00:00 ]: Current trial: 2 out of 3 in sequence (113 out of 360 overall)
+[ 2026-05-04 20:30:51.791776+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:51.791776+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.791776+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.841774+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.841774+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:51.841774+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.841774+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.841774+00:00 ]:
+[ 2026-05-04 20:30:51.841774+00:00 ]: Current trial: 3 out of 3 in sequence (114 out of 360 overall)
+[ 2026-05-04 20:30:51.841774+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:51.841774+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:51.841774+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:51.875155+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:51.875155+00:00 ]: Confidence was: 0.07131613131177848
+[ 2026-05-04 20:30:51.875155+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.875155+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.875155+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:51.875155+00:00 ]:
+[ 2026-05-04 20:30:51.875155+00:00 ]: Sequence 37: Performance = 1.0000
+[ 2026-05-04 20:30:51.875155+00:00 ]:   └─ Secuencia 39/64 (Mapa #7) - Progreso: 7/8
+[ 2026-05-04 20:30:51.875155+00:00 ]:
+[ 2026-05-04 20:30:51.875155+00:00 ]: Current trial: 1 out of 3 in sequence (115 out of 360 overall)
+[ 2026-05-04 20:30:51.875155+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.875155+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.875155+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.908659+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:51.908659+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:51.908659+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.908659+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.908659+00:00 ]:
+[ 2026-05-04 20:30:51.908659+00:00 ]: Current trial: 2 out of 3 in sequence (116 out of 360 overall)
+[ 2026-05-04 20:30:51.908659+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:51.908659+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:51.908659+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:51.941973+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.941973+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:51.941973+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.941973+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.941973+00:00 ]:
+[ 2026-05-04 20:30:51.941973+00:00 ]: Current trial: 3 out of 3 in sequence (117 out of 360 overall)
+[ 2026-05-04 20:30:51.941973+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:51.941973+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:51.941973+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:51.975337+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:51.975337+00:00 ]: Confidence was: 0.07737799389650528
+[ 2026-05-04 20:30:51.975337+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.975337+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:51.975337+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97
+[ 2026-05-04 20:30:51.975337+00:00 ]:
+[ 2026-05-04 20:30:51.975337+00:00 ]: Sequence 38: Performance = 0.9702
+[ 2026-05-04 20:30:51.975337+00:00 ]:   └─ Secuencia 40/64 (Mapa #2) - Progreso: 8/8
+[ 2026-05-04 20:30:51.975337+00:00 ]:
+[ 2026-05-04 20:30:51.975337+00:00 ]: Current trial: 1 out of 3 in sequence (118 out of 360 overall)
+[ 2026-05-04 20:30:51.975337+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:51.975337+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:51.975337+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:52.008504+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.008504+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:52.008504+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.008504+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.008504+00:00 ]:
+[ 2026-05-04 20:30:52.008504+00:00 ]: Current trial: 2 out of 3 in sequence (119 out of 360 overall)
+[ 2026-05-04 20:30:52.024125+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:52.024125+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.024125+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:52.058558+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.058558+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:52.058558+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.058558+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.058558+00:00 ]:
+[ 2026-05-04 20:30:52.058558+00:00 ]: Current trial: 3 out of 3 in sequence (120 out of 360 overall)
+[ 2026-05-04 20:30:52.058558+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:52.058558+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:52.058558+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:52.091948+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.091948+00:00 ]: Confidence was: 0.07737799389650528
+[ 2026-05-04 20:30:52.091948+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.091948+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.091948+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98
+[ 2026-05-04 20:30:52.091948+00:00 ]:
+[ 2026-05-04 20:30:52.091948+00:00 ]: Sequence 39: Performance = 0.9779
+[ 2026-05-04 20:30:52.091948+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:52.091948+00:00 ]: 
+▶ BLOQUE 6 / 8
+[ 2026-05-04 20:30:52.091948+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:52.091948+00:00 ]:   └─ Secuencia 41/64 (Mapa #5) - Progreso: 1/8
+[ 2026-05-04 20:30:52.091948+00:00 ]:
+[ 2026-05-04 20:30:52.091948+00:00 ]: Current trial: 1 out of 3 in sequence (121 out of 360 overall)
+[ 2026-05-04 20:30:52.091948+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.091948+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.091948+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:52.125531+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.125531+00:00 ]: Confidence was: 0.06858253123633468
+[ 2026-05-04 20:30:52.125531+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.125531+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.125531+00:00 ]:
+[ 2026-05-04 20:30:52.125531+00:00 ]: Current trial: 2 out of 3 in sequence (122 out of 360 overall)
+[ 2026-05-04 20:30:52.125531+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:52.125531+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.125531+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.175314+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.175314+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:52.175314+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.175314+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.175314+00:00 ]:
+[ 2026-05-04 20:30:52.175314+00:00 ]: Current trial: 3 out of 3 in sequence (123 out of 360 overall)
+[ 2026-05-04 20:30:52.175314+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:52.175314+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:52.175314+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.209411+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:52.209411+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:52.209411+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.209411+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.209411+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00
+[ 2026-05-04 20:30:52.209411+00:00 ]:
+[ 2026-05-04 20:30:52.209411+00:00 ]: Sequence 40: Performance = 1.0000
+[ 2026-05-04 20:30:52.209411+00:00 ]:   └─ Secuencia 42/64 (Mapa #6) - Progreso: 2/8
+[ 2026-05-04 20:30:52.209411+00:00 ]:
+[ 2026-05-04 20:30:52.209411+00:00 ]: Current trial: 1 out of 3 in sequence (124 out of 360 overall)
+[ 2026-05-04 20:30:52.209411+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.209411+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.209411+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.241941+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.241941+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:52.241941+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.241941+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.241941+00:00 ]:
+[ 2026-05-04 20:30:52.241941+00:00 ]: Current trial: 2 out of 3 in sequence (125 out of 360 overall)
+[ 2026-05-04 20:30:52.241941+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:52.241941+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.241941+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:52.275291+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.275291+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:52.290948+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.290948+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.290948+00:00 ]:
+[ 2026-05-04 20:30:52.291250+00:00 ]: Current trial: 3 out of 3 in sequence (126 out of 360 overall)
+[ 2026-05-04 20:30:52.291250+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:52.291250+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:52.291250+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:52.325007+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.325007+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:52.325007+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.325007+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.325007+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00
+[ 2026-05-04 20:30:52.325007+00:00 ]:
+[ 2026-05-04 20:30:52.325007+00:00 ]: Sequence 41: Performance = 1.0000
+[ 2026-05-04 20:30:52.325007+00:00 ]:   └─ Secuencia 43/64 (Mapa #4) - Progreso: 3/8
+[ 2026-05-04 20:30:52.325007+00:00 ]:
+[ 2026-05-04 20:30:52.325007+00:00 ]: Current trial: 1 out of 3 in sequence (127 out of 360 overall)
+[ 2026-05-04 20:30:52.325007+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.325007+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.325007+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:52.358529+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.358529+00:00 ]: Confidence was: 0.06858253123633468
+[ 2026-05-04 20:30:52.358529+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.358529+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.358529+00:00 ]:
+[ 2026-05-04 20:30:52.358529+00:00 ]: Current trial: 2 out of 3 in sequence (128 out of 360 overall)
+[ 2026-05-04 20:30:52.358529+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:52.358529+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.358529+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:52.391886+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.391886+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:52.391886+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.391886+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.391886+00:00 ]:
+[ 2026-05-04 20:30:52.391886+00:00 ]: Current trial: 3 out of 3 in sequence (129 out of 360 overall)
+[ 2026-05-04 20:30:52.391886+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:52.391886+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:52.391886+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:52.425289+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.425289+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:52.425289+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:52.425289+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.425289+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95
+[ 2026-05-04 20:30:52.425289+00:00 ]:
+[ 2026-05-04 20:30:52.425289+00:00 ]: Sequence 42: Performance = 0.9495
+[ 2026-05-04 20:30:52.425289+00:00 ]:   └─ Secuencia 44/64 (Mapa #1) - Progreso: 4/8
+[ 2026-05-04 20:30:52.425289+00:00 ]:
+[ 2026-05-04 20:30:52.425289+00:00 ]: Current trial: 1 out of 3 in sequence (130 out of 360 overall)
+[ 2026-05-04 20:30:52.425289+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.425289+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.425289+00:00 ]: Current trial's initial severity: 5.0
+[ 2026-05-04 20:30:52.458641+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.458641+00:00 ]: Confidence was: 0.07606274781109118
+[ 2026-05-04 20:30:52.458641+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.458641+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.458641+00:00 ]:
+[ 2026-05-04 20:30:52.458641+00:00 ]: Current trial: 2 out of 3 in sequence (131 out of 360 overall)
+[ 2026-05-04 20:30:52.458641+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 3.80
+[ 2026-05-04 20:30:52.458641+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.458641+00:00 ]: Current trial's initial severity: 6.0
+[ 2026-05-04 20:30:52.491978+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.491978+00:00 ]: Confidence was: 0.07850411692692927
+[ 2026-05-04 20:30:52.491978+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.491978+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.491978+00:00 ]:
+[ 2026-05-04 20:30:52.491978+00:00 ]: Current trial: 3 out of 3 in sequence (132 out of 360 overall)
+[ 2026-05-04 20:30:52.491978+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 2.12, 4.80
+[ 2026-05-04 20:30:52.491978+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:52.491978+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:52.541818+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.541818+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:52.541818+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:52.541818+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.541818+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95
+[ 2026-05-04 20:30:52.541818+00:00 ]:
+[ 2026-05-04 20:30:52.541818+00:00 ]: Sequence 43: Performance = 0.9502
+[ 2026-05-04 20:30:52.541818+00:00 ]:   └─ Secuencia 45/64 (Mapa #3) - Progreso: 5/8
+[ 2026-05-04 20:30:52.541818+00:00 ]:
+[ 2026-05-04 20:30:52.541818+00:00 ]: Current trial: 1 out of 3 in sequence (133 out of 360 overall)
+[ 2026-05-04 20:30:52.541818+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.541818+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.541818+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.588545+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.588886+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:52.588886+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.588886+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.588886+00:00 ]:
+[ 2026-05-04 20:30:52.588886+00:00 ]: Current trial: 2 out of 3 in sequence (134 out of 360 overall)
+[ 2026-05-04 20:30:52.588886+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:52.588886+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.588886+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:52.624945+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.624945+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:52.624945+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.624945+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.624945+00:00 ]:
+[ 2026-05-04 20:30:52.624945+00:00 ]: Current trial: 3 out of 3 in sequence (135 out of 360 overall)
+[ 2026-05-04 20:30:52.624945+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:52.624945+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:52.624945+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.658801+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:52.658801+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:52.658801+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.658801+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.658801+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00
+[ 2026-05-04 20:30:52.658801+00:00 ]:
+[ 2026-05-04 20:30:52.674418+00:00 ]: Sequence 44: Performance = 1.0000
+[ 2026-05-04 20:30:52.674579+00:00 ]:   └─ Secuencia 46/64 (Mapa #2) - Progreso: 6/8
+[ 2026-05-04 20:30:52.674579+00:00 ]:
+[ 2026-05-04 20:30:52.674579+00:00 ]: Current trial: 1 out of 3 in sequence (136 out of 360 overall)
+[ 2026-05-04 20:30:52.674579+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.674579+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.675280+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.708839+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.708839+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:52.708839+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.708839+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.708839+00:00 ]:
+[ 2026-05-04 20:30:52.708839+00:00 ]: Current trial: 2 out of 3 in sequence (137 out of 360 overall)
+[ 2026-05-04 20:30:52.708839+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:52.708839+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.708839+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.741816+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.741816+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:52.741816+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.741816+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.741816+00:00 ]:
+[ 2026-05-04 20:30:52.741816+00:00 ]: Current trial: 3 out of 3 in sequence (138 out of 360 overall)
+[ 2026-05-04 20:30:52.741816+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:52.741816+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:52.741816+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:52.791958+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.791958+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:52.791958+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.791958+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.791958+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00
+[ 2026-05-04 20:30:52.791958+00:00 ]:
+[ 2026-05-04 20:30:52.791958+00:00 ]: Sequence 45: Performance = 1.0000
+[ 2026-05-04 20:30:52.791958+00:00 ]:   └─ Secuencia 47/64 (Mapa #7) - Progreso: 7/8
+[ 2026-05-04 20:30:52.791958+00:00 ]:
+[ 2026-05-04 20:30:52.791958+00:00 ]: Current trial: 1 out of 3 in sequence (139 out of 360 overall)
+[ 2026-05-04 20:30:52.791958+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.791958+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.791958+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:52.825365+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.825365+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:52.825365+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.825365+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.825365+00:00 ]:
+[ 2026-05-04 20:30:52.825365+00:00 ]: Current trial: 2 out of 3 in sequence (140 out of 360 overall)
+[ 2026-05-04 20:30:52.825365+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:52.825365+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.825365+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:52.858700+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.858700+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:52.858700+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.858700+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.858700+00:00 ]:
+[ 2026-05-04 20:30:52.858700+00:00 ]: Current trial: 3 out of 3 in sequence (141 out of 360 overall)
+[ 2026-05-04 20:30:52.858700+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:52.858700+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:52.858700+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:52.891984+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:52.891984+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:52.891984+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.891984+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.891984+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:52.891984+00:00 ]:
+[ 2026-05-04 20:30:52.907636+00:00 ]: Sequence 46: Performance = 1.0000
+[ 2026-05-04 20:30:52.907636+00:00 ]:   └─ Secuencia 48/64 (Mapa #8) - Progreso: 8/8
+[ 2026-05-04 20:30:52.907636+00:00 ]:
+[ 2026-05-04 20:30:52.907636+00:00 ]: Current trial: 1 out of 3 in sequence (142 out of 360 overall)
+[ 2026-05-04 20:30:52.907914+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:52.907914+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:52.907914+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:52.925261+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.925261+00:00 ]: Confidence was: 0.06858253123633468
+[ 2026-05-04 20:30:52.925261+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.925261+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.925261+00:00 ]:
+[ 2026-05-04 20:30:52.925261+00:00 ]: Current trial: 2 out of 3 in sequence (143 out of 360 overall)
+[ 2026-05-04 20:30:52.940882+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:52.940882+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:52.940882+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:52.975086+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:52.975086+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:52.975086+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.975086+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:52.975086+00:00 ]:
+[ 2026-05-04 20:30:52.975086+00:00 ]: Current trial: 3 out of 3 in sequence (144 out of 360 overall)
+[ 2026-05-04 20:30:52.975086+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:52.975086+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:52.975086+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.008579+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.008579+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:53.008579+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.008579+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.008579+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:53.008579+00:00 ]:
+[ 2026-05-04 20:30:53.008579+00:00 ]: Sequence 47: Performance = 1.0000
+[ 2026-05-04 20:30:53.008579+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:53.008579+00:00 ]: 
+▶ BLOQUE 7 / 8
+[ 2026-05-04 20:30:53.008579+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:53.008579+00:00 ]:   └─ Secuencia 49/64 (Mapa #7) - Progreso: 1/8
+[ 2026-05-04 20:30:53.008579+00:00 ]:
+[ 2026-05-04 20:30:53.008579+00:00 ]: Current trial: 1 out of 3 in sequence (145 out of 360 overall)
+[ 2026-05-04 20:30:53.008579+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.008579+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.008579+00:00 ]: Current trial's initial severity: 5.0
+[ 2026-05-04 20:30:53.041953+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.041953+00:00 ]: Confidence was: 0.07606274781109118
+[ 2026-05-04 20:30:53.041953+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.041953+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.041953+00:00 ]:
+[ 2026-05-04 20:30:53.041953+00:00 ]: Current trial: 2 out of 3 in sequence (146 out of 360 overall)
+[ 2026-05-04 20:30:53.041953+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 3.80
+[ 2026-05-04 20:30:53.041953+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.041953+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.075096+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.075096+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:53.075096+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.075096+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.075096+00:00 ]:
+[ 2026-05-04 20:30:53.075096+00:00 ]: Current trial: 3 out of 3 in sequence (147 out of 360 overall)
+[ 2026-05-04 20:30:53.075096+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 2.12, 0.00
+[ 2026-05-04 20:30:53.075096+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:53.075096+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:53.108624+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.108624+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:53.108624+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:53.108624+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.108624+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98
+[ 2026-05-04 20:30:53.108624+00:00 ]:
+[ 2026-05-04 20:30:53.108624+00:00 ]: Sequence 48: Performance = 0.9815
+[ 2026-05-04 20:30:53.108624+00:00 ]:   └─ Secuencia 50/64 (Mapa #4) - Progreso: 2/8
+[ 2026-05-04 20:30:53.108624+00:00 ]:
+[ 2026-05-04 20:30:53.108624+00:00 ]: Current trial: 1 out of 3 in sequence (148 out of 360 overall)
+[ 2026-05-04 20:30:53.108624+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.108624+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.108624+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.141863+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.141863+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:53.141863+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.141863+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.141863+00:00 ]:
+[ 2026-05-04 20:30:53.141863+00:00 ]: Current trial: 2 out of 3 in sequence (149 out of 360 overall)
+[ 2026-05-04 20:30:53.141863+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:53.141863+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.141863+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:53.190738+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.190738+00:00 ]: Confidence was: 0.0680126119427074
+[ 2026-05-04 20:30:53.190738+00:00 ]: PressEvent_seconds was: 0.4507961040236479
+[ 2026-05-04 20:30:53.190738+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.191198+00:00 ]:
+[ 2026-05-04 20:30:53.191198+00:00 ]: Current trial: 3 out of 3 in sequence (150 out of 360 overall)
+[ 2026-05-04 20:30:53.191198+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:53.191198+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:53.191198+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.225117+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:53.225117+00:00 ]: Confidence was: 0.07025114244672484
+[ 2026-05-04 20:30:53.225117+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.225117+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.225117+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00
+[ 2026-05-04 20:30:53.225117+00:00 ]:
+[ 2026-05-04 20:30:53.225117+00:00 ]: Sequence 49: Performance = 1.0000
+[ 2026-05-04 20:30:53.225117+00:00 ]:   └─ Secuencia 51/64 (Mapa #3) - Progreso: 3/8
+[ 2026-05-04 20:30:53.225117+00:00 ]:
+[ 2026-05-04 20:30:53.225117+00:00 ]: Current trial: 1 out of 3 in sequence (151 out of 360 overall)
+[ 2026-05-04 20:30:53.225117+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.225117+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.225117+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.258656+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.258656+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:53.258656+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.258656+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.258656+00:00 ]:
+[ 2026-05-04 20:30:53.258656+00:00 ]: Current trial: 2 out of 3 in sequence (152 out of 360 overall)
+[ 2026-05-04 20:30:53.258656+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:53.258656+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.258656+00:00 ]: Current trial's initial severity: 5.0
+[ 2026-05-04 20:30:53.291986+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.291986+00:00 ]: Confidence was: 0.07975519626154316
+[ 2026-05-04 20:30:53.291986+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.291986+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.291986+00:00 ]:
+[ 2026-05-04 20:30:53.291986+00:00 ]: Current trial: 3 out of 3 in sequence (153 out of 360 overall)
+[ 2026-05-04 20:30:53.291986+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 3.40
+[ 2026-05-04 20:30:53.291986+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:53.291986+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.325520+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:53.325520+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:53.325520+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.325520+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.325520+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93
+[ 2026-05-04 20:30:53.325520+00:00 ]:
+[ 2026-05-04 20:30:53.325520+00:00 ]: Sequence 50: Performance = 0.9302
+[ 2026-05-04 20:30:53.325520+00:00 ]:   └─ Secuencia 52/64 (Mapa #5) - Progreso: 4/8
+[ 2026-05-04 20:30:53.325520+00:00 ]:
+[ 2026-05-04 20:30:53.325520+00:00 ]: Current trial: 1 out of 3 in sequence (154 out of 360 overall)
+[ 2026-05-04 20:30:53.325520+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.325520+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.325520+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:53.358698+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.358698+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:53.358698+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.358698+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.358698+00:00 ]:
+[ 2026-05-04 20:30:53.358698+00:00 ]: Current trial: 2 out of 3 in sequence (155 out of 360 overall)
+[ 2026-05-04 20:30:53.358698+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:53.358698+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.358698+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.392158+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.392158+00:00 ]: Confidence was: 0.07441260780286477
+[ 2026-05-04 20:30:53.392158+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.392158+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.392158+00:00 ]:
+[ 2026-05-04 20:30:53.392158+00:00 ]: Current trial: 3 out of 3 in sequence (156 out of 360 overall)
+[ 2026-05-04 20:30:53.392158+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:53.392158+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:53.392158+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:53.425318+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.425318+00:00 ]: Confidence was: 0.07642934603612485
+[ 2026-05-04 20:30:53.425318+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.425318+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.425318+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97
+[ 2026-05-04 20:30:53.425318+00:00 ]:
+[ 2026-05-04 20:30:53.425318+00:00 ]: Sequence 51: Performance = 0.9718
+[ 2026-05-04 20:30:53.425318+00:00 ]:   └─ Secuencia 53/64 (Mapa #2) - Progreso: 5/8
+[ 2026-05-04 20:30:53.425318+00:00 ]:
+[ 2026-05-04 20:30:53.425318+00:00 ]: Current trial: 1 out of 3 in sequence (157 out of 360 overall)
+[ 2026-05-04 20:30:53.425318+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.425318+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.425318+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:53.458650+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.458650+00:00 ]: Confidence was: 0.07779773128895782
+[ 2026-05-04 20:30:53.458650+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.458650+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.458650+00:00 ]:
+[ 2026-05-04 20:30:53.458650+00:00 ]: Current trial: 2 out of 3 in sequence (158 out of 360 overall)
+[ 2026-05-04 20:30:53.458650+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 1.00
+[ 2026-05-04 20:30:53.458650+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.458650+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.508732+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.508732+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:53.508732+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.508732+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.508732+00:00 ]:
+[ 2026-05-04 20:30:53.508732+00:00 ]: Current trial: 3 out of 3 in sequence (159 out of 360 overall)
+[ 2026-05-04 20:30:53.508732+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:53.508732+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:53.508732+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.541808+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.541808+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:53.541808+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.541808+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.541808+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00
+[ 2026-05-04 20:30:53.541808+00:00 ]:
+[ 2026-05-04 20:30:53.541808+00:00 ]: Sequence 52: Performance = 1.0000
+[ 2026-05-04 20:30:53.541808+00:00 ]:   └─ Secuencia 54/64 (Mapa #1) - Progreso: 6/8
+[ 2026-05-04 20:30:53.541808+00:00 ]:
+[ 2026-05-04 20:30:53.541808+00:00 ]: Current trial: 1 out of 3 in sequence (160 out of 360 overall)
+[ 2026-05-04 20:30:53.541808+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.541808+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.541808+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.575702+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.575702+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:53.575702+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.575702+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.575702+00:00 ]:
+[ 2026-05-04 20:30:53.575702+00:00 ]: Current trial: 2 out of 3 in sequence (161 out of 360 overall)
+[ 2026-05-04 20:30:53.575702+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:53.575702+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.575702+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:53.608716+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.608716+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:53.608716+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.608716+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.608716+00:00 ]:
+[ 2026-05-04 20:30:53.608716+00:00 ]: Current trial: 3 out of 3 in sequence (162 out of 360 overall)
+[ 2026-05-04 20:30:53.608716+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:53.608716+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:53.608716+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:53.641993+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:53.641993+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:53.641993+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.641993+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.641993+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00
+[ 2026-05-04 20:30:53.641993+00:00 ]:
+[ 2026-05-04 20:30:53.641993+00:00 ]: Sequence 53: Performance = 1.0000
+[ 2026-05-04 20:30:53.641993+00:00 ]:   └─ Secuencia 55/64 (Mapa #6) - Progreso: 7/8
+[ 2026-05-04 20:30:53.641993+00:00 ]:
+[ 2026-05-04 20:30:53.641993+00:00 ]: Current trial: 1 out of 3 in sequence (163 out of 360 overall)
+[ 2026-05-04 20:30:53.641993+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.641993+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.641993+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:53.675282+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.675282+00:00 ]: Confidence was: 0.06858253123633468
+[ 2026-05-04 20:30:53.675282+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.675282+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.675282+00:00 ]:
+[ 2026-05-04 20:30:53.675282+00:00 ]: Current trial: 2 out of 3 in sequence (164 out of 360 overall)
+[ 2026-05-04 20:30:53.690903+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:53.690903+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.690903+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:53.725059+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.725059+00:00 ]: Confidence was: 0.0680126119427074
+[ 2026-05-04 20:30:53.725059+00:00 ]: PressEvent_seconds was: 0.4507961040236479
+[ 2026-05-04 20:30:53.725059+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.725059+00:00 ]:
+[ 2026-05-04 20:30:53.725059+00:00 ]: Current trial: 3 out of 3 in sequence (165 out of 360 overall)
+[ 2026-05-04 20:30:53.725059+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:53.725059+00:00 ]: Resources remaining:  14
+[ 2026-05-04 20:30:53.725059+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.758655+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.758655+00:00 ]: Confidence was: 0.07626372551821624
+[ 2026-05-04 20:30:53.758655+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.758655+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.758655+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:53.758655+00:00 ]:
+[ 2026-05-04 20:30:53.758655+00:00 ]: Sequence 54: Performance = 1.0000
+[ 2026-05-04 20:30:53.758655+00:00 ]:   └─ Secuencia 56/64 (Mapa #8) - Progreso: 8/8
+[ 2026-05-04 20:30:53.758655+00:00 ]:
+[ 2026-05-04 20:30:53.758655+00:00 ]: Current trial: 1 out of 3 in sequence (166 out of 360 overall)
+[ 2026-05-04 20:30:53.758655+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.758655+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.758655+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:53.791971+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.791971+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:53.791971+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.791971+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.791971+00:00 ]:
+[ 2026-05-04 20:30:53.791971+00:00 ]: Current trial: 2 out of 3 in sequence (167 out of 360 overall)
+[ 2026-05-04 20:30:53.791971+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:53.791971+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.791971+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.858880+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.858880+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:53.858880+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.858880+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.858880+00:00 ]:
+[ 2026-05-04 20:30:53.858880+00:00 ]: Current trial: 3 out of 3 in sequence (168 out of 360 overall)
+[ 2026-05-04 20:30:53.858880+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:53.858880+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:53.858880+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.908406+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.908406+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:53.908406+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.908406+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.908406+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:53.908406+00:00 ]:
+[ 2026-05-04 20:30:53.908406+00:00 ]: Sequence 55: Performance = 1.0000
+[ 2026-05-04 20:30:53.908406+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:53.908406+00:00 ]: 
+▶ BLOQUE 8 / 8
+[ 2026-05-04 20:30:53.908406+00:00 ]: Time elapsed: 0 minutes -- Estimated time left: 0 minutes
+[ 2026-05-04 20:30:53.908406+00:00 ]:   └─ Secuencia 57/64 (Mapa #6) - Progreso: 1/8
+[ 2026-05-04 20:30:53.908406+00:00 ]:
+[ 2026-05-04 20:30:53.908406+00:00 ]: Current trial: 1 out of 3 in sequence (169 out of 360 overall)
+[ 2026-05-04 20:30:53.908406+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:53.908406+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:53.908406+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:53.941871+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:53.941871+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:53.941871+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.941871+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.941871+00:00 ]:
+[ 2026-05-04 20:30:53.941871+00:00 ]: Current trial: 2 out of 3 in sequence (170 out of 360 overall)
+[ 2026-05-04 20:30:53.941871+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:53.941871+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:53.941871+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:53.974998+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:53.974998+00:00 ]: Confidence was: 0.08108712156682156
+[ 2026-05-04 20:30:53.974998+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.974998+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:53.974998+00:00 ]:
+[ 2026-05-04 20:30:53.974998+00:00 ]: Current trial: 3 out of 3 in sequence (171 out of 360 overall)
+[ 2026-05-04 20:30:53.974998+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 2.00
+[ 2026-05-04 20:30:53.974998+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:53.974998+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:54.008427+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.008427+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:54.008427+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.008427+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.008427+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00
+[ 2026-05-04 20:30:54.008427+00:00 ]:
+[ 2026-05-04 20:30:54.008427+00:00 ]: Sequence 56: Performance = 1.0000
+[ 2026-05-04 20:30:54.008427+00:00 ]:   └─ Secuencia 58/64 (Mapa #2) - Progreso: 2/8
+[ 2026-05-04 20:30:54.008427+00:00 ]:
+[ 2026-05-04 20:30:54.008427+00:00 ]: Current trial: 1 out of 3 in sequence (172 out of 360 overall)
+[ 2026-05-04 20:30:54.008427+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.008427+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.008427+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:54.041861+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.041861+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:54.041861+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.041861+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.041861+00:00 ]:
+[ 2026-05-04 20:30:54.041861+00:00 ]: Current trial: 2 out of 3 in sequence (173 out of 360 overall)
+[ 2026-05-04 20:30:54.041861+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:54.041861+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.041861+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:54.075175+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.075175+00:00 ]: Confidence was: 0.08108712156682156
+[ 2026-05-04 20:30:54.075175+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.075175+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.075175+00:00 ]:
+[ 2026-05-04 20:30:54.075175+00:00 ]: Current trial: 3 out of 3 in sequence (174 out of 360 overall)
+[ 2026-05-04 20:30:54.075175+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 2.00
+[ 2026-05-04 20:30:54.075175+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.075175+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:54.108411+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.108411+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:54.108411+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:54.108411+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.108411+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97
+[ 2026-05-04 20:30:54.108411+00:00 ]:
+[ 2026-05-04 20:30:54.108411+00:00 ]: Sequence 57: Performance = 0.9726
+[ 2026-05-04 20:30:54.108411+00:00 ]:   └─ Secuencia 59/64 (Mapa #5) - Progreso: 3/8
+[ 2026-05-04 20:30:54.108411+00:00 ]:
+[ 2026-05-04 20:30:54.108411+00:00 ]: Current trial: 1 out of 3 in sequence (175 out of 360 overall)
+[ 2026-05-04 20:30:54.108411+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.108411+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.108411+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:54.141924+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.141924+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:54.141924+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.141924+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.141924+00:00 ]:
+[ 2026-05-04 20:30:54.141924+00:00 ]: Current trial: 2 out of 3 in sequence (176 out of 360 overall)
+[ 2026-05-04 20:30:54.141924+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:54.141924+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.141924+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:54.175528+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.175528+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:54.175528+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.175528+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.175528+00:00 ]:
+[ 2026-05-04 20:30:54.175528+00:00 ]: Current trial: 3 out of 3 in sequence (177 out of 360 overall)
+[ 2026-05-04 20:30:54.175528+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:54.175528+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.175528+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:54.208639+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:54.208639+00:00 ]: Confidence was: 0.07131613131177848
+[ 2026-05-04 20:30:54.208639+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.208639+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.208639+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00
+[ 2026-05-04 20:30:54.208639+00:00 ]:
+[ 2026-05-04 20:30:54.208639+00:00 ]: Sequence 58: Performance = 1.0000
+[ 2026-05-04 20:30:54.208639+00:00 ]:   └─ Secuencia 60/64 (Mapa #4) - Progreso: 4/8
+[ 2026-05-04 20:30:54.208639+00:00 ]:
+[ 2026-05-04 20:30:54.208639+00:00 ]: Current trial: 1 out of 3 in sequence (178 out of 360 overall)
+[ 2026-05-04 20:30:54.208639+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.208639+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.208639+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:54.241973+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.241973+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:54.241973+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.241973+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.241973+00:00 ]:
+[ 2026-05-04 20:30:54.241973+00:00 ]: Current trial: 2 out of 3 in sequence (179 out of 360 overall)
+[ 2026-05-04 20:30:54.241973+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:54.241973+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.241973+00:00 ]: Current trial's initial severity: 5.0
+[ 2026-05-04 20:30:54.275277+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.275277+00:00 ]: Confidence was: 0.07975519626154316
+[ 2026-05-04 20:30:54.275277+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.275277+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.275277+00:00 ]:
+[ 2026-05-04 20:30:54.275277+00:00 ]: Current trial: 3 out of 3 in sequence (180 out of 360 overall)
+[ 2026-05-04 20:30:54.275277+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 3.40
+[ 2026-05-04 20:30:54.275277+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.275277+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:54.308534+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.308534+00:00 ]: Confidence was: 0.07984134925670994
+[ 2026-05-04 20:30:54.308534+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.308534+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.308534+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 0.96
+[ 2026-05-04 20:30:54.308534+00:00 ]:
+[ 2026-05-04 20:30:54.308534+00:00 ]: Sequence 59: Performance = 0.9589
+[ 2026-05-04 20:30:54.308534+00:00 ]:   └─ Secuencia 61/64 (Mapa #8) - Progreso: 5/8
+[ 2026-05-04 20:30:54.308534+00:00 ]:
+[ 2026-05-04 20:30:54.308534+00:00 ]: Current trial: 1 out of 3 in sequence (181 out of 360 overall)
+[ 2026-05-04 20:30:54.308534+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.308534+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.308534+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:54.341833+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.341833+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:54.341833+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.341833+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.357454+00:00 ]:
+[ 2026-05-04 20:30:54.357454+00:00 ]: Current trial: 2 out of 3 in sequence (182 out of 360 overall)
+[ 2026-05-04 20:30:54.357454+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:54.357454+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.357454+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:54.375051+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.375051+00:00 ]: Confidence was: 0.08108712156682156
+[ 2026-05-04 20:30:54.375051+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.375051+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.375051+00:00 ]:
+[ 2026-05-04 20:30:54.375051+00:00 ]: Current trial: 3 out of 3 in sequence (183 out of 360 overall)
+[ 2026-05-04 20:30:54.375051+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 2.00
+[ 2026-05-04 20:30:54.375051+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.375051+00:00 ]: Current trial's initial severity: 0.0
+[ 2026-05-04 20:30:54.425442+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:54.425442+00:00 ]: Confidence was: 0.07131613131177848
+[ 2026-05-04 20:30:54.425442+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.425442+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.425442+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 0.96, 1.00
+[ 2026-05-04 20:30:54.425442+00:00 ]:
+[ 2026-05-04 20:30:54.425442+00:00 ]: Sequence 60: Performance = 1.0000
+[ 2026-05-04 20:30:54.425442+00:00 ]:   └─ Secuencia 62/64 (Mapa #3) - Progreso: 6/8
+[ 2026-05-04 20:30:54.425442+00:00 ]:
+[ 2026-05-04 20:30:54.425442+00:00 ]: Current trial: 1 out of 3 in sequence (184 out of 360 overall)
+[ 2026-05-04 20:30:54.425442+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.425442+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.425442+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:54.458248+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.458248+00:00 ]: Confidence was: 0.0713497654410916
+[ 2026-05-04 20:30:54.458248+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.458248+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.458248+00:00 ]:
+[ 2026-05-04 20:30:54.458248+00:00 ]: Current trial: 2 out of 3 in sequence (185 out of 360 overall)
+[ 2026-05-04 20:30:54.458248+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:54.458248+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.458248+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:54.491579+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.491579+00:00 ]: Confidence was: 0.08271162244368632
+[ 2026-05-04 20:30:54.491579+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.491579+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.491579+00:00 ]:
+[ 2026-05-04 20:30:54.491579+00:00 ]: Current trial: 3 out of 3 in sequence (186 out of 360 overall)
+[ 2026-05-04 20:30:54.491579+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.60
+[ 2026-05-04 20:30:54.491579+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.491579+00:00 ]: Current trial's initial severity: 1.0
+[ 2026-05-04 20:30:54.525150+00:00 ]: Response was: 5
+[ 2026-05-04 20:30:54.525150+00:00 ]: Confidence was: 0.07445685598118243
+[ 2026-05-04 20:30:54.525150+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.525150+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.525150+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 0.96, 1.00, 1.00
+[ 2026-05-04 20:30:54.525150+00:00 ]:
+[ 2026-05-04 20:30:54.525150+00:00 ]: Sequence 61: Performance = 1.0000
+[ 2026-05-04 20:30:54.525150+00:00 ]:   └─ Secuencia 63/64 (Mapa #7) - Progreso: 7/8
+[ 2026-05-04 20:30:54.525150+00:00 ]:
+[ 2026-05-04 20:30:54.525150+00:00 ]: Current trial: 1 out of 3 in sequence (187 out of 360 overall)
+[ 2026-05-04 20:30:54.525150+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.525150+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.525150+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:54.558483+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.558483+00:00 ]: Confidence was: 0.07432797110041292
+[ 2026-05-04 20:30:54.558483+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.558483+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.558483+00:00 ]:
+[ 2026-05-04 20:30:54.558483+00:00 ]: Current trial: 2 out of 3 in sequence (188 out of 360 overall)
+[ 2026-05-04 20:30:54.558483+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 0.00
+[ 2026-05-04 20:30:54.558483+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.558483+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:54.591692+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.591692+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:54.591692+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.591692+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.591692+00:00 ]:
+[ 2026-05-04 20:30:54.591692+00:00 ]: Current trial: 3 out of 3 in sequence (189 out of 360 overall)
+[ 2026-05-04 20:30:54.591692+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.00, 0.00
+[ 2026-05-04 20:30:54.591692+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.591692+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:54.625225+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.625225+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:54.625225+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:54.625225+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.625225+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 0.96, 1.00, 1.00, 0.97
+[ 2026-05-04 20:30:54.625225+00:00 ]:
+[ 2026-05-04 20:30:54.625225+00:00 ]: Sequence 62: Performance = 0.9702
+[ 2026-05-04 20:30:54.625225+00:00 ]:   └─ Secuencia 64/64 (Mapa #1) - Progreso: 8/8
+[ 2026-05-04 20:30:54.625225+00:00 ]:
+[ 2026-05-04 20:30:54.625225+00:00 ]: Current trial: 1 out of 3 in sequence (190 out of 360 overall)
+[ 2026-05-04 20:30:54.625225+00:00 ]: Initial severity values before annotation:  4.40, 1.80
+[ 2026-05-04 20:30:54.625225+00:00 ]: Resources remaining:  30
+[ 2026-05-04 20:30:54.625225+00:00 ]: Current trial's initial severity: 4.0
+[ 2026-05-04 20:30:54.658552+00:00 ]: Response was: 8
+[ 2026-05-04 20:30:54.658552+00:00 ]: Confidence was: 0.07688905841833478
+[ 2026-05-04 20:30:54.658552+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.658552+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.658552+00:00 ]:
+[ 2026-05-04 20:30:54.658552+00:00 ]: Current trial: 2 out of 3 in sequence (191 out of 360 overall)
+[ 2026-05-04 20:30:54.658552+00:00 ]: Initial severity values before annotation:  4.96, 0.12, 2.40
+[ 2026-05-04 20:30:54.658552+00:00 ]: Resources remaining:  22
+[ 2026-05-04 20:30:54.658552+00:00 ]: Current trial's initial severity: 2.0
+[ 2026-05-04 20:30:54.707790+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.707790+00:00 ]: Confidence was: 0.07994094211912274
+[ 2026-05-04 20:30:54.707790+00:00 ]: PressEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.707790+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.708356+00:00 ]:
+[ 2026-05-04 20:30:54.708356+00:00 ]: Current trial: 3 out of 3 in sequence (192 out of 360 overall)
+[ 2026-05-04 20:30:54.708356+00:00 ]: Initial severity values before annotation:  5.74, 0.00, 0.16, 0.00
+[ 2026-05-04 20:30:54.708356+00:00 ]: Resources remaining:  13
+[ 2026-05-04 20:30:54.708356+00:00 ]: Current trial's initial severity: 3.0
+[ 2026-05-04 20:30:54.741114+00:00 ]: Response was: 9
+[ 2026-05-04 20:30:54.741114+00:00 ]: Confidence was: 0.07876043931814947
+[ 2026-05-04 20:30:54.741114+00:00 ]: PressEvent_seconds was: 2.4245429151551328
+[ 2026-05-04 20:30:54.741114+00:00 ]: ReleaseEvent_seconds was: 5.0
+[ 2026-05-04 20:30:54.741634+00:00 ]: My Sequence Performances:  0.96, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 1.00, 1.00, 0.98, 0.97, 1.00, 1.00, 1.00, 0.98, 0.95, 1.00, 1.00, 1.00, 0.98, 1.00, 1.00, 0.97, 1.00, 1.00, 1.00, 0.98, 1.00, 0.97, 1.00, 1.00, 1.00, 0.97, 0.98, 1.00, 1.00, 0.95, 0.95, 1.00, 1.00, 1.00, 1.00, 0.98, 1.00, 0.93, 0.97, 1.00, 1.00, 1.00, 1.00, 1.00, 0.97, 1.00, 0.96, 1.00, 1.00, 0.97, 0.98
+[ 2026-05-04 20:30:54.741634+00:00 ]:
+[ 2026-05-04 20:30:54.741634+00:00 ]: Sequence 63: Performance = 0.9788
+[ 2026-05-04 20:30:54.741634+00:00 ]: Trust Ratings:
+ [  1 100]
+[ 2026-05-04 20:30:55.858389+00:00 ]: 
+✓ Results summary JSON: C:\Users\maxvega\Documents\Win_mPES\general\pes_dqn\outputs\joint_low_short\2026-05-04_DQN_AGENT\PES_DQN_results_2026-05-04_DQN_AGENT.json
+[ 2026-05-04 20:30:55.858389+00:00 ]: ✓ Results visualization PNG: C:\Users\maxvega\Documents\Win_mPES\general\pes_dqn\outputs\joint_low_short\2026-05-04_DQN_AGENT\PES_DQN_results_2026-05-04_DQN_AGENT.png
+
+[ 2026-05-04 20:30:55.858389+00:00 ]: raw_mean_perf = 0.987703  (std=0.017523, n=64)
+[ 2026-05-04 20:30:55.858389+00:00 ]: best_params.json mean_perf = 0.893729  |Δ| = 0.093974
+[ 2026-05-04 20:30:55.858389+00:00 ]:
+[ 2026-05-04 20:30:55.858389+00:00 ]: 

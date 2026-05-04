@@ -63,17 +63,28 @@ if (-not $PkgName) {
 
 # ── Resolver modulo de optimizacion ─────────────────────────────
 $modMap = @{
-    'pes_ql'  = 'pes_ql.ext.optimize_rl'
-    'pes_dql' = 'pes_dql.ext.optimize_rl'
-    'pes_dqn' = 'pes_dqn.ext.optimize_dqn'
-    'pes_rdqn' = 'pes_rdqn.ext.optimize_rdqn'
-    'pes_a2c'  = 'pes_a2c.ext.optimize_a2c'
-    'pes_trf' = 'pes_trf.ext.optimize_tr'
+    'pes_ql'  = 'tabular.pes_ql.ext.optimize_rl'
+    'pes_dql' = 'tabular.pes_dql.ext.optimize_rl'
+    'pes_dqn' = 'ml.pes_dqn.ext.optimize_dqn'
+    'pes_rdqn' = 'ml.pes_rdqn.ext.optimize_rdqn'
+    'pes_a2c'  = 'ml.pes_a2c.ext.optimize_a2c'
+    'pes_trf' = 'ml.pes_trf.ext.optimize_tr'
 }
 $OptModule = $modMap[$PkgName]
 
+# ── Mapeo paquete → directorio relativo al proyecto ──────────────
+$pkgDirMap = @{
+    'pes_ql'   = 'tabular\pes_ql'
+    'pes_dql'  = 'tabular\pes_dql'
+    'pes_dqn'  = 'ml\pes_dqn'
+    'pes_rdqn' = 'ml\pes_rdqn'
+    'pes_a2c'  = 'ml\pes_a2c'
+    'pes_trf'  = 'ml\pes_trf'
+}
+$PkgDir = $pkgDirMap[$PkgName]
+
 # ── Preparar directorio de logs ─────────────────────────────────
-$LogDir = Join-Path $ProjectDir "$PkgName\inputs"
+$LogDir = Join-Path $ProjectDir "$PkgDir\inputs"
 if (-not (Test-Path $LogDir)) { New-Item -ItemType Directory -Path $LogDir -Force | Out-Null }
 
 $LogSuffix = ''
@@ -128,7 +139,7 @@ if (-not $check -or $check.HasExited) {
 }
 
 Write-Host "  Optimizacion lanzada   PID=$OptPid  trials=$NTrials  (verificado: vivo)"
-Write-Host "  Log: $PkgName\inputs\bayesian_opt${LogSuffix}.log"
+Write-Host "  Log: $PkgDir\inputs\bayesian_opt${LogSuffix}.log"
 
 # ── Resumen ─────────────────────────────────────────────────────
 Write-Host "`n  =========================================="
@@ -137,7 +148,7 @@ Write-Host "    Paquete:     $PkgName"
 Write-Host "    Modulo:      $OptModule"
 Write-Host "    Trials:      $NTrials"
 Write-Host "    PID:         $OptPid"
-Write-Host "    Log:         $PkgName\inputs\bayesian_opt${LogSuffix}.log"
+Write-Host "    Log:         $PkgDir\inputs\bayesian_opt${LogSuffix}.log"
 Write-Host "  =========================================="
 
 Write-Host "`n  Comandos utiles:"

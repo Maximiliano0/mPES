@@ -52,6 +52,17 @@ if [[ "$FILTER_PKG" != "all" ]]; then
     ALL_PACKAGES=("$FILTER_PKG")
 fi
 
+# ── Mapeo paquete → directorio relativo al proyecto ──────────────
+get_pkg_dir() {
+    case "$1" in
+        pes_ql)  echo "tabular/pes_ql"  ;;
+        pes_dql) echo "tabular/pes_dql" ;;
+        pes_dqn) echo "ml/pes_dqn"      ;;
+        pes_a2c) echo "ml/pes_a2c"      ;;
+        pes_trf) echo "ml/pes_trf"      ;;
+    esac
+}
+
 # ── Mapeo paquete → módulo de optimización ───────────────────────
 get_opt_module() {
     case "$1" in
@@ -80,7 +91,7 @@ query_optuna_db() {
     local pkg="$1" db_dir db_file prefix
     prefix=$(get_study_prefix "$pkg")
     # Find most recent BAYESIAN_OPT directory
-    db_dir=$(find "$PROJECT_DIR/$pkg/inputs" -maxdepth 1 -type d -name '*_BAYESIAN_OPT' 2>/dev/null | sort -r | head -n1)
+    db_dir=$(find "$PROJECT_DIR/$(get_pkg_dir "$pkg")/inputs" -maxdepth 1 -type d -name '*_BAYESIAN_OPT' 2>/dev/null | sort -r | head -n1)
     [[ -z "$db_dir" ]] && return 1
     db_file=$(find "$db_dir" -maxdepth 1 -name 'optuna_study_*.db' 2>/dev/null | sort -r | head -n1)
     [[ -z "$db_file" || ! -f "$db_file" ]] && return 1
@@ -124,7 +135,7 @@ FOUND_ANY=false
 
 for pkg in "${ALL_PACKAGES[@]}"; do
     opt_module="$(get_opt_module "$pkg")"
-    log_dir="$PROJECT_DIR/$pkg/inputs"
+    log_dir="$PROJECT_DIR/$(get_pkg_dir "$pkg")/inputs"
 
     # ── Detectar proceso de optimización ─────────────────────────
     opt_pid=""

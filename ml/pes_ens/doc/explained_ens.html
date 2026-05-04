@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <p>﻿# pes_ens — Agente Ensamblado por Soft Voting</p>
+<blockquote>
+<p>Última actualización: 2026-05-02</p>
+</blockquote>
+<h2 id="resumen">Resumen</h2>
+<p><code>pes_ens</code> es la única variante del <em>workspace</em> que <strong>no entrena ningún
+modelo propio</strong>. En su lugar, fusiona en tiempo de inferencia los
+agentes ya entrenados de los paquetes hermanos:</p>
+<table>
+<thead>
+<tr>
+<th>Miembro</th>
+<th>Paquete</th>
+<th>Rol (<code>role</code>)</th>
+<th>Salida</th>
+<th><code>weight</code> (CONFIG)</th>
+<th><code>enabled</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dqn</code></td>
+<td><code>pes_dqn</code></td>
+<td><code>q_dense</code></td>
+<td>$Q(s,a)$, shape <code>(11,)</code></td>
+<td><code>0.18</code></td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>a2c</code></td>
+<td><code>pes_a2c</code></td>
+<td><code>actor</code></td>
+<td>$\pi(a\mid s)$, shape <code>(11,)</code></td>
+<td><code>1.00</code></td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td><code>rdqn</code></td>
+<td><code>pes_rdqn</code></td>
+<td><code>q_recurrent</code></td>
+<td>$Q(s_{t-T:t},a)$, shape <code>(11,)</code></td>
+<td><code>0.90</code></td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td><code>trf</code></td>
+<td><code>pes_trf</code></td>
+<td><code>q_recurrent</code></td>
+<td>$Q(s_{t-T:t},a)$, shape <code>(11,)</code></td>
+<td><code>5.00</code></td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+<p>Los pesos absolutos se renormalizan internamente a $w_m^{\text{norm}}$
+con $\sum_m w_m^{\text{norm}} = 1$. Por defecto <code>a2c</code> está
+deshabilitado (su política era débil tras el entrenamiento) y el
+ensamble vota efectivamente con tres miembros: DQN, RDQN y TRF, con
+<code>trf</code> dominando el voto.</p>
+<p>Cada miembro vota con una distribución de probabilidad sobre las 11
+acciones discretas ${0,1,\ldots,10}$. La estrategia es <strong>soft
+voting</strong> (promedio ponderado de distribuciones) en lugar de hard
+voting porque:</p>
+<ul>
+<li>Con varios miembros, el hard voting genera demasiados empates.</li>
+<li>El promedio de distribuciones preserva información de incertidumbre
+  que se descarta al colapsar a una acción única.</li>
+<li>Permite calcular una métrica de confianza basada en la entropía de
+  la distribución resultante, igual que en los agentes individuales.</li>
+</ul>
+<h2 id="pipeline-de-decision-por-trial">Pipeline de decisión por trial</h2>
+<p>Sea $s_t = [\text{recursos_left},\ \text{trial_no},\
+\text{severidad}]$ el estado en el paso $t$, normalizado a $[0,1]^3$
+mediante <code>normalize_state</code> (los límites son
+<code>AVAILABLE_RESOURCES_PER_SEQUENCE − 9</code>, <code>NUM_MAX_TRIALS</code> y
+<code>MAX_SEVERITY</code>). Por cada miembro habilitado $m \in \mathcal{M}$:</p>
+<h3 id="1-inferencia-local">1. Inferencia local</h3>
+<ul>
+<li><code>q_dense</code> (DQN) — entrada <code>(1, 3)</code>, salida $Q_m(s_t,\cdot)$.</li>
+<li><code>q_recurrent</code> (RDQN, TRF) — entrada <code>(1, T, 3)</code> con la ventana
+  deslizante actualizada (ver §"Memoria por episodio"), salida
+  $Q_m(s_t,\cdot)$.</li>
+<li><code>actor</code> (A2C) — entrada <code>(1, 3)</code>, salida $\pi_m(\cdot\mid s_t)$
+  (ya es distribución; se hace <code>clip(0,·)</code> y se renormaliza por
+  defensa).</li>
+</ul>
+<h3 id="2-conversion-a-probabilidad">2. Conversión a probabilidad</h3>
+<p>Para los dos roles tipo Q-network se aplica un softmax con
+temperatura $\tau =$ <code>ENS_SOFTMAX_TEMPERATURE</code> $= 15.0$ (alta, para
+suavizar):</p>
+<p>$$
+p_m(a \mid s_t) = \frac{\exp!\big(Q_m(s_t,a)/\tau\big)}
+                       {\sum_{a'} \exp!\big(Q_m(s_t,a')/\tau\big)}
+$$</p>
+<p>El miembro <code>actor</code> ya es distribución, no requiere softmax.</p>
+<h3 id="3-mascara-de-factibilidad-por-miembro">3. Máscara de factibilidad <strong>por miembro</strong></h3>
+<p>Sea <code>max_feasible = max(0, resources_left)</code>. Antes de votar, cada
+distribución se trunca y se renormaliza dentro de su soporte
+factible:</p>
+<p>$$
+p_m^{\text{feas}}(a) = \begin{cases}
+\dfrac{p_m(a)}{\sum_{a'\le \text{max_feasible}} p_m(a')}
+  &amp; a \le \text{max_feasible} \[6pt]
+0 &amp; a &gt; \text{max_feasible}
+\end{cases}
+$$</p>
+<p>Si la suma es nula (todo el soporte cae en acciones inviables) se
+fuerza el one-hot en $a=0$. Esto evita que un miembro malo arrastre
+masa hacia acciones imposibles.</p>
+<h3 id="4-voto-ponderado-por-confianza">4. Voto ponderado por confianza</h3>
+<p>Por cada miembro se calcula la entropía normalizada de su
+distribución factible:</p>
+<p>$$
+H_m^{\text{norm}} = \frac{-\sum_a p_m^{\text{feas}}(a)\,
+                          \log_2 p_m^{\text{feas}}(a)}{\log_2 11}
+\;\in\;[0,1]
+$$</p>
+<p>y un peso dinámico:</p>
+<p>$$
+w_m^{\text{dyn}} = w_m^{\text{norm}} \cdot
+                   \big(0.1 + (1 - H_m^{\text{norm}})\big)
+$$</p>
+<p>El término constante <code>0.1</code> impide que un miembro perfectamente
+incierto (entropía máxima) se anule por completo. La distribución
+agregada inicial es:</p>
+<p>$$
+\bar p(a) = \sum_{m\in\mathcal{M}} w_m^{\text{dyn}}\,
+            p_m^{\text{feas}}(a)
+$$</p>
+<h3 id="5-penalizacion-de-la-accion-no-asignar">5. Penalización de la acción "no asignar"</h3>
+<p>Si todavía hay presupuesto (<code>max_feasible &gt; 0</code>), la acción $a=0$ se
+penaliza:</p>
+<p>$$
+\bar p(0) \leftarrow 0.3 \cdot \bar p(0)
+$$</p>
+<p>Motivo: en el log de respuestas la columna <code>Confidence</code> se marca
+como <code>-1</code> cuando la respuesta es <code>0</code>, lo que efectivamente desperdicia
+el trial. La penalización empuja al ensamble a "gastar" cuando puede.</p>
+<p>A continuación se renormaliza $\bar p$ a una distribución de
+probabilidad. Si la masa total cae a cero (caso patológico) se
+colapsa a un one-hot en $a=0$.</p>
+<h3 id="6-mezcla-con-prior-gaussiano-de-severidad">6. Mezcla con prior gaussiano de severidad</h3>
+<p>Se reconstruye la severidad cruda desde la coordenada normalizada,
+$\text{sev} = s_t[2]\cdot\text{MAX_SEVERITY}$, y se construye un
+prior gaussiano sobre las 11 acciones:</p>
+<p>$$
+\text{prior}(a) = \exp!\left(-\frac{(a - \text{sev})^2}
+                                    {2\sigma^2}\right),
+\qquad \sigma = \texttt{ENS_SEVERITY_PRIOR_SIGMA} = 3.0
+$$</p>
+<p>con la misma máscara de factibilidad y renormalizado a probabilidad.
+La distribución final mezcla ensamble y prior:</p>
+<p>$$
+\bar p_{\text{final}}(a) = (1 - w)\,\bar p(a) + w\,\text{prior}(a),
+\qquad w = \texttt{ENS_SEVERITY_PRIOR_WEIGHT} = 0.17
+$$</p>
+<p>Este paso recupera el conocimiento de dominio "asigna ≈ severidad"
+cuando los miembros están inseguros. Si <code>w = 0</code> la mezcla queda
+desactivada.</p>
+<h3 id="7-regla-de-seguridad-piso-por-severidad">7. Regla de seguridad: piso por severidad</h3>
+<p>Para evitar los outliers catastróficos del tipo "severidad 8, voto 0":
+si $\text{sev} \ge 6$, se calcula
+$\text{floor} = \lfloor \text{sev}/2 \rfloor$ y, siempre que
+<code>max_feasible ≥ floor</code> y $\arg\max \bar p_{\text{final}} &lt;
+\text{floor}$, se sobreescribe la distribución con un one-hot en
+<code>floor</code>. Esta regla elimina los mínimos de $\sim 0.75$ que
+afectaban a los primeros bloques.</p>
+<h3 id="8-seleccion-final">8. Selección final</h3>
+<p>$$
+a^* = \arg\max_a \bar p_{\text{final}}(a)
+$$</p>
+<p>Posteriormente, el <code>pygameMediator</code> recorta el resultado al rango
+factible y deriva la confianza meta-cognitiva (ver §"Confianza
+meta-cognitiva").</p>
+<h2 id="memoria-por-episodio">Memoria por episodio</h2>
+<p>Los miembros recurrentes (<code>rdqn</code>, <code>trf</code>) requieren una ventana
+deslizante de los últimos $T$ estados normalizados (con
+$T =$ <code>history_len</code> $= 6$). <code>pes_ens</code> mantiene <strong>una <code>HistoryDeque</code>
+independiente por miembro y por episodio</strong> $(\text{block},
+\text{sequence})$, almacenadas en un caché interno
+<code>_history_caches[member_name][(session_no, sequence_no)]</code>. La función
+<code>EnsembleAgent.reset_episode(session_no, sequence_no)</code> se llama en el
+primer trial de cada secuencia para limpiar la ventana y evitar fugas
+de estado entre episodios.</p>
+<h2 id="confianza-meta-cognitiva">Confianza meta-cognitiva</h2>
+<p>La confianza se deriva de la entropía de la distribución factible
+final:</p>
+<p>$$
+H = -\sum_a \bar p_{\text{final}}(a)\,
+            \log_2 \bar p_{\text{final}}(a)
+$$</p>
+<p>$$
+\text{conf} = \frac{H_{\min} - H}{H_{\min} - H_{\max}} \in [0,1]
+$$</p>
+<p>donde $H_{\min}$ y $H_{\max}$ son las entropías de una delta y de la
+uniforme sobre 11 valores, respectivamente. Es la misma fórmula
+empleada en los paquetes individuales, lo que mantiene la
+comparabilidad de la columna <code>Confidence</code> en los logs.</p>
+<h2 id="configuracion">Configuración</h2>
+<p><code>config/CONFIG.py</code> expone los hiperparámetros del ensamble:</p>
+<pre><code class="language-python">ENS_MEMBER_MODELS = [
+    {'name': 'dqn',  'role': 'q_dense',
+     'path': '../pes_dqn/inputs/dqn_model.keras',
+     'history_len': 1, 'weight': 0.18, 'enabled': True},
+    {'name': 'a2c',  'role': 'actor',
+     'path': '../pes_a2c/inputs/ac_actor.keras',
+     'history_len': 1, 'weight': 1.0,  'enabled': False},
+    {'name': 'rdqn', 'role': 'q_recurrent',
+     'path': '../pes_rdqn/inputs/rdqn_model.keras',
+     'history_len': 6, 'weight': 0.9,  'enabled': True},
+    {'name': 'trf',  'role': 'q_recurrent',
+     'path': '../pes_trf/inputs/trf_model.keras',
+     'history_len': 6, 'weight': 5.0,  'enabled': True},
+]
+
+ENS_SOFTMAX_TEMPERATURE   = 15.0
+ENS_SEVERITY_PRIOR_WEIGHT = 0.17   # 0 desactiva la mezcla con prior
+ENS_SEVERITY_PRIOR_SIGMA  = 3.0    # ancho del prior gaussiano
+</code></pre>
+<ul>
+<li>Los <code>path</code> son relativos a la raíz del paquete <code>pes_ens</code> y apuntan
+  a los <code>inputs/</code> canónicos de los paquetes hermanos (no se duplican
+  artefactos <code>.keras</code>).</li>
+<li>Se puede deshabilitar un miembro poniendo <code>enabled: False</code> para,
+  por ejemplo, comparar voting de 3 vs 4 miembros sin tocar el resto.</li>
+<li>Los pesos crudos no necesitan sumar 1; el constructor de
+  <code>EnsembleAgent</code> los normaliza a $w_m^{\text{norm}}$.</li>
+</ul>
+<h2 id="notas-tecnicas">Notas técnicas</h2>
+<ul>
+<li><strong>Sin imports cruzados entre paquetes.</strong> Cada miembro es un
+  artefacto autónomo <code>.keras</code>; <code>pes_ens</code> lo lee directamente del
+  sistema de archivos vía <code>tf.keras.models.load_model</code>. Los
+  <em>helpers</em> locales necesarios (<code>normalize_state</code>, <code>HistoryDeque</code>)
+  están reimplementados <em>verbatim</em> en <code>ext/ensemble_model.py</code> para
+  ser bit-equivalentes a los de los paquetes hermanos.</li>
+<li><strong><code>safe_mode=False</code></strong> en <code>tf.keras.models.load_model</code> es
+  obligatorio para <code>pes_trf/inputs/trf_model.keras</code> (capa <code>Lambda</code>,
+  CWE-502); inocuo para los otros tres miembros. Los artefactos son
+  generados por nuestra propia <em>pipeline</em>, por lo que la
+  deserialización es de confianza.</li>
+<li><strong>Sin <code>train_ens.py</code> ni <code>optimize_ens.py</code></strong>: el ensamble se rige
+  íntegramente por los pesos <code>weight</code> y por los hiperparámetros del
+  prior. Si en el futuro se desean pesos optimizados (p. ej. mediante
+  búsqueda Bayesiana sobre <code>mean_perf</code>), basta con añadir un script
+  en <code>ext/</code> que ajuste <code>ENS_MEMBER_MODELS[i]['weight']</code> y vuelva a
+  ejecutar <code>python -m ml.pes_ens</code>.</li>
+</ul>
+</body>
+</html>

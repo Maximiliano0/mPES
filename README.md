@@ -1,4 +1,4 @@
-# mPES — multiple Pandemic Experiment Scenario
+﻿# mPES — multiple Pandemic Experiment Scenario
 
 Multi-package Python workspace for **reinforcement-learning** experiments on a
 resource-allocation task (the *Pandemic Scenario*).
@@ -10,22 +10,24 @@ straightforward.
 
 ## Packages
 
-| Package | Algorithm | Key files |
-|---------|-----------|-----------|
-| `pes_base` | Tabular Q-Learning (baseline) | `ext/pandemic.py`, `ext/train_rl.py` |
-| `pes_ql` | Q-Learning + Bayesian optimisation (Optuna) | `ext/optimize_rl.py` |
-| `pes_dql` | Double Q-Learning, ε-decay warm-up, PBRS | `ext/pandemic.py`, `ext/optimize_rl.py` |
-| `pes_dqn` | Deep Q-Network (experience replay + target net) | `ext/dqn_model.py`, `ext/train_dqn.py`, `ext/optimize_dqn.py` |
-| `pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
-| `pes_a2c` | Advantage Actor-Critic (A2C) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
-| `pes_trf` | Causal Transformer encoder + DQN (sliding window) | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
-| `pes_ens` | Ensemble (soft voting of pes_dqn + pes_a2c + pes_rdqn + pes_trf) | `ext/ensemble_model.py` |
-| `utils` | Shared helpers (shell scripts) | `linux/run_bayesian_opt.sh`, `win/run_bayesian_opt.ps1`, `config/.pylintrc` |
+Packages are grouped by algorithm family under two top-level directories:
+
+| Group | Package | Algorithm | Key files |
+|-------|---------|-----------|-----------|
+| `tabular` | `pes_base` | Tabular Q-Learning (baseline) | `ext/pandemic.py`, `ext/train_rl.py` |
+| `tabular` | `pes_ql` | Q-Learning + Bayesian optimisation (Optuna) | `ext/optimize_rl.py` |
+| `tabular` | `pes_dql` | Double Q-Learning, ε-decay warm-up, PBRS | `ext/pandemic.py`, `ext/optimize_rl.py` |
+| `ml` | `pes_dqn` | Deep Q-Network (experience replay + target net) | `ext/dqn_model.py`, `ext/train_dqn.py`, `ext/optimize_dqn.py` |
+| `ml` | `pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
+| `ml` | `pes_a2c` | Advantage Actor-Critic (A2C) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
+| `ml` | `pes_trf` | Causal Transformer encoder + DQN (sliding window) | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
+| `ml` | `pes_ens` | Ensemble (soft voting of pes_dqn + pes_rdqn + pes_trf; pes_a2c configured but disabled by default) | `ext/ensemble_model.py` |
+| — | `utils` | Shared helpers (shell scripts) | `linux/run_bayesian_opt.sh`, `win/run_bayesian_opt.ps1`, `config/.pylintrc` |
 
 ## Package layout
 
 ```
-<pkg>/
+<group>/<pkg>/                 # <group> is `tabular` or `ml`
 ├── __init__.py          # Config re-exports, ANSI codes, numpy/TF setup
 ├── __main__.py          # Experiment entry point (blocks/sequences/trials)
 ├── config/CONFIG.py     # All tuneable constants
@@ -40,6 +42,9 @@ straightforward.
     ├── result_formatter.py# Matplotlib result plots
     └── terminal_utils.py  # Rich console output (header, section, info…)
 ```
+
+The workspace also includes a top-level `doc/` folder with cross-package
+comparison material (e.g. `doc/comparacion_modelos.md`).
 
 ## Setup
 
@@ -90,27 +95,31 @@ Set these **before** running training or optimisation:
 ### Run an experiment
 
 ```bash
-python -m pes_base     # Tabular Q-Learning
-python -m pes_ql       # Q-Learning (Bayesian-tuned)
-python -m pes_dql      # Double Q-Learning + PBRS
-python -m pes_dqn      # Deep Q-Network
-python -m pes_rdqn     # Recurrent DQN (LSTM)
-python -m pes_a2c      # Advantage Actor-Critic (A2C)
-python -m pes_trf      # Causal Transformer DQN
-python -m pes_ens      # Ensemble (soft voting of dqn+a2c+rdqn+trf, no training)
+python -m tabular.pes_base     # Tabular Q-Learning
+python -m tabular.pes_ql       # Q-Learning (Bayesian-tuned)
+python -m tabular.pes_dql      # Double Q-Learning + PBRS
+python -m ml.pes_dqn      # Deep Q-Network
+python -m ml.pes_rdqn     # Recurrent DQN (LSTM)
+python -m ml.pes_a2c      # Advantage Actor-Critic (A2C)
+python -m ml.pes_trf      # Causal Transformer DQN
+python -m ml.pes_ens      # Ensemble (soft voting of dqn+a2c+rdqn+trf, no training)
 ```
 
 ### Train an agent
 
 ```bash
-# Tabular Q-Learning (1M episodes)
-python -m pes_base.ext.train_rl 1000000
+# --- Tabular models ---
+python -m tabular.pes_base.ext.train_rl 1000000      # Baseline (1M episodes)
+python -m tabular.pes_ql.ext.train_rl 1000000        # Q-Learning (Optuna best params)
+python -m tabular.pes_dql.ext.train_rl 1000000       # Double Q-Learning + PBRS
 
-# Deep Q-Network
-python -m pes_dqn.ext.train_dqn 500000
+# --- Deep-learning models ---
+python -m ml.pes_dqn.ext.train_dqn 175000            # Deep Q-Network
+python -m ml.pes_rdqn.ext.train_rdqn 175000          # Recurrent DQN (LSTM)
+python -m ml.pes_a2c.ext.train_a2c 175000            # Advantage Actor-Critic
+python -m ml.pes_trf.ext.train_transformer 175000    # Causal Transformer DQN
 
-# Actor-Critic
-python -m pes_a2c.ext.train_a2c 500000
+# Note: pes_ens has no training phase; it loads pre-trained sibling models.
 ```
 
 ### Bayesian hyperparameter optimisation
@@ -153,17 +162,94 @@ Experimento (1)
 ## Documentation
 
 Each package ships its own in-depth Markdown documentation under
-`<pkg>/doc/` (Spanish), with matching HTML renderings (KaTeX math,
-dark-mode CSS). Regenerate the HTML with:
+`<group>/<pkg>/doc/` (Spanish), with matching HTML renderings (KaTeX
+math, dark-mode CSS). The workspace-level `doc/` folder hosts the
+cross-package comparison material. Regenerate the HTML with:
 
 ```bash
-python utils/scripts/_export_html.py            # all packages
-python utils/scripts/_export_html.py pes_dqn    # single package
+python utils/scripts/_export_html.py            # all packages + workspace doc
+python utils/scripts/_export_html.py pes_dqn    # single package (short name)
+python utils/scripts/_export_html.py ml/pes_dqn # single package (grouped name)
+python utils/scripts/_export_html.py doc        # workspace-level doc/ only
 ```
 
 To update both source-level docstrings and the Markdown docs from the
 current code, use the workflow described in
 `.github/prompts/update-pkg-docs.prompt.md`.
+
+## Cross-model benchmark (general/)
+
+The `general/` harness runs every model against a catalogue of **22
+out-of-distribution scenarios** (severity / length / joint / structural
+families) and aggregates the results into eight `matrix_*.csv` files
+plus four heatmaps under `general/results/`. The full sweep is **154
+cells** (7 models × 22 scenarios). See
+[general/results/benchmark_report.md](general/results/benchmark_report.md)
+for the detailed numerical analysis.
+
+### Run the sweep / inspect / regenerate artefacts
+
+```bash
+python -m general.scripts.orchestrate          # full 154-cell sweep
+python -m general.scripts.progress             # live progress bars + ETA
+python -m general.scripts.aggregate            # build matrix_*.csv from raw/
+python -m general.scripts.plot_matrix          # render heatmaps
+python -m general.scripts.report               # generate benchmark_report.md
+```
+
+### Heatmaps
+
+| Metric | Heatmap |
+|--------|---------|
+| Global mean performance | ![global mean](general/results/heatmap_global_mean.png) |
+| OOD degradation vs `sev_empirical` | ![ood degradation](general/results/heatmap_ood_degradation.png) |
+| Welch test −log10(p) (significance of shift) | ![welch logp](general/results/heatmap_welch_logp.png) |
+| Action-distribution KL vs baseline | ![action kl](general/results/heatmap_action_kl.png) |
+
+### General conclusions
+
+1. **Overall ranking** (mean performance across the 22 scenarios):
+   `pes_ens` (0.937) > `pes_trf` (0.927) > `pes_rdqn` (0.899) ≈
+   `pes_dqn` (0.894) ≈ `pes_dql` (0.893) > `pes_a2c` (0.887) ≈
+   `pes_ql` (0.887). The ensemble is the only model that stays
+   ≥ 0.90 in **every** scenario.
+
+2. **Best single (non-ensemble) model**: `pes_trf` — the only standalone
+   model that *improves* under the toughest extrapolations
+   (`sev_extrapolate_high`, `joint_extrap_both`) with very-large positive
+   effect sizes (Cohen's d > +2).
+
+3. **Most fragile**: `pes_dql` and `pes_ql` — largest mean degradation,
+   only models with d < −1.5 on multiple scenarios; `pes_ql` collapses
+   to a worst-sequence performance of **0.168** on `joint_low_short`.
+
+4. **Three universal stressors** (p < 0.001 across all 7 models):
+   `sev_extrapolate_high`, `len_extrapolate_long`, `joint_extrap_both`.
+   These should be treated as the headline benchmark cells.
+
+5. **Three control columns** (`struct_few_long_blocks`,
+   `struct_many_short_blocks`, `struct_more_total`): degradation = 0,
+   p = 1.0, KL = 0 — they validate the harness and metric invariance
+   under block-count rearrangement rather than measure transfer.
+
+6. **Hidden caveat — `pes_a2c`**: action-distribution KL is **exactly
+   zero** on every severity scenario despite competitive scores. This
+   signals partial *policy collapse* onto a robust default action
+   sequence, not genuine context-conditioning.
+
+7. **Tail-risk**: `pes_ens` keeps a worst-sequence floor ≥ 0.57 across
+   the entire 22 × 64 grid; `pes_trf` ≥ 0.55. They are the safest
+   choices when worst-case behaviour matters more than average
+   performance.
+
+8. **Family takeaways**:
+   * **Severity**: deep models > tabular by a wide margin on the
+     extrapolative tails; comparable on in-support reshapings.
+   * **Length**: hardest family for everyone (`len_extrapolate_long`
+     degrades all 7 models).
+   * **Joint**: bimodal — catastrophic for tabular, *beneficial* for
+     transformer / ensemble.
+   * **Structural**: control band (sanity check).
 
 ## License
 

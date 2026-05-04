@@ -35,11 +35,11 @@ $ProjectDir = Resolve-Path (Join-Path $ScriptDir '..\..')
 
 # Mapa paquete -> directorio de inputs
 $PkgInputs = @{
-    'pes_ql'  = 'pes_ql\inputs'
-    'pes_dql' = 'pes_dql\inputs'
-    'pes_dqn' = 'pes_dqn\inputs'
-    'pes_a2c' = 'pes_a2c\inputs'
-    'pes_trf' = 'pes_trf\inputs'
+    'pes_ql'  = 'tabular\pes_ql\inputs'
+    'pes_dql' = 'tabular\pes_dql\inputs'
+    'pes_dqn' = 'ml\pes_dqn\inputs'
+    'pes_a2c' = 'ml\pes_a2c\inputs'
+    'pes_trf' = 'ml\pes_trf\inputs'
 }
 
 function Resolve-Package([string]$alias) {

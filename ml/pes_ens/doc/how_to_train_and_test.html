@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <p>﻿# pes_ens — Cómo Probar el Agente Ensamblado</p>
+<blockquote>
+<p>Última actualización: 2026-05-02</p>
+</blockquote>
+<p><code>pes_ens</code> no se entrena: combina varios modelos ya entrenados.
+Antes de usarlo, asegúrate de que existen los archivos <code>.keras</code> de
+todos los miembros marcados como <code>enabled = True</code> en
+<code>config/CONFIG.py</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Miembro</th>
+<th>Ruta esperada</th>
+<th><code>enabled</code> (default)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DQN</td>
+<td><code>pes_dqn/inputs/dqn_model.keras</code></td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td>A2C</td>
+<td><code>pes_a2c/inputs/ac_actor.keras</code></td>
+<td><code>False</code></td>
+</tr>
+<tr>
+<td>RDQN</td>
+<td><code>pes_rdqn/inputs/rdqn_model.keras</code></td>
+<td><code>True</code></td>
+</tr>
+<tr>
+<td>TRF</td>
+<td><code>pes_trf/inputs/trf_model.keras</code></td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+<p>Si alguno falta, ejecuta el entrenamiento del paquete correspondiente
+(<code>python -m pes_&lt;pkg&gt;</code>) o usa los scripts de <code>utils/scripts/</code> para
+finalizar una optimización Bayesiana interrumpida. El archivo de
+<code>pes_a2c</code> puede no estar presente si nunca se entrenó: por defecto
+está <code>enabled = False</code> y el ensamble funciona sin él.</p>
+<h2 id="1-configuracion">1. Configuración</h2>
+<p>Edita <code>pes_ens/config/CONFIG.py</code>. Los hiperparámetros relevantes son:</p>
+<ul>
+<li><code>ENS_MEMBER_MODELS</code> — una entrada por miembro
+  (<code>name</code>, <code>role</code>, <code>path</code>, <code>history_len</code>, <code>weight</code>, <code>enabled</code>).
+  Cambiar <code>enabled: False</code> desactiva al miembro sin borrar su
+  configuración (útil para comparar variantes 2 vs 3 vs 4 miembros).</li>
+<li><code>ENS_SOFTMAX_TEMPERATURE</code> (default <code>15.0</code>) — temperatura del
+  softmax aplicado a los miembros tipo Q-network antes del
+  promediado. Valores altos suavizan, valores bajos hacen el voto
+  más "duro".</li>
+<li><code>ENS_SEVERITY_PRIOR_WEIGHT</code> (default <code>0.17</code>) — peso de la mezcla
+  con el prior gaussiano centrado en la severidad cruda. <code>0.0</code>
+  desactiva la mezcla.</li>
+<li><code>ENS_SEVERITY_PRIOR_SIGMA</code> (default <code>3.0</code>) — desviación estándar
+  del prior, en unidades crudas de severidad.</li>
+<li><code>PLAYER_TYPE</code> — debe ser <code>'ENS_AGENT'</code> (único valor admitido).</li>
+</ul>
+<p>Los pesos crudos <code>weight</code> no necesitan sumar 1; <code>EnsembleAgent</code> los
+renormaliza internamente. La regla de seguridad
+"piso por severidad ≥ 6" no es configurable (siempre activa).</p>
+<h2 id="2-ejecucion">2. Ejecución</h2>
+<h3 id="linux">Linux</h3>
+<pre><code class="language-bash">source linux_mpes_env/bin/activate
+export PYTHONIOENCODING=utf-8
+export TF_ENABLE_ONEDNN_OPTS=0
+python -m ml.pes_ens
+</code></pre>
+<h3 id="windows-powershell">Windows (PowerShell)</h3>
+<pre><code class="language-powershell">win_mpes_env\Scripts\Activate.ps1
+$env:PYTHONIOENCODING = 'utf-8'
+$env:TF_ENABLE_ONEDNN_OPTS = '0'
+python -m ml.pes_ens
+</code></pre>
+<p><code>__main__</code> ejecuta primero una <strong>fase de validación</strong> que carga cada
+miembro habilitado con <code>tf.keras.models.load_model(..., safe_mode=False)</code>
+e imprime los parámetros y peso de cada uno. Si algún archivo falta
+o la deserialización falla, el experimento se detiene antes de
+empezar.</p>
+<p>A continuación corre <code>NUM_BLOCKS × NUM_SEQUENCES = 64</code> secuencias,
+cada una con 3-10 trials, y produce:</p>
+<ul>
+<li><code>outputs/&lt;fecha&gt;_ENS_AGENT/PES_ENS_responses_&lt;id&gt;.txt</code> — log
+  trial-a-trial (severity, response, confidence, RTs).</li>
+<li><code>outputs/&lt;fecha&gt;_ENS_AGENT/&lt;id&gt;_results.json</code> — resumen
+  agregado por bloque + media global.</li>
+<li><code>outputs/&lt;fecha&gt;_ENS_AGENT/&lt;id&gt;_results.png</code> — visualización.</li>
+</ul>
+<h2 id="3-metrica-raw_mean_perf">3. Métrica <code>raw_mean_perf</code></h2>
+<p>Al final del experimento, el log imprime explícitamente:</p>
+<pre><code>raw_mean_perf = X.XXXXXX  (std=Y.YYYYYY, n=64)
+</code></pre>
+<p>Esta métrica es directamente comparable contra el <code>mean_perf</code> de
+cualquier otro paquete (<code>pes_dqn</code>, <code>pes_a2c</code>, <code>pes_rdqn</code>, <code>pes_trf</code>)
+para evaluar si el ensamble mejora sobre sus miembros individuales.</p>
+<h2 id="4-diagnostico">4. Diagnóstico</h2>
+<p>Si <code>VERBOSE = True</code> (default), por cada trial verás algo como:</p>
+<pre><code>State indices - Resources: 18, City: 2, Severity: 7
+  member dqn    top= 3 p_top=0.412
+  member rdqn   top= 3 p_top=0.475
+  member trf    top= 4 p_top=0.501
+  ENSEMBLE      top= 4 p_top=0.437
+ENS Agent Response: 4, Confidence: 0.382
+</code></pre>
+<p>Útil para detectar miembros consistentemente desviados del consenso
+(p. ej. si A2C, cuando se reactiva, vota sistemáticamente acciones
+distintas del resto, puede convenir reducir su <code>weight</code> o
+reentrenarlo).</p>
+<p>Recuerda que el <code>top</code> impreso para cada miembro corresponde a la
+distribución <strong>antes</strong> del enmascarado por factibilidad y antes del
+voto ponderado por confianza; el <code>top</code> del <code>ENSEMBLE</code> ya incluye:</p>
+<ol>
+<li>Máscara de factibilidad por miembro + renormalización.</li>
+<li>Voto ponderado por confianza (<code>dyn_weight = w_norm * (0.1 + (1 −
+   H_norm))</code>).</li>
+<li>Penalización de la acción <code>0</code> (<code>* 0.3</code>) cuando hay presupuesto.</li>
+<li>Mezcla con el prior gaussiano de severidad
+   (<code>ENS_SEVERITY_PRIOR_WEIGHT</code>, <code>ENS_SEVERITY_PRIOR_SIGMA</code>).</li>
+<li>Regla de piso por severidad si <code>severidad ≥ 6</code> y
+   <code>argmax &lt; ⌊severidad/2⌋</code>.</li>
+</ol>
+<p>Consulta <code>doc/explained_ens.md</code> para los detalles matemáticos de
+cada paso.</p>
+<h2 id="5-cambios-respecto-a-paquetes-hermanos">5. Cambios respecto a paquetes hermanos</h2>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>pes_ens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrenamiento</td>
+<td>Ninguno — inferencia pura</td>
+</tr>
+<tr>
+<td>Optimización</td>
+<td>Ninguna (voto manual + prior fijo)</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>Innecesaria; los modelos corren en CPU</td>
+</tr>
+<tr>
+<td>Imports cruzados</td>
+<td>Ninguno; los <code>.keras</code> se cargan por ruta</td>
+</tr>
+<tr>
+<td>Tiempo de ejecución</td>
+<td>≈ N × un agente individual (N forwards)</td>
+</tr>
+<tr>
+<td>Restart safety</td>
+<td><code>EnsembleAgent.reset_episode</code> por secuencia</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

@@ -62,6 +62,16 @@ if ($FilterPkg -ne 'all') {
     $allPackages = @($FilterPkg)
 }
 
+# Mapeo paquete → directorio relativo al proyecto
+$pkgDirMap = @{
+    'pes_ql'   = 'tabular\pes_ql'
+    'pes_dql'  = 'tabular\pes_dql'
+    'pes_dqn'  = 'ml\pes_dqn'
+    'pes_rdqn' = 'ml\pes_rdqn'
+    'pes_a2c'  = 'ml\pes_a2c'
+    'pes_trf'  = 'ml\pes_trf'
+}
+
 # ── Colores ──────────────────────────────────────────────────────
 function Write-C { param([string]$Text, [string]$Color = 'White') Write-Host $Text -ForegroundColor $Color -NoNewline }
 function Write-CL { param([string]$Text, [string]$Color = 'White') Write-Host $Text -ForegroundColor $Color }
@@ -119,7 +129,7 @@ $foundAny = $false
 
 foreach ($pkg in $allPackages) {
     $optModule = $modMap[$pkg]
-    $logDir    = Join-Path $ProjectDir "$pkg\inputs"
+    $logDir    = Join-Path $ProjectDir "$($pkgDirMap[$pkg])\inputs"
 
     # ── Detectar proceso de optimizacion ──────────────────────────
     # May match python.exe (venv wrapper) or python3.10.exe (real worker).

@@ -69,17 +69,30 @@ N_TRIALS="$2"
 # ── Resolver módulo de optimización por paquete ──────────────────
 resolve_module() {
     case "$1" in
-        pes_ql)     echo "pes_ql.ext.optimize_rl"  ;;
-        pes_dql)    echo "pes_dql.ext.optimize_rl" ;;
-        pes_dqn)    echo "pes_dqn.ext.optimize_dqn"     ;;
-        pes_rdqn)   echo "pes_rdqn.ext.optimize_rdqn"   ;;
-        pes_a2c)     echo "pes_a2c.ext.optimize_a2c" ;;
-        pes_trf)    echo "pes_trf.ext.optimize_tr" ;;
+        pes_ql)     echo "tabular.pes_ql.ext.optimize_rl"  ;;
+        pes_dql)    echo "tabular.pes_dql.ext.optimize_rl" ;;
+        pes_dqn)    echo "ml.pes_dqn.ext.optimize_dqn"     ;;
+        pes_rdqn)   echo "ml.pes_rdqn.ext.optimize_rdqn"   ;;
+        pes_a2c)     echo "ml.pes_a2c.ext.optimize_a2c" ;;
+        pes_trf)    echo "ml.pes_trf.ext.optimize_tr" ;;
     esac
 }
 OPT_MODULE="$(resolve_module "$PKG_NAME")"
 
-LOG_DIR="$PROJECT_DIR/$PKG_NAME/inputs"
+# ── Mapeo paquete → directorio relativo al proyecto ──────────────
+resolve_pkg_dir() {
+    case "$1" in
+        pes_ql)  echo "tabular/pes_ql"  ;;
+        pes_dql) echo "tabular/pes_dql" ;;
+        pes_dqn) echo "ml/pes_dqn"      ;;
+        pes_rdqn) echo "ml/pes_rdqn"    ;;
+        pes_a2c) echo "ml/pes_a2c"      ;;
+        pes_trf) echo "ml/pes_trf"      ;;
+    esac
+}
+PKG_DIR="$(resolve_pkg_dir "$PKG_NAME")"
+
+LOG_DIR="$PROJECT_DIR/$PKG_DIR/inputs"
 
 cd "$PROJECT_DIR"
 source "$VENV"
