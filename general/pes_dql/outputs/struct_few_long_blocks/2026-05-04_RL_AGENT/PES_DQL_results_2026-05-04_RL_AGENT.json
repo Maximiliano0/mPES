@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_RL_AGENT",
+    "timestamp": "2026-05-04T17:25:16.082312",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "RL_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 4,
+    "num_sequences": 16,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.8963435995059954,
+    "overall_median": 0.8960287617461677,
+    "overall_std": 0.047707536771505736,
+    "overall_min": 0.7767884935087838,
+    "overall_max": 1.0,
+    "total_sequences": 64,
+    "first_block_mean": 0.8895965708106672,
+    "last_block_mean": 0.9037764745495498,
+    "improvement": 0.01417990373888256,
+    "percentile_25": 0.8623469718203095,
+    "percentile_75": 0.9276712174740306,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.8883815598315457,
+        "median": 0.8839491897821992,
+        "std": 0.04470248123461589,
+        "min": 0.8102109526652247,
+        "max": 0.9654036472812186,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 2,
+        "mean": 0.897038195833922,
+        "median": 0.8863581050125284,
+        "std": 0.05552049384824117,
+        "min": 0.7767884935087838,
+        "max": 1.0,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 3,
+        "mean": 0.8966656956336982,
+        "median": 0.9024201232187721,
+        "std": 0.036719990555625165,
+        "min": 0.8273709877148936,
+        "max": 0.9609433804466002,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 4,
+        "mean": 0.9032889467248159,
+        "median": 0.9073698251723971,
+        "std": 0.05062236021154661,
+        "min": 0.7940032647773384,
+        "max": 0.9778944044271342,
+        "num_sequences": 16
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "RL_AGENT",
+    "num_blocks": 4,
+    "num_sequences": 16,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_DQL_results_2026-05-04_RL_AGENT.png",
+    "this_file": "PES_DQL_results_2026-05-04_RL_AGENT.json"
+  }
+}

@@ -152,6 +152,22 @@ MAX_SEVERITY = CONFIG.MAX_SEVERITY
 RESPONSE_MULTIPLIER = PANDEMIC_PARAMETER  # α (Alpha)
 SEVERITY_MULTIPLIER = 1 + PANDEMIC_PARAMETER  # β (Beta)
 
+# === BENCHMARK OVERRIDE HOOK (general/) ============================
+# When mPES is launched by the OOD benchmark harness in ``general/``,
+# these env vars redirect outputs and resize the experiment grid
+# without modifying CONFIG.py. Inputs (CSVs) are swapped in-place by
+# the harness so INPUTS_PATH stays untouched.
+_bench_outputs = os.environ.get('MPES_OUTPUTS_PATH')
+if _bench_outputs:
+    OUTPUTS_PATH = _bench_outputs
+_bench_blocks = os.environ.get('MPES_NUM_BLOCKS')
+if _bench_blocks:
+    NUM_BLOCKS = int(_bench_blocks)
+_bench_seqs = os.environ.get('MPES_NUM_SEQUENCES')
+if _bench_seqs:
+    NUM_SEQUENCES = int(_bench_seqs)
+# === END BENCHMARK OVERRIDE HOOK ===================================
+
 # Set some nice numpy printing defaults and error handling
 numpy.set_printoptions(threshold=sys.maxsize, precision=3, suppress=True,
                        linewidth=80, nanstr="--", infstr="∞")
