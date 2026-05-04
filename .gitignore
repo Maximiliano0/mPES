@@ -39,6 +39,7 @@ share/python-wheels/
 MANIFEST
 
 # ── IDEs / editors ─────────────────────────────────────────────────────────
+.github/*
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
