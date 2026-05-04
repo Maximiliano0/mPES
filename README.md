@@ -177,6 +177,80 @@ To update both source-level docstrings and the Markdown docs from the
 current code, use the workflow described in
 `.github/prompts/update-pkg-docs.prompt.md`.
 
+## Cross-model benchmark (general/)
+
+The `general/` harness runs every model against a catalogue of **22
+out-of-distribution scenarios** (severity / length / joint / structural
+families) and aggregates the results into eight `matrix_*.csv` files
+plus four heatmaps under `general/results/`. The full sweep is **154
+cells** (7 models × 22 scenarios). See
+[general/results/benchmark_report.md](general/results/benchmark_report.md)
+for the detailed numerical analysis.
+
+### Run the sweep / inspect / regenerate artefacts
+
+```bash
+python -m general.scripts.orchestrate          # full 154-cell sweep
+python -m general.scripts.progress             # live progress bars + ETA
+python -m general.scripts.aggregate            # build matrix_*.csv from raw/
+python -m general.scripts.plot_matrix          # render heatmaps
+python -m general.scripts.report               # generate benchmark_report.md
+```
+
+### Heatmaps
+
+| Metric | Heatmap |
+|--------|---------|
+| Global mean performance | ![global mean](general/results/heatmap_global_mean.png) |
+| OOD degradation vs `sev_empirical` | ![ood degradation](general/results/heatmap_ood_degradation.png) |
+| Welch test −log10(p) (significance of shift) | ![welch logp](general/results/heatmap_welch_logp.png) |
+| Action-distribution KL vs baseline | ![action kl](general/results/heatmap_action_kl.png) |
+
+### General conclusions
+
+1. **Overall ranking** (mean performance across the 22 scenarios):
+   `pes_ens` (0.937) > `pes_trf` (0.927) > `pes_rdqn` (0.899) ≈
+   `pes_dqn` (0.894) ≈ `pes_dql` (0.893) > `pes_a2c` (0.887) ≈
+   `pes_ql` (0.887). The ensemble is the only model that stays
+   ≥ 0.90 in **every** scenario.
+
+2. **Best single (non-ensemble) model**: `pes_trf` — the only standalone
+   model that *improves* under the toughest extrapolations
+   (`sev_extrapolate_high`, `joint_extrap_both`) with very-large positive
+   effect sizes (Cohen's d > +2).
+
+3. **Most fragile**: `pes_dql` and `pes_ql` — largest mean degradation,
+   only models with d < −1.5 on multiple scenarios; `pes_ql` collapses
+   to a worst-sequence performance of **0.168** on `joint_low_short`.
+
+4. **Three universal stressors** (p < 0.001 across all 7 models):
+   `sev_extrapolate_high`, `len_extrapolate_long`, `joint_extrap_both`.
+   These should be treated as the headline benchmark cells.
+
+5. **Three control columns** (`struct_few_long_blocks`,
+   `struct_many_short_blocks`, `struct_more_total`): degradation = 0,
+   p = 1.0, KL = 0 — they validate the harness and metric invariance
+   under block-count rearrangement rather than measure transfer.
+
+6. **Hidden caveat — `pes_a2c`**: action-distribution KL is **exactly
+   zero** on every severity scenario despite competitive scores. This
+   signals partial *policy collapse* onto a robust default action
+   sequence, not genuine context-conditioning.
+
+7. **Tail-risk**: `pes_ens` keeps a worst-sequence floor ≥ 0.57 across
+   the entire 22 × 64 grid; `pes_trf` ≥ 0.55. They are the safest
+   choices when worst-case behaviour matters more than average
+   performance.
+
+8. **Family takeaways**:
+   * **Severity**: deep models > tabular by a wide margin on the
+     extrapolative tails; comparable on in-support reshapings.
+   * **Length**: hardest family for everyone (`len_extrapolate_long`
+     degrades all 7 models).
+   * **Joint**: bimodal — catastrophic for tabular, *beneficial* for
+     transformer / ensemble.
+   * **Structural**: control band (sanity check).
+
 ## License
 
 Private repository — all rights reserved.

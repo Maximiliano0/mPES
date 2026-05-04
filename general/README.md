@@ -1,7 +1,7 @@
 # mPES OOD Benchmark Harness (`general/`)
 
 > **Purpose** — Generalise and benchmark all trained mPES agents
-> (every package except `tabular/pes_base`) under a 24-scenario matrix
+> (every package except `tabular/pes_base`) under a 22-scenario matrix
 > of severity / length / structural perturbations to expose each
 > model's limitations and identify the most robust one.
 
@@ -10,8 +10,8 @@
 | Aspect | Value |
 |---|---|
 | Models evaluated | 7 (`pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`, `pes_a2c`, `pes_trf`, `pes_ens`) |
-| Scenarios | 24 (1 baseline + 12 severity + 5 length + 5 joint + 3 structural) |
-| Cells | 7 × 24 = **168** |
+| Scenarios | 22 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural) |
+| Cells | 7 × 22 = **154** |
 | `n` per cell | 64 sequences (single seed = 42) |
 | Retraining | **None** — pure inference on existing artefacts |
 
@@ -35,23 +35,27 @@ win_mpes_env\Scripts\Activate.ps1
 #    and the empirical CSV baselines from each package.
 
 # 2. Run the full sweep (resumable; cells whose JSON exists are skipped).
-python -m general.orchestrate
+python -m general.scripts.orchestrate
 
 # 3. Aggregate raw cells into matrices + statistics.
-python -m general.aggregate
+python -m general.scripts.aggregate
 
 # 4. Produce heatmaps + per-scenario histograms.
-python -m general.plot_matrix
+python -m general.scripts.plot_matrix
 
 # 5. Compose the executive Markdown report.
-python -m general.report
+python -m general.scripts.report
+
+# (anytime) live progress snapshot during a sweep:
+python -m general.scripts.progress             # one-shot
+python -m general.scripts.progress --watch     # refresh every 30 s
 ```
 
 ### Single-cell debug runs
 
 ```powershell
-python -m general.runner --pkg pes_dqn --scenario sev_empirical
-python -m general.runner --pkg pes_dqn --scenario all --force
+python -m general.scripts.runner --pkg pes_dqn --scenario sev_empirical
+python -m general.scripts.runner --pkg pes_dqn --scenario all --force
 ```
 
 ## Output layout
@@ -59,15 +63,23 @@ python -m general.runner --pkg pes_dqn --scenario all --force
 ```
 general/
 ├── README.md                        # this file
-├── scenarios.py                     # taxonomy + CSV synthesisers
-├── runner.py                        # one (model, scenario) cell
-├── orchestrate.py                   # full Cartesian product
-├── aggregate.py                     # raw -> matrices + Welch / Cohen / KL
-├── plot_matrix.py                   # heatmaps + per-scenario histograms
-├── report.py                        # benchmark_report.md
-├── <pkg>/                           # per-package artefacts
-│   ├── scenarios/<sid>/             # synthesised input CSVs
-│   └── outputs/<sid>/               # subprocess outputs + log
+├── __init__.py
+├── scripts/                         # all executable harness modules
+│   ├── __init__.py
+│   ├── scenarios.py                 # taxonomy + CSV synthesisers
+│   ├── runner.py                    # one (model, scenario) cell
+│   ├── orchestrate.py               # full Cartesian product
+│   ├── progress.py                  # live progress bars + ETA
+│   ├── aggregate.py                 # raw -> matrices + Welch / Cohen / KL
+│   ├── plot_matrix.py               # heatmaps + per-scenario histograms
+│   └── report.py                    # benchmark_report.md
+├── colab/                           # Colab Pro+ packaging
+│   ├── colab_bench.ipynb
+│   └── run_colab_bench.sh
+├── work/                            # runtime intermediates (per cell)
+│   └── <pkg>/
+│       ├── scenarios/<sid>/         # synthesised input CSVs
+│       └── outputs/<sid>/           # subprocess outputs + log
 └── results/
     ├── raw/<pkg>__<sid>.json        # one cell payload
     ├── matrix_global_mean.csv
@@ -100,9 +112,6 @@ general/
 | severity | `sev_beta_lowskew` | Beta(2, 5)·9 — skewed low. |
 | severity | `sev_beta_highskew` | Beta(5, 2)·9 — skewed high. |
 | severity | `sev_bimodal` | 0.5 N(2,1) + 0.5 N(7,1). |
-| severity | `sev_adv_all0` | Adversarial constant 0. |
-| severity | `sev_adv_all9` | Adversarial constant 9. |
-| severity | `sev_adv_ramp` | Linear ramp 0 → 9. |
 | severity | `sev_extrapolate_high` | OOD U(10, 12). |
 | length | `len_all_short` | Every sequence length 3. |
 | length | `len_all_long` | Every sequence length 10. |
@@ -113,7 +122,6 @@ general/
 | joint | `joint_low_short` | Gauss(2,1.5) × all-short. |
 | joint | `joint_uniform_geom` | Uniform × geometric. |
 | joint | `joint_extrap_both` | OOD severity × OOD length. |
-| joint | `joint_adv9_long` | All-9 × all-long. |
 | structural | `struct_few_long_blocks` | 4 blocks × 16 sequences. |
 | structural | `struct_many_short_blocks` | 16 blocks × 4 sequences. |
 | structural | `struct_more_total` | 8 blocks × 16 sequences (n=128). |
@@ -135,9 +143,9 @@ For each `(model, scenario)`:
 
 * **Local first** — full sweep on Windows CPU (`win_mpes_env`). pes_ens
   is the slowest member.
-* **Colab Pro+** — open `general/colab_bench.ipynb` in Colab, run all
-  cells, then **Runtime → Manage sessions → Background execution**.
-  The launcher script `general/run_colab_bench.sh` mirrors trained
+* **Colab Pro+** — open `general/colab/colab_bench.ipynb` in Colab, run
+  all cells, then **Runtime → Manage sessions → Background execution**.
+  The launcher script `general/colab/run_colab_bench.sh` mirrors trained
   artefacts from Drive, runs `orchestrate → aggregate → plot → report`
   and syncs `general/results/` back to
   `/content/drive/MyDrive/mPES/_benchmark/results/`. Resumable: cells
