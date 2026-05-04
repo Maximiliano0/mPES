@@ -17,7 +17,7 @@ The model weights (``trf_best_<date>.keras``) and reward curve
 (``rewards_best_<date>.npy``) are intentionally **not** produced — they would
 require a full ``TRF_EPISODES`` retrain.  Generate them later with::
 
-    python -m pes_trf.ext.train_transformer --from-best <date>
+    python -m ml.pes_trf.ext.train_transformer --from-best <date>
 
 Usage
 -----
@@ -51,14 +51,14 @@ if _ROOT not in sys.path:
 # directly as a standalone module so we only pull the plain Python constants.
 import importlib.util  # noqa: E402
 
-_CONFIG_PATH = os.path.join(_ROOT, 'pes_trf', 'config', 'CONFIG.py')
+_CONFIG_PATH = os.path.join(_ROOT, 'ml', 'pes_trf', 'config', 'CONFIG.py')
 _spec = importlib.util.spec_from_file_location('_pes_trf_config', _CONFIG_PATH)
 assert _spec is not None and _spec.loader is not None
 _cfg = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_cfg)
 SEED: int = _cfg.SEED
 TRF_EPISODES: int = _cfg.TRF_EPISODES
-_INPUTS_PATH = os.path.join(_ROOT, 'pes_trf', 'inputs')
+_INPUTS_PATH = os.path.join(_ROOT, 'ml', 'pes_trf', 'inputs')
 
 _DATE_RE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 
@@ -287,7 +287,7 @@ def main() -> None:
         f"  trial_seed        = {payload['trial_seed']}\n"
         f"  hidden_units      = {payload['hidden_units']}\n"
         "\nNext step (optional, regenerates the .keras + rewards.npy):\n"
-        f"  python -m pes_trf.ext.train_transformer --from-best {args.opt_date}\n"
+        f"  python -m ml.pes_trf.ext.train_transformer --from-best {args.opt_date}\n"
     )
 
 

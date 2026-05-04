@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pes A2C Explained</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 0 auto; padding: 2rem; color: #222; line-height: 1.6; }
+  h1,h2,h3 { color: #1a1a2e; }
+  code { background: #f4f4f4; padding: .2em .4em; border-radius: 3px; font-size: .9em; }
+  pre code { display: block; padding: 1em; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th,td { border: 1px solid #ccc; padding: .5em 1em; }
+  th { background: #f0f0f0; }
+  blockquote { border-left: 4px solid #ccc; margin: 0; padding-left: 1em; color: #555; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<h1 id="pes_a2c-guia-de-uso-e-implementacion"><code>pes_a2c</code> — Guía de uso e implementación</h1>
+<blockquote>
+<p><strong>Algoritmo</strong>: Advantage Actor-Critic (A2C)
+<strong>Tipo</strong>: Método de gradiente de política (policy gradient) con línea base
+<strong>Última actualización</strong>: 2026-04-30</p>
+</blockquote>
+<hr />
+<h2 id="1-que-es-a2c">1. ¿Qué es A2C?</h2>
+<p><strong>Advantage Actor-Critic (A2C)</strong> es un algoritmo de aprendizaje por refuerzo
+profundo que combina dos paradigmas clásicos:</p>
+<ul>
+<li><strong>Actor (política)</strong>: una red neuronal que produce directamente una
+  distribución de probabilidad sobre las acciones, $\pi_\theta(a \mid s)$.</li>
+<li><strong>Critic (función de valor)</strong>: una segunda red neuronal que estima el valor
+  esperado del estado, $V_\phi(s)$, y se utiliza como <strong>línea base</strong> para
+  reducir la varianza del gradiente de política.</li>
+</ul>
+<p>A diferencia de los métodos basados en valor (como Q-Learning, DQN o RDQN), que
+aprenden $Q(s,a)$ y eligen la acción mediante $\arg\max_a Q(s,a)$, A2C aprende
+<strong>directamente la política</strong> maximizando el rendimiento esperado mediante el
+gradiente:</p>
+<p>$$\nabla_\theta J(\theta) = \mathbb{E}\big[\nabla_\theta \log \pi_\theta(a\mid s)\, A(s,a)\big]$$</p>
+<p>donde $A(s,a) = r + \gamma V(s') - V(s)$ es la <strong>función de ventaja</strong> estimada
+por el crítico.</p>
+<h3 id="separacion-actor-critico">Separación actor / crítico</h3>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Entrada</th>
+<th>Salida</th>
+<th>Pérdida</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Actor</strong></td>
+<td>estado $s$ normalizado en $[0,1]^3$</td>
+<td>softmax sobre 11 acciones (0–10)</td>
+<td>$-\log \pi(a\mid s)\,A(s,a) - \beta H(\pi)$</td>
+</tr>
+<tr>
+<td><strong>Critic</strong></td>
+<td>estado $s$ normalizado en $[0,1]^3$</td>
+<td>escalar $V(s)$</td>
+<td>$\mathrm{MSE}\big(r + \gamma V(s'),\ V(s)\big)$</td>
+</tr>
+</tbody>
+</table>
+<p>El término $-\beta H(\pi)$ es una <strong>bonificación de entropía</strong> que fomenta la
+exploración penalizando políticas demasiado deterministas.</p>
+<h3 id="ventaja-sobre-metodos-tabulares-y-dqn">Ventaja sobre métodos tabulares y DQN</h3>
+<p>A2C ofrece varias propiedades atractivas para el escenario <em>Pandemic</em>:</p>
+<ol>
+<li><strong>Política estocástica nativa</strong>: emite probabilidades sobre acciones, lo que
+   habilita ensembles por <strong>votación blanda</strong> con otros agentes (ver <code>pes_ens</code>).</li>
+<li><strong>Confianza interpretable</strong>: $\max_a \pi(a\mid s)$ funciona como medida de
+   certeza del agente sobre su decisión.</li>
+<li><strong>Generalización continua</strong>: al ser una red neuronal sobre el estado
+   normalizado, no sufre la explosión combinatoria del Q-Learning tabular.</li>
+<li><strong>Convergencia estable</strong>: el crítico reduce drásticamente la varianza
+   respecto a REINFORCE puro.</li>
+</ol>
+<hr />
+<h2 id="2-comandos-de-uso">2. Comandos de uso</h2>
+<h3 id="ejecutar-el-experimento-completo">Ejecutar el experimento completo</h3>
+<pre><code class="language-powershell"># Windows
+.\win_mpes_env\Scripts\Activate.ps1
+$env:PYTHONIOENCODING = &quot;utf-8&quot;
+$env:TF_ENABLE_ONEDNN_OPTS = &quot;0&quot;
+python -m ml.pes_a2c
+</code></pre>
+<pre><code class="language-bash"># Linux
+source linux_mpes_env/bin/activate
+export PYTHONIOENCODING=utf-8
+export TF_ENABLE_ONEDNN_OPTS=0
+python -m ml.pes_a2c
+</code></pre>
+<p>Esto ejecuta <code>ml/pes_a2c/__main__.py</code>, que corre los 8 bloques × 8 secuencias
+× 3–10 trials del escenario y produce las salidas en <code>ml/pes_a2c/outputs/</code>.</p>
+<h3 id="entrenar-el-modelo">Entrenar el modelo</h3>
+<pre><code class="language-powershell">python -m ml.pes_a2c.ext.train_a2c                # número por defecto de episodios
+python -m ml.pes_a2c.ext.train_a2c 100000         # personalizado
+</code></pre>
+<p>Salida principal: <code>ml/pes_a2c/inputs/ac_actor.keras</code>.</p>
+<h3 id="optimizacion-bayesiana-de-hiperparametros">Optimización Bayesiana de hiperparámetros</h3>
+<pre><code class="language-powershell">python -m ml.pes_a2c.ext.optimize_a2c             # número por defecto de trials
+python -m ml.pes_a2c.ext.optimize_a2c 100         # 100 trials Optuna
+</code></pre>
+<p>Genera/actualiza <code>ml/pes_a2c/inputs/best_params.json</code> con los mejores
+hiperparámetros encontrados.</p>
+<hr />
+<h2 id="3-pipeline-de-entrenamiento-train_a2cpy">3. Pipeline de entrenamiento (<code>train_a2c.py</code>)</h2>
+<p>El script <code>ext/train_a2c.py</code> ejecuta las siguientes etapas:</p>
+<ol>
+<li><strong>Carga de configuración</strong>: lee <code>config/CONFIG.py</code> y, si existe,
+   sobrescribe valores con <code>inputs/best_params.json</code>.</li>
+<li><strong>Inicialización del entorno</strong>: instancia <code>PandemicEnv</code> desde
+   <code>ext/pandemic.py</code> (Gymnasium-compatible).</li>
+<li><strong>Construcción de redes</strong>: crea las redes Actor y Critic en
+   <code>ext/ac_model.py</code> mediante <code>build_actor()</code> y <code>build_critic()</code>.</li>
+<li><strong>Bucle de episodios</strong>: por cada episodio</li>
+<li>Se ejecuta una secuencia completa (resources=39, severity inicial dada).</li>
+<li>Se acumulan trayectorias $(s_t, a_t, r_t, s_{t+1})$.</li>
+<li>Al terminar el episodio se llama a <code>train_step_a2c()</code> con el batch
+     completo de la trayectoria (Monte Carlo + bootstrap del crítico).</li>
+<li><strong>Logging</strong>: dual-stream a consola y a archivo
+   <code>outputs/PES_A2C_log_&lt;fecha&gt;.txt</code> mediante <code>src/log_utils.py</code>.</li>
+<li><strong>Guardado periódico</strong>: el actor se persiste como <code>inputs/ac_actor.keras</code>
+   cada N episodios y al final.</li>
+</ol>
+<h3 id="funcion-train_step_a2c">Función <code>train_step_a2c()</code></h3>
+<p>Pseudo-código:</p>
+<pre><code class="language-python">def train_step_a2c(states, actions, rewards, next_states, dones):
+    # 1. Crítico predice V(s) y V(s')
+    V_s    = critic(states)
+    V_s_next = critic(next_states)
+
+    # 2. Target y ventaja
+    target = rewards + gamma * V_s_next * (1 - dones)
+    advantage = target - V_s
+
+    # 3. Pérdida del actor
+    log_probs = log(actor(states))[actions]
+    actor_loss = -mean(log_probs * stop_gradient(advantage))
+    entropy   = -sum(actor(states) * log(actor(states)))
+    actor_loss -= beta_entropy * entropy
+
+    # 4. Pérdida del crítico
+    critic_loss = MSE(target, V_s) * critic_coef
+
+    # 5. Backprop separado para cada red
+    actor_optimizer.minimize(actor_loss, actor.trainable_variables)
+    critic_optimizer.minimize(critic_loss, critic.trainable_variables)
+</code></pre>
+<hr />
+<h2 id="4-optimizacion-bayesiana-optimize_a2cpy">4. Optimización Bayesiana (<code>optimize_a2c.py</code>)</h2>
+<p><code>ext/optimize_a2c.py</code> usa <strong>Optuna</strong> (Akiba et al., 2019) con muestreador TPE
+para buscar la mejor configuración:</p>
+<table>
+<thead>
+<tr>
+<th>Hiperparámetro (Optuna)</th>
+<th>Rango</th>
+<th>Valor óptimo (CONFIG)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actor_lr</code></td>
+<td>$[10^{-4}, 10^{-2}]$ log</td>
+<td>$\approx 6{,}5 \times 10^{-4}$</td>
+</tr>
+<tr>
+<td><code>critic_lr</code></td>
+<td>$[10^{-4}, 10^{-2}]$ log</td>
+<td>$\approx 4{,}3 \times 10^{-3}$</td>
+</tr>
+<tr>
+<td><code>discount_factor</code> ($\gamma$)</td>
+<td>$[0{,}85, 0{,}995]$</td>
+<td>$\approx 0{,}854$</td>
+</tr>
+<tr>
+<td><code>entropy_coeff</code> ($\beta$)</td>
+<td>$[0{,}0, 0{,}1]$ lineal</td>
+<td>$\approx 0{,}0053$</td>
+</tr>
+<tr>
+<td><code>actor_hidden_dim</code> / <code>critic_hidden_dim</code></td>
+<td>${32, 64, 128, 256}$</td>
+<td>$128 / 128$</td>
+</tr>
+<tr>
+<td><code>n_hidden_layers</code></td>
+<td>${1, 2, 3}$</td>
+<td>$1$</td>
+</tr>
+<tr>
+<td><code>num_episodes</code></td>
+<td>$[50\,000, 250\,000]$ paso $25\,000$</td>
+<td>según trial</td>
+</tr>
+<tr>
+<td><code>penalty_coeff</code> (PBRS)</td>
+<td>$[0{,}0, 0{,}3]$</td>
+<td>$\approx 0{,}153$</td>
+</tr>
+<tr>
+<td><code>gae_lambda</code></td>
+<td>$[0{,}90, 0{,}99]$</td>
+<td>$\approx 0{,}913$</td>
+</tr>
+<tr>
+<td><code>max_grad_norm</code></td>
+<td>$[0{,}3, 1{,}5]$</td>
+<td>$\approx 1{,}20$</td>
+</tr>
+<tr>
+<td><code>lr_min_ratio</code></td>
+<td>$[0{,}05, 0{,}25]$</td>
+<td>$\approx 0{,}237$</td>
+</tr>
+<tr>
+<td><code>spend_cost_coeff</code></td>
+<td>$[0{,}0, 0{,}05]$</td>
+<td>$\approx 0{,}0104$</td>
+</tr>
+<tr>
+<td><code>last_action_bias</code></td>
+<td>$[-2{,}0, 0{,}0]$</td>
+<td>$\approx -1{,}39$</td>
+</tr>
+</tbody>
+</table>
+<p>Nota: el actor y el crítico tienen <strong>dos optimizadores Adam separados</strong>
+con learning-rates independientes (<code>AC_ACTOR_LR</code> y <code>AC_CRITIC_LR</code>); la
+búsqueda los muestrea por separado.</p>
+<p>Cada trial entrena un agente reducido (menos episodios) y devuelve el
+<strong>rendimiento medio normalizado</strong> sobre 64 evaluaciones independientes.</p>
+<h3 id="almacenamiento">Almacenamiento</h3>
+<ul>
+<li><strong>Estudio Optuna</strong>: SQLite en <code>inputs/&lt;fecha&gt;_BAYESIAN_OPT/study.db</code>.</li>
+<li><strong>Mejores parámetros</strong>: <code>inputs/best_params.json</code>.</li>
+<li><strong>Logs</strong>: <code>outputs/PES_A2C_log_&lt;fecha&gt;_BAYESIAN_OPT.txt</code>.</li>
+</ul>
+<p>Para visualizar el progreso del estudio:</p>
+<pre><code class="language-powershell">.\utils\win\optuna_dashboard.ps1 ml\pes_a2c\inputs\&lt;fecha&gt;_BAYESIAN_OPT\study.db
+</code></pre>
+<hr />
+<h2 id="5-estructura-del-codigo">5. Estructura del código</h2>
+<h3 id="extac_modelpy"><code>ext/ac_model.py</code></h3>
+<p>Contiene la arquitectura y el paso de entrenamiento.</p>
+<pre><code class="language-python">class Actor(tf.keras.Model):
+    &quot;&quot;&quot;Red densa con softmax sobre 11 acciones.&quot;&quot;&quot;
+    def __init__(self, hidden_units=[128], n_actions=11):   # AC_ACTOR_HIDDEN_UNITS
+        ...
+    def call(self, state):
+        # state: (batch, 3)
+        # return: (batch, 11) probabilidades
+
+class Critic(tf.keras.Model):
+    &quot;&quot;&quot;Red densa que estima V(s) escalar.&quot;&quot;&quot;
+    def __init__(self, hidden_units=[128]):                 # AC_CRITIC_HIDDEN_UNITS
+        ...
+    def call(self, state):
+        # state: (batch, 3)
+        # return: (batch, 1)
+
+def train_step_a2c(actor, critic, optimizer_a, optimizer_c, batch,
+                   gamma, entropy_coeff):
+    &quot;&quot;&quot;Un paso de gradiente actor-crítico (dos optimizadores Adam).&quot;&quot;&quot;
+    ...
+</code></pre>
+<h3 id="extpandemicpy"><code>ext/pandemic.py</code></h3>
+<p>Define <code>PandemicEnv</code> (Gymnasium):</p>
+<ul>
+<li><strong>Estado</strong>: <code>[resources_left/30, trial_no/10, severity/9]</code> $\in [0,1]^3$
+  (con <code>max_resources = AVAILABLE_RESOURCES_PER_SEQUENCE − 9 = 30</code>).</li>
+<li><strong>Acción</strong>: entero discreto $\in {0, 1, \dots, 10}$.</li>
+<li><strong>Recompensa</strong>: $-\sum \mathrm{severity}_{ciudad}$.</li>
+<li><strong>Dinámica</strong>: $\mathrm{severity}_{t+1} = \max(0, 1.4 \cdot \mathrm{severity}_t - 0.4 \cdot a_t)$.</li>
+</ul>
+<h3 id="exttrain_a2cpy"><code>ext/train_a2c.py</code></h3>
+<p>Orquesta el bucle de entrenamiento, logging, checkpoints y métricas.</p>
+<h3 id="extoptimize_a2cpy"><code>ext/optimize_a2c.py</code></h3>
+<p>Define <code>objective(trial)</code> para Optuna y la función <code>main(n_trials)</code>.</p>
+<h3 id="__main__py"><code>__main__.py</code></h3>
+<p>Carga el actor entrenado (<code>ac_actor.keras</code>), ejecuta los 8×8×(3..10) trials del
+escenario <em>Pandemic</em> y persiste resultados.</p>
+<hr />
+<h2 id="6-como-funciona-la-inferencia">6. Cómo funciona la inferencia</h2>
+<p>En <code>__main__.py</code>, para cada trial:</p>
+<ol>
+<li>Se construye el estado normalizado $s$.</li>
+<li>Se llama al actor: $\pi(\cdot \mid s) = \mathrm{actor}(s)$.</li>
+<li>Se calcula la <strong>máscara de factibilidad</strong>: cualquier acción
+   $a &gt; \mathrm{resources_left}$ recibe probabilidad cero.</li>
+<li>Se renormaliza la distribución sobre las acciones factibles.</li>
+<li>Se elige la acción mediante <strong>argmax</strong> sobre las probabilidades enmascaradas
+   (modo determinista en evaluación).</li>
+<li>La <strong>confianza</strong> se reporta como $\max_a \pi(a\mid s)$ después del
+   enmascaramiento.</li>
+</ol>
+<pre><code class="language-python">def select_action(actor, state, resources_left):
+    probs = actor(state[None, :]).numpy()[0]   # (11,)
+    mask = numpy.arange(11) &lt;= resources_left
+    probs = probs * mask
+    probs = probs / probs.sum()
+    action = int(numpy.argmax(probs))
+    confidence = float(probs[action])
+    return action, confidence, probs
+</code></pre>
+<p>Esta probabilidad enmascarada es la que el módulo <code>pes_ens</code> consume para la
+<strong>votación blanda</strong> del ensemble.</p>
+<hr />
+<h2 id="7-archivos-de-entradasalida">7. Archivos de entrada/salida</h2>
+<h3 id="entradas-mlpes_a2cinputs">Entradas (<code>ml/pes_a2c/inputs/</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ac_actor.keras</code></td>
+<td>Red Actor entrenada (única persistida)</td>
+</tr>
+<tr>
+<td><code>best_params.json</code></td>
+<td>Mejores hiperparámetros del estudio Optuna</td>
+</tr>
+<tr>
+<td><code>initial_severity.csv</code></td>
+<td>Severidades iniciales por secuencia</td>
+</tr>
+<tr>
+<td><code>sequence_lengths.csv</code></td>
+<td>Número de trials por secuencia</td>
+</tr>
+<tr>
+<td><code>rewards.npy</code></td>
+<td>Recompensas históricas (opcional)</td>
+</tr>
+<tr>
+<td><code>&lt;fecha&gt;_BAYESIAN_OPT/</code></td>
+<td>Bases de datos Optuna por fecha</td>
+</tr>
+<tr>
+<td><code>&lt;fecha&gt;_A2C_TRAIN/</code></td>
+<td>Checkpoints intermedios del entrenamiento</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>El <strong>crítico no se persiste</strong>: solo es necesario durante el entrenamiento
+para calcular la ventaja. En inferencia basta con el actor.</p>
+</blockquote>
+<h3 id="salidas-mlpes_a2coutputs">Salidas (<code>ml/pes_a2c/outputs/</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Archivo / carpeta</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PES_A2C_log_&lt;fecha&gt;.txt</code></td>
+<td>Log dual-stream del experimento</td>
+</tr>
+<tr>
+<td><code>&lt;fecha&gt;_A2C_AGENT/</code></td>
+<td>Resultados del experimento (CSV + figuras)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-resultados-de-rendimiento">8. Resultados de rendimiento</h2>
+<p>Evaluación del 30 de abril de 2026 sobre $n = 64$ ejecuciones independientes
+del escenario completo:</p>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rendimiento medio normalizado</strong></td>
+<td><strong>0.887236</strong></td>
+</tr>
+<tr>
+<td>Desviación estándar</td>
+<td>0.063162</td>
+</tr>
+<tr>
+<td>Tamaño de muestra</td>
+<td>64</td>
+</tr>
+</tbody>
+</table>
+<h3 id="comparacion-con-metodos-tabulares">Comparación con métodos tabulares</h3>
+<table>
+<thead>
+<tr>
+<th>Agente</th>
+<th>Algoritmo</th>
+<th>Rendimiento medio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pes_base</code></td>
+<td>Q-Learning tabular</td>
+<td>$\approx 0.65$</td>
+</tr>
+<tr>
+<td><code>pes_ql</code></td>
+<td>Q-Learning + Optuna</td>
+<td>$\approx 0.78$</td>
+</tr>
+<tr>
+<td><code>pes_dql</code></td>
+<td>Double Q-Learning + PBRS</td>
+<td>$\approx 0.83$</td>
+</tr>
+<tr>
+<td><strong><code>pes_a2c</code></strong></td>
+<td><strong>A2C</strong></td>
+<td><strong>0.887</strong></td>
+</tr>
+<tr>
+<td><code>pes_dqn</code></td>
+<td>DQN</td>
+<td>$\approx 0.89$</td>
+</tr>
+<tr>
+<td><code>pes_rdqn</code></td>
+<td>Recurrent DQN</td>
+<td>$\approx 0.91$</td>
+</tr>
+<tr>
+<td><code>pes_trf</code></td>
+<td>Causal Transformer</td>
+<td>$\approx 0.927$</td>
+</tr>
+</tbody>
+</table>
+<p>A2C iguala prácticamente al DQN como método sin memoria, demostrando el valor
+del paradigma policy-gradient en este escenario. Su mayor utilidad práctica es
+como <strong>componente del ensemble</strong> (<code>pes_ens</code>), donde la diversidad respecto a
+los métodos basados en valor mejora la robustez global.</p>
+<hr />
+<h2 id="9-ventajas-y-limitaciones">9. Ventajas y limitaciones</h2>
+<h3 id="ventajas-del-policy-gradient">Ventajas del policy gradient</h3>
+<ul>
+<li><strong>Distribución sobre acciones</strong>: ideal para ensembles por votación blanda.</li>
+<li><strong>Política estocástica natural</strong>: útil en escenarios con simetrías o
+  multimodalidad.</li>
+<li><strong>Sin necesidad de $\arg\max$ exhaustivo</strong>: la política es el output directo
+  de la red.</li>
+<li><strong>Bonificación de entropía</strong>: control fino del trade-off
+  exploración/explotación.</li>
+<li><strong>Convergencia más suave</strong>: el crítico actúa como línea base que reduce la
+  varianza del gradiente.</li>
+</ul>
+<h3 id="limitaciones">Limitaciones</h3>
+<ul>
+<li><strong>Sin memoria</strong>: A2C en su forma básica no captura dependencias temporales
+  más allá del estado actual (ver <code>pes_rdqn</code>, <code>pes_trf</code> para variantes con
+  memoria).</li>
+<li><strong>Sensibilidad a hiperparámetros</strong>: $\beta$ (entropía) y la relación
+  actor/crítico requieren búsqueda cuidadosa (Optuna lo gestiona).</li>
+<li><strong>Two-network overhead</strong>: dos optimizadores y dos redes que mantener
+  sincronizados; mayor coste por episodio que un DQN equivalente.</li>
+<li><strong>Recompensas dispersas</strong>: la varianza del gradiente puede crecer en
+  escenarios con feedback escaso.</li>
+</ul>
+<hr />
+<h2 id="10-referencias">10. Referencias</h2>
+<ul>
+<li>Mnih, V., Badia, A. P., Mirza, M., Graves, A., Lillicrap, T., Harley, T.,
+  Silver, D., &amp; Kavukcuoglu, K. (2016). Asynchronous methods for deep
+  reinforcement learning. <em>Proceedings of the 33rd International Conference on
+  Machine Learning</em>, 1928–1937.</li>
+<li>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement learning: An
+  introduction</em> (2nd ed.). MIT Press.</li>
+<li>Williams, R. J. (1992). Simple statistical gradient-following algorithms for
+  connectionist reinforcement learning. <em>Machine Learning, 8</em>(3–4), 229–256.</li>
+<li>Akiba, T., Sano, S., Yanase, T., Ohta, T., &amp; Koyama, M. (2019). Optuna: A
+  next-generation hyperparameter optimization framework. <em>Proceedings of the
+  25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data
+  Mining</em>, 2623–2631.</li>
+</ul>
+</body>
+</html>

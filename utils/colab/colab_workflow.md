@@ -1,6 +1,6 @@
-# Bayesian-Optimisation on Colab Pro+ — Workflow Guide
+﻿# Bayesian-Optimisation on Colab Pro+ — Workflow Guide
 
-> Last updated: 2026-04-20
+> Last updated: 2026-05-04
 
 ## TL;DR
 
@@ -27,17 +27,17 @@ package (`pes_ql`). Pick **one**.
 # Windows (PowerShell)
 win_mpes_env\Scripts\Activate.ps1
 $env:PYTHONIOENCODING = 'utf-8'
-python -m pes_ql.ext.optimize_rl 100
+python -m tabular.pes_ql.ext.optimize_rl 100
 ```
 
 ```bash
 # Linux
 source linux_mpes_env/bin/activate
 export PYTHONIOENCODING=utf-8
-python -m pes_ql.ext.optimize_rl 100
+python -m tabular.pes_ql.ext.optimize_rl 100
 ```
 
-Artifacts land in `pes_ql/inputs/<YYYY-MM-DD>_BAYESIAN_OPT/`:
+Artifacts land in `tabular/pes_ql/inputs/<YYYY-MM-DD>_BAYESIAN_OPT/`:
 
 - `optuna_study_<date>.db`  — Optuna SQLite storage (resumable)
 - `trials.csv`              — per-trial hyperparameters + value
@@ -47,7 +47,7 @@ Artifacts land in `pes_ql/inputs/<YYYY-MM-DD>_BAYESIAN_OPT/`:
 **Resume a previous run** (keeps the existing DB, adds trials):
 
 ```bash
-python -m pes_ql.ext.optimize_rl 100 --resume 2026-04-20
+python -m tabular.pes_ql.ext.optimize_rl 100 --resume 2026-04-20
 ```
 
 The wrapper scripts [`utils/win/run_bayesian_opt.ps1`](../win/run_bayesian_opt.ps1)
@@ -100,10 +100,11 @@ from trial *N+1*.
 
 ### What the CLI flags do
 
-`pes_ql.ext.optimize_rl` (and the other three `optimize_*.py`) accept:
+`tabular.pes_ql.ext.optimize_rl` (and the other five `optimize_*.py` in
+`tabular/` and `ml/`) accept:
 
 ```
-python -m pes_ql.ext.optimize_rl [N_TRIALS] \
+python -m tabular.pes_ql.ext.optimize_rl [N_TRIALS] \
     [--resume YYYY-MM-DD]                   # re-open existing study
     [--out-dir   PATH]                      # redirect all artifacts
     [--storage   sqlite:///ABSOLUTE.db]     # redirect Optuna DB only
@@ -112,7 +113,7 @@ python -m pes_ql.ext.optimize_rl [N_TRIALS] \
 Cell 4 of the notebook invokes the scripts as:
 
 ```
-python -m pes_ql.ext.optimize_rl 100 \
+python -m tabular.pes_ql.ext.optimize_rl 100 \
     --out-dir /content/drive/MyDrive/mPES/pes_ql/2026-04-20_BAYESIAN_OPT \
     --storage sqlite:////content/drive/MyDrive/mPES/pes_ql/2026-04-20_BAYESIAN_OPT/optuna_study_2026-04-20.db
 ```
@@ -180,7 +181,7 @@ Cell 3  → git clone/pull → pip install -r utils/config/requirements.txt
 Cell 4  → bash utils/colab/run_colab.sh <PKG> <N_TRIALS> <RESUME_DATE>
               ├── reattach if previous PID is still alive (idempotent)
               ├── supervisor (bg) loops up to MAX_RESTARTS=10 times:
-              │     python -m <pkg>.ext.optimize_<x>                 (PID A)
+              │     python -m <group>.<pkg>.ext.optimize_<x>           (PID A)
               │         --out-dir /content/drive/.../<date>_BAYESIAN_OPT
               │         --storage sqlite:////content/drive/.../optuna_study_<date>.db
               │         --resume  <date>     (auto-added)
@@ -281,26 +282,26 @@ run the lines belong to.
 
 ## Modifying the optimise scripts
 
-All four `optimize_*.py` scripts accept two additional CLI flags so the
+All six `optimize_*.py` scripts accept two additional CLI flags so the
 Colab launcher can redirect storage and outputs to Drive without touching
 the package code:
 
 ```
-python -m <pkg>.ext.optimize_<x> [N_TRIALS] [--resume YYYY-MM-DD] \
-    [--out-dir   PATH]   # default: <pkg>/inputs/<date>_BAYESIAN_OPT
+python -m <group>.<pkg>.ext.optimize_<x> [N_TRIALS] [--resume YYYY-MM-DD] \
+    [--out-dir   PATH]   # default: <group>/<pkg>/inputs/<date>_BAYESIAN_OPT
     [--storage   URL]    # default: sqlite:///<out-dir>/optuna_study_<date>.db
 ```
 
-Used packages:
+Used packages (group prefix is required since the 2026-05 reorg):
 
-| Package   | Module                        | Default trials |
-|-----------|-------------------------------|----------------|
-| `pes_ql`   | `pes_ql.ext.optimize_rl`      | 100 |
-| `pes_dql`  | `pes_dql.ext.optimize_rl`     | 50  |
-| `pes_dqn`  | `pes_dqn.ext.optimize_dqn`    | 60  |
-| `pes_rdqn` | `pes_rdqn.ext.optimize_rdqn`  | 60  |
-| `pes_a2c`  | `pes_a2c.ext.optimize_a2c`    | 30  |
-| `pes_trf`  | `pes_trf.ext.optimize_tr`     | 60  |
+| Package   | Module                                | Default trials |
+|-----------|---------------------------------------|----------------|
+| `pes_ql`   | `tabular.pes_ql.ext.optimize_rl`     | 100 |
+| `pes_dql`  | `tabular.pes_dql.ext.optimize_rl`    | 50  |
+| `pes_dqn`  | `ml.pes_dqn.ext.optimize_dqn`        | 60  |
+| `pes_rdqn` | `ml.pes_rdqn.ext.optimize_rdqn`      | 60  |
+| `pes_a2c`  | `ml.pes_a2c.ext.optimize_a2c`        | 30  |
+| `pes_trf`  | `ml.pes_trf.ext.optimize_tr`         | 60  |
 
 ---
 

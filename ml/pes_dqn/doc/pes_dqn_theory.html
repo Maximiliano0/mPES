@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pes Dqn Theory</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 0 auto; padding: 2rem; color: #222; line-height: 1.6; }
+  h1,h2,h3 { color: #1a1a2e; }
+  code { background: #f4f4f4; padding: .2em .4em; border-radius: 3px; font-size: .9em; }
+  pre code { display: block; padding: 1em; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th,td { border: 1px solid #ccc; padding: .5em 1em; }
+  th { background: #f0f0f0; }
+  blockquote { border-left: 4px solid #ccc; margin: 0; padding-left: 1em; color: #555; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<h1 id="pes_dqn-fundamento-teorico"><code>pes_dqn</code> — Fundamento teórico</h1>
+<blockquote>
+<p>Paquete: <code>ml.pes_dqn</code>
+Documento de teoría para el agente Deep Q-Network del Pandemic Scenario.</p>
+</blockquote>
+<hr />
+<h2 id="1-aproximacion-de-la-funcion-de-valor-con-redes-neuronales">1. Aproximación de la función de valor con redes neuronales</h2>
+<p>El Q-Learning clásico almacena $Q(s, a)$ en una tabla y la actualiza
+mediante la ecuación de Bellman muestral (Sutton &amp; Barto, 2018):</p>
+<p>$$
+Q(s, a) \leftarrow Q(s, a) + \alpha\bigl[r + \gamma \max_{a'} Q(s', a') - Q(s, a)\bigr].
+$$</p>
+<p>Esto exige enumerar todos los pares $(s, a)$. En el Pandemic Scenario el
+estado vive en $[0, 1]^3$:</p>
+<p>$$
+s = \bigl[r/30,\; t/10,\; \sigma/9\bigr],
+$$</p>
+<p>con $r \in {0,\dots,30}$ recursos <em>libres</em> (39 totales menos 9
+pre-asignados a las dos ciudades iniciales), $t \in {0,\dots,10}$ y
+$\sigma \in {0,\dots,9}$ discreto. Una tabla obliga a tratar cada
+severidad como independiente, lo que produce dos
+patologías:</p>
+<ol>
+<li><strong>Maldición de la dimensionalidad</strong>: si discretizamos $\sigma$ en 100
+   bins, hay $40 \cdot 10 \cdot 100 = 40{,}000$ celdas; muchas nunca se
+   visitan en 175 000 episodios.</li>
+<li><strong>Sin generalización</strong>: los estados $\sigma=0.51$ y $\sigma=0.52$ se
+   tratan como <em>independientes</em>, aunque la política óptima sea idéntica.</li>
+</ol>
+<p>DQN (Mnih et al., 2015) sustituye la tabla por una red neuronal
+$Q_\theta(s, a)$. En este paquete:</p>
+<pre><code>Input  s ∈ ℝ³
+   │
+   ▼
+Dense(64, ReLU)  ───►  Dense(64, ReLU)  ───►  Dense(11, lineal)
+                                                  │
+                                                  ▼
+                                       Q-values para 11 acciones (0..10)
+</code></pre>
+<p>construida en <a href="../ext/dqn_model.py">ext/dqn_model.py</a> por
+<code>build_q_network(state_dim=3, action_dim=11, hidden_units=[64, 64])</code>. La
+red <strong>interpola</strong>: dos estados próximos producen valores próximos, lo que
+acelera el aprendizaje y elimina la necesidad de visitar exhaustivamente
+el espacio.</p>
+<hr />
+<h2 id="2-experience-replay-descorrelacionar-las-muestras">2. <em>Experience Replay</em> — descorrelacionar las muestras</h2>
+<p>Las redes neuronales entrenadas con SGD asumen muestras <strong>i.i.d.</strong> Pero
+las transiciones consecutivas de un episodio están <strong>fuertemente
+correlacionadas</strong>: $s_{t+1}$ depende de $s_t$. Si entrenásemos online, la
+red sobreajustaría a la trayectoria reciente y olvidaría experiencias
+pasadas (<em>catastrophic forgetting</em>).</p>
+<p>La solución, propuesta por Lin (1992) y popularizada por Mnih et al.
+(2015), es el <strong>Experience Replay Buffer</strong>:</p>
+<p>$$
+\mathcal{D} = {(s_i, a_i, r_i, s'<em>i, d_i)}</em>{i=1}^{N}, \quad N = 20{,}000.
+$$</p>
+<p>En cada paso de gradiente se muestrean $B = 128$ transiciones
+<strong>uniformemente</strong> de $\mathcal{D}$. Beneficios:</p>
+<ul>
+<li><strong>Decorrelación</strong>: las muestras del minibatch provienen de episodios
+  distintos.</li>
+<li><strong>Reutilización</strong>: cada transición se usa muchas veces (eficiencia
+  estadística).</li>
+<li><strong>Estabilidad</strong>: el gradiente esperado es más cercano al gradiente
+  poblacional.</li>
+</ul>
+<p>En el código, <code>ReplayBuffer</code> (en <code>dqn_model.py</code>) se implementa como una
+cola circular <code>collections.deque(maxlen=20000)</code> con muestreo
+<code>random.sample</code>.</p>
+<hr />
+<h2 id="3-target-network-estabilidad-del-semi-gradiente">3. <em>Target Network</em> — estabilidad del semi-gradiente</h2>
+<p>La actualización TD es un <strong>semi-gradiente</strong>: el objetivo
+$y = r + \gamma \max_a Q_\theta(s', a)$ depende también de $\theta$. Si
+actualizamos $\theta$ y <em>al instante</em> recalculamos $y$, perseguimos un
+blanco en movimiento y el entrenamiento diverge.</p>
+<p>DQN introduce una <strong>red objetivo</strong> $Q_{\theta^-}$ con parámetros
+<strong>congelados</strong> $\theta^-$ que se sincronizan cada $C$ pasos:</p>
+<p>$$
+y = r + \gamma \max_a Q_{\theta^-}(s', a), \quad
+\theta^- \leftarrow \theta \text{ cada } C = 1\,000 \text{ pasos.}
+$$</p>
+<p>En el código:</p>
+<pre><code class="language-python">sync_target_network(q_online, q_target)   # copia pesos
+</code></pre>
+<p>llamado cada <code>DQN_TARGET_SYNC_FREQ = 1 000</code> pasos en <code>train_dqn.py</code>. Esto
+estabiliza el aprendizaje al ritmo de un Q-Learning casi <em>off-policy</em>
+puro entre sincronizaciones.</p>
+<hr />
+<h2 id="4-double-dqn-sesgo-de-maximizacion">4. <em>Double DQN</em> — sesgo de maximización</h2>
+<p>El operador $\max_a Q(s', a)$ está <strong>sesgado al alza</strong>: si los $Q$
+estimados tienen ruido, $\max$ amplifica ese ruido y sobreestima
+sistemáticamente. Hasselt et al. (2016) demostraron que el sesgo se
+elimina <strong>desacoplando</strong> la selección de la evaluación:</p>
+<p>$$
+\boxed{\;y_{\text{DDQN}} = r + \gamma \cdot Q_{\theta^-}!\bigl(s',\; \arg\max_a Q_\theta(s', a)\bigr)\;}
+$$</p>
+<ul>
+<li>La red <strong>online</strong> $Q_\theta$ elige la acción $a^*$.</li>
+<li>La red <strong>objetivo</strong> $Q_{\theta^-}$ evalúa $Q(s', a^*)$.</li>
+</ul>
+<p><code>train_step_dqn(...)</code> implementa exactamente esa fórmula. En este
+proyecto la mejora vs. DQN simple fue ~1.5 puntos porcentuales en
+<code>raw_mean_perf</code> durante las pruebas preliminares.</p>
+<hr />
+<h2 id="5-perdida-de-huber-robustez-ante-outliers">5. Pérdida de Huber — robustez ante <em>outliers</em></h2>
+<p>La pérdida cuadrática $\tfrac{1}{2}(y - Q)^2$ tiene gradiente proporcional
+al error. Si una transición produce un error TD enorme (severidad
+explotando, recompensa muy negativa), el gradiente domina y desestabiliza.</p>
+<p>La <strong>pérdida de Huber</strong> $L_\delta$ se comporta como cuadrática para
+errores pequeños y lineal para errores grandes:</p>
+<p>$$
+L_\delta(e) = \begin{cases}
+\tfrac{1}{2} e^2 &amp; |e| \le \delta, \
+\delta\bigl(|e| - \tfrac{1}{2}\delta\bigr) &amp; |e| &gt; \delta.
+\end{cases}
+$$</p>
+<p>Con $\delta = 1$ (valor por defecto en
+<code>tf.keras.losses.Huber()</code>), los gradientes están acotados y el
+entrenamiento es robusto a <em>outliers</em> del <em>replay</em>.</p>
+<hr />
+<h2 id="6-politica-greedy-con-decaimiento-warm-up">6. Política ε-greedy con decaimiento + <em>warm-up</em></h2>
+<p>La exploración sigue:</p>
+<p>$$
+\pi_\varepsilon(a \mid s) = \begin{cases}
+1 - \varepsilon + \tfrac{\varepsilon}{|\mathcal{A}|} &amp; a = \arg\max_a Q_\theta(s, a), \
+\tfrac{\varepsilon}{|\mathcal{A}|} &amp; \text{en otro caso.}
+\end{cases}
+$$</p>
+<p>con dos fases:</p>
+<ul>
+<li><strong>Warm-up</strong>: durante los primeros episodios $\varepsilon = 1$ (todo
+  aleatorio) para llenar el <code>ReplayBuffer</code> con datos diversos antes del
+  primer paso de gradiente.</li>
+<li><strong>Decaimiento exponencial</strong>: $\varepsilon_{t+1} = \max(\varepsilon_{\min},\, \lambda\,\varepsilon_t)$
+  con $\varepsilon_{\min} \approx 0.069$ (<code>DQN_EPSILON_MIN</code>) y $\lambda$
+  derivado de los ratios <code>DQN_WARMUP_RATIO</code> / <code>DQN_TARGET_RATIO</code> (ambos
+  ajustables por Optuna).</li>
+</ul>
+<p>Esto compone el típico equilibrio <strong>exploración–explotación</strong> y respeta
+las condiciones de convergencia de Robbins–Monro adaptadas (Sutton &amp;
+Barto, 2018, cap. 6).</p>
+<hr />
+<h2 id="7-optimizacion-bayesiana-con-tpe">7. Optimización bayesiana con TPE</h2>
+<p>La calidad final de DQN es muy sensible a $\alpha$, $\gamma$, tamaño de
+red, $C$ y $\lambda$. Una búsqueda en cuadrícula sobre 6 dimensiones es
+prohibitiva. Optuna (Akiba et al., 2019) usa
+<strong>Tree-structured Parzen Estimator (TPE)</strong>:</p>
+<ol>
+<li>Mantiene dos densidades sobre el espacio de hiperparámetros:
+   $\ell(x)$ para los <em>trials</em> "buenos" (mejor cuantil $\gamma_q$) y
+   $g(x)$ para el resto.</li>
+<li>Propone $x^<em> = \arg\max_x \ell(x)/g(x)$ — equivalentemente, maximiza
+   el </em>Expected Improvement* bajo un modelo no paramétrico.</li>
+</ol>
+<p>En este proyecto:</p>
+<ul>
+<li>Storage SQLite persistente.</li>
+<li><em>Pruner</em> <code>MedianPruner</code> para abortar <em>trials</em> claramente malos.</li>
+<li>Mejor configuración hallada en §4 de <code>pes_dqn_explained.md</code>.</li>
+</ul>
+<hr />
+<h2 id="8-anclaje-al-codigo">8. Anclaje al código</h2>
+<table>
+<thead>
+<tr>
+<th>Concepto teórico</th>
+<th>Implementación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Red Q $Q_\theta$</td>
+<td><code>build_q_network()</code> en <code>dqn_model.py</code></td>
+</tr>
+<tr>
+<td>Replay buffer $\mathcal{D}$</td>
+<td>Clase <code>ReplayBuffer</code></td>
+</tr>
+<tr>
+<td>Sincronización de target</td>
+<td><code>sync_target_network()</code> cada <code>DQN_TARGET_SYNC_FREQ</code></td>
+</tr>
+<tr>
+<td>Objetivo Double DQN</td>
+<td>Bloque <code>tf.GradientTape</code> en <code>train_step_dqn()</code></td>
+</tr>
+<tr>
+<td>Pérdida Huber</td>
+<td><code>tf.keras.losses.huber()</code> (δ=1)</td>
+</tr>
+<tr>
+<td>ε-greedy</td>
+<td>Selección inline en el bucle de episodios de <code>DQNTraining</code> (<code>pandemic.py</code>)</td>
+</tr>
+<tr>
+<td>TPE bayesiano</td>
+<td><code>optuna.create_study(sampler=TPESampler)</code> en <code>optimize_dqn.py</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="referencias">Referencias</h2>
+<p>Akiba, T., Sano, S., Yanase, T., Ohta, T., &amp; Koyama, M. (2019). Optuna: A
+next-generation hyperparameter optimization framework. En <em>Proceedings of
+the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data
+Mining</em> (pp. 2623–2631). ACM.</p>
+<p>Hasselt, H. van, Guez, A., &amp; Silver, D. (2016). Deep reinforcement
+learning with double Q-learning. En <em>Proceedings of the Thirtieth AAAI
+Conference on Artificial Intelligence</em> (pp. 2094–2100). AAAI Press.</p>
+<p>Lin, L.-J. (1992). Self-improving reactive agents based on reinforcement
+learning, planning and teaching. <em>Machine Learning, 8</em>(3–4), 293–321.</p>
+<p>Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare,
+M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G.,
+Petersen, S., Beattie, C., Sadik, A., Antonoglou, I., King, H., Kumaran,
+D., Wierstra, D., Legg, S., &amp; Hassabis, D. (2015). Human-level control
+through deep reinforcement learning. <em>Nature, 518</em>(7540), 529–533.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement learning: An
+introduction</em> (2nd ed.). MIT Press.</p>
+</body>
+</html>

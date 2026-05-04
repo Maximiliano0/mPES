@@ -7,14 +7,23 @@ template (KaTeX math + dark-mode CSS).
 
 Usage
 -----
-    # Convert a single package
-    python utils/_export_html.py pes_dqn
+    # Convert a single package (group prefix optional)
+    python utils/scripts/_export_html.py pes_dqn
+    python utils/scripts/_export_html.py ml/pes_dqn
 
     # Convert several packages at once
-    python utils/_export_html.py pes_a2c pes_dqn pes_trf
+    python utils/scripts/_export_html.py pes_a2c pes_dqn pes_trf
 
     # Convert ALL packages (no arguments)
-    python utils/_export_html.py
+    python utils/scripts/_export_html.py
+
+Notes
+-----
+Packages live under group directories ``tabular/`` (pes_base, pes_ql,
+pes_dql) and ``ml/`` (pes_dqn, pes_rdqn, pes_a2c, pes_trf, pes_ens). The
+workspace-level cross-package comparison document at
+``doc/comparacion_modelos.md`` is also exported when no argument is
+given (or when ``doc`` is passed explicitly).
 """
 
 ##########################
@@ -30,11 +39,26 @@ import markdown
 ##  Constantes          ##
 ##########################
 
-# Packages that contain a doc/ directory.
-ALL_PACKAGES = ["pes_base", "pes_ql", "pes_dql", "pes_dqn", "pes_rdqn", "pes_a2c", "pes_trf", "pes_ens"]
+# Mapping from package short name to its workspace-relative location.
+# Packages are grouped by algorithm family: tabular vs deep-learning.
+PACKAGE_GROUPS = {
+    "pes_base": "tabular",
+    "pes_ql":   "tabular",
+    "pes_dql":  "tabular",
+    "pes_dqn":  "ml",
+    "pes_rdqn": "ml",
+    "pes_a2c":  "ml",
+    "pes_trf":  "ml",
+    "pes_ens":  "ml",
+}
+
+ALL_PACKAGES = list(PACKAGE_GROUPS.keys())
 
 # Workspace root: two levels up from this script (utils/scripts/_export_html.py).
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Cross-package comparison document at the workspace root.
+WORKSPACE_DOC_DIR = os.path.join(WORKSPACE_ROOT, "doc")
 
 HTML_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="es">
@@ -138,20 +162,61 @@ def convert_md_to_html(md_path, html_path):
         fh.write(html)
 
 
+def _resolve_pkg_dir(pkg_name):
+    """Return absolute filesystem path to a package's directory.
+
+    Accepts both the short name (``"pes_dqn"``) and the full
+    group-qualified name (``"ml/pes_dqn"`` or ``"ml\\pes_dqn"``).
+
+    Parameters
+    ----------
+    pkg_name : str
+        Package short name or group/name relative path.
+
+    Returns
+    -------
+    str or None
+        Absolute path to the package directory, or ``None`` if the
+        package is unknown and not directly findable on disk.
+    """
+    normalised = pkg_name.replace("\\", "/").strip("/")
+    if "/" in normalised:
+        candidate = os.path.join(WORKSPACE_ROOT, *normalised.split("/"))
+        return candidate if os.path.isdir(candidate) else None
+
+    group = PACKAGE_GROUPS.get(normalised)
+    if group is not None:
+        return os.path.join(WORKSPACE_ROOT, group, normalised)
+
+    # Fallback: legacy top-level layout (no group prefix).
+    legacy = os.path.join(WORKSPACE_ROOT, normalised)
+    return legacy if os.path.isdir(legacy) else None
+
+
 def export_package(pkg_name):
     """Convert every ``.md`` inside ``<pkg>/doc/`` to ``.html``.
 
     Parameters
     ----------
     pkg_name : str
-        Package directory name (e.g. ``"pes_dqn"``).
+        Package short name (e.g. ``"pes_dqn"``) or group-qualified
+        path (``"ml/pes_dqn"``). The special name ``"doc"`` exports
+        the workspace-level ``doc/`` directory (cross-package
+        comparison document).
 
     Returns
     -------
     int
         Number of files converted.
     """
-    doc_dir = os.path.join(WORKSPACE_ROOT, pkg_name, "doc")
+    if pkg_name == "doc":
+        doc_dir = WORKSPACE_DOC_DIR
+    else:
+        pkg_dir = _resolve_pkg_dir(pkg_name)
+        if pkg_dir is None:
+            print(f"  SKIP {pkg_name} — package not found")
+            return 0
+        doc_dir = os.path.join(pkg_dir, "doc")
     if not os.path.isdir(doc_dir):
         print(f"  SKIP {pkg_name}/doc/ — directory not found")
         return 0
@@ -177,7 +242,12 @@ def export_package(pkg_name):
 ##########################
 
 if __name__ == "__main__":
-    packages = sys.argv[1:] if len(sys.argv) > 1 else ALL_PACKAGES
+    # When called with no arguments, export every package plus the
+    # workspace-level doc/ directory.
+    if len(sys.argv) > 1:
+        packages = sys.argv[1:]
+    else:
+        packages = ALL_PACKAGES + ["doc"]
 
     total = 0
     for pkg in packages:

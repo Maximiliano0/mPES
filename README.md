@@ -1,4 +1,4 @@
-# mPES — multiple Pandemic Experiment Scenario
+﻿# mPES — multiple Pandemic Experiment Scenario
 
 Multi-package Python workspace for **reinforcement-learning** experiments on a
 resource-allocation task (the *Pandemic Scenario*).
@@ -10,22 +10,24 @@ straightforward.
 
 ## Packages
 
-| Package | Algorithm | Key files |
-|---------|-----------|-----------|
-| `pes_base` | Tabular Q-Learning (baseline) | `ext/pandemic.py`, `ext/train_rl.py` |
-| `pes_ql` | Q-Learning + Bayesian optimisation (Optuna) | `ext/optimize_rl.py` |
-| `pes_dql` | Double Q-Learning, ε-decay warm-up, PBRS | `ext/pandemic.py`, `ext/optimize_rl.py` |
-| `pes_dqn` | Deep Q-Network (experience replay + target net) | `ext/dqn_model.py`, `ext/train_dqn.py`, `ext/optimize_dqn.py` |
-| `pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
-| `pes_a2c` | Advantage Actor-Critic (A2C) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
-| `pes_trf` | Causal Transformer encoder + DQN (sliding window) | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
-| `pes_ens` | Ensemble (soft voting of pes_dqn + pes_a2c + pes_rdqn + pes_trf) | `ext/ensemble_model.py` |
-| `utils` | Shared helpers (shell scripts) | `linux/run_bayesian_opt.sh`, `win/run_bayesian_opt.ps1`, `config/.pylintrc` |
+Packages are grouped by algorithm family under two top-level directories:
+
+| Group | Package | Algorithm | Key files |
+|-------|---------|-----------|-----------|
+| `tabular` | `pes_base` | Tabular Q-Learning (baseline) | `ext/pandemic.py`, `ext/train_rl.py` |
+| `tabular` | `pes_ql` | Q-Learning + Bayesian optimisation (Optuna) | `ext/optimize_rl.py` |
+| `tabular` | `pes_dql` | Double Q-Learning, ε-decay warm-up, PBRS | `ext/pandemic.py`, `ext/optimize_rl.py` |
+| `ml` | `pes_dqn` | Deep Q-Network (experience replay + target net) | `ext/dqn_model.py`, `ext/train_dqn.py`, `ext/optimize_dqn.py` |
+| `ml` | `pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
+| `ml` | `pes_a2c` | Advantage Actor-Critic (A2C) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
+| `ml` | `pes_trf` | Causal Transformer encoder + DQN (sliding window) | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
+| `ml` | `pes_ens` | Ensemble (soft voting of pes_dqn + pes_rdqn + pes_trf; pes_a2c configured but disabled by default) | `ext/ensemble_model.py` |
+| — | `utils` | Shared helpers (shell scripts) | `linux/run_bayesian_opt.sh`, `win/run_bayesian_opt.ps1`, `config/.pylintrc` |
 
 ## Package layout
 
 ```
-<pkg>/
+<group>/<pkg>/                 # <group> is `tabular` or `ml`
 ├── __init__.py          # Config re-exports, ANSI codes, numpy/TF setup
 ├── __main__.py          # Experiment entry point (blocks/sequences/trials)
 ├── config/CONFIG.py     # All tuneable constants
@@ -40,6 +42,9 @@ straightforward.
     ├── result_formatter.py# Matplotlib result plots
     └── terminal_utils.py  # Rich console output (header, section, info…)
 ```
+
+The workspace also includes a top-level `doc/` folder with cross-package
+comparison material (e.g. `doc/comparacion_modelos.md`).
 
 ## Setup
 
@@ -90,27 +95,31 @@ Set these **before** running training or optimisation:
 ### Run an experiment
 
 ```bash
-python -m pes_base     # Tabular Q-Learning
-python -m pes_ql       # Q-Learning (Bayesian-tuned)
-python -m pes_dql      # Double Q-Learning + PBRS
-python -m pes_dqn      # Deep Q-Network
-python -m pes_rdqn     # Recurrent DQN (LSTM)
-python -m pes_a2c      # Advantage Actor-Critic (A2C)
-python -m pes_trf      # Causal Transformer DQN
-python -m pes_ens      # Ensemble (soft voting of dqn+a2c+rdqn+trf, no training)
+python -m tabular.pes_base     # Tabular Q-Learning
+python -m tabular.pes_ql       # Q-Learning (Bayesian-tuned)
+python -m tabular.pes_dql      # Double Q-Learning + PBRS
+python -m ml.pes_dqn      # Deep Q-Network
+python -m ml.pes_rdqn     # Recurrent DQN (LSTM)
+python -m ml.pes_a2c      # Advantage Actor-Critic (A2C)
+python -m ml.pes_trf      # Causal Transformer DQN
+python -m ml.pes_ens      # Ensemble (soft voting of dqn+a2c+rdqn+trf, no training)
 ```
 
 ### Train an agent
 
 ```bash
-# Tabular Q-Learning (1M episodes)
-python -m pes_base.ext.train_rl 1000000
+# --- Tabular models ---
+python -m tabular.pes_base.ext.train_rl 1000000      # Baseline (1M episodes)
+python -m tabular.pes_ql.ext.train_rl 1000000        # Q-Learning (Optuna best params)
+python -m tabular.pes_dql.ext.train_rl 1000000       # Double Q-Learning + PBRS
 
-# Deep Q-Network
-python -m pes_dqn.ext.train_dqn 500000
+# --- Deep-learning models ---
+python -m ml.pes_dqn.ext.train_dqn 175000            # Deep Q-Network
+python -m ml.pes_rdqn.ext.train_rdqn 175000          # Recurrent DQN (LSTM)
+python -m ml.pes_a2c.ext.train_a2c 175000            # Advantage Actor-Critic
+python -m ml.pes_trf.ext.train_transformer 175000    # Causal Transformer DQN
 
-# Actor-Critic
-python -m pes_a2c.ext.train_a2c 500000
+# Note: pes_ens has no training phase; it loads pre-trained sibling models.
 ```
 
 ### Bayesian hyperparameter optimisation
@@ -153,12 +162,15 @@ Experimento (1)
 ## Documentation
 
 Each package ships its own in-depth Markdown documentation under
-`<pkg>/doc/` (Spanish), with matching HTML renderings (KaTeX math,
-dark-mode CSS). Regenerate the HTML with:
+`<group>/<pkg>/doc/` (Spanish), with matching HTML renderings (KaTeX
+math, dark-mode CSS). The workspace-level `doc/` folder hosts the
+cross-package comparison material. Regenerate the HTML with:
 
 ```bash
-python utils/scripts/_export_html.py            # all packages
-python utils/scripts/_export_html.py pes_dqn    # single package
+python utils/scripts/_export_html.py            # all packages + workspace doc
+python utils/scripts/_export_html.py pes_dqn    # single package (short name)
+python utils/scripts/_export_html.py ml/pes_dqn # single package (grouped name)
+python utils/scripts/_export_html.py doc        # workspace-level doc/ only
 ```
 
 To update both source-level docstrings and the Markdown docs from the

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pes Dql Explained</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 0 auto; padding: 2rem; color: #222; line-height: 1.6; }
+  h1,h2,h3 { color: #1a1a2e; }
+  code { background: #f4f4f4; padding: .2em .4em; border-radius: 3px; font-size: .9em; }
+  pre code { display: block; padding: 1em; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th,td { border: 1px solid #ccc; padding: .5em 1em; }
+  th { background: #f0f0f0; }
+  blockquote { border-left: 4px solid #ccc; margin: 0; padding-left: 1em; color: #555; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<h1 id="pes_dql-guia-de-uso-e-implementacion">pes_dql — Guía de uso e implementación</h1>
+<blockquote>
+<p>Paquete: <strong><code>tabular.pes_dql</code></strong> — Double Q-Learning con calentamiento (warm-up)
+exponencial de ε y <em>Potential-Based Reward Shaping</em> (PBRS).</p>
+<p>Última actualización: 2026-05-04</p>
+</blockquote>
+<hr />
+<h2 id="indice">Índice</h2>
+<ol>
+<li><a href="#1-qué-hace-el-paquete">Qué hace el paquete</a></li>
+<li><a href="#2-cómo-usarlo-cli">Cómo usarlo (CLI)</a></li>
+<li><a href="#3-cómo-entrenar-el-modelo">Cómo entrenar el modelo</a></li>
+<li><a href="#4-cómo-optimizar-el-modelo-bayesiano">Cómo optimizar el modelo (Bayesiano)</a></li>
+<li><a href="#5-referencias-de-código">Referencias de código</a></li>
+<li><a href="#6-estructura-de-directorios">Estructura de directorios</a></li>
+<li><a href="#7-archivos-de-entrada-y-salida">Archivos de entrada y salida</a></li>
+<li><a href="#8-resultados-de-rendimiento">Resultados de rendimiento</a></li>
+<li><a href="#9-diferencias-frente-a-pes_ql">Diferencias frente a <code>pes_ql</code></a></li>
+</ol>
+<hr />
+<h2 id="1-que-hace-el-paquete">1. Qué hace el paquete</h2>
+<p><code>pes_dql</code> implementa la versión mejorada del agente tabular de Q-Learning
+para el escenario "Pandemic". Combina <strong>tres mejoras algorítmicas</strong> sobre
+el Q-Learning estándar de <code>pes_base</code> y <code>pes_ql</code>:</p>
+<ol>
+<li><strong>Double Q-Learning</strong> (Van Hasselt, 2010) — dos tablas Q
+   independientes (<code>Q_A</code>, <code>Q_B</code>) que eliminan el sesgo de maximización del
+   operador <code>max</code>.</li>
+<li><strong>ε-decay con warm-up</strong> — ε se mantiene constante en su valor inicial
+   ε₀ durante una fracción inicial (<code>warmup_ratio</code>) de los episodios y
+   después decae exponencialmente hasta ε_min. Evita explotar prematuramente
+   antes de que las Q-tables tengan estimaciones razonables.</li>
+<li><strong>PBRS — Potential-Based Reward Shaping</strong> (Ng, Harada, &amp; Russell, 1999) —
+   suma un término de modelado de recompensa
+   $F(s, s') = \beta\,(\gamma\,\Phi(s') - \Phi(s))$ con potencial
+   $\Phi(s) = -\sum_i s_i$. Acelera la convergencia sin alterar la política
+   óptima.</li>
+</ol>
+<p>El entorno <strong>Pandemic</strong> se modela como un MDP discreto en
+<a href="../ext/pandemic.py"><code>tabular/pes_dql/ext/pandemic.py</code></a>:</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Estados</td>
+<td><code>(31, 11, 10)</code> = 3 410 estados</td>
+</tr>
+<tr>
+<td>Acciones</td>
+<td>11 (asignar 0–10 recursos)</td>
+</tr>
+<tr>
+<td>Recompensa</td>
+<td>$r_t = -\sum_i s_i$</td>
+</tr>
+<tr>
+<td>Transición</td>
+<td>$s'_i = \max(0,\; 1.4\,s_i - 0.4\,a_i)$</td>
+</tr>
+<tr>
+<td>Recursos por secuencia</td>
+<td>39 (<code>AVAILABLE_RESOURCES_PER_SEQUENCE</code>)</td>
+</tr>
+<tr>
+<td>Estructura</td>
+<td>8 bloques × 8 secuencias × 3–10 trials</td>
+</tr>
+</tbody>
+</table>
+<p>La forma de la Q-table es <code>(31, 11, 10, 11)</code> = 37 510 celdas por tabla
+(≈ 293 KB en <code>float64</code>). Con Double Q-Learning se almacenan dos tablas en
+memoria durante el entrenamiento (≈ 586 KB).</p>
+<hr />
+<h2 id="2-como-usarlo-cli">2. Cómo usarlo (CLI)</h2>
+<p>Todos los comandos asumen que la raíz del workspace
+(<code>c:\Users\maxvega\Documents\Win_mPES</code>) es el directorio actual y que el
+entorno virtual está activado.</p>
+<h3 id="21-activar-el-entorno-virtual">2.1 Activar el entorno virtual</h3>
+<p><strong>Windows (PowerShell):</strong></p>
+<pre><code class="language-powershell">win_mpes_env\Scripts\Activate.ps1
+</code></pre>
+<p><strong>Linux:</strong></p>
+<pre><code class="language-bash">source linux_mpes_env/bin/activate
+</code></pre>
+<h3 id="22-comandos-principales">2.2 Comandos principales</h3>
+<table>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Comando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ejecutar el experimento completo (8 × 8 = 64 secuencias)</td>
+<td><code>python -m tabular.pes_dql</code></td>
+</tr>
+<tr>
+<td>Entrenar el agente (Double Q-Learning)</td>
+<td><code>python -m tabular.pes_dql.ext.train_rl</code></td>
+</tr>
+<tr>
+<td>Entrenar con N episodios personalizados</td>
+<td><code>python -m tabular.pes_dql.ext.train_rl 1000000</code></td>
+</tr>
+<tr>
+<td>Lanzar la optimización bayesiana (50 trials por defecto)</td>
+<td><code>python -m tabular.pes_dql.ext.optimize_rl</code></td>
+</tr>
+<tr>
+<td>Lanzar la optimización con N trials</td>
+<td><code>python -m tabular.pes_dql.ext.optimize_rl 100</code></td>
+</tr>
+<tr>
+<td>Reanudar una optimización previa</td>
+<td><code>python -m tabular.pes_dql.ext.optimize_rl 100 --resume 2026-04-21</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-variables-de-entorno-recomendadas">2.3 Variables de entorno recomendadas</h3>
+<p>Para evitar errores de codificación cuando la salida se redirige a fichero:</p>
+<p><strong>Windows (PowerShell):</strong></p>
+<pre><code class="language-powershell">$env:PYTHONIOENCODING = &quot;utf-8&quot;
+$env:VIRTUAL_ENV      = &quot;$PWD\win_mpes_env&quot;
+$env:TF_ENABLE_ONEDNN_OPTS = &quot;0&quot;
+</code></pre>
+<p><strong>Linux:</strong></p>
+<pre><code class="language-bash">export PYTHONIOENCODING=utf-8
+export VIRTUAL_ENV=&quot;$PWD/linux_mpes_env&quot;
+export TF_ENABLE_ONEDNN_OPTS=0
+</code></pre>
+<hr />
+<h2 id="3-como-entrenar-el-modelo">3. Cómo entrenar el modelo</h2>
+<p>El script de entrenamiento es
+<a href="../ext/train_rl.py"><code>tabular/pes_dql/ext/train_rl.py</code></a>. Se invoca con:</p>
+<pre><code class="language-bash">python -m tabular.pes_dql.ext.train_rl [num_episodes]
+</code></pre>
+<h3 id="31-etapas-del-pipeline-train_rlpy">3.1 Etapas del <em>pipeline</em> (<code>train_rl.py</code>)</h3>
+<p><code>train_rl.py</code> ejecuta secuencialmente las siguientes fases (cada fase aparece
+delimitada en el log con cabeceras de <code>terminal_utils</code>):</p>
+<ol>
+<li><strong>Resolución de hiperparámetros</strong>
+   (<code>_load_best_params()</code>).
+   Orden de precedencia:</li>
+<li><code>inputs/best_params.json</code> (mirroreado por <code>optimize_rl.py</code>).</li>
+<li>El <code>best_params_*.json</code> más reciente bajo
+      <code>inputs/&lt;fecha&gt;_BAYESIAN_OPT/</code>.</li>
+<li>
+<p>El diccionario <code>_DEFAULT_HYPERPARAMS</code> codificado en el script.</p>
+</li>
+<li>
+<p><strong>Carga de datos</strong>
+   Lee <code>INITIAL_SEVERITY_FILE</code> (severidades iniciales) y
+   <code>SEQ_LENGTHS_FILE</code> (longitudes de secuencia) desde <code>inputs/</code>.</p>
+</li>
+<li>
+<p><strong>Baseline aleatorio</strong>
+   Ejecuta las 64 secuencias con un agente que asigna recursos
+   uniformemente al azar. Sirve como referencia inferior.</p>
+</li>
+<li>
+<p><strong>Entrenamiento Double Q-Learning</strong>
+   Llama a <code>QLearning(env, learning, discount, epsilon, min_eps,
+   episodes, warmup_ratio, target_ratio, double_q=True,
+   penalty_coeff=...)</code> desde
+   <a href="../ext/pandemic.py"><code>pandemic.py</code></a>. Por defecto entrena durante
+   <strong>860 000 episodios</strong> con <code>SEED=42</code>.</p>
+</li>
+<li>
+<p><strong>Evaluación dual</strong>
+   Ejecuta dos pasadas sobre las 64 secuencias fijas:</p>
+</li>
+<li><strong>Determinista</strong> (<code>qf_eval</code>) — replica bit a bit la función
+     <code>objective</code> de <code>optimize_rl.py</code> (mismo enmascaramiento <code>-1e9</code>,
+     mismo <em>clamping</em>). Su <code>mean_perf</code> debe coincidir con el valor
+     guardado en el mejor trial bayesiano (<code>abs(delta) &lt; 1e-9</code>).</li>
+<li>
+<p><strong>Estocástica</strong> (<code>qf</code>) — usa <code>rl_agent_meta_cognitive</code> para recoger
+     entropías y tiempos de respuesta para los plots.</p>
+</li>
+<li>
+<p><strong>Persistencia de artefactos</strong>
+   Escribe la Q-table, el historial de recompensas, el reporte de
+   configuración y todas las visualizaciones en
+   <code>inputs/&lt;YYYY-MM-DD&gt;_RL_TRAIN/</code>. Adicionalmente <em>mirrorea</em> la mejor
+   Q-table y <code>rewards.npy</code> a <code>inputs/q.npy</code> y <code>inputs/rewards.npy</code>,
+   que son los ficheros que consume <code>python -m tabular.pes_dql</code>.</p>
+</li>
+</ol>
+<h3 id="32-hiperparametros-por-defecto">3.2 Hiperparámetros por defecto</h3>
+<p>Los valores codificados en <code>_DEFAULT_HYPERPARAMS</code> (resultado de la
+optimización bayesiana del 2026-04-21):</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>learning_rate</code> (α)</td>
+<td>0.2593</td>
+<td>Tasa de aprendizaje</td>
+</tr>
+<tr>
+<td><code>discount_factor</code> (γ)</td>
+<td>0.9806</td>
+<td>Factor de descuento</td>
+</tr>
+<tr>
+<td><code>epsilon_initial</code> (ε₀)</td>
+<td>0.8392</td>
+<td>Exploración inicial</td>
+</tr>
+<tr>
+<td><code>epsilon_min</code> (ε_min)</td>
+<td>0.0799</td>
+<td>Exploración mínima</td>
+</tr>
+<tr>
+<td><code>warmup_ratio</code></td>
+<td>0.0240</td>
+<td>Fracción de episodios en warm-up</td>
+</tr>
+<tr>
+<td><code>target_ratio</code></td>
+<td>0.5174</td>
+<td>Fracción de episodios para alcanzar ε_min</td>
+</tr>
+<tr>
+<td><code>penalty_coeff</code> (β)</td>
+<td>0.2177</td>
+<td>Coeficiente PBRS</td>
+</tr>
+<tr>
+<td><code>num_episodes</code></td>
+<td>860 000</td>
+<td>Episodios totales</td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>42</td>
+<td>Semilla global</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-salidas-del-entrenamiento">3.3 Salidas del entrenamiento</h3>
+<p>Bajo <code>tabular/pes_dql/inputs/&lt;YYYY-MM-DD&gt;_RL_TRAIN/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Fichero</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>q_&lt;date&gt;.npy</code></td>
+<td>Q-table entrenada <code>(31, 11, 10, 11)</code></td>
+</tr>
+<tr>
+<td><code>rewards_&lt;date&gt;.npy</code></td>
+<td>Recompensa media cada 10 000 episodios</td>
+</tr>
+<tr>
+<td><code>training_config_&lt;date&gt;.txt</code></td>
+<td>Resumen de hiperparámetros</td>
+</tr>
+<tr>
+<td><code>confsrl_&lt;date&gt;.npy</code></td>
+<td>Confianzas de la pasada estocástica</td>
+</tr>
+<tr>
+<td><code>random_player_*_&lt;date&gt;.png</code></td>
+<td>Plots del baseline aleatorio</td>
+</tr>
+<tr>
+<td><code>rl_agent_rewards_vs_episodes_&lt;date&gt;.png</code></td>
+<td>Curva de aprendizaje</td>
+</tr>
+<tr>
+<td><code>rl_agent_sequence_performance_&lt;date&gt;.png</code></td>
+<td>Severidad por secuencia</td>
+</tr>
+<tr>
+<td><code>rl_agent_normalised_performance_&lt;date&gt;.png</code></td>
+<td>Rendimiento normalizado</td>
+</tr>
+<tr>
+<td><code>rl_agent_cumulative_performance_&lt;date&gt;.png</code></td>
+<td>Rendimiento acumulado</td>
+</tr>
+<tr>
+<td><code>rl_agent_confidences_&lt;date&gt;.png</code></td>
+<td>Confianza por trial</td>
+</tr>
+<tr>
+<td><code>rl_agent_remapped_confidences_&lt;date&gt;.png</code></td>
+<td>Confianza re-escalada</td>
+</tr>
+</tbody>
+</table>
+<p>Y los enlaces canónicos para el experimento:</p>
+<ul>
+<li><code>tabular/pes_dql/inputs/q.npy</code></li>
+<li><code>tabular/pes_dql/inputs/rewards.npy</code></li>
+</ul>
+<hr />
+<h2 id="4-como-optimizar-el-modelo-bayesiano">4. Cómo optimizar el modelo (Bayesiano)</h2>
+<p>El script de optimización es
+<a href="../ext/optimize_rl.py"><code>tabular/pes_dql/ext/optimize_rl.py</code></a>. Usa
+<strong>Optuna 4.7.0</strong> con el sampler <code>TPESampler</code> (Akiba et al., 2019).</p>
+<h3 id="41-invocacion">4.1 Invocación</h3>
+<pre><code class="language-bash">python -m tabular.pes_dql.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
+                                          [--out-dir PATH] [--storage URL]
+</code></pre>
+<p>Argumentos:</p>
+<ul>
+<li><code>n_trials</code> — número de trials (por defecto 50).</li>
+<li><code>--resume YYYY-MM-DD</code> — reanuda un estudio Optuna previo.</li>
+<li><code>--out-dir PATH</code> — sobrescribe el directorio
+  <code>inputs/&lt;fecha&gt;_BAYESIAN_OPT/</code>.</li>
+<li><code>--storage URL</code> — sobrescribe el SQLite por defecto
+  (<code>sqlite:///&lt;opt_dir&gt;/optuna_study_&lt;date&gt;.db</code>).</li>
+</ul>
+<h3 id="42-espacio-de-busqueda">4.2 Espacio de búsqueda</h3>
+<p>Definido en la función <code>objective(trial)</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Rango</th>
+<th>Escala</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>learning_rate</code></td>
+<td><code>[0.05, 0.30]</code></td>
+<td>log</td>
+</tr>
+<tr>
+<td><code>discount_factor</code></td>
+<td><code>[0.90, 0.999]</code></td>
+<td>lineal</td>
+</tr>
+<tr>
+<td><code>epsilon_initial</code></td>
+<td><code>[0.50, 1.00]</code></td>
+<td>lineal</td>
+</tr>
+<tr>
+<td><code>epsilon_min</code></td>
+<td><code>[0.01, 0.10]</code></td>
+<td>log</td>
+</tr>
+<tr>
+<td><code>num_episodes</code></td>
+<td><code>[150 000, 500 000]</code></td>
+<td>lineal (paso 10 000)</td>
+</tr>
+<tr>
+<td><code>warmup_ratio</code></td>
+<td><code>[0.02, 0.15]</code></td>
+<td>lineal</td>
+</tr>
+<tr>
+<td><code>target_ratio</code></td>
+<td><code>[0.40, 0.80]</code></td>
+<td>lineal</td>
+</tr>
+<tr>
+<td><code>penalty_coeff</code> (β)</td>
+<td><code>[1e-4, 0.30]</code></td>
+<td>log</td>
+</tr>
+</tbody>
+</table>
+<p>El sampler se configura como
+<code>TPESampler(seed=SEED, n_startup_trials=10, multivariate=True, group=True)</code>.</p>
+<p>Cada trial se entrena con la semilla <code>SEED + trial.number + 1</code>, lo que
+asegura <strong>reproducibilidad individual</strong> de cada trial sin colapsar todos a
+la misma trayectoria estocástica.</p>
+<h3 id="43-funcion-objetivo">4.3 Función objetivo</h3>
+<p>Para cada trial:</p>
+<ol>
+<li>Se entrena <code>QLearning(...)</code> con los hiperparámetros propuestos,
+   <code>track_confidence=False</code> (más rápido) y <code>double_q=True</code>.</li>
+<li>Se evalúa la Q-table sobre las 64 secuencias fijas con
+   enmascaramiento de acciones inviables.</li>
+<li>Se devuelve el <code>mean_perf</code> (rendimiento normalizado promedio) que
+   Optuna intenta <strong>maximizar</strong>.</li>
+<li>La mejor Q-table y su historial de recompensas se conservan en
+   memoria (<code>_best_artifacts</code>) para evitar un re-entrenamiento "lossy".</li>
+</ol>
+<h3 id="44-salidas-de-la-optimizacion">4.4 Salidas de la optimización</h3>
+<p>Bajo <code>tabular/pes_dql/inputs/&lt;YYYY-MM-DD&gt;_BAYESIAN_OPT/</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Fichero</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>optuna_study_&lt;date&gt;.db</code></td>
+<td>Base de datos SQLite (resumible)</td>
+</tr>
+<tr>
+<td><code>q_best_&lt;date&gt;.npy</code></td>
+<td>Q-table del mejor trial</td>
+</tr>
+<tr>
+<td><code>rewards_best_&lt;date&gt;.npy</code></td>
+<td>Recompensas del mejor trial</td>
+</tr>
+<tr>
+<td><code>best_params_&lt;date&gt;.json</code></td>
+<td>Hiperparámetros + <code>trial_seed</code> + <code>mean_perf</code></td>
+</tr>
+<tr>
+<td><code>optimization_results_&lt;date&gt;.txt</code></td>
+<td>Reporte completo (índices 1-based)</td>
+</tr>
+<tr>
+<td><code>optimization_history_&lt;date&gt;.png</code></td>
+<td>Curva de convergencia</td>
+</tr>
+<tr>
+<td><code>hyperparameter_importances_&lt;date&gt;.png</code></td>
+<td>Importancia de parámetros</td>
+</tr>
+</tbody>
+</table>
+<p>Adicionalmente se mirrorea <code>best_params_&lt;date&gt;.json</code> →
+<code>inputs/best_params.json</code> para que <code>train_rl.py</code> lo recoja en su próxima
+ejecución.</p>
+<hr />
+<h2 id="5-referencias-de-codigo">5. Referencias de código</h2>
+<h3 id="51-funciones-publicas-en-pandemicpy">5.1 Funciones públicas en <code>pandemic.py</code></h3>
+<table>
+<thead>
+<tr>
+<th>Símbolo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>class Pandemic(Env)</code></td>
+<td>Entorno Gymnasium (espacios + dinámica).</td>
+</tr>
+<tr>
+<td><code>Pandemic.step(action)</code></td>
+<td>Transición $s \to s'$ y recompensa.</td>
+</tr>
+<tr>
+<td><code>Pandemic.reset(seed, options)</code></td>
+<td>Reinicia la secuencia.</td>
+</tr>
+<tr>
+<td><code>QLearning(env, learning, discount, epsilon, min_eps, episodes, warmup_ratio, target_ratio, double_q, penalty_coeff, ...)</code></td>
+<td>Entrenamiento (con o sin Double Q, warm-up y PBRS).</td>
+</tr>
+<tr>
+<td><code>run_experiment(env, actionfunction, ...)</code></td>
+<td>Evaluación greedy sobre las 64 secuencias.</td>
+</tr>
+<tr>
+<td><code>rl_agent_meta_cognitive(options, resources_left, response_timeout)</code></td>
+<td>Estimación de confianza por entropía.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="52-constantes-clave-configconfigpy">5.2 Constantes clave (<code>config/CONFIG.py</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Constante</th>
+<th>Valor</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AVAILABLE_RESOURCES_PER_SEQUENCE</code></td>
+<td>39</td>
+<td>Presupuesto por secuencia</td>
+</tr>
+<tr>
+<td><code>MAX_ALLOCATABLE_RESOURCES</code></td>
+<td>10</td>
+<td>Acción máxima</td>
+</tr>
+<tr>
+<td><code>MAX_SEVERITY</code></td>
+<td>9</td>
+<td>Estado de severidad máximo</td>
+</tr>
+<tr>
+<td><code>NUM_BLOCKS</code></td>
+<td>8</td>
+<td>Bloques del experimento</td>
+</tr>
+<tr>
+<td><code>NUM_SEQUENCES</code></td>
+<td>8</td>
+<td>Secuencias por bloque</td>
+</tr>
+<tr>
+<td><code>NUM_MIN_TRIALS</code> / <code>NUM_MAX_TRIALS</code></td>
+<td>3 / 10</td>
+<td>Trials por secuencia</td>
+</tr>
+<tr>
+<td><code>PANDEMIC_PARAMETER</code></td>
+<td>0.4</td>
+<td>α (efectividad de recursos)</td>
+</tr>
+<tr>
+<td><code>SEED</code></td>
+<td>42</td>
+<td>Semilla global</td>
+</tr>
+<tr>
+<td><code>OUTPUT_FILE_PREFIX</code></td>
+<td><code>'PES_DQL_'</code></td>
+<td>Prefijo de logs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="53-modulos-de-soporte-src">5.3 Módulos de soporte (<code>src/</code>)</h3>
+<ul>
+<li><code>exp_utils.py</code> — <code>get_updated_severity()</code>,
+  <code>calculate_normalised_final_severity_performance_metric()</code>.</li>
+<li><code>log_utils.py</code> — duplicación de <code>stdout</code> a fichero.</li>
+<li><code>pygameMediator.py</code> — interfaz visual (no usada en modo agente).</li>
+<li><code>result_formatter.py</code> — generación de plots con Matplotlib.</li>
+<li><code>terminal_utils.py</code> — <code>header</code>, <code>section</code>, <code>info</code>, <code>success</code>,
+  <code>list_item</code>.</li>
+</ul>
+<hr />
+<h2 id="6-estructura-de-directorios">6. Estructura de directorios</h2>
+<pre><code>tabular/pes_dql/
+├── __init__.py            # Re-exporta CONFIG y constantes ANSI
+├── __main__.py            # Entry point del experimento
+├── config/
+│   └── CONFIG.py          # Todos los parámetros tuneables
+├── doc/
+│   ├── how_to_train_and_test.md     # Guía operativa
+│   ├── mejoras_qlearning.md         # Teoría de las 3 mejoras
+│   ├── pes_dql_explained.md         # Este documento
+│   └── pes_dql_theory.md            # Documento teórico complementario
+├── ext/
+│   ├── pandemic.py        # Env Gym + QLearning() (Double Q + PBRS)
+│   ├── train_rl.py        # Pipeline de entrenamiento
+│   ├── optimize_rl.py     # Optimización bayesiana (Optuna)
+│   ├── repro.py           # Fingerprints de reproducibilidad
+│   └── tools.py           # Utilidades (entropy_from_pdf, plots)
+├── inputs/
+│   ├── q.npy              # Q-table canónica (consumida por __main__)
+│   ├── rewards.npy        # Recompensas canónicas
+│   ├── best_params.json   # Hiperparámetros bayesianos
+│   ├── initial_severity.csv
+│   ├── sequence_lengths.csv
+│   ├── &lt;date&gt;_RL_TRAIN/   # Salidas datadas de train_rl.py
+│   └── &lt;date&gt;_BAYESIAN_OPT/  # Salidas datadas de optimize_rl.py
+├── outputs/
+│   └── &lt;date&gt;_DQL_AGENT/  # Logs y resultados del experimento
+└── src/
+    ├── exp_utils.py
+    ├── log_utils.py
+    ├── pygameMediator.py
+    ├── result_formatter.py
+    └── terminal_utils.py
+</code></pre>
+<hr />
+<h2 id="7-archivos-de-entrada-y-salida">7. Archivos de entrada y salida</h2>
+<h3 id="71-entradas-requeridas">7.1 Entradas requeridas</h3>
+<table>
+<thead>
+<tr>
+<th>Fichero</th>
+<th>Generado por</th>
+<th>Forma</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inputs/initial_severity.csv</code></td>
+<td>Manual / experimento</td>
+<td>Matriz de severidades iniciales</td>
+</tr>
+<tr>
+<td><code>inputs/sequence_lengths.csv</code></td>
+<td>Manual / experimento</td>
+<td>Longitudes de secuencia</td>
+</tr>
+<tr>
+<td><code>inputs/q.npy</code></td>
+<td><code>train_rl.py</code> u <code>optimize_rl.py</code></td>
+<td><code>(31, 11, 10, 11)</code></td>
+</tr>
+<tr>
+<td><code>inputs/rewards.npy</code></td>
+<td>Idem</td>
+<td>Vector</td>
+</tr>
+<tr>
+<td><code>inputs/best_params.json</code></td>
+<td><code>optimize_rl.py</code></td>
+<td>JSON con hiperparámetros</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-estructura-de-best_paramsjson">7.2 Estructura de <code>best_params.json</code></h3>
+<pre><code class="language-json">{
+    &quot;hyperparameters&quot;: {
+        &quot;learning_rate&quot;:   0.2593,
+        &quot;discount_factor&quot;: 0.9806,
+        &quot;epsilon_initial&quot;: 0.8392,
+        &quot;epsilon_min&quot;:     0.0799,
+        &quot;num_episodes&quot;:    860000,
+        &quot;warmup_ratio&quot;:    0.0240,
+        &quot;target_ratio&quot;:    0.5174,
+        &quot;penalty_coeff&quot;:   0.2177
+    },
+    &quot;trial_seed&quot;:       143,
+    &quot;track_confidence&quot;: false,
+    &quot;double_q&quot;:         true,
+    &quot;mean_perf&quot;:        0.896344,
+    &quot;trial_number&quot;:     100
+}
+</code></pre>
+<h3 id="73-salidas-del-experimento-__main__py">7.3 Salidas del experimento (<code>__main__.py</code>)</h3>
+<p><code>python -m tabular.pes_dql</code> produce:</p>
+<ul>
+<li><code>outputs/&lt;date&gt;_DQL_AGENT/</code> con resultados por secuencia (JSON/TXT)
+  y plots agregados.</li>
+<li><code>outputs/PES_DQL_log_&lt;date&gt;_DQL_AGENT.txt</code> con el log completo.</li>
+</ul>
+<hr />
+<h2 id="8-resultados-de-rendimiento">8. Resultados de rendimiento</h2>
+<p>La métrica de rendimiento es la <strong>severidad final normalizada</strong> (más alto =
+mejor; 1.0 sería un agente perfecto que reduce toda la severidad a cero):</p>
+<p>$$\text{perf}(\text{seq}) = 1 - \frac{\text{severidad_final}}{\text{severidad_máxima_posible}}$$</p>
+<h3 id="81-ultima-corrida-2026-04-30">8.1 Última corrida (2026-04-30)</h3>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>raw_mean_perf</code></td>
+<td><strong>0.896344</strong></td>
+</tr>
+<tr>
+<td><code>std</code></td>
+<td>0.047708</td>
+</tr>
+<tr>
+<td><code>n</code> (secuencias)</td>
+<td>64</td>
+</tr>
+<tr>
+<td>Episodios</td>
+<td>860 000</td>
+</tr>
+<tr>
+<td>Semilla</td>
+<td>143 (<code>SEED + best_trial_number + 1</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="82-interpretacion">8.2 Interpretación</h3>
+<ul>
+<li>Un valor de <strong>0.896</strong> indica que el agente reduce la severidad final
+  al ~10.4 % del peor caso posible. Comparado con <code>pes_ql</code> (Q-Learning
+  estándar con la misma optimización bayesiana), Double Q + PBRS aporta
+  una mejora estadísticamente consistente atribuible a:</li>
+<li>Eliminación del sesgo de maximización (Double Q).</li>
+<li>Mejor distribución temporal de exploración (warm-up).</li>
+<li>Convergencia más rápida sin alterar la política óptima (PBRS).</li>
+<li>La desviación estándar (0.048) sobre 64 secuencias indica buena
+  consistencia entre mapas de distinta longitud.</li>
+</ul>
+<hr />
+<h2 id="9-diferencias-frente-a-pes_ql">9. Diferencias frente a <code>pes_ql</code></h2>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th><code>pes_ql</code></th>
+<th><code>pes_dql</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Algoritmo</td>
+<td>Q-Learning estándar</td>
+<td><strong>Double</strong> Q-Learning</td>
+</tr>
+<tr>
+<td>Q-tables</td>
+<td>1</td>
+<td>2 (<code>Q_A</code>, <code>Q_B</code>)</td>
+</tr>
+<tr>
+<td>ε-decay</td>
+<td>Lineal o exponencial simple</td>
+<td>Exponencial <strong>con warm-up</strong></td>
+</tr>
+<tr>
+<td>Reward shaping</td>
+<td>Ninguno</td>
+<td><strong>PBRS</strong> con Φ(s) = -Σ s_i</td>
+</tr>
+<tr>
+<td>Hiperparámetros bayesianos</td>
+<td>5 (α, γ, ε₀, ε_min, episodes)</td>
+<td><strong>8</strong> (+ <code>warmup_ratio</code>, <code>target_ratio</code>, <code>penalty_coeff</code>)</td>
+</tr>
+<tr>
+<td>Sesgo de maximización</td>
+<td>Presente (sobreestima Q)</td>
+<td>Eliminado</td>
+</tr>
+<tr>
+<td>Convergencia empírica</td>
+<td>Lenta y ruidosa al inicio</td>
+<td>Más rápida (PBRS) y estable (Double Q)</td>
+</tr>
+<tr>
+<td>Política óptima</td>
+<td>Idéntica (PBRS preserva π*)</td>
+<td>Idéntica (garantía de Ng et al., 1999)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="por-que-cada-mejora">Por qué cada mejora</h3>
+<ol>
+<li>
+<p><strong>Double Q-Learning (Van Hasselt, 2010)</strong> corrige que el operador <code>max</code>
+   en Q-Learning estándar acopla <em>selección</em> y <em>evaluación</em> en la misma
+   tabla ruidosa, lo que produce Q-valores inflados (sesgo positivo).
+   Dos tablas independientes desacoplan ambas operaciones y cancelan el
+   sesgo en promedio.</p>
+</li>
+<li>
+<p><strong>Warm-up de ε</strong> evita un problema observado en <code>pes_ql</code>: cuando ε
+   empieza a decaer desde el episodio 1, el agente comienza a explotar
+   estimaciones Q que aún son esencialmente ruido aleatorio. Mantener
+   ε₀ durante un 2–5 % inicial garantiza que las primeras explotaciones
+   se basen en algo aprendido.</p>
+</li>
+<li>
+<p><strong>PBRS (Ng et al., 1999)</strong> acelera la convergencia sin cambiar la
+   política óptima: la teoría demuestra que cualquier shaping de la forma
+   $F(s, s') = \gamma\,\Phi(s') - \Phi(s)$ es <strong>invariante de política</strong>.
+   El potencial elegido $\Phi(s) = -\sum_i s_i$ guía al agente hacia
+   estados con menor severidad acumulada.</p>
+</li>
+</ol>
+<p>Para el detalle teórico completo, véase
+<a href="./pes_dql_theory.md"><code>pes_dql_theory.md</code></a> y la documentación previa
+<a href="./mejoras_qlearning.md"><code>mejoras_qlearning.md</code></a>.</p>
+</body>
+</html>

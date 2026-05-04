@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -72,12 +72,12 @@ package (<code>pes_ql</code>). Pick <strong>one</strong>.</p>
 <pre><code class="language-powershell"># Windows (PowerShell)
 win_mpes_env\Scripts\Activate.ps1
 $env:PYTHONIOENCODING = 'utf-8'
-python -m pes_ql.ext.optimize_rl 100
+python -m tabular.pes_ql.ext.optimize_rl 100
 </code></pre>
 <pre><code class="language-bash"># Linux
 source linux_mpes_env/bin/activate
 export PYTHONIOENCODING=utf-8
-python -m pes_ql.ext.optimize_rl 100
+python -m tabular.pes_ql.ext.optimize_rl 100
 </code></pre>
 <p>Artifacts land in <code>pes_ql/inputs/&lt;YYYY-MM-DD&gt;_BAYESIAN_OPT/</code>:</p>
 <ul>
@@ -87,7 +87,7 @@ python -m pes_ql.ext.optimize_rl 100
 <li><code>study_plots/</code>            — history / importances / parallel-coord plots</li>
 </ul>
 <p><strong>Resume a previous run</strong> (keeps the existing DB, adds trials):</p>
-<pre><code class="language-bash">python -m pes_ql.ext.optimize_rl 100 --resume 2026-04-20
+<pre><code class="language-bash">python -m tabular.pes_ql.ext.optimize_rl 100 --resume 2026-04-20
 </code></pre>
 <p>The wrapper scripts <a href="../win/run_bayesian_opt.ps1"><code>utils/win/run_bayesian_opt.ps1</code></a>
 and <a href="../linux/run_bayesian_opt.sh"><code>utils/linux/run_bayesian_opt.sh</code></a> do the
@@ -132,13 +132,13 @@ run all. Optuna re-opens the DB with <code>load_if_exists=True</code> and contin
 from trial <em>N+1</em>.</p>
 <h3 id="what-the-cli-flags-do">What the CLI flags do</h3>
 <p><code>pes_ql.ext.optimize_rl</code> (and the other three <code>optimize_*.py</code>) accept:</p>
-<pre><code>python -m pes_ql.ext.optimize_rl [N_TRIALS] \
+<pre><code>python -m tabular.pes_ql.ext.optimize_rl [N_TRIALS] \
     [--resume YYYY-MM-DD]                   # re-open existing study
     [--out-dir   PATH]                      # redirect all artifacts
     [--storage   sqlite:///ABSOLUTE.db]     # redirect Optuna DB only
 </code></pre>
 <p>Cell 4 of the notebook invokes the scripts as:</p>
-<pre><code>python -m pes_ql.ext.optimize_rl 100 \
+<pre><code>python -m tabular.pes_ql.ext.optimize_rl 100 \
     --out-dir /content/drive/MyDrive/mPES/pes_ql/2026-04-20_BAYESIAN_OPT \
     --storage sqlite:////content/drive/MyDrive/mPES/pes_ql/2026-04-20_BAYESIAN_OPT/optuna_study_2026-04-20.db
 </code></pre>

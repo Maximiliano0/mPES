@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pes Rdqn Theory</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 0 auto; padding: 2rem; color: #222; line-height: 1.6; }
+  h1,h2,h3 { color: #1a1a2e; }
+  code { background: #f4f4f4; padding: .2em .4em; border-radius: 3px; font-size: .9em; }
+  pre code { display: block; padding: 1em; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th,td { border: 1px solid #ccc; padding: .5em 1em; }
+  th { background: #f0f0f0; }
+  blockquote { border-left: 4px solid #ccc; margin: 0; padding-left: 1em; color: #555; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<h1 id="pes_rdqn-fundamento-teorico"><code>pes_rdqn</code> — Fundamento teórico</h1>
+<blockquote>
+<p>Paquete: <code>ml.pes_rdqn</code>
+Documento de teoría para el agente Recurrent Deep Q-Network del
+Pandemic Scenario.</p>
+</blockquote>
+<hr />
+<h2 id="1-observabilidad-parcial-del-mdp-al-pomdp">1. Observabilidad parcial: del MDP al POMDP</h2>
+<p>Un <strong>Proceso de Decisión de Markov (MDP)</strong> asume que el estado $s_t$
+contiene <strong>toda</strong> la información necesaria para predecir el futuro:</p>
+<p>$$
+P(s_{t+1}\mid s_t, a_t, s_{t-1}, \dots, s_0) = P(s_{t+1}\mid s_t, a_t).
+$$</p>
+<p>En la práctica, muchas tareas son <strong>POMDP</strong> (<em>Partially Observable
+MDP</em>): el agente recibe una observación $o_t$ que es función ruidosa o
+incompleta de un estado oculto $s_t^{\text{real}}$. Sutton &amp; Barto
+(2018, cap. 17) muestran que la política óptima en un POMDP depende del
+<strong>historial</strong> completo $h_t = (o_1, a_1, o_2, a_2, \dots, o_t)$, no de
+una observación aislada.</p>
+<p>En el Pandemic Scenario, formalmente $s_t = [r_t, t_t, \sigma_t]$ es
+markoviano para una <strong>única</strong> secuencia, pero al evaluar bloques de 8
+secuencias con severidades iniciales heterogéneas y longitudes
+variables, aparecen factores latentes (carga acumulada del bloque,
+variabilidad entre secuencias) que el estado puntual no codifica. Tratar
+el problema como POMDP es una aproximación más fiel.</p>
+<hr />
+<h2 id="2-la-necesidad-de-memoria">2. La necesidad de memoria</h2>
+<p>Una red <em>feedforward</em> $Q_\theta(s_t, a)$ no tiene estado interno: cada
+predicción depende exclusivamente de $s_t$. Para aproximar la política
+óptima en un POMDP necesitamos una arquitectura que <strong>recuerde</strong>.</p>
+<p>Hay dos vías clásicas:</p>
+<ol>
+<li><strong>Ventana finita de observaciones</strong>: $\tilde s_t = (o_{t-L+1}, \dots, o_t)$.
+   Equivale a un MDP de orden $L$. Eficiente pero limitado a memoria
+   corta.</li>
+<li><strong>Red recurrente</strong>: $h_t = f_\theta(h_{t-1}, o_t)$. Capacidad de
+   memoria teóricamente ilimitada (en la práctica acotada por el
+   gradiente).</li>
+</ol>
+<p><code>pes_rdqn</code> combina ambas: usa una <strong>ventana</strong> $L$ explícita
+(<code>HistoryDeque</code>) <strong>y</strong> procesa esa ventana con un <strong>LSTM</strong> para extraer
+una representación compacta antes de decidir.</p>
+<hr />
+<h2 id="3-lstm-puertas-estado-oculto-y-celda">3. LSTM: puertas, estado oculto y celda</h2>
+<p>La <strong>Long Short-Term Memory</strong> (Hochreiter &amp; Schmidhuber, 1997) resuelve
+el problema del <em>vanishing gradient</em> de las RNN clásicas mediante una
+arquitectura con tres puertas:</p>
+<p>$$
+\begin{aligned}
+f_t &amp;= \sigma(W_f [h_{t-1}, x_t] + b_f) &amp; \text{(forget gate)} \
+i_t &amp;= \sigma(W_i [h_{t-1}, x_t] + b_i) &amp; \text{(input gate)} \
+\tilde c_t &amp;= \tanh(W_c [h_{t-1}, x_t] + b_c) &amp; \text{(candidate)} \
+c_t &amp;= f_t \odot c_{t-1} + i_t \odot \tilde c_t &amp; \text{(cell state)} \
+o_t &amp;= \sigma(W_o [h_{t-1}, x_t] + b_o) &amp; \text{(output gate)} \
+h_t &amp;= o_t \odot \tanh(c_t) &amp; \text{(hidden state)}
+\end{aligned}
+$$</p>
+<p>donde $\sigma$ es la sigmoide y $\odot$ el producto Hadamard. Las
+propiedades clave son:</p>
+<ul>
+<li><strong>Estado de celda</strong> $c_t$ con conexión aditiva (no multiplicativa),
+  evita que el gradiente se desvanezca al retropropagar.</li>
+<li><strong>Forget gate</strong> $f_t$ aprende <strong>qué olvidar</strong> del pasado.</li>
+<li><strong>Input gate</strong> $i_t$ aprende <strong>qué incorporar</strong> del presente.</li>
+</ul>
+<p>En este paquete se usa una sola capa con <code>RDQN_LSTM_UNITS = 64</code> unidades
+ocultas (<code>tf.keras.layers.LSTM(64)</code>), y solo se conserva la salida final
+$h_T$ (no la secuencia entera) como entrada al MLP que produce
+$Q(s_{t-L+1:t}, a)$.</p>
+<hr />
+<h2 id="4-q-learning-recurrente-en-pomdps">4. Q-Learning recurrente en POMDPs</h2>
+<p>Hausknecht &amp; Stone (2015) propusieron el <strong>Deep Recurrent Q-Network
+(DRQN)</strong> como extensión natural de DQN para POMDPs. La idea: sustituir
+$Q_\theta(s, a)$ por $Q_\theta(h_{1:t}, a)$ donde $h_{1:t}$ se procesa
+con un LSTM. La actualización TD se conserva:</p>
+<p>$$
+y_t = r_t + \gamma \cdot \max_a Q_{\theta^-}(h_{1:t+1}, a),
+$$</p>
+<p>pero ahora cada minibatch contiene <strong>secuencias</strong> $(h_{1:t}, a_t, r_t, h_{1:t+1})$
+en vez de transiciones puntuales.</p>
+<p><code>pes_rdqn</code> adopta una variante <strong>truncada</strong>: en vez de propagar el
+estado oculto del LSTM a lo largo de todo un episodio, reinicia el LSTM
+en cada <em>forward</em> y procesa la ventana fija de tamaño $L = 6$. Esto
+sacrifica memoria infinita por <strong>estabilidad y eficiencia</strong> del replay
+(las secuencias tienen forma constante <code>(L, 3)</code>), siguiendo la
+recomendación práctica de Hausknecht &amp; Stone (2015).</p>
+<hr />
+<h2 id="5-la-ventana-de-historia-como-estado-aproximado">5. La ventana de historia como estado aproximado</h2>
+<p>Con la ventana $\tilde s_t = (s_{t-L+1}, \dots, s_t)$ y un LSTM, el
+agente aprende implícitamente una <strong>representación de creencia</strong>
+$b_\theta(\tilde s_t)$ que aproxima la distribución posterior sobre
+estados ocultos. Sutton &amp; Barto (2018, §17.3) describen este enfoque
+como <strong>belief-state methods</strong>.</p>
+<p>Ventajas frente a apilar simplemente las observaciones (lo que haría una
+red densa con entrada $L \times 3$):</p>
+<ul>
+<li>El LSTM aprende <strong>qué pasos del historial pesan más</strong> mediante sus
+  puertas, en vez de tratar todas las posiciones por igual.</li>
+<li>Compresión: el estado oculto $h_t \in \mathbb{R}^{64}$ es un resumen
+  fijo, independiente de $L$.</li>
+<li>Mejor generalización a secuencias de longitud variable (entre 3 y 10
+  trials en este escenario).</li>
+</ul>
+<hr />
+<h2 id="6-objetivo-double-dqn-aplicado-a-redes-recurrentes">6. Objetivo Double DQN aplicado a redes recurrentes</h2>
+<p>El objetivo Double DQN (Hasselt et al., 2016) se transfiere sin cambios
+a la versión recurrente:</p>
+<p>$$
+y = r + \gamma \cdot Q_{\theta^-}!\bigl(\tilde s_{t+1},\; \arg\max_a Q_\theta(\tilde s_{t+1}, a)\bigr),
+$$</p>
+<p>donde $\tilde s_{t+1}$ es la <strong>ventana actualizada</strong> tras hacer
+<code>history.append_step(s_{t+1})</code>. Las dos redes (online y target) son LSTMs
+idénticas; la sincronización se hace cada <code>RDQN_TARGET_SYNC_FREQ</code> pasos
+copiando todos los pesos (incluidos los del LSTM).</p>
+<p>Beneficio adicional en RDQN: los LSTMs son notoriamente sensibles al
+<em>bootstrapping</em> inestable; la combinación target-network + Double DQN
+amortigua tanto el sesgo de maximización como las oscilaciones del
+gradiente recurrente.</p>
+<hr />
+<h2 id="7-experience-replay-para-datos-secuenciales">7. <em>Experience Replay</em> para datos secuenciales</h2>
+<p>El replay clásico (Lin, 1992; Mnih et al., 2015) muestrea <strong>transiciones
+puntuales</strong> uniformemente. Para RDQN hay tres variantes posibles:</p>
+<ol>
+<li><strong>Replay de secuencias completas</strong>: almacenar episodios enteros y
+   muestrear ventanas contiguas. Caro en memoria.</li>
+<li><strong>Replay de ventanas fijas</strong>: almacenar tuplas
+   $(\tilde s_t, a_t, r_t, \tilde s_{t+1}, d_t)$ donde
+   $\tilde s_t \in \mathbb{R}^{L \times 3}$. Cada empuje al replay es
+   independiente. <strong>Variante usada en <code>pes_rdqn</code></strong>.</li>
+<li><strong>Bootstrapped Random Updates</strong> (Hausknecht &amp; Stone, 2015): muestrear
+   subsegmentos aleatorios de un episodio y propagar el estado oculto
+   del LSTM dentro del segmento.</li>
+</ol>
+<p>La opción (2) preserva la decorrelación del replay clásico al precio de
+"resetear" el LSTM cada <em>forward</em> — un compromiso aceptable dado que la
+ventana $L = 6$ ya cubre la mayoría de las dependencias relevantes en el
+Pandemic Scenario.</p>
+<hr />
+<h2 id="8-convergencia-y-estabilidad-de-rl-recurrente">8. Convergencia y estabilidad de RL recurrente</h2>
+<p>Tres dificultades específicas del RL con LSTM y sus mitigaciones en este
+proyecto:</p>
+<ol>
+<li><strong>Gradientes ruidosos del LSTM</strong>: la pérdida <strong>Huber</strong>
+   ($L_\delta$, $\delta = 1$) acota la magnitud del gradiente para
+   errores grandes (Mnih et al., 2015).</li>
+<li><strong>Inestabilidad por blanco móvil</strong>: la <em>target network</em> congelada
+   reduce la varianza del objetivo (igual que en DQN).</li>
+<li><strong>Sobreajuste a la ventana inicial de padding</strong>: durante los primeros
+   pasos $\tilde s$ contiene muchos ceros; el agente podría aprender una
+   política trivial. Mitigado con un <strong>warm-up</strong> de
+   $\varepsilon = 1$ que llena el replay con datos diversos antes de la
+   primera actualización de gradiente.</li>
+</ol>
+<p>Empíricamente la curva de aprendizaje de RDQN es <strong>más lenta</strong> que la de
+DQN durante los primeros 5–10 k episodios pero <strong>converge a un valor
+ligeramente superior</strong> a partir de los 30 k.</p>
+<hr />
+<h2 id="9-anclaje-al-codigo">9. Anclaje al código</h2>
+<table>
+<thead>
+<tr>
+<th>Concepto teórico</th>
+<th>Implementación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ventana de historia $\tilde s_t$</td>
+<td>Clase <code>HistoryDeque</code> en <code>rdqn_model.py</code></td>
+</tr>
+<tr>
+<td>Red recurrente $Q_\theta(\tilde s, a)$</td>
+<td><code>build_q_network()</code> (<code>Input → LSTM → Dense → Dense</code>)</td>
+</tr>
+<tr>
+<td>Replay de ventanas</td>
+<td><code>ReplayBuffer</code> con tuplas <code>(L,3)</code>-shaped</td>
+</tr>
+<tr>
+<td>Sincronización de target</td>
+<td><code>sync_target_network()</code> cada <code>RDQN_TARGET_SYNC_FREQ</code></td>
+</tr>
+<tr>
+<td>Objetivo Double DQN recurrente</td>
+<td><code>train_step_rdqn()</code> con <code>tf.GradientTape</code></td>
+</tr>
+<tr>
+<td>Pérdida Huber</td>
+<td><code>tf.keras.losses.Huber()</code></td>
+</tr>
+<tr>
+<td>ε-greedy con warm-up</td>
+<td><code>select_action(...)</code> en <code>train_rdqn.py</code></td>
+</tr>
+<tr>
+<td>TPE bayesiano sobre <code>history_len</code></td>
+<td><code>optimize_rdqn.py</code> con <code>optuna.create_study</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="referencias">Referencias</h2>
+<p>Akiba, T., Sano, S., Yanase, T., Ohta, T., &amp; Koyama, M. (2019). Optuna: A
+next-generation hyperparameter optimization framework. En <em>Proceedings of
+the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data
+Mining</em> (pp. 2623–2631). ACM.</p>
+<p>Hasselt, H. van, Guez, A., &amp; Silver, D. (2016). Deep reinforcement
+learning with double Q-learning. En <em>Proceedings of the Thirtieth AAAI
+Conference on Artificial Intelligence</em> (pp. 2094–2100). AAAI Press.</p>
+<p>Hausknecht, M., &amp; Stone, P. (2015). Deep recurrent Q-learning for
+partially observable MDPs. En <em>AAAI Fall Symposium on Sequential Decision
+Making for Intelligent Agents</em>. AAAI.</p>
+<p>Hochreiter, S., &amp; Schmidhuber, J. (1997). Long short-term memory. <em>Neural
+Computation, 9</em>(8), 1735–1780.</p>
+<p>Lin, L.-J. (1992). Self-improving reactive agents based on reinforcement
+learning, planning and teaching. <em>Machine Learning, 8</em>(3–4), 293–321.</p>
+<p>Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare,
+M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G.,
+Petersen, S., Beattie, C., Sadik, A., Antonoglou, I., King, H., Kumaran,
+D., Wierstra, D., Legg, S., &amp; Hassabis, D. (2015). Human-level control
+through deep reinforcement learning. <em>Nature, 518</em>(7540), 529–533.</p>
+<p>Sutton, R. S., &amp; Barto, A. G. (2018). <em>Reinforcement learning: An
+introduction</em> (2nd ed.). MIT Press.</p>
+</body>
+</html>

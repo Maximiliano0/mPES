@@ -28,11 +28,11 @@ DEFAULT_PORT=8080
 # ── Paquetes y sus directorios de inputs ─────────────────────────────────────
 # Orden: alias → directorio de inputs relativo al proyecto
 declare -A PKG_INPUTS=(
-    [pes_ql]="pes_ql/inputs"
-    [pes_dql]="pes_dql/inputs"
-    [pes_dqn]="pes_dqn/inputs"
-    [pes_a2c]="pes_a2c/inputs"
-    [pes_trf]="pes_trf/inputs"
+    [pes_ql]="tabular/pes_ql/inputs"
+    [pes_dql]="tabular/pes_dql/inputs"
+    [pes_dqn]="ml/pes_dqn/inputs"
+    [pes_a2c]="ml/pes_a2c/inputs"
+    [pes_trf]="ml/pes_trf/inputs"
 )
 
 # ── Resolver alias → nombre de paquete ───────────────────────────────────────

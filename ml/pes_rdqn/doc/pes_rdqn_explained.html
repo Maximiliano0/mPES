@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pes Rdqn Explained</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 960px; margin: 0 auto; padding: 2rem; color: #222; line-height: 1.6; }
+  h1,h2,h3 { color: #1a1a2e; }
+  code { background: #f4f4f4; padding: .2em .4em; border-radius: 3px; font-size: .9em; }
+  pre code { display: block; padding: 1em; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th,td { border: 1px solid #ccc; padding: .5em 1em; }
+  th { background: #f0f0f0; }
+  blockquote { border-left: 4px solid #ccc; margin: 0; padding-left: 1em; color: #555; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<h1 id="pes_rdqn-guia-de-uso-e-implementacion"><code>pes_rdqn</code> — Guía de uso e implementación</h1>
+<blockquote>
+<p>Paquete: <code>ml.pes_rdqn</code>
+Algoritmo: <strong>Recurrent Deep Q-Network (RDQN)</strong> — DQN con LSTM sobre la
+historia de trials.
+Última actualización: 2026-04-30</p>
+</blockquote>
+<hr />
+<h2 id="1-que-es-rdqn-y-por-que-importa-el-contexto-temporal">1. ¿Qué es RDQN y por qué importa el contexto temporal?</h2>
+<p>El <strong>Recurrent DQN</strong> (Hausknecht &amp; Stone, 2015) sustituye la red
+<em>feedforward</em> del DQN por una red recurrente (LSTM) que recibe una
+<strong>ventana de estados pasados</strong> en vez del estado actual aislado. La
+intuición:</p>
+<ul>
+<li>En el Pandemic Scenario el "estado oficial"
+  $s_t = [r_t/39,\, t_t/10,\, \sigma_t]$ no codifica <strong>cómo</strong> llegamos a
+  esa severidad: ¿el agente acaba de gastar 5 recursos seguidos? ¿Lleva
+  3 trials sin asignar nada?</li>
+<li>Esa información es relevante para predecir la dinámica
+  $\sigma_{t+1} = \max(0, 1.4\sigma_t - 0.4 a_t)$ cuando combinamos
+  múltiples secuencias en un mismo bloque.</li>
+<li>El LSTM resume las últimas $L$ observaciones en su estado oculto y
+  produce $Q(s_{t-L+1:t}, a)$.</li>
+</ul>
+<p>Resultado en este proyecto:
+<strong><code>raw_mean_perf = 0.8987 ± 0.0488</code> (n=64)</strong> medido el 2026-04-30 — una
+mejora pequeña pero consistente sobre <code>pes_dqn</code> (0.8937).</p>
+<hr />
+<h2 id="2-comandos-cli">2. Comandos CLI</h2>
+<p>Activación del entorno:</p>
+<p><strong>Windows (PowerShell):</strong></p>
+<pre><code class="language-powershell">win_mpes_env\Scripts\Activate.ps1
+</code></pre>
+<p><strong>Linux:</strong></p>
+<pre><code class="language-bash">source linux_mpes_env/bin/activate
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Modo</th>
+<th>Comando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Experimento completo</td>
+<td><code>python -m ml.pes_rdqn</code></td>
+</tr>
+<tr>
+<td>Entrenamiento RDQN</td>
+<td><code>python -m ml.pes_rdqn.ext.train_rdqn [num_episodes]</code></td>
+</tr>
+<tr>
+<td>Optimización bayesiana</td>
+<td><code>python -m ml.pes_rdqn.ext.optimize_rdqn [n_trials]</code></td>
+</tr>
+</tbody>
+</table>
+<p>Ejemplos:</p>
+<pre><code class="language-powershell">python -m ml.pes_rdqn.ext.train_rdqn 50000
+python -m ml.pes_rdqn.ext.optimize_rdqn 80
+python -m ml.pes_rdqn
+</code></pre>
+<blockquote>
+<p>Recuerda exportar <code>PYTHONIOENCODING=utf-8</code>,
+<code>TF_ENABLE_ONEDNN_OPTS=0</code> y <code>VIRTUAL_ENV</code> antes de lanzar procesos
+redirigidos a archivo (especialmente en Windows).</p>
+</blockquote>
+<hr />
+<h2 id="3-la-ventana-deslizante-historydeque">3. La ventana deslizante <code>HistoryDeque</code></h2>
+<p>El componente clave que diferencia este paquete del DQN simple es la
+clase <code>HistoryDeque</code>, definida en
+<a href="../ext/rdqn_model.py">ext/rdqn_model.py</a>:</p>
+<pre><code class="language-python">class HistoryDeque:
+    &quot;&quot;&quot;Per-episode sliding window of normalised states, left-padded with zeros.&quot;&quot;&quot;
+    def __init__(self, history_len: int, state_dim: int = 3):
+        self._history_len = history_len
+        self._state_dim   = state_dim
+        self._buffer      = collections.deque(maxlen=history_len)
+
+    def append_step(self, state):
+        self._buffer.append(numpy.asarray(state, dtype=numpy.float32))
+
+    def reset(self):
+        self._buffer.clear()
+
+    def current_window(self):
+        window = numpy.zeros((self._history_len, self._state_dim),
+                             dtype=numpy.float32)
+        items = list(self._buffer)[-self._history_len:]
+        if items:
+            window[-len(items):] = numpy.asarray(items, dtype=numpy.float32)
+        return window           # shape (L, 3)  — batch axis added by caller
+</code></pre>
+<h3 id="comportamiento">Comportamiento</h3>
+<ul>
+<li>Al iniciar un episodio se llama <code>reset()</code>: la ventana se vacía y
+  <code>current_window()</code> devolverá ceros (padding) hasta acumular pasos.</li>
+<li>Cada <code>step</code> del entorno se hace <code>append_step(normalize_state(s))</code>. La
+  cola conserva las últimas $L$ observaciones normalizadas.</li>
+<li>Antes de pedir Q-values al modelo, el llamador añade el eje de batch:
+  <code>q_values = q_online(window[numpy.newaxis, :, :])</code>, produciendo un
+  tensor con forma <code>(1, history_len, 3)</code>, exactamente la entrada esperada
+  por la capa LSTM.</li>
+</ul>
+<h3 id="diagrama">Diagrama</h3>
+<pre><code>t=1: [0,0,0] [0,0,0] [0,0,0] [0,0,0] [0,0,0] [s₁]
+t=2: [0,0,0] [0,0,0] [0,0,0] [0,0,0] [s₁]   [s₂]
+...
+t=k: [s_{k-5}] [s_{k-4}] [s_{k-3}] [s_{k-2}] [s_{k-1}] [s_k]    (L=6)
+</code></pre>
+<hr />
+<h2 id="4-pipeline-de-entrenamiento-con-lstm">4. Pipeline de entrenamiento con LSTM</h2>
+<p>Implementado en <a href="../ext/train_rdqn.py">ext/train_rdqn.py</a>.</p>
+<h3 id="41-arquitectura">4.1 Arquitectura</h3>
+<pre><code>Input (history_len, 3)
+        │
+        ▼
+   LSTM(64)        ← RDQN_LSTM_UNITS
+        │
+        ▼
+   Dense(64, ReLU) ← RDQN_HIDDEN_UNITS
+        │
+        ▼
+   Dense(11, lineal) → Q(s_{t-L+1:t}, a)
+</code></pre>
+<p>Construida por <code>build_q_network(state_dim, action_dim, hidden_units,
+history_len, lstm_units)</code> en <code>rdqn_model.py</code>.</p>
+<h3 id="42-bucle-por-episodio">4.2 Bucle por episodio</h3>
+<ol>
+<li><code>env.reset()</code> → estado inicial; <code>history.reset()</code>;
+   <code>history.append_step(s₀)</code>.</li>
+<li>Para cada paso:</li>
+<li><code>window = history.current_window()</code></li>
+<li><code>q_values = q_online(window[numpy.newaxis, :, :])</code></li>
+<li>Selección ε-greedy de acción.</li>
+<li><code>step</code> → <code>(r, s_{t+1}, done)</code>; normalizar y <code>append_step</code>.</li>
+<li>Guardar la <strong>secuencia completa</strong> (no solo el último estado) en el
+     replay: tupla <code>(history_seq, a, r, history_seq_next, done)</code>.</li>
+<li>Si el buffer tiene ≥ <code>batch_size</code> secuencias, ejecutar
+   <code>train_step_rdqn(batch)</code>:</li>
+<li>Forma del minibatch: <code>(B, L, 3)</code> para estados y <code>(B, L, 3)</code> para
+     siguientes estados.</li>
+<li>Objetivo Double DQN idéntico al de <code>pes_dqn</code>, pero los Q-values se
+     calculan a partir de <strong>secuencias</strong> completas.</li>
+<li>Sincronizar la red objetivo cada <code>RDQN_TARGET_SYNC_FREQ</code> pasos.</li>
+<li>Decaer <code>ε</code>.</li>
+</ol>
+<h3 id="43-salida">4.3 Salida</h3>
+<p>Modelo guardado en <code>inputs/rdqn_model.keras</code> y curva de recompensas en
+<code>inputs/rewards.npy</code>.</p>
+<hr />
+<h2 id="5-optimizacion-bayesiana">5. Optimización bayesiana</h2>
+<p><a href="../ext/optimize_rdqn.py">ext/optimize_rdqn.py</a> define un estudio Optuna
+con TPE.</p>
+<h3 id="51-espacio-de-busqueda">5.1 Espacio de búsqueda</h3>
+<table>
+<thead>
+<tr>
+<th>Hiperparámetro (Optuna)</th>
+<th>Tipo</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>history_len</code></td>
+<td>int</td>
+<td>3 … 10</td>
+</tr>
+<tr>
+<td><code>lstm_units</code></td>
+<td>categórico</td>
+<td>32, 64, 128</td>
+</tr>
+<tr>
+<td><code>hidden_units</code></td>
+<td>categórico</td>
+<td>32, 64, 128</td>
+</tr>
+<tr>
+<td><code>learning_rate</code></td>
+<td>log-float</td>
+<td>1e-4 … 5e-3</td>
+</tr>
+<tr>
+<td><code>discount_factor</code></td>
+<td>float</td>
+<td>0.92 … 0.995</td>
+</tr>
+<tr>
+<td><code>batch_size</code></td>
+<td>categórico</td>
+<td>32, 64, 128, 256</td>
+</tr>
+<tr>
+<td><code>target_sync_freq</code></td>
+<td>int (step=500)</td>
+<td>500 … 5 000</td>
+</tr>
+<tr>
+<td><code>epsilon_initial</code> / <code>epsilon_min</code> / <code>warmup_ratio</code> / <code>target_ratio</code></td>
+<td>float</td>
+<td>(ver <code>optimize_rdqn.py</code>)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Importante</strong>: <code>history_len</code> es un hiperparámetro <strong>estructural</strong>:
+cambia la forma de entrada del modelo y, por tanto, los pesos
+entrenables. Cada <em>trial</em> construye un modelo nuevo desde cero.</p>
+</blockquote>
+<h3 id="52-objetivo">5.2 Objetivo</h3>
+<p><code>raw_mean_perf</code> evaluado sobre las 64 secuencias fijas del experimento;
+el estudio se crea con <code>direction='maximize'</code>, por lo que Optuna
+<strong>maximiza</strong> <code>mean_perf</code> directamente (no se invierte el signo).</p>
+<h3 id="53-mejores-hiperparametros-encontrados">5.3 Mejores hiperparámetros encontrados</h3>
+<pre><code class="language-json">{
+  &quot;RDQN_HISTORY_LEN&quot;:   6,
+  &quot;RDQN_LSTM_UNITS&quot;:    64,
+  &quot;RDQN_HIDDEN_UNITS&quot;:  64,
+  &quot;RDQN_LEARNING_RATE&quot;: 0.001,
+  &quot;RDQN_DISCOUNT&quot;:      0.96
+}
+</code></pre>
+<p>Con $L = 6$ el LSTM ve los últimos 6 trials, lo que cubre toda secuencia
+de longitud media (3–10) sin saturar memoria.</p>
+<hr />
+<h2 id="6-estructura-del-codigo">6. Estructura del código</h2>
+<pre><code>ml/pes_rdqn/
+├── __init__.py
+├── __main__.py
+├── config/CONFIG.py        # Constantes RDQN_*
+├── ext/
+│   ├── pandemic.py         # PandemicEnv compartido
+│   ├── rdqn_model.py       # build_rdqn_model, HistoryDeque, ReplayBuffer
+│   ├── train_rdqn.py       # Bucle de entrenamiento, train_step_rdqn
+│   └── optimize_rdqn.py    # Estudio Optuna
+├── inputs/
+│   ├── rdqn_model.keras
+│   ├── best_params.json
+│   ├── initial_severity.csv
+│   └── sequence_lengths.csv
+└── outputs/&lt;fecha&gt;_RDQN_AGENT/
+</code></pre>
+<h3 id="funciones-clave">Funciones clave</h3>
+<table>
+<thead>
+<tr>
+<th>Símbolo</th>
+<th>Archivo</th>
+<th>Rol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>build_q_network(state_dim, action_dim, hidden_units, history_len, lstm_units)</code></td>
+<td><code>rdqn_model.py</code></td>
+<td>Modelo Keras <code>Input → LSTM → Dense → Dense</code>.</td>
+</tr>
+<tr>
+<td><code>HistoryDeque</code></td>
+<td><code>rdqn_model.py</code></td>
+<td>Ventana deslizante (§3).</td>
+</tr>
+<tr>
+<td><code>ReplayBuffer</code></td>
+<td><code>rdqn_model.py</code></td>
+<td>Cola circular de tuplas con secuencias.</td>
+</tr>
+<tr>
+<td><code>train_step_rdqn(batch, ...)</code></td>
+<td><code>train_rdqn.py</code></td>
+<td>Paso Double DQN sobre secuencias.</td>
+</tr>
+<tr>
+<td><code>sync_target_network(...)</code></td>
+<td><code>rdqn_model.py</code></td>
+<td>Copia de pesos cada $C$ pasos.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-archivos-de-entrada-salida">7. Archivos de entrada / salida</h2>
+<table>
+<thead>
+<tr>
+<th>Archivo</th>
+<th>Rol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inputs/rdqn_model.keras</code></td>
+<td>Modelo recurrente entrenado.</td>
+</tr>
+<tr>
+<td><code>inputs/best_params.json</code></td>
+<td>Mejor combinación TPE.</td>
+</tr>
+<tr>
+<td><code>inputs/initial_severity.csv</code></td>
+<td>Severidades iniciales.</td>
+</tr>
+<tr>
+<td><code>inputs/sequence_lengths.csv</code></td>
+<td>Longitudes por secuencia.</td>
+</tr>
+<tr>
+<td><code>outputs/&lt;fecha&gt;_RDQN_AGENT/PES_RDQN_log_*.txt</code></td>
+<td>Log dual.</td>
+</tr>
+<tr>
+<td><code>outputs/&lt;fecha&gt;_RDQN_AGENT/*.png</code></td>
+<td>Gráficos (severidad media, distribución de acciones).</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-resultados-y-comparacion-con-dqn">8. Resultados y comparación con DQN</h2>
+<table>
+<thead>
+<tr>
+<th>Paquete</th>
+<th>Algoritmo</th>
+<th><code>raw_mean_perf</code></th>
+<th>Std</th>
+<th>n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pes_dqn</code></td>
+<td>DQN Double + Replay</td>
+<td>0.8937</td>
+<td>0.0552</td>
+<td>64</td>
+</tr>
+<tr>
+<td><strong><code>pes_rdqn</code></strong></td>
+<td><strong>RDQN (LSTM, L=6)</strong></td>
+<td><strong>0.8987</strong></td>
+<td><strong>0.0488</strong></td>
+<td>64</td>
+</tr>
+</tbody>
+</table>
+<p>Mejora absoluta: <strong>+0.005</strong> en media y <strong>−0.007</strong> en desviación
+estándar. La ganancia es modesta porque el estado original ya contiene
+casi toda la información markoviana relevante (recursos, trial,
+severidad). El LSTM ayuda principalmente en las secuencias largas
+(8–10 trials) donde la trayectoria reciente predice mejor la dinámica
+de severidad agregada.</p>
+<hr />
+<h2 id="9-cuando-usar-rdqn-vs-dqn">9. ¿Cuándo usar RDQN vs DQN?</h2>
+<p><strong>Usa <code>pes_dqn</code> cuando:</strong></p>
+<ul>
+<li>Necesites entrenamiento más rápido (LSTM duplica el coste por paso).</li>
+<li>El espacio de estados ya sea totalmente observable y markoviano.</li>
+<li>Quieras un agente más fácil de inspeccionar/depurar.</li>
+</ul>
+<p><strong>Usa <code>pes_rdqn</code> cuando:</strong></p>
+<ul>
+<li>Sospeches <strong>observabilidad parcial</strong>: variables ocultas que solo se
+  pueden inferir mirando la trayectoria (p. ej., un sesgo dinámico que
+  no aparece en $s_t$).</li>
+<li>Las secuencias sean largas y la dinámica no lineal.</li>
+<li>Busques el último punto porcentual de desempeño sin importar el coste
+  computacional.</li>
+</ul>
+<p>Para el Pandemic Scenario, RDQN es la opción ligeramente preferida si se
+dispone de tiempo de cómputo; en otro caso, DQN es prácticamente
+equivalente.</p>
+<hr />
+<h2 id="referencias">Referencias</h2>
+<p>Hausknecht, M., &amp; Stone, P. (2015). Deep recurrent Q-learning for
+partially observable MDPs. En <em>AAAI Fall Symposium on Sequential Decision
+Making for Intelligent Agents</em>. AAAI.</p>
+<p>Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A. A., Veness, J., Bellemare,
+M. G., Graves, A., Riedmiller, M., Fidjeland, A. K., Ostrovski, G.,
+Petersen, S., Beattie, C., Sadik, A., Antonoglou, I., King, H., Kumaran,
+D., Wierstra, D., Legg, S., &amp; Hassabis, D. (2015). Human-level control
+through deep reinforcement learning. <em>Nature, 518</em>(7540), 529–533.</p>
+<p>Akiba, T., Sano, S., Yanase, T., Ohta, T., &amp; Koyama, M. (2019). Optuna: A
+next-generation hyperparameter optimization framework. En <em>Proceedings of
+the 25th ACM SIGKDD International Conference on Knowledge Discovery &amp; Data
+Mining</em> (pp. 2623–2631). ACM.</p>
+</body>
+</html>

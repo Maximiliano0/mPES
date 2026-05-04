@@ -43,13 +43,17 @@ source /content/mpes_env.sh
 cd "$REPO_DIR"
 
 # ─── Resolve alias → (PKG, OPT_MODULE) ───────────────────────────────────
+# Module paths include the algorithm-family group prefix introduced in the
+# 2026-05 workspace reorg: tabular/* and ml/* live under top-level group
+# directories, so every fully-qualified module starts with `tabular.` or
+# `ml.`.
 case "$PKG_ALIAS" in
-    ql|bayesian|1)         PKG="pes_ql";   OPT_MODULE="pes_ql.ext.optimize_rl" ;;
-    dql|2)                 PKG="pes_dql";  OPT_MODULE="pes_dql.ext.optimize_rl" ;;
-    dqn|3)                 PKG="pes_dqn";  OPT_MODULE="pes_dqn.ext.optimize_dqn" ;;
-    ac|a2c|4)              PKG="pes_a2c";  OPT_MODULE="pes_a2c.ext.optimize_a2c" ;;
-    transformer|tr|5)      PKG="pes_trf";  OPT_MODULE="pes_trf.ext.optimize_tr" ;;
-    rdqn|recurrent|6)      PKG="pes_rdqn"; OPT_MODULE="pes_rdqn.ext.optimize_rdqn" ;;
+    ql|bayesian|1)         PKG="pes_ql";   OPT_MODULE="tabular.pes_ql.ext.optimize_rl" ;;
+    dql|2)                 PKG="pes_dql";  OPT_MODULE="tabular.pes_dql.ext.optimize_rl" ;;
+    dqn|3)                 PKG="pes_dqn";  OPT_MODULE="ml.pes_dqn.ext.optimize_dqn" ;;
+    ac|a2c|4)              PKG="pes_a2c";  OPT_MODULE="ml.pes_a2c.ext.optimize_a2c" ;;
+    transformer|tr|5)      PKG="pes_trf";  OPT_MODULE="ml.pes_trf.ext.optimize_tr" ;;
+    rdqn|recurrent|6)      PKG="pes_rdqn"; OPT_MODULE="ml.pes_rdqn.ext.optimize_rdqn" ;;
     *)                     echo "Unknown alias: $PKG_ALIAS"; exit 1 ;;
 esac
 
