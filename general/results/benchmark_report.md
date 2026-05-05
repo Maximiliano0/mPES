@@ -40,16 +40,27 @@ _Generated: 2026-05-04T21:30:00.917194Z_
 
 ## 4. Figures
 
-* ![heatmap_global_mean.png](heatmap_global_mean.png)
-* ![heatmap_ood_degradation.png](heatmap_ood_degradation.png)
-* ![heatmap_welch_logp.png](heatmap_welch_logp.png)
-* ![heatmap_action_kl.png](heatmap_action_kl.png)
+All heatmaps are written as both `.png` (raster, 300 dpi) and `.pdf`
+(vector, TrueType-embedded) so they can be dropped directly into
+publications. Cells use fixed colour-scale limits for cross-run
+comparability; the Welch heatmap is clipped to `[-10, 0]` and any
+log₁₀(p) below −10 is annotated `≤-10` in-cell. The KL heatmap
+uses `LogNorm` so weak and strong drifts are both legible.
 
-Per-scenario histograms in `per_sequence_histograms/`.
+* ![heatmap_global_mean](heatmap_global_mean.png)  
+  vector: [`heatmap_global_mean.pdf`](heatmap_global_mean.pdf)
+* ![heatmap_ood_degradation](heatmap_ood_degradation.png)  
+  vector: [`heatmap_ood_degradation.pdf`](heatmap_ood_degradation.pdf)
+* ![heatmap_welch_logp](heatmap_welch_logp.png)  
+  vector: [`heatmap_welch_logp.pdf`](heatmap_welch_logp.pdf)
+* ![heatmap_action_kl](heatmap_action_kl.png)  
+  vector: [`heatmap_action_kl.pdf`](heatmap_action_kl.pdf)
+
+Per-scenario histograms in `per_sequence_histograms/` (both `.png` and `.pdf`).
 
 ## 5. CSV matrix distribution analysis
 
-Eight `matrix_*.csv` artefacts (rows = 7 models, columns = 22 scenarios) crystallise
+Nine `matrix_*.csv` artefacts (rows = 7 models, columns = 22 scenarios) crystallise
 the sweep. Reading them jointly yields the following picture:
 
 ### 5.1 `matrix_global_mean.csv` — central tendency
@@ -84,7 +95,12 @@ Magnitudes follow the Cohen convention (|d| ≥ 0.8 large, ≥ 1.5 very large).
 * Largest *positive* effects (real improvement): `pes_ens @ {sev_extrapolate_high, joint_extrap_both}` d = +2.52, `pes_trf @ joint_extrap_both` d = +2.14, `pes_trf @ sev_extrapolate_high` d = +2.08, `pes_a2c @ joint_extrap_both` d = +1.36.
 * Practical reading: tabular Q-Learning is *very-large-effect* worse than its baseline whenever extrapolation is involved; the transformer and the ensemble are *very-large-effect* better. The DQN family sits in the middle.
 
-### 5.6 `matrix_welch_p.csv` — statistical significance
+### 5.6 `matrix_welch_p.csv` / `matrix_welch_logp.csv` — statistical significance
+
+`matrix_welch_logp.csv` stores `log₁₀(p)` computed via `scipy.stats.t.logsf`,
+so deep-tail p-values that would underflow to `0.0` in the raw CSV remain
+accurate (e.g. `pes_a2c @ joint_extrap_both → log₁₀ p ≈ −9.94`).
+
 * Three columns are uniformly significant at p < 0.001 across **all** seven models: `sev_extrapolate_high`, `len_extrapolate_long`, `joint_extrap_both`. These are the three scenarios that genuinely stress every architecture.
 * Three structural columns (`struct_*`) return p = 1.0 across the board → the metric is invariant under block-count rearrangement (sanity check passes).
 * Mid-significance pockets (0.01 < p < 0.05): `sev_uniform`, `sev_weibull`, `sev_beta_lowskew` for tabular only — distributional reshapings of the severity prior hurt tabular but are absorbed by deep models.
@@ -112,12 +128,15 @@ The four PNGs visualise the matrices above with model rows ordered exactly as in
 * `len_extrapolate_long` is uniformly orange → the only column that hurts every model.
 * Structural columns are pure white (≈ 0) → confirms invariance.
 
-### 6.3 `heatmap_welch_logp.png` (brighter = stronger evidence of shift)
-* Three bright vertical bands match the three "extrapolate" scenarios identified in §5.6.
+### 6.3 `heatmap_welch_logp.png` (darker = stronger evidence of shift)
+* Colour scale is fixed to `[-10, 0]`; any `log₁₀ p` below −10 is annotated `≤-10` in-cell so the figure stays comparable across runs.
+* Tick marks on the colour bar mark the conventional thresholds `α = 0.05 / 0.01 / 0.001` (`log₁₀ ≈1.30 / 2.00 / 3.00`).
+* Three dark vertical bands match the three "extrapolate" scenarios identified in §5.6.
 * Tabular rows (`pes_ql`, `pes_dql`) light up on additional severity columns (`sev_uniform`, `sev_weibull`, `sev_beta_lowskew`) — they detect shift where deep models do not.
-* Three black columns (`struct_*`) are the no-shift control band.
+* Three light-grey columns (`struct_*`) are the no-shift control band (NaN, no test by construction).
 
-### 6.4 `heatmap_action_kl.png` (brighter = larger policy divergence)
+### 6.4 `heatmap_action_kl.png` (log-scale; brighter = larger policy divergence)
+* Plotted on a `LogNorm` scale so weak (~10⁻³) and strong (~10¹) drifts are simultaneously legible.
 * `pes_dqn` row is the brightest overall on the severity block → most reactive policy under severity perturbation.
 * `pes_a2c` row is almost entirely dark on severity → flat policy regardless of severity context (collapse signal).
 * `pes_trf` and `pes_ens` rows show medium intensity, broadly distributed → adaptive but stable.

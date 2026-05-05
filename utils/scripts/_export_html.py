@@ -21,9 +21,9 @@ Notes
 -----
 Packages live under group directories ``tabular/`` (pes_base, pes_ql,
 pes_dql) and ``ml/`` (pes_dqn, pes_rdqn, pes_a2c, pes_trf, pes_ens). The
-workspace-level cross-package comparison document at
-``doc/comparacion_modelos.md`` is also exported when no argument is
-given (or when ``doc`` is passed explicitly).
+cross-package comparison document at ``general/doc/comparacion_modelos.md``
+is also exported when no argument is given (or when ``doc`` is passed
+explicitly).
 """
 
 ##########################
@@ -57,8 +57,8 @@ ALL_PACKAGES = list(PACKAGE_GROUPS.keys())
 # Workspace root: two levels up from this script (utils/scripts/_export_html.py).
 WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Cross-package comparison document at the workspace root.
-WORKSPACE_DOC_DIR = os.path.join(WORKSPACE_ROOT, "doc")
+# Cross-package comparison document under general/doc/.
+WORKSPACE_DOC_DIR = os.path.join(WORKSPACE_ROOT, "general", "doc")
 
 HTML_TEMPLATE = r'''<!DOCTYPE html>
 <html lang="es">

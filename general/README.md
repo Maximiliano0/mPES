@@ -87,15 +87,16 @@ general/
     ├── matrix_min.csv
     ├── matrix_max.csv
     ├── matrix_ood_degradation.csv   # baseline_mean - cell_mean
-    ├── matrix_welch_p.csv           # Welch t two-sided p
+    ├── matrix_welch_p.csv           # Welch t two-sided p (raw)
+    ├── matrix_welch_logp.csv        # log10(p) via t.logsf (no underflow)
     ├── matrix_cohen_d.csv           # Cohen's d effect size
     ├── matrix_action_kl.csv         # KL(action_dist || in-dist policy)
     ├── matrix_summary.json          # machine-readable consolidation
-    ├── heatmap_global_mean.png
-    ├── heatmap_ood_degradation.png
-    ├── heatmap_welch_logp.png
-    ├── heatmap_action_kl.png
-    ├── per_sequence_histograms/<sid>.png
+    ├── heatmap_global_mean.{png,pdf}
+    ├── heatmap_ood_degradation.{png,pdf}
+    ├── heatmap_welch_logp.{png,pdf}     # log10(p) clipped to [-10, 0]
+    ├── heatmap_action_kl.{png,pdf}      # log-scale KL
+    ├── per_sequence_histograms/<sid>.{png,pdf}
     └── benchmark_report.md
 ```
 
@@ -125,6 +126,26 @@ general/
 | structural | `struct_few_long_blocks` | 4 blocks × 16 sequences. |
 | structural | `struct_many_short_blocks` | 16 blocks × 4 sequences. |
 | structural | `struct_more_total` | 8 blocks × 16 sequences (n=128). |
+
+## Heatmaps (publication quality)
+
+All four heatmaps are written as both **`.png`** (raster, 300 dpi) and
+**`.pdf`** (vector, TrueType-embedded) for direct inclusion in papers.
+Cells are normalised to fixed colour-scale limits so figures from
+different sweeps are directly comparable; clipped values are flagged
+in-cell (e.g. `≤-10` in the Welch heatmap).
+
+| Metric | Heatmap | Colour map | Scale |
+|---|---|---|---|
+| Global mean performance | [heatmap_global_mean.png](results/heatmap_global_mean.png) | `viridis` | auto-bounded |
+| OOD degradation (Δ vs baseline) | [heatmap_ood_degradation.png](results/heatmap_ood_degradation.png) | `RdBu_r` (diverging) | symmetric around 0 |
+| Welch t-test, log₁₀(p) | [heatmap_welch_logp.png](results/heatmap_welch_logp.png) | `magma_r` | `[-10, 0]`, α-tick marks |
+| Action-distribution KL | [heatmap_action_kl.png](results/heatmap_action_kl.png) | `cividis` | `LogNorm` |
+
+![global mean](results/heatmap_global_mean.png)
+![ood degradation](results/heatmap_ood_degradation.png)
+![welch log10 p](results/heatmap_welch_logp.png)
+![action KL](results/heatmap_action_kl.png)
 
 ## Metrics per cell
 

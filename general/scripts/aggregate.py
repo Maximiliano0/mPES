@@ -41,28 +41,44 @@ RESULTS_DIR = os.path.join(GENERAL_ROOT, 'results')
 ###############
 ##  Statistics
 ###############
-def _welch_t(x: numpy.ndarray, y: numpy.ndarray) -> "tuple[float, float]":
-    """Two-sample Welch t (returns t, two-sided p)."""
+def _welch_t(x: numpy.ndarray, y: numpy.ndarray) -> "tuple[float, float, float]":
+    """Two-sample Welch t-test.
+
+    Returns
+    -------
+    t : float
+        Welch t-statistic.
+    p : float
+        Two-sided p-value (may underflow to ``0.0`` for very large |t|).
+    log10_p : float
+        Base-10 logarithm of the two-sided p-value, computed via the
+        survival function in log-space so that extreme tails do not
+        underflow.  Useful for publication heatmaps where raw ``p``
+        collapses to zero.
+    """
     nx, ny = len(x), len(y)
     if nx < 2 or ny < 2:
-        return float('nan'), float('nan')
+        return float('nan'), float('nan'), float('nan')
     mx, my = float(numpy.mean(x)), float(numpy.mean(y))
     vx, vy = float(numpy.var(x, ddof=1)), float(numpy.var(y, ddof=1))
     se = math.sqrt(vx / nx + vy / ny) if (vx + vy) > 0 else 0.0
     if se == 0.0:
-        return float('nan'), float('nan')
+        return float('nan'), float('nan'), float('nan')
     t = (mx - my) / se
     df_num = (vx / nx + vy / ny) ** 2
     df_den = (vx / nx) ** 2 / (nx - 1) + (vy / ny) ** 2 / (ny - 1)
     df = df_num / df_den if df_den > 0 else (nx + ny - 2)
-    # Two-sided p via scipy if available, else normal approx.
     try:
         from scipy.stats import t as _student_t
-        p = 2.0 * (1.0 - _student_t.cdf(abs(t), df=df))
+        # Two-sided p via survival function; logsf is accurate in the deep tail.
+        log_sf = float(_student_t.logsf(abs(t), df=df))  # natural log of one-sided p
+        log10_p = (log_sf + math.log(2.0)) / math.log(10.0)
+        p = 2.0 * float(_student_t.sf(abs(t), df=df))
     except Exception:  # pylint: disable=broad-except
-        # crude normal-tail fallback
+        # Crude normal-tail fallback (less accurate at extreme |t|).
         p = math.erfc(abs(t) / math.sqrt(2.0))
-    return t, p
+        log10_p = math.log10(p) if p > 0 else float('-inf')
+    return t, p, log10_p
 
 
 def _cohen_d(x: numpy.ndarray, y: numpy.ndarray) -> float:
@@ -178,13 +194,31 @@ def aggregate(reference_pkg: str = 'pes_dqn') -> str:
             return ''
         return f'{(b - c):.6f}'
 
-    def welch_p(m, s):
+    # Cache log10(p) so we can write two CSVs (raw p + log10 p) without recomputing.
+    _welch_cache: dict = {}
+
+    def _welch_for(m, s):
+        key = (m, s)
+        if key in _welch_cache:
+            return _welch_cache[key]
         x = perf_vec(m, s)
         y = baseline_perf.get(m, numpy.array([]))
         if x.size == 0 or y.size == 0 or s == baseline_id:
+            res = (float('nan'), float('nan'), float('nan'))
+        else:
+            res = _welch_t(x, y)
+        _welch_cache[key] = res
+        return res
+
+    def welch_p(m, s):
+        _, p, _ = _welch_for(m, s)
+        return f'{p:.6e}' if not math.isnan(p) else ''
+
+    def welch_logp(m, s):
+        _, _, lp = _welch_for(m, s)
+        if math.isnan(lp) or math.isinf(lp):
             return ''
-        _, p = _welch_t(x, y)
-        return f'{p:.6f}' if not math.isnan(p) else ''
+        return f'{lp:.6f}'
 
     def cohen(m, s):
         x = perf_vec(m, s)
@@ -207,6 +241,7 @@ def aggregate(reference_pkg: str = 'pes_dqn') -> str:
     _write_matrix(os.path.join(RESULTS_DIR, 'matrix_max.csv'),             models, scenarios, mx)
     _write_matrix(os.path.join(RESULTS_DIR, 'matrix_ood_degradation.csv'), models, scenarios, degr)
     _write_matrix(os.path.join(RESULTS_DIR, 'matrix_welch_p.csv'),         models, scenarios, welch_p)
+    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_welch_logp.csv'),      models, scenarios, welch_logp)
     _write_matrix(os.path.join(RESULTS_DIR, 'matrix_cohen_d.csv'),         models, scenarios, cohen)
     _write_matrix(os.path.join(RESULTS_DIR, 'matrix_action_kl.csv'),       models, scenarios, kl)
 

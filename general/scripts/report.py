@@ -132,12 +132,18 @@ def write_report() -> str:
     # --- Figure references ---
     lines.append('## 4. Figures')
     lines.append('')
+    lines.append('All heatmaps are written as both `.png` (raster, 300 dpi) and '
+                 '`.pdf` (vector, TrueType-embedded) for publication use.')
+    lines.append('')
     for fig in ('heatmap_global_mean.png', 'heatmap_ood_degradation.png',
                 'heatmap_welch_logp.png', 'heatmap_action_kl.png'):
         if os.path.isfile(os.path.join(RESULTS_DIR, fig)):
-            lines.append(f'* ![{fig}]({fig})')
+            stem = fig[:-4]
+            lines.append(f'* ![{stem}]({fig})  \n'
+                         f'  vector: [`{stem}.pdf`]({stem}.pdf)')
     lines.append('')
-    lines.append('Per-scenario histograms in `per_sequence_histograms/`.')
+    lines.append('Per-scenario histograms in `per_sequence_histograms/` '
+                 '(both `.png` and `.pdf`).')
     lines.append('')
 
     out = os.path.join(RESULTS_DIR, 'benchmark_report.md')
