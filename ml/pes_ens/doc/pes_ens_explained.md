@@ -1,4 +1,4 @@
-﻿# pes_ens — Guía de uso e implementación
+# pes_ens — Guía de uso e implementación
 
 > Última actualización: 2026-05-04
 > Paquete: `ml/pes_ens`

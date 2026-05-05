@@ -1,9 +1,22 @@
-# mPES OOD Benchmark Harness (`general/`)
+<div align="center">
+
+# 📈 mPES OOD Benchmark Harness — `general/`
+
+**Cross-model out-of-distribution evaluation under 22 perturbation scenarios.**
+
+[![Models](https://img.shields.io/badge/models-7-blue.svg)](#scope)
+[![Scenarios](https://img.shields.io/badge/scenarios-22-blueviolet.svg)](#scenario-catalogue)
+[![Cells](https://img.shields.io/badge/cells-154-success.svg)](#scope)
+[![Output](https://img.shields.io/badge/figures-PNG%20%2B%20PDF-orange.svg)](#heatmaps-publication-quality)
+
+</div>
 
 > **Purpose** — Generalise and benchmark all trained mPES agents
 > (every package except `tabular/pes_base`) under a 22-scenario matrix
-> of severity / length / structural perturbations to expose each
+> of severity / length / joint / structural perturbations to expose each
 > model's limitations and identify the most robust one.
+
+---
 
 ## Scope
 

@@ -1,4 +1,4 @@
-﻿# pes_ens — Fundamentos teóricos
+# pes_ens — Fundamentos teóricos
 
 > Última actualización: 2026-05-04
 > Paquete: `ml/pes_ens`

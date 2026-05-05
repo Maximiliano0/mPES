@@ -1,4 +1,4 @@
-﻿# Bayesian-Optimisation on Colab Pro+ — Workflow Guide
+# Bayesian-Optimisation on Colab Pro+ — Workflow Guide
 
 > Last updated: 2026-05-04
 

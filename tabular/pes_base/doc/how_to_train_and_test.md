@@ -1,6 +1,6 @@
-﻿# How to Train and Test the Q-Learning Agent
+# How to Train and Test the Q-Learning Agent
 
-> Package: **pes_base** â€” Tabular Q-Learning baseline for the Pandemic Experiment Scenario
+> Package: **pes_base** — Tabular Q-Learning baseline for the Pandemic Experiment Scenario
 
 ---
 
@@ -51,24 +51,24 @@ python3 -m tabular.pes_base.ext.train_rl 500000
 
 The pipeline proceeds through these stages:
 
-1. **Load data** â€” reads `initial_severity.csv` and
+1. **Load data** — reads `initial_severity.csv` and
    `sequence_lengths.csv` from `inputs/`.
-2. **Random player baseline** â€” runs 64 sequences with uniformly random
+2. **Random player baseline** — runs 64 sequences with uniformly random
    allocations and generates two baseline plots.
-3. **Q-Learning training** â€” standard tabular Q-Learning with linear
-   Îµ-decay. Prints average reward every 10 000 episodes.
-4. **Evaluation** â€” runs the trained greedy policy on 64 fixed sequences,
+3. **Q-Learning training** — standard tabular Q-Learning with linear
+   ε-decay. Prints average reward every 10 000 episodes.
+4. **Evaluation** — runs the trained greedy policy on 64 fixed sequences,
    collects meta-cognitive confidence scores.
-5. **Save artefacts** â€” writes Q-table, reward history, config report,
+5. **Save artefacts** — writes Q-table, reward history, config report,
    and visualisations to a dated subdirectory.
 
 ### 1.4 Training Output Files
 
-All outputs are saved to `pes_base/inputs/<YYYY-MM-DD>_RL_TRAIN/`:
+All outputs are saved to `tabular/pes_base/inputs/<YYYY-MM-DD>_RL_TRAIN/`:
 
 | File | Description |
 |------|-------------|
-| `q_<date>.npy` | Trained Q-table â€” shape `(31, 11, 10, 11)` |
+| `q_<date>.npy` | Trained Q-table — shape `(31, 11, 10, 11)` |
 | `rewards_<date>.npy` | Average-reward history (100 values, sampled every 10 000 eps) |
 | `training_config_<date>.txt` | Summary of hyperparameters and settings |
 | `confsrl_<date>.npy` | Confidence scores from evaluation |
@@ -76,36 +76,36 @@ All outputs are saved to `pes_base/inputs/<YYYY-MM-DD>_RL_TRAIN/`:
 | `random_player_normalised_performance_<date>.png` | Baseline normalised performance |
 | `rl_agent_rewards_vs_episodes_<date>.png` | Learning curve |
 | `rl_agent_sequence_performance_<date>.png` | Severity per sequence |
-| `rl_agent_normalised_performance_<date>.png` | Performance (0â€“1) |
+| `rl_agent_normalised_performance_<date>.png` | Performance (0–1) |
 | `rl_agent_cumulative_performance_<date>.png` | Cumulative trend |
 | `rl_agent_confidences_<date>.png` | Raw confidence scatter |
-| `rl_agent_remapped_confidences_<date>.png` | Normalised confidence (0â€“1) |
+| `rl_agent_remapped_confidences_<date>.png` | Normalised confidence (0–1) |
 
 Additionally, the Q-table and rewards must be **manually copied** to the standard
 paths consumed by the experiment runner:
 
-- `pes_base/inputs/q.npy`
-- `pes_base/inputs/rewards.npy`
+- `tabular/pes_base/inputs/q.npy`
+- `tabular/pes_base/inputs/rewards.npy`
 
 ### 1.5 Default Hyperparameters
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| Learning rate Î± | 0.2 | Q-table update step size |
-| Discount factor Î³ | 0.9 | Future-reward weighting |
-| Initial Îµ | 0.8 | Starting exploration probability |
-| Minimum Îµ | 0.0 | Final exploration probability |
+| Learning rate α | 0.2 | Q-table update step size |
+| Discount factor γ | 0.9 | Future-reward weighting |
+| Initial ε | 0.8 | Starting exploration probability |
+| Minimum ε | 0.0 | Final exploration probability |
 | Episodes | 1 000 000 | Total training episodes |
-| Îµ-decay | Linear | $\varepsilon_t = \varepsilon_0 - t \cdot \frac{\varepsilon_0 - \varepsilon_{\min}}{N}$ |
+| ε-decay | Linear | $\varepsilon_t = \varepsilon_0 - t \cdot \frac{\varepsilon_0 - \varepsilon_{\min}}{N}$ |
 
 ### 1.6 Q-Table Dimensions
 
 | Axis | Size | Meaning |
 |------|------|---------|
-| 0 | 31 | Resources left (0â€“30) |
-| 1 | 11 | Trial number (0â€“10) |
-| 2 | 10 | Severity (0â€“9), `MAX_SEVERITY = 9` |
-| 3 | 11 | Actions (0â€“10 resources) |
+| 0 | 31 | Resources left (0–30) |
+| 1 | 11 | Trial number (0–10) |
+| 2 | 10 | Severity (0–9), `MAX_SEVERITY = 9` |
+| 3 | 11 | Actions (0–10 resources) |
 
 **Total entries:** $31 \times 11 \times 10 \times 11 = 37{,}510$
 
@@ -116,7 +116,7 @@ Standard tabular Q-Learning with update rule:
 $$Q(s,a) \leftarrow Q(s,a) + \alpha \bigl[ r + \gamma \max_{a'} Q(s',a') - Q(s,a) \bigr]$$
 
 - **Initialisation:** Uniform random in $[-1, 1)$
-- **Exploration:** Îµ-greedy with linear decay
+- **Exploration:** ε-greedy with linear decay
 - **Reward:** $r = -\sum_i \text{severity}_i$ (negative sum of all current city severities)
 
 ---
@@ -128,11 +128,11 @@ $$Q(s,a) \leftarrow Q(s,a) + \alpha \bigl[ r + \gamma \max_{a'} Q(s',a') - Q(s,a
 Before running the experiment, ensure these files are present:
 
 ```
-pes_base/inputs/q.npy           â† trained Q-table (31 Ã— 11 Ã— 10 Ã— 11)
-pes_base/inputs/rewards.npy     â† reward history
+tabular/pes_base/inputs/q.npy           ← trained Q-table (31 × 11 × 10 × 11)
+tabular/pes_base/inputs/rewards.npy     ← reward history
 ```
 
-Both are automatically created by the training pipeline (Â§ 1).
+Both are automatically created by the training pipeline (§ 1).
 
 ### 2.2 Run the Experiment
 
@@ -144,7 +144,7 @@ This launches the full experiment lifecycle:
 
 1. **Validates** the Q-table (loads `q.npy`, checks shape).
 2. **Sets up** the experiment session with logging and dated output folders.
-3. **Iterates** through 8 blocks Ã— 8 sequences Ã— 3â€“10 trials per
+3. **Iterates** through 8 blocks × 8 sequences × 3–10 trials per
    sequence (~360 total decisions).
 4. At each trial, the RL agent:
    - Indexes the Q-table: `Q[resources_left, trial_no, severity]`.
@@ -154,7 +154,7 @@ This launches the full experiment lifecycle:
      Q-value distribution.
    - Simulates human-like **response timing** based on confidence.
 5. **Saves** results (performance JSON, visualisation PNG, response logs)
-   to `pes_base/outputs/<YYYY-MM-DD>_RL_AGENT/`.
+   to `tabular/pes_base/outputs/<YYYY-MM-DD>_RL_AGENT/`.
 
 ### 2.3 Experiment Outputs
 
@@ -187,7 +187,7 @@ MAX_SEVERITY = 9
 ### Q-table not found
 
 ```
-Qâ€‘table file not found: .../pes_base/inputs/q.npy
+Q‑table file not found: .../tabular/pes_base/inputs/q.npy
 ```
 
 **Solution:** Run training first:

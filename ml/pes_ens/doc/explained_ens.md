@@ -1,4 +1,4 @@
-﻿# pes_ens — Agente Ensamblado por Soft Voting
+# pes_ens — Agente Ensamblado por Soft Voting
 
 > Última actualización: 2026-05-02
 

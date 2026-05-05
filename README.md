@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
 
 # 🦠 mPES — *multiple Pandemic Experiment Scenario*
 
@@ -208,18 +208,22 @@ Experiment (1)
 ## 📚 Documentation
 
 Each package ships its own in-depth Markdown documentation under
-`<group>/<pkg>/doc/` (Spanish), with matching HTML renderings (KaTeX
-math, dark-mode CSS). The cross-package theoretical comparison lives at
+[`<group>/<pkg>/doc/`](ml/pes_dqn/doc/) (Spanish). The cross-package
+theoretical comparison lives at
 [`general/doc/comparacion_modelos.md`](general/doc/comparacion_modelos.md).
+All maths uses **inline KaTeX** (`$ … $`) so it renders natively on
+GitHub.
 
-Regenerate the HTML with:
-
-```bash
-python utils/scripts/_export_html.py            # all packages + workspace doc
-python utils/scripts/_export_html.py pes_dqn    # one package (short name)
-python utils/scripts/_export_html.py ml/pes_dqn # one package (grouped name)
-python utils/scripts/_export_html.py doc        # workspace-level doc/ only
-```
+| Package | Theory | Implementation guide |
+|---------|--------|----------------------|
+| `pes_base`  | [`theory_rl.md`](tabular/pes_base/doc/theory_rl.md) | [`explained_pes.md`](tabular/pes_base/doc/explained_pes.md) · [`how_to_train_and_test.md`](tabular/pes_base/doc/how_to_train_and_test.md) |
+| `pes_ql`    | [`pes_ql_theory.md`](tabular/pes_ql/doc/pes_ql_theory.md) | [`pes_ql_explained.md`](tabular/pes_ql/doc/pes_ql_explained.md) |
+| `pes_dql`   | [`pes_dql_theory.md`](tabular/pes_dql/doc/pes_dql_theory.md) | [`pes_dql_explained.md`](tabular/pes_dql/doc/pes_dql_explained.md) |
+| `pes_dqn`   | [`pes_dqn_theory.md`](ml/pes_dqn/doc/pes_dqn_theory.md) | [`pes_dqn_explained.md`](ml/pes_dqn/doc/pes_dqn_explained.md) |
+| `pes_rdqn`  | [`pes_rdqn_theory.md`](ml/pes_rdqn/doc/pes_rdqn_theory.md) | [`pes_rdqn_explained.md`](ml/pes_rdqn/doc/pes_rdqn_explained.md) |
+| `pes_a2c`   | [`pes_a2c_theory.md`](ml/pes_a2c/doc/pes_a2c_theory.md) | [`pes_a2c_explained.md`](ml/pes_a2c/doc/pes_a2c_explained.md) |
+| `pes_trf`   | [`pes_trf_theory.md`](ml/pes_trf/doc/pes_trf_theory.md) | [`pes_trf_explained.md`](ml/pes_trf/doc/pes_trf_explained.md) |
+| `pes_ens`   | [`pes_ens_theory.md`](ml/pes_ens/doc/pes_ens_theory.md) | [`pes_ens_explained.md`](ml/pes_ens/doc/pes_ens_explained.md) · [`how_to_train_and_test.md`](ml/pes_ens/doc/how_to_train_and_test.md) |
 
 ---
 

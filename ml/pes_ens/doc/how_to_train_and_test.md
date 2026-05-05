@@ -1,4 +1,4 @@
-﻿# pes_ens — Cómo Probar el Agente Ensamblado
+# pes_ens — Cómo Probar el Agente Ensamblado
 
 > Última actualización: 2026-05-02
 
@@ -15,7 +15,7 @@ todos los miembros marcados como `enabled = True` en
 | TRF     | `pes_trf/inputs/trf_model.keras`    | `True`              |
 
 Si alguno falta, ejecuta el entrenamiento del paquete correspondiente
-(`python -m pes_<pkg>`) o usa los scripts de `utils/scripts/` para
+(`python -m ml.pes_<pkg>`) o usa los scripts de `utils/scripts/` para
 finalizar una optimización Bayesiana interrumpida. El archivo de
 `pes_a2c` puede no estar presente si nunca se entrenó: por defecto
 está `enabled = False` y el ensamble funciona sin él.

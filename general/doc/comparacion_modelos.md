@@ -1,12 +1,41 @@
-# Comparación de Modelos de Aprendizaje por Refuerzo en mPES
+<div align="center">
+
+# 🧪 Comparación de Modelos de Aprendizaje por Refuerzo en mPES
+
+**Evaluación comparativa de ocho arquitecturas de RL sobre el *Pandemic Scenario*.**
+
+[![Modelos](https://img.shields.io/badge/modelos-8-blue.svg)](#4-arquitecturas-evaluadas)
+[![n](https://img.shields.io/badge/n%20por%20modelo-64-success.svg)](#3-descripción-del-entorno-experimental)
+[![Mejor individual](https://img.shields.io/badge/mejor%20individual-pes__trf%20(0.927)-7c4dff.svg)](#1-resumen-ejecutivo)
+[![Mejor sistema](https://img.shields.io/badge/mejor%20sistema-pes__ens%20(0.937)-2ea44f.svg)](#1-resumen-ejecutivo)
+
+</div>
 
 > **Documento de tesis** — Evaluación comparativa de ocho arquitecturas de
 > aprendizaje por refuerzo aplicadas al problema de asignación de recursos en
 > escenarios pandémicos (*Pandemic Scenario*).
 >
-> **Fecha de redacción:** 4 de mayo de 2026
-> **Versión de datos:** experimentos finalizados entre 2026-04-21 y 2026-05-02
-> **Tamaño muestral por modelo:** $n = 64$ secuencias de evaluación
+> | Campo | Valor |
+> |-------|-------|
+> | **Fecha de redacción**       | 4 de mayo de 2026 |
+> | **Versión de datos**         | experimentos finalizados entre 2026-04-21 y 2026-05-02 |
+> | **Tamaño muestral por modelo** | $n = 64$ secuencias de evaluación |
+
+---
+
+## 📑 Índice
+
+1. [Resumen ejecutivo](#1-resumen-ejecutivo)
+2. [Hipótesis de la tesis](#2-hipótesis-de-la-tesis)
+3. [Descripción del entorno experimental](#3-descripción-del-entorno-experimental)
+4. [Arquitecturas evaluadas](#4-arquitecturas-evaluadas)
+5. [Resultados y métricas](#5-resultados-y-métricas)
+6. [Análisis comparativo](#6-análisis-comparativo)
+7. [Validación estadística](#7-validación-estadística)
+8. [Discusión y conclusiones](#8-discusión-y-conclusiones)
+
+> 💡 Para los heatmaps de robustez OOD ver el reporte cuantitativo en
+> [`general/results/benchmark_report.md`](../results/benchmark_report.md).
 
 ---
 
@@ -152,35 +181,35 @@ paquete (`result_formatter.py`).
 
 ### 6.1 `pes_base` — Q-Learning tabular base
 
-![Resultados de pes_base](../tabular/pes_base/outputs/2026-04-21_RL_AGENT/PES_BASE_results_2026-04-21_RL_AGENT.png)
+![Resultados de pes_base](../../tabular/pes_base/outputs/2026-04-21_RL_AGENT/PES_BASE_results_2026-04-21_RL_AGENT.png)
 
 ### 6.2 `pes_ql` — Q-Learning + optimización bayesiana
 
-![Resultados de pes_ql](../tabular/pes_ql/outputs/2026-04-30_RL_AGENT/PES_QL_results_2026-04-30_RL_AGENT.png)
+![Resultados de pes_ql](../../tabular/pes_ql/outputs/2026-04-30_RL_AGENT/PES_QL_results_2026-04-30_RL_AGENT.png)
 
 ### 6.3 `pes_dql` — Double Q-Learning con PBRS
 
-![Resultados de pes_dql](../tabular/pes_dql/outputs/2026-04-30_RL_AGENT/PES_DQL_results_2026-04-30_RL_AGENT.png)
+![Resultados de pes_dql](../../tabular/pes_dql/outputs/2026-04-30_RL_AGENT/PES_DQL_results_2026-04-30_RL_AGENT.png)
 
 ### 6.4 `pes_dqn` — Deep Q-Network
 
-![Resultados de pes_dqn](../ml/pes_dqn/outputs/2026-04-30_DQN_AGENT/PES_DQN_results_2026-04-30_DQN_AGENT.png)
+![Resultados de pes_dqn](../../ml/pes_dqn/outputs/2026-04-30_DQN_AGENT/PES_DQN_results_2026-04-30_DQN_AGENT.png)
 
 ### 6.5 `pes_rdqn` — Recurrent DQN (LSTM)
 
-![Resultados de pes_rdqn](../ml/pes_rdqn/outputs/2026-04-30_RDQN_AGENT/PES_RDQN_results_2026-04-30_RDQN_AGENT.png)
+![Resultados de pes_rdqn](../../ml/pes_rdqn/outputs/2026-04-30_RDQN_AGENT/PES_RDQN_results_2026-04-30_RDQN_AGENT.png)
 
 ### 6.6 `pes_a2c` — Advantage Actor–Critic
 
-![Resultados de pes_a2c](../ml/pes_a2c/outputs/2026-04-30_A2C_AGENT/PES_A2C_results_2026-04-30_A2C_AGENT.png)
+![Resultados de pes_a2c](../../ml/pes_a2c/outputs/2026-04-30_A2C_AGENT/PES_A2C_results_2026-04-30_A2C_AGENT.png)
 
 ### 6.7 `pes_trf` — Transformer causal
 
-![Resultados de pes_trf](../ml/pes_trf/outputs/2026-05-02_TRF_AGENT/PES_TRF_results_2026-05-02_TRF_AGENT.png)
+![Resultados de pes_trf](../../ml/pes_trf/outputs/2026-05-02_TRF_AGENT/PES_TRF_results_2026-05-02_TRF_AGENT.png)
 
 ### 6.8 `pes_ens` — Ensemble ponderado
 
-![Resultados de pes_ens](../ml/pes_ens/outputs/2026-05-02_ENS_AGENT/PES_ENS_results_2026-05-02_ENS_AGENT.png)
+![Resultados de pes_ens](../../ml/pes_ens/outputs/2026-05-02_ENS_AGENT/PES_ENS_results_2026-05-02_ENS_AGENT.png)
 
 ---
 

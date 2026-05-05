@@ -67,6 +67,43 @@ _PUB_RC = {
 _LOG10_ALPHA_LINES = (math.log10(0.05), math.log10(0.01), math.log10(0.001))
 
 
+# ---------------------------------------------------------------------------
+# Custom publication palettes.
+# ---------------------------------------------------------------------------
+# Hand-tuned colour ramps (loosely inspired by seaborn's `crest`, `mako`,
+# `flare` and `vlag`) so the four heatmaps share a coherent aesthetic
+# without the harshness of the default `RdBu_r` / `viridis` schemes.
+_PALETTE_ANCHORS = {
+    # Sequential blue-green for "performance" (low -> high).
+    'mpes_perf': ['#f3f7f4', '#cfe7e2', '#7fc6c0', '#3b9aa1', '#1f6e83',
+                  '#1b455f', '#16263f'],
+    # Diverging cool/warm for OOD degradation (centered at zero).
+    # Cold side = "better OOD than baseline", warm = "worse OOD".
+    'mpes_div':  ['#2a6489', '#5994b8', '#a7c8db', '#f1f1ee',
+                  '#f1c5a3', '#d77c5d', '#9e3a26'],
+    # Sequential warm-purple for log10(p): deeper = stronger evidence.
+    # Anchors run from dark (low log_p, strong evidence) to light (log_p~0).
+    'mpes_pval': ['#1f0033', '#5a1450', '#9c3060', '#d96a52', '#f6a36b',
+                  '#ffd9a3', '#fff4e6'],
+    # Sequential blue-teal-cream for KL drift (low = close to in-dist).
+    'mpes_kl':   ['#fdf8ec', '#d9ecdb', '#7ec5b6', '#3a8a9a', '#1d5c80',
+                  '#162d52', '#0a0f29'],
+}
+
+
+def _register_palettes() -> None:
+    """Register custom colormaps the first time the module is used."""
+    cmaps = matplotlib.colormaps
+    for name, anchors in _PALETTE_ANCHORS.items():
+        if name in cmaps:
+            continue
+        cmap = mcolors.LinearSegmentedColormap.from_list(name, anchors, N=256)
+        cmaps.register(cmap=cmap, name=name)
+
+
+_register_palettes()
+
+
 ##########################
 ##  IO helpers          ##
 ##########################
@@ -156,11 +193,12 @@ def _heatmap(matrix: numpy.ndarray,
         fig_w = max(10.0, n_cols * 0.55)
         fig_h = max(3.6, n_rows * 0.55)
         fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+        fig.patch.set_facecolor('white')
 
-        # Mask NaN -> grey background; values get clipped to [vmin, vmax].
+        # Mask NaN -> soft grey background; values get clipped to [vmin, vmax].
         masked = numpy.ma.masked_invalid(matrix)
         cmap_obj = matplotlib.colormaps.get_cmap(cmap).copy()
-        cmap_obj.set_bad(color='#dddddd')
+        cmap_obj.set_bad(color='#ececec')
 
         if norm is None:
             norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
@@ -174,9 +212,12 @@ def _heatmap(matrix: numpy.ndarray,
         ax.set_yticklabels(models)
         ax.set_xticks(numpy.arange(-0.5, n_cols), minor=True)
         ax.set_yticks(numpy.arange(-0.5, n_rows), minor=True)
-        ax.grid(which='minor', color='white', linewidth=0.6)
+        ax.grid(which='minor', color='white', linewidth=1.1)
         ax.tick_params(which='minor', length=0)
-        ax.set_title(title)
+        ax.tick_params(which='major', length=0)
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+        ax.set_title(title, pad=12, fontweight='semibold')
 
         # Per-cell annotations with luminance-aware text colour.
         for i in range(n_rows):
@@ -197,11 +238,13 @@ def _heatmap(matrix: numpy.ndarray,
                 # Luminance of the cell colour drives text colour.
                 rgba = cmap_obj(norm(txt_v))
                 lum = 0.299 * rgba[0] + 0.587 * rgba[1] + 0.114 * rgba[2]
-                colour = 'white' if lum < 0.55 else 'black'
+                colour = 'white' if lum < 0.55 else '#1a1a1a'
                 ax.text(j, i, text, ha='center', va='center',
                         color=colour, fontsize=7)
 
         cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.012)
+        cbar.outline.set_visible(False)
+        cbar.ax.tick_params(length=0)
         if cbar_label:
             cbar.set_label(cbar_label)
         if cbar_ticks is not None:
@@ -251,7 +294,7 @@ def plot_all() -> None:
     _heatmap(M_mean, models, scenarios,
              'Global mean performance per (model, scenario)',
              os.path.join(RESULTS_DIR, 'heatmap_global_mean'),
-             cmap='viridis', vmin=vmin_m, vmax=vmax_m,
+             cmap='mpes_perf', vmin=vmin_m, vmax=vmax_m,
              cbar_label='mean performance')
 
     # ----- OOD degradation ----------------------------------------------
@@ -274,7 +317,7 @@ def plot_all() -> None:
     _heatmap(M_degr, models, scenarios,
              'OOD degradation: baseline_mean \u2212 cell_mean',
              os.path.join(RESULTS_DIR, 'heatmap_ood_degradation'),
-             cmap='RdBu_r', vmin=-bound, vmax=bound, fmt='{:+.3f}',
+             cmap='mpes_div', vmin=-bound, vmax=bound, fmt='{:+.3f}',
              cbar_label='\u0394 perf. (+ = worse OOD)')
 
     # ----- log10(Welch p) -----------------------------------------------
@@ -299,7 +342,7 @@ def plot_all() -> None:
              'Welch t-test vs in-distribution baseline '
              '(log\u2081\u2080 p, clipped to [\u221210, 0])',
              os.path.join(RESULTS_DIR, 'heatmap_welch_logp'),
-             cmap='magma_r', vmin=vmin_p, vmax=vmax_p, fmt='{:.2f}',
+             cmap='mpes_pval', vmin=vmin_p, vmax=vmax_p, fmt='{:.2f}',
              clip_low_label='\u2264-10',
              cbar_label='log\u2081\u2080(p) -- lower = stronger evidence',
              cbar_ticks=cticks)
@@ -324,7 +367,7 @@ def plot_all() -> None:
         _heatmap(kbody_disp, kmodels, kscen,
                  'KL(action distribution \u2225 in-distribution policy)',
                  os.path.join(RESULTS_DIR, 'heatmap_action_kl'),
-                 cmap='cividis', norm=norm, fmt='{:.2f}',
+                 cmap='mpes_kl', norm=norm, fmt='{:.2f}',
                  cbar_label='KL divergence (log scale, nats)')
 
     # ----- Per-scenario histograms --------------------------------------
