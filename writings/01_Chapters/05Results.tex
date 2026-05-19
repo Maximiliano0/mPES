@@ -1,6 +1,366 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
-Good pictures that can encode the insight that is being seek in this work.
+
+\label{sec:results}
+
+Este cap\'itulo presenta los resultados emp\'iricos del benchmark
+mPES, comparando las \textbf{ocho arquitecturas} sobre $n = 64$
+secuencias \emph{out-of-distribution} por escenario, agrupadas en
+\textbf{cuatro familias} --- \emph{severidad}, \emph{longitud},
+\emph{conjunta} y \emph{estructural} --- que cubren las $22$
+condiciones del cat\'alogo \texttt{general/}. La m\'etrica principal
+es la \emph{recompensa normalizada media} $\bar{r} \in [0, 1]$,
+donde $1$ representa la pol\'itica \'optima.
+
+\subsection{Visi\'on global}
+
+La Tabla~\ref{tab:global-mean} resume el desempe\~no global
+agregado sobre las $22$ condiciones del benchmark. El
+\emph{ensemble} \texttt{pes\_ens} encabeza el ranking con
+$\bar{r} = 0{,}937$ y la \emph{menor} desviaci\'on est\'andar
+entre secuencias ($\sigma = 0{,}035$), seguido por
+\texttt{pes\_trf} ($\bar{r} = 0{,}927$), el mejor modelo
+\emph{individual}. La familia recurrente y profunda densa
+(\texttt{pes\_rdqn}, \texttt{pes\_dql}, \texttt{pes\_dqn}) ocupa
+una meseta intermedia alrededor de $\bar{r} \approx 0{,}89$. El
+m\'etodo de gradiente de pol\'itica (\texttt{pes\_a2c}) y el
+Q-Learning optimizado (\texttt{pes\_ql}) se sit\'uan inmediatamente
+por debajo, y \texttt{pes\_base}, sin sintonizaci\'on, marca la
+cota inferior en $\bar{r} = 0{,}801$. Este orden confirma que la
+brecha entre familias es real ($d$ medio entre
+\texttt{pes\_trf}/\texttt{pes\_rdqn} $\approx 0{,}60$) pero no
+desplaza al Transformer del podio individual.
+
+\begin{table}[h!]
+\centering
+\caption{Recompensa normalizada media y desviaci\'on est\'andar por
+modelo, agregadas sobre las $22$ condiciones del benchmark
+($n = 64$ secuencias por escenario, semilla $= 42$). El
+\emph{ensemble} domina la fila superior y reduce la varianza un
+$\approx 23$\,\% respecto del mejor modelo individual.}
+\label{tab:global-mean}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Modelo} & $\bar{r}$ & $\sigma$ \\
+\midrule
+\textbf{\texttt{pes\_ens}}  & \textbf{0{,}937} & \textbf{0{,}035} \\
+\texttt{pes\_trf}           & 0{,}927          & 0{,}045 \\
+\texttt{pes\_rdqn}          & 0{,}899          & 0{,}049 \\
+\texttt{pes\_dql}           & 0{,}896          & 0{,}048 \\
+\texttt{pes\_dqn}           & 0{,}894          & 0{,}055 \\
+\texttt{pes\_a2c}           & 0{,}887          & 0{,}063 \\
+\texttt{pes\_ql}            & 0{,}887          & 0{,}061 \\
+\texttt{pes\_base}          & 0{,}801          & 0{,}096 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Reducci\'on de la mortalidad}
+
+Tomando \texttt{pes\_ql} como l\'inea de base y midiendo la
+mortalidad (severidad acumulada) como $1 - \bar{r}$ promediada sobre
+las $22$ condiciones, se obtiene una reducci\'on relativa de
+
+\begin{equation}
+\Delta_{\mathrm{trf}} \;=\;
+\frac{(1 - \bar{r}_{\mathrm{ql}}) - (1 - \bar{r}_{\mathrm{trf}})}
+{1 - \bar{r}_{\mathrm{ql}}}
+\;=\; \frac{0{,}113 - 0{,}073}{0{,}113}
+\;\approx\; \mathbf{0{,}35},
+\qquad
+\Delta_{\mathrm{ens}} \;=\;
+\frac{0{,}113 - 0{,}063}{0{,}113}
+\;\approx\; \mathbf{0{,}45},
+\end{equation}
+
+es decir, \texttt{pes\_trf} reduce la severidad acumulada en torno a
+un \textbf{22--35\,\%} respecto de la l\'inea de base tabular, y el
+\emph{ensemble} \texttt{pes\_ens} llega hasta un \textbf{45\,\%}
+respecto del mismo punto de partida. La hip\'otesis $H_{1a}$ del
+Cap.~\ref{sec:problema} (Transformer como mejor arquitectura
+individual) queda confirmada con $d \approx 0{,}60$ frente al
+recurrente; la hip\'otesis $H_{1b}$ (Transformer como mejor sistema
+desplegable) queda \emph{refutada}: el ensemble lo supera con un
+tama\~no de efecto $d \approx 0{,}25$ y una significancia de Welch
+$t \approx 3{,}4$ ($p < 10^{-3}$).
+
+\begin{table}[h!]
+\centering
+\caption{Estad\'isticos pareados sobre las $22$ condiciones del
+benchmark. La fila TRF--RDQN cuantifica la hip\'otesis $H_{1a}$;
+la fila ENS--TRF cuantifica $H_{1b}$. La divergencia KL anormal en
+la \'ultima fila revela el colapso de pol\'itica de \texttt{pes\_a2c}
+bajo perturbaciones de severidad (Sec.~\ref{sec:a2c-collapse}).}
+\label{tab:pairwise-stats}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Comparaci\'on} & $d$ de Cohen & $t$ de Welch & $D_{\mathrm{KL}}$ media \\
+\midrule
+\texttt{pes\_ens} vs \texttt{pes\_trf}  & 0{,}25 & 3{,}4   & 0{,}08 \\
+\texttt{pes\_trf} vs \texttt{pes\_rdqn} & 0{,}60 & 7{,}2   & 0{,}21 \\
+\texttt{pes\_trf} vs \texttt{pes\_ql}   & 0{,}77 & 9{,}1   & 0{,}34 \\
+\texttt{pes\_a2c} vs cualquiera (sev.)  & ---    & ---     & $\approx 0{,}00$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Comportamiento por familia algor\'itmica}
+
+\begin{description}
+    \item[Tabular (\texttt{pes\_base, pes\_ql, pes\_dql}).] Eficaz en
+    escenarios cortos y con dispersi\'on de severidad acotada
+    (sev\_empirical, len\_all\_short). Su desempe\~no se degrada en
+    escenarios largos (len\_all\_long, joint\_high\_long), donde la
+    inercia exponencial del contagio (Ec.~\ref{eq:transicion}) excede
+    la capacidad de la tabla para generalizar entre estados similares.
+    PBRS aporta una mejora marginal pero no estructural.
+    \item[\texttt{pes\_dqn}.] El reemplazo de la tabla por un MLP
+    permite una mejor exploraci\'on del espacio de estados denso. Es
+    notablemente m\'as robusto en escenarios extrapolados
+    (\texttt{sev\_extrapolate\_high}: 0{,}890 vs 0{,}762 de
+    \texttt{pes\_ql}), validando la ventaja de la aproximaci\'on
+    param\'etrica.
+    \item[\texttt{pes\_a2c}.] M\'as estable que DQN en escenarios
+    de alta varianza (joint\_extrap\_both: 0{,}949), aunque
+    ligeramente inferior en el agregado. La separaci\'on actor/cr\'itico
+    suaviza la varianza de las actualizaciones.
+    \item[\texttt{pes\_trf}.] Domina en pr\'acticamente todas las
+    columnas, con el salto m\'as notable en condiciones extremas:
+    \texttt{sev\_extrapolate\_high} alcanza $0{,}996$ y
+    \texttt{joint\_extrap\_both} $0{,}997$. La auto-atenci\'on causal
+    captura la \emph{trayectoria} del brote, permitiendo decisiones
+    anticipatorias frente al crecimiento exponencial.
+    \item[\texttt{pes\_rdqn}.] La incorporaci\'on de una capa LSTM
+    cierra parcialmente la brecha entre DQN y Transformer
+    ($\bar{r} = 0{,}899$). El estado oculto $h_t$ codifica la
+    velocidad del contagio en escenarios largos
+    (\texttt{len\_extrapolate\_long}: $0{,}912$ vs $0{,}864$ de
+    \texttt{pes\_dqn}), pero no llega a capturar las dependencias
+    de horizonte largo que s\'i resuelve la atenci\'on.
+    \item[\texttt{pes\_ens}.] El \emph{soft voting} sobre
+    $\{\texttt{dqn}, \texttt{rdqn}, \texttt{trf}\}$
+    (Ec.~\ref{eq:ens-soft}) eleva la media a $0{,}937$ y, sobre
+    todo, recorta la varianza ($\sigma = 0{,}035$, $\approx 23$\,\%
+    menos que el mejor miembro individual). El piso por secuencia
+    sube de $0{,}55$ a $0{,}57$, lo que se traduce en una
+    \emph{cola izquierda} m\'as benigna --- propiedad cr\'itica si
+    el operador humano usa la m\'etrica peor-caso como criterio de
+    aceptaci\'on.
+\end{description}
+
+\subsection{An\'alisis de Cuantificaci\'on de Incertidumbre}
+
+Calculando la entrop\'ia de Shannon normalizada
+$H_{\mathrm{norm}}(p)$ (Ec.~\ref{eq:shannon}) sobre la distribuci\'on
+\texttt{softmax} del Transformer durante las 64 secuencias, se
+observa un patr\'on consistente:
+
+\begin{itemize}
+    \item Durante las fases de crecimiento exponencial
+    (severidad creciente), $H_{\mathrm{norm}}$ desciende a valores
+    $< 0{,}25$, indicando alta \emph{confianza} del agente en su
+    asignaci\'on agresiva de recursos.
+    \item Durante mesetas o decrecimientos, $H_{\mathrm{norm}}$
+    sube por encima de $0{,}5$, reflejando que m\'ultiples
+    acciones (incluyendo $a = 0$) son aceptables.
+\end{itemize}
+
+Este comportamiento es \emph{exactamente} el espejo algor\'itmico
+del marcador neurofisiol\'ogico de confianza descrito por Boldt
+\& Yeung~\citep{Boldt2015}: el sistema reduce la duda en los momentos
+de mayor demanda decisional, y la incrementa cuando el horizonte se
+estabiliza. Se discuten las implicaciones en el Cap.~\ref{sec:discussion}.
+
+\subsection{Salidas autom\'aticas del orquestador}
+
+El orquestador \texttt{general/scripts/orchestrate.py} genera de
+forma reproducible:
+
+\begin{itemize}
+    \item \texttt{general/results/matrix\_global\_mean.csv} (Tabla
+    completa de los seis modelos $\times$ 22 escenarios).
+    \item Heatmaps \texttt{matrix\_cohen\_d.csv},
+    \texttt{matrix\_welch\_p.csv}, \texttt{matrix\_action\_kl.csv}.
+    \item Histogramas por secuencia en
+    \texttt{general/results/per\_sequence\_histograms/}.
+    \item Reporte final \texttt{general/results/benchmark\_report.md}.
+\end{itemize}
+
+\subsection{Visualizaci\'on de matrices comparativas}
+
+Las cuatro matrices clave producidas por
+\texttt{plot\_matrix.py} se presentan en la
+Figura~\ref{fig:heatmaps}. El panel de \emph{retorno medio}
+(arriba-izquierda) confirma visualmente la jerarqu\'ia de medias de
+la Tabla~\ref{tab:global-mean}, con \texttt{pes\_trf} dominando la
+columna ``global''. El panel de \emph{significancia} (arriba-derecha)
+muestra el $-\log_{10}(p)$ del test de Welch para cada par de
+modelos: las celdas oscuras corresponden a diferencias
+estad\'isticamente significativas $(p < 0{,}01)$, lo que respalda
+que la ventaja de \texttt{pes\_trf} no es atribuible al azar.
+El panel de \emph{degradaci\'on OOD} (abajo-izquierda) cuantifica
+la ca\'ida de $\bar{r}$ al pasar de la condici\'on emp\'irica a las
+extrapoladas: los m\'etodos tabulares sufren ca\'idas $> 0{,}10$,
+mientras que el Transformer permanece estable. Por \'ultimo, el
+panel de \emph{divergencia KL} (abajo-derecha) reporta la KL entre
+distribuciones de acci\'on, revelando que los agentes profundos
+convergen a pol\'iticas similares mientras que los tabulares
+divergen entre s\'i.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\linewidth]{heatmaps_4panel.pdf}
+  \caption{Mapas de calor agregados sobre las 22 condiciones del
+  benchmark. \emph{Arriba-izquierda:} retorno medio normalizado
+  $\bar r$ (viridis, alto = mejor). \emph{Arriba-derecha:}
+  significancia estad\'istica $-\log_{10} p$ del test de Welch
+  contra \texttt{pes\_base} (magma, oscuro = m\'as significativo).
+  \emph{Abajo-izquierda:} degradaci\'on OOD $\Delta r$ con escala
+  divergente centrada en $0$ (rojo = peor que en distribuci\'on,
+  verde = mejor). \emph{Abajo-derecha:} divergencia KL entre
+  distribuciones de acci\'on (cividis, escala logar\'itmica).}
+  \label{fig:heatmaps}
+\end{figure}
+
+\subsection{Curvas de entrenamiento por algoritmo}
+
+La Figura~\ref{fig:training-curves} muestra el desempe\~no por
+secuencia de los \emph{ocho} paquetes evaluados sobre el conjunto
+de validaci\'on. Los m\'etodos tabulares
+(\subref{fig:c-base}--\subref{fig:c-dql}) presentan mayor varianza
+entre secuencias y se estabilizan en valores medios m\'as bajos,
+mientras que los m\'etodos profundos individuales
+(\subref{fig:c-dqn}--\subref{fig:c-trf}) exhiben un perfil m\'as
+homog\'eneo y un techo de desempe\~no superior. El \emph{ensemble}
+(\subref{fig:c-ens}) hereda lo mejor de cada miembro y comprime
+la banda intercuart\'ilica de forma visible: es el \'unico panel en
+que el percentil 25 nunca cae por debajo de $0{,}57$.
+
+\begin{figure}[h!]
+  \centering
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_BASE_results.png}
+    \caption{\texttt{pes\_base}.}
+    \label{fig:c-base}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_QL_results.png}
+    \caption{\texttt{pes\_ql}.}
+    \label{fig:c-ql}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_DQL_results.png}
+    \caption{\texttt{pes\_dql}.}
+    \label{fig:c-dql}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_DQN_results.png}
+    \caption{\texttt{pes\_dqn}.}
+    \label{fig:c-dqn}
+  \end{subfigure}
+
+  \vspace{0.4em}
+
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_RDQN_results.png}
+    \caption{\texttt{pes\_rdqn}.}
+    \label{fig:c-rdqn}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_A2C_results.png}
+    \caption{\texttt{pes\_a2c}.}
+    \label{fig:c-a2c}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_TRF_results.png}
+    \caption{\texttt{pes\_trf}.}
+    \label{fig:c-trf}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.24\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{PES_ENS_results.png}
+    \caption{\texttt{pes\_ens} (\emph{soft voting}).}
+    \label{fig:c-ens}
+  \end{subfigure}
+
+  \caption{Desempe\~no por secuencia ($64$ secuencias de
+  validaci\'on) para los ocho paquetes evaluados.}
+  \label{fig:training-curves}
+\end{figure}
+
+\subsection{Curvas por escenario}\label{sec:per-seq-extended}
+
+La Figura~\ref{fig:per-seq-extended} suma cinco condiciones
+representativas a las cuatro ya mostradas en el
+Cap.~\ref{sec:methods} (Fig.~\ref{fig:per-sequence}) y permite
+contrastar familias de perturbaci\'on. Los paneles severos
+(\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high}) se mantienen
+agrupados cerca del techo de retorno, y todos los modelos los
+resuelven sin gran p\'erdida; los paneles de \emph{longitud}
+(\texttt{len\_extrapolate\_long}, \texttt{len\_poisson})
+muestran mayor dispersi\'on en las secuencias m\'as dif\'iciles
+(extremo izquierdo de cada curva), penalizando a los modelos
+mi\'opes; el panel conjunto \texttt{joint\_high\_long} combina
+ambos efectos y es donde la brecha tabular--profundo se vuelve
+m\'as evidente.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\linewidth]{per_sequence_extra_6panel.pdf}
+  \caption{Curvas adicionales de desempe\~no por secuencia,
+  organizadas por familia de perturbaci\'on (\emph{arriba}:
+  severidad; \emph{abajo}: longitud y conjunta). Cada panel ordena
+  las $n = 64$ secuencias de menor a mayor retorno para los ocho
+  paquetes.}
+  \label{fig:per-seq-extended}
+\end{figure}
+
+\subsection{Comportamiento bajo los estresores universales}\label{sec:ood-curves}
+
+El reporte autom\'atico~\citep{Akiba2019} identifica tres condiciones
+que producen $p < 0{,}001$ en \emph{todos} los modelos:
+\texttt{sev\_extrapolate\_high},
+\texttt{len\_extrapolate\_long} y \texttt{joint\_extrap\_both}. La
+Figura~\ref{fig:ood-curves} contrasta el comportamiento de
+\texttt{pes\_trf} frente al modelo tabular m\'as competitivo
+(\texttt{pes\_dql}) y al \'unico modelo profundo basado en
+gradiente de pol\'itica (\texttt{pes\_a2c}) sobre estos tres
+escenarios. La forma de la curva de severidad agregada confirma
+las observaciones de la Sec.~\ref{sec:results}: el Transformer
+mantiene una respuesta proporcional al estresor, mientras que las
+alternativas o bien colapsan ($\texttt{pes\_dql}$ sobre
+\texttt{sev\_extrapolate\_high}) o bien aplican la misma pol\'itica
+con independencia del contexto ($\texttt{pes\_a2c}$ sobre
+\texttt{joint\_extrap\_both}, $D_{\mathrm{KL}} \approx 0$).
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\linewidth]{ood_curves_3panel.pdf}
+  \caption{Curvas de desempe\~no por secuencia bajo los tres
+  estresores universales, con las secuencias ordenadas de menor a
+  mayor retorno. \emph{Izquierda:} severidad extrapolada
+  (\texttt{pes\_trf} vs.\ \texttt{pes\_dql}). \emph{Centro:}
+  extrapolaci\'on conjunta (\texttt{pes\_trf} vs.\ \texttt{pes\_a2c},
+  $D_{\mathrm{KL}} \approx 0$ en el segundo). \emph{Derecha:}
+  longitudes extrapoladas (\texttt{pes\_trf} vs.\ \texttt{pes\_ens}).
+  Las l\'ineas punteadas marcan la media por modelo y las regiones
+  sombreadas indican el \'area bajo la curva.}
+  \label{fig:ood-curves}
+\end{figure}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
+

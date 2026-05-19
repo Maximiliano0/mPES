@@ -1,6 +1,167 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
-Conclusion, TAKE HOME MESSAGE.  What have we learn with this work.  Here you go back to the objective and contributions stated in the introduction and here you confirm if you achieve them or not.
+
+\label{sec:conclusion}
+
+Esta tesis present\'o \textbf{mPES}, una plataforma de aprendizaje
+por refuerzo para la asignaci\'on \'optima de recursos en una
+pandemia simulada, y la utiliz\'o como banco de prueba para una
+comparaci\'on rigurosa entre \textbf{ocho arquitecturas}: tres
+tabulares (\texttt{pes\_base}, \texttt{pes\_ql}, \texttt{pes\_dql})
+y cinco profundas (\texttt{pes\_dqn}, \texttt{pes\_rdqn},
+\texttt{pes\_a2c}, \texttt{pes\_trf} y el \emph{ensemble}
+\texttt{pes\_ens}).
+
+\subsection{Mensajes principales}
+
+\begin{enumerate}
+    \item \textbf{La arquitectura importa, no s\'olo los
+    hiperpar\'ametros.} El salto entre \texttt{pes\_ql}
+    (Q-Learning optimizado con Optuna) y \texttt{pes\_trf}
+    (Transformer causal) es estructural: aproximadamente un
+    \textbf{22--35\,\%} de reducci\'on en mortalidad acumulada, no
+    alcanzable por una mejor b\'usqueda de hiperpar\'ametros sobre
+    la representaci\'on tabular.
+    \item \textbf{El Transformer es la mejor arquitectura
+    individual.} La auto-atenci\'on causal anticipa el crecimiento
+    exponencial del contagio, condici\'on \emph{sine qua non} para
+    decisiones de inercia alta.
+    \item \textbf{El ensemble es el mejor sistema desplegable.} El
+    \emph{soft voting} sobre $\{\texttt{dqn}, \texttt{rdqn},
+    \texttt{trf}\}$ (Ec.~\ref{eq:ens-soft}) reduce la varianza un
+    $\approx 23$\,\% y eleva el piso peor-caso, lo que importa
+    cuando la m\'etrica relevante es el riesgo y no s\'olo la
+    media~\citep{Lakshminarayanan2017}.
+    \item \textbf{La Entrop\'ia de Shannon es una m\'etrica
+    leg\'itima de UQ.} El comportamiento de
+    $H_{\mathrm{norm}}(\pi)$ a lo largo de la trayectoria reproduce
+    cualitativamente los marcadores neurofisiol\'ogicos de
+    confianza identificados en el experimento de Oxford
+    (\texttt{ds004477}~\citep{Boldt2015,Fleming2024}), validando la
+    transici\'on del paradigma neurocognitivo al algor\'itmico.
+    \item \textbf{El benchmark es reproducible.} El pipeline
+    \texttt{general/scripts/orchestrate.py} regenera todos los CSVs,
+    \emph{heatmaps} y el reporte \texttt{benchmark\_report.md}, lo
+    que facilita la extensi\'on y la auditor\'ia externa.
+\end{enumerate}
+
+\subsection{Trabajo futuro}
+
+\begin{itemize}
+    \item \textbf{R\'eplica multi-semilla.} Repetir el sweep
+    $7 \times 22$ con al menos $5$ semillas independientes
+    permitir\'ia construir intervalos de confianza alrededor del
+    ranking de la Tabla~\ref{tab:global-mean} y verificar la
+    estabilidad de los tres estresores universales
+    (Sec.~\ref{sec:universal-stressors}).
+    \item \textbf{Sustituir el escenario simulado} por series
+    temporales reales (p.~ej.~datos COVID-19 desagregados por
+    regi\'on) y evaluar generalizaci\'on contra los marcos de
+    modelado cl\'asicos~\citep{Kuhl2021,Csefalvay2023}.
+    \item \textbf{Ampliar la familia de UQ.} Combinar la entrop\'ia
+    de Shannon con se\~nales complementarias: \emph{atenci\'on
+    estoc\'astica jer\'arquica}~\citep{Pei2021}, \emph{MC
+    Dropout}~\citep{Gal2016} y varianza entre miembros del
+    ensemble~\citep{Lakshminarayanan2017,Chen2025}.
+    \item \textbf{Sustituir A2C por PPO.} Mitigar el
+    \emph{policy collapse} documentado en la
+    Sec.~\ref{sec:a2c-collapse} mediante el objetivo recortado de
+    PPO~\citep{Schulman2017} y la estimaci\'on de ventaja
+    GAE~\citep{Schulman2016}.
+    \item \textbf{Acoplamiento humano--agente.} Dise\~nar interfaces
+    que comuniquen $H_{\mathrm{norm}}$ y la varianza del ensemble
+    al decisor humano y medir su impacto en la calidad de la
+    decisi\'on conjunta (\emph{human-in-the-loop} significativo).
+    \item \textbf{Aprender los pesos del ensemble.} Los pesos
+    $w_k$ de la Ecuaci\'on~\eqref{eq:ens-soft} son hoy
+    proporcionales al desempe\~no \emph{in-distribution}; una
+    extensi\'on natural es aprender pesos dependientes del
+    contexto $w_k(s)$ mediante una red de \emph{mixture-of-experts}
+    que dirija el voto en funci\'on del r\'egimen del brote.
+\end{itemize}
+
+\subsection{Lecciones aprendidas}\label{sec:lessons}
+
+M\'as all\'a de los n\'umeros, este trabajo deja cinco lecciones
+metodol\'ogicas reutilizables en futuros estudios de RL aplicado:
+
+\begin{enumerate}
+    \item \textbf{La evaluaci\'on \emph{out-of-distribution} es
+    obligatoria.} Una m\'etrica agregada sobre la condici\'on de
+    entrenamiento puede ocultar comportamientos degenerados como el
+    \emph{policy collapse} (Sec.~\ref{sec:a2c-collapse}).
+    \item \textbf{Existen tres estresores universales}
+    (\texttt{sev\_extrapolate\_high}, \texttt{len\_extrapolate\_long},
+    \texttt{joint\_extrap\_both}) que producen $p < 0{,}001$ en cada
+    uno de los modelos evaluados; deben tratarse como
+    \emph{headline cells} de cualquier reporte futuro.
+    \item \textbf{La optimizaci\'on bayesiana de hiperpar\'ametros
+    no sustituye a la arquitectura.} El salto de \texttt{pes\_ql}
+    optimizado a \texttt{pes\_trf} es estructural y no se reduce a
+    una mejor b\'usqueda de hiperpar\'ametros.
+    \item \textbf{Las columnas estructurales son un control valioso.}
+    Verificar que el reordenamiento de bloques produzca degradaci\'on
+    cero valida el \emph{arn\'es} de evaluaci\'on antes que la
+    robustez del modelo.
+    \item \textbf{La transparencia barata existe.} El proxy
+    $1 - H_{\mathrm{norm}}$ se calcula gratis sobre cualquier red
+    con salida \emph{softmax} y replica cualitativamente los
+    biomarcadores neurofisiol\'ogicos de confianza.
+\end{enumerate}
+
+\subsection{Implicaciones para la pr\'actica}\label{sec:practical-impact}
+
+Las conclusiones t\'ecnicas de mPES tienen una traducci\'on
+directa para equipos que necesiten desplegar agentes de decisi\'on
+bajo crisis. La primera implicaci\'on es que el \emph{costo de
+adoptar Transformers en RL es ya menor de lo que sugiere la
+literatura cl\'asica}: con el codificador causal de cuatro capas
+y ventana $W = 16$ utilizado en \texttt{pes\_trf}, el
+entrenamiento completo de una pol\'itica se ejecuta en horas
+sobre CPU de gama media, sin requerir aceleraci\'on por GPU. La
+segunda implicaci\'on es que un \emph{ensemble} de tres miembros
+estructuralmente distintos no es un capricho acad\'emico: el
+factor $\rho + (1 - \rho)/K$ que controla la varianza del voto
+blando justifica su sobrecoste de inferencia siempre que la
+aplicaci\'on tolere $K\times$ pasos \emph{forward}. La tercera
+implicaci\'on es que la entrop\'ia de Shannon, calculada al vuelo
+sobre el \emph{softmax} de la pol\'itica, ofrece a la organizaci\'on
+un bot\'on de \emph{escalado a humano} sin necesidad de un
+m\'odulo de XAI separado: cuando $H_{\mathrm{norm}}$ supera el
+umbral fijado, el sistema cede el control al operador y reduce el
+riesgo de decisiones autom\'aticas en r\'egimen incierto.
+
+Desde la \'optica de gobernanza, este enfoque alinea de forma
+natural con marcos regulatorios que exigen registros de
+incertidumbre y trazabilidad de la decisi\'on (UE
+AI Act~\citep{Microsoft.2024} y gu\'ias del Joint Research Centre
+en sistemas de salud cr\'iticos), evitando la dicotom\'ia
+recurrente entre \emph{rendimiento} y \emph{auditabilidad}.
+
+\subsection{Cierre}
+
+mPES demuestra que, en problemas de decisi\'on bajo crisis con
+fuerte componente temporal, la elecci\'on de la arquitectura es
+decisiva, y que la combinaci\'on de Transformers y Cuantificaci\'on
+de Incertidumbre ofrece a la vez \emph{eficiencia} (mejor pol\'itica)
+y \emph{transparencia} (confianza interpretable). Esa doble virtud es
+lo que distingue una herramienta utilizable de un experimento
+acad\'emico.
+
+Esta tesis es, en lo personal, la consolidaci\'on de un giro
+profesional: el de un ingeniero electr\'onico con trayectoria en
+desarrollo de productos --- hardware y software --- que reorienta
+su pr\'actica hacia los desaf\'ios de mayor impacto tecnol\'ogico de
+nuestra era: el Aprendizaje Autom\'atico, la Miner\'ia de Datos, la
+Inteligencia Artificial y los Modelos de Lenguaje a Gran Escala. La
+convicci\'on que articula este trabajo es que la disciplina del
+desarrollo de producto --- pensar en sistemas, exigir
+reproducibilidad, validar contra el peor caso, liderar la
+complejidad t\'ecnica de extremo a extremo --- no es accesoria sino
+esencial para que la IA aplicada salga del cuaderno experimental y
+se convierta en una herramienta confiable de decisi\'on en entornos
+de alta exigencia.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
+

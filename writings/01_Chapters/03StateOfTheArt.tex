@@ -1,8 +1,210 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
-\subsection{Hardware and Software}
-In this section, all the works that are competitors of this one, the ones that are dealing with almost with the same thing or as close as possible.
+\label{sec:soa}
+
+La presente investigaci\'on se sit\'ua en la intersecci\'on de la
+epidemiolog\'ia computacional~\citep{Kuhl2021,Csefalvay2023}, la
+neurociencia cognitiva de la confianza y el aprendizaje profundo
+secuencial. El estado del arte actual revela un creciente inter\'es
+en sistemas de soporte de decisiones que no s\'olo optimicen una
+m\'etrica de rendimiento, sino que incorporen nociones de
+\emph{confianza} y \emph{transparencia}.
+
+\subsection{El Legado de Oxford: de la Metacognici\'on Humana a la IA}
+
+El punto de partida conceptual de este trabajo es el experimento
+original de la Universidad de Oxford (\emph{dataset} p\'ublico
+\texttt{ds004477}), el cual investig\'o las firmas neuronales de la
+confianza humana ante decisiones bajo presi\'on. Estudios
+fundamentales como los de Boldt \& Yeung~\citep{Boldt2015} y Fleming
+\& Dolan~\citep{Fleming2012} identificaron que el cerebro humano
+utiliza biomarcadores espec\'ificos (observables mediante EEG) para
+monitorear errores y ajustar la certeza de una acci\'on. Trabajos
+te\'oricos posteriores~\citep{Grimaldi2015,Fleming2024,Griffith2021}
+formalizaron la relaci\'on entre confianza, an\'alisis secuencial y
+teor\'ia de detecci\'on de se\~nales. Investigaciones recientes
+sobre conflicto cognitivo~\citep{Kuc2021,Nawaz2020} han demostrado
+que estos biomarcadores son cruciales en tareas de alta carga.
+
+La originalidad de mPES radica en \emph{tomar esta premisa
+neurofisiol\'ogica y trasladarla al plano algor\'itmico}: sustituir
+la confianza extra\'ida del EEG por la Entrop\'ia de Shannon
+(Ecuaci\'on~\ref{eq:shannon}) como m\'etrica de incertidumbre
+intr\'inseca del agente de IA.
+
+\subsection{Aprendizaje por Refuerzo en la Gesti\'on de Crisis}
+
+La literatura en RL ha evolucionado desde m\'etodos tabulares como
+el Q-Learning~\citep{Watkins1992,Peng1994} hacia aproximaciones
+capaces de manejar la alta dimensionalidad de los problemas del
+mundo real~\citep{Ghasemi2024,SuttonBarto2018}.
+
+\begin{itemize}
+    \item \textbf{Deep Q-Networks (DQN).} La introducci\'on del
+    \emph{Experience Replay}~\citep{Lin1992} y las
+    \emph{Target Networks} por Mnih \emph{et al.}~\citep{Mnih2015}
+    permiti\'o estabilizar el aprendizaje en entornos complejos.
+    Sin embargo, en el contexto epidemiol\'ogico~\citep{Kuhl2021},
+    estos modelos suelen sufrir de un \emph{sesgo de
+    sobreestimaci\'on} que el Double Q-Learning~\citep{Hasselt2010}
+    intenta mitigar mediante el desacoplamiento de la selecci\'on y
+    evaluaci\'on de acciones.
+    \item \textbf{Mejoras de optimizaci\'on.} El uso de Adam con
+    decaimiento c\'iclico~\citep{Kingma2015,Loshchilov2017} y
+    \emph{schedules} adaptativos de exploraci\'on como RBED
+    (\emph{Reward Based Epsilon Decay})~\citep{Maroti2019} aceleran
+    la convergencia.
+    \item \textbf{Actor--Critic (A2C).} La arquitectura Actor--Cr\'itico
+    se ha identificado como una soluci\'on robusta para reducir la
+    varianza en los gradientes de pol\'itica~\citep{Mnih2016}. Su
+    capacidad para modelar una funci\'on de ventaja es fundamental
+    para gestionar la volatilidad extrema de los datos de contagio.
+\end{itemize}
+
+\subsection{El Cambio de Paradigma: Transformers y Modelado de Secuencias}
+
+El mayor obst\'aculo en la gesti\'on de pandemias es la
+\emph{inercia temporal}: una decisi\'on hoy afecta la curva de
+mortalidad semanas despu\'es. Los modelos tradicionales basados en
+MDPs suelen ser ``miopes'', ya que priorizan el estado inmediato.
+
+La propuesta de Vaswani \emph{et al.}~\citep{Vaswani2017} con la
+arquitectura Transformer y su posterior adaptaci\'on al RL mediante
+el \emph{Decision Transformer}~\citep{Chen2021}, representa un
+cambio de paradigma. Al tratar el RL como un problema de
+predicci\'on de secuencias y utilizar mecanismos de
+\emph{auto-atenci\'on} (Ecuaci\'on~\ref{eq:causal-attention}), el
+agente puede capturar dependencias de largo plazo, entendiendo la
+\emph{trayectoria completa} de la pandemia en lugar de observar
+fotograf\'ias aisladas del presente. Trabajos como el
+\emph{Gated Transformer-XL}~\citep{Parisotto2020} mostraron que,
+con compuertas e inicializaci\'on adecuadas, los Transformers
+igualan o superan a las redes LSTM en tareas que requieren memoria.
+
+\subsection{IA Explicable (XAI) y Cuantificaci\'on de Incertidumbre}
+
+Como se identific\'o en la Revisi\'on Sistem\'atica de la Literatura
+realizada para el Entregable 3 de esta maestr\'ia, la adopci\'on de
+IA en salud p\'ublica est\'a limitada por la opacidad de los
+modelos. La Cuantificaci\'on de Incertidumbre (UQ) mediante el uso
+de entrop\'ia jer\'arquica en Transformers~\citep{Pei2021} permite
+que el sistema informe cu\'ando ``no est\'a seguro'' de una
+decisi\'on. El tutorial de Chen \emph{et al.}~\citep{Chen2025}
+sintetiza los enfoques modernos en UQ.
+
+Esto cierra el c\'irculo iniciado en Oxford: si el agente detecta
+una alta entrop\'ia (incertidumbre), emula el proceso de duda
+humana, permitiendo una intervenci\'on supervisada m\'as segura en
+escenarios de crisis. La originalidad de esta tesis consiste,
+precisamente, en \emph{operacionalizar} ese puente neurocognitivo
+
+\subsection{Generalizaci\'on \emph{out-of-distribution} y \emph{benchmarks} de robustez}
+
+Una l\'inea creciente de trabajo en RL profundo ha denunciado que
+las m\'etricas reportadas en la distribuci\'on de entrenamiento
+sobreestiman sistem\'aticamente la calidad de las pol\'iticas
+aprendidas. Henderson \emph{et al.}~\citep{Henderson2018} mostraron
+que los algoritmos m\'as populares de RL profundo son
+extremadamente sensibles a la semilla aleatoria, los
+hiperpar\'ametros y los detalles de implementaci\'on; Cobbe
+\emph{et al.}~\citep{Cobbe2019,Cobbe2020} demostraron, sobre la
+suite ProcGen, que agentes que parec\'ian aprender una tarea en
+realidad memorizaban niveles concretos y fracasaban al evaluarse
+fuera de la distribuci\'on; Packer \emph{et al.}~\citep{Packer2018}
+formalizaron este sesgo como una taxonom\'ia de \emph{shifts}
+(par\'ametros extrapolados, escenarios estructurales y
+perturbaciones conjuntas) y Kirk \emph{et al.}~\citep{Kirk2023}
+sintetizaron el estado del arte de la generalizaci\'on en RL en su
+revisi\'on \emph{Survey of Generalisation in Deep Reinforcement
+Learning}, recomendando explicitamente reportar matrices
+$\text{algoritmo} \times \text{escenario}$ con cuantificaci\'on de
+significancia estad\'istica.
+
+El dise\~no del benchmark agregado de mPES
+(Sec.~\ref{sec:methods}) se apoya directamente en estas
+recomendaciones: $7 \times 22 = 154$ celdas, cuatro familias de
+perturbaci\'on, contrastes de Welch reportados como
+$-\log_{10} p$, columnas estructurales como control negativo y
+degradaci\'on $\Delta r$ frente a la condici\'on emp\'irica. Esta
+elecci\'on metodol\'ogica es uno de los aportes diferenciales del
+trabajo: en lugar de declarar un ganador en la condici\'on
+emp\'irica y dar por concluida la evaluaci\'on, el sweep completo
+revela qu\'e arquitecturas degradan suavemente y cu\'ales sufren
+colapsos catastr\'oficos (Sec.~\ref{sec:a2c-collapse}).
+
+\subsection{Ensembles y \emph{soft voting} en aprendizaje por refuerzo}
+
+La estrategia de combinar varios estimadores entrenados de forma
+independiente se remonta a los trabajos cl\'asicos de
+Dietterich~\citep{Dietterich2000} sobre \emph{bagging} y
+\emph{boosting}, y fue extendida al RL profundo por Osband
+\emph{et al.}~\citep{Osband2016}, quienes mostraron que un
+ensemble de DQNs ofrece simult\'aneamente una mejor exploraci\'on
+(\emph{Bootstrapped DQN}) y una estimaci\'on de incertidumbre
+epist\'emica. Lakshminarayanan \emph{et al.}~\citep{Lakshminarayanan2017}
+formalizaron el uso de \emph{deep ensembles} como m\'etodo simple
+y robusto de cuantificaci\'on de incertidumbre, con garant\'ias
+emp\'iricas superiores a las de \emph{Bayesian neural networks}
+m\'as elaboradas. Anschel \emph{et al.}~\citep{Anschel2017}
+demostraron, con su Averaged-DQN, que el promediado de redes
+\emph{target} reduce la varianza de los valores estimados y
+estabiliza el aprendizaje en entornos est\'ocasticos.
+
+El paquete \texttt{pes\_ens} adopta esta tradici\'on con una
+variante particular: combina las salidas \emph{softmax} de tres
+arquitecturas explicit\'amente diferentes
+(\texttt{dqn} feed-forward, \texttt{rdqn} recurrente y
+\texttt{trf} con atenci\'on causal). Esta diversidad estructural
+mantiene baja la correlaci\'on $\rho$ entre miembros, que es el
+factor cr\'itico que controla la reducci\'on de varianza del
+ensemble (Sec.~\ref{sec:ens-best}).
+
+\subsection{Aprendizaje por refuerzo aplicado a la salud p\'ublica}
+
+La aplicaci\'on de RL a problemas epidemiol\'ogicos es a\'un
+incipiente pero crece con rapidez. Khalilpourazari \&
+Hashemi~\citep{Khalilpourazari2021} utilizaron un Q-Learning para
+la planificaci\'on de capacidad hospitalaria durante COVID-19;
+Kompella \emph{et al.}~\citep{Kompella2020} entrenaron pol\'iticas
+de confinamiento dependientes del estado sobre un simulador
+basado en agentes; Hamida
+\emph{et al.}~\citep{Hamida2024} combinaron RL con modelos
+compartimentales SEIR para reasignaci\'on din\'amica de recursos.
+La revisi\'on sistem\'atica de Yanez \emph{et al.}~\citep{Yanez2020}
+identifica la \emph{transparencia} y la \emph{robustez frente a
+escenarios no vistos} como los dos principales obst\'aculos para
+la adopci\'on cl\'inica de estos sistemas, dos preocupaciones que
+esta tesis aborda expl\'icitamente con el proxy entr\'opico
+$1 - H_{\mathrm{norm}}$ y con el benchmark agregado de 154 celdas.
+mediante la Entrop\'ia de Shannon sobre la distribuci\'on de salida
+del Transformer Causal.
+
+\subsection{Posici\'on de este trabajo}
+
+Comparado con la literatura precedente, la contribuci\'on de esta
+tesis es:
+
+\begin{itemize}
+    \item \textbf{Ocho arquitecturas, un mismo arn\'es experimental.}
+    Una comparaci\'on \emph{lado a lado} que abarca m\'etodos
+    tabulares (Q-Learning, Double Q-Learning), profundos densos
+    (DQN), recurrentes (Recurrent DQN con LSTM), actor--cr\'itico
+    (A2C), Transformer causal y \emph{deep
+    ensembles}~\citep{Lakshminarayanan2017}, todos entrenados sobre
+    el mismo MDP y evaluados con $n = 64$ secuencias por escenario
+    a trav\'es de $22$ condiciones fuera de distribuci\'on.
+    \item \textbf{UQ algor\'itmica.} La adopci\'on expl\'icita de la
+    Entrop\'ia de Shannon como proxy de confianza, en l\'inea con
+    el legado neurocient\'ifico de Oxford.
+    \item \textbf{Rigor estad\'istico.} Cada diferencia reportada
+    viene acompa\~nada de un tama\~no de efecto ($d$ de Cohen),
+    una significancia ($p$ de Welch) y una divergencia de
+    Kullback--Leibler sobre la distribuci\'on de acciones que
+    detecta colapsos silenciosos de pol\'itica
+    (Sec.~\ref{sec:a2c-collapse}).
+\end{itemize}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
+

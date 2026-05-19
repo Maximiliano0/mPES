@@ -1,5 +1,5 @@
 
-\documentclass[english, a4paper, 12pt, twoside]{article} 
+\documentclass[spanish, a4paper, 12pt, twoside]{article} 
 
 % -------------- Setup, do not change these ---------------
 \usepackage{subcaption} 
@@ -9,7 +9,8 @@
 \usepackage{titlesec}
 \setcounter{secnumdepth}{4}
 \usepackage{multirow}
-\usepackage{minted} % Code highlighting
+\usepackage{booktabs}
+% \usepackage{minted} % Code highlighting (requires --shell-escape; unused)
 \usepackage{adjustbox}
 \usepackage{chronology}
 \usepackage{graphicx}
@@ -36,8 +37,21 @@
 
 
 % ----- Appearance and language ----- 
-\usepackage[english]{babel} % document language
-\graphicspath{{02_Images/}{../02_Images/}} % path to 02_Images
+\usepackage[spanish,es-nodecimaldot]{babel} % document language (Spanish)
+% Rutas de búsqueda para \includegraphics: TODAS las figuras se
+% mantienen como copias locales en 02_Images/ (organizadas por tipo)
+% para que el documento sea autocontenido y portable.
+\graphicspath{
+  {02_Images/}{../02_Images/}
+  {02_Images/heatmaps/}{../02_Images/heatmaps/}
+  {02_Images/training/}{../02_Images/training/}
+  {02_Images/optuna/}{../02_Images/optuna/}
+  {02_Images/per_sequence/}{../02_Images/per_sequence/}
+  {02_Images/process/}{../02_Images/process/}
+  {02_Images/baseline/}{../02_Images/baseline/}
+  {02_Images/agent_internals/}{../02_Images/agent_internals/}
+  {02_Images/ood_curves/}{../02_Images/ood_curves/}
+}
 \usepackage[margin=2.54cm]{geometry} % sets margins for the document
 \usepackage{setspace}
 \linespread{1.5} % line spread for the document
@@ -72,8 +86,8 @@
 
 % ----- Sources -----
 \usepackage{natbib}
-\bibliographystyle{apa} % citation and reference list style
-\def\biblio{\clearpage\bibliographystyle{apa}\bibliography{00_Main/References.bib}} % defines the \biblio command used for referencing in subfiles - DO NOT CHANGE
+\bibliographystyle{apalike} % citation and reference list style
+\def\biblio{\clearpage\bibliographystyle{apalike}\bibliography{00_Main/References.bib}} % defines the \biblio command used for referencing in subfiles - DO NOT CHANGE
 
 
 % ----- Header and footer -----
@@ -105,7 +119,7 @@
 
 \pagenumbering{gobble} % suppress page numbering
 \thispagestyle{plain} % suppress header
-\clearpage\mbox{}\clearpage % add blank page
+\clearpage
 
 \pagenumbering{roman} % starting roman page numbering
 % \newpage
@@ -113,7 +127,7 @@
 %     \subfile{01_Chapters/Introduction}
 
 \newpage
-\section*{Abstract}
+\section*{Resumen}
     \subfile{01_Chapters/00Abstract}
 
 \newpage
@@ -133,37 +147,37 @@
 \setcounter{page}{1} % sets pagecounter to 1
 \setcounter{tocdepth}{0}
 
-\section{Introduction} % section/chapter name
+\section{Introducción} % section/chapter name
     \subfile{01_Chapters/01Introduction} % including the subfile for the chapter
 \clearpage % clears the page after the chapter is finished
 
-\section{Background}
+\section{Marco Teórico}
     \subfile{01_Chapters/02Background}
 \clearpage
 
 
-\section{State Of the Art}
+\section{Estado de la Cuestión}
     \subfile{01_Chapters/03StateOfTheArt}
 \clearpage
   
-\section{Materials And Methods}
+\section{Metodología}
     \subfile{01_Chapters/04Materials}
 \clearpage
 
-\section{Results}
+\section{Resultados y Solución}
     \subfile{01_Chapters/05Results}
 \clearpage
 
 
-\section{Discussion}
+\section{Discusión}
     \subfile{01_Chapters/06Discussion}
 \clearpage
 
-\section{Conclusion}
+\section{Conclusiones}
     \subfile{01_Chapters/07Conclusion}
 \clearpage
 
-\section{Acknowledgements}
+\section{Agradecimientos}
     \subfile{01_Chapters/Acknowledgement}
 \clearpage
 
@@ -172,15 +186,15 @@
 % \clearpage
 
 \newpage
-\renewcommand\refname{References} % name for the reference list
+\renewcommand\refname{Referencias Bibliográficas} % name for the reference list
 {\setstretch{1.0} % linespacing for the references
-\addcontentsline{toc}{section}{References} % to change the name of the references in the TOC
+\addcontentsline{toc}{section}{Referencias Bibliográficas} % to change the name of the references in the TOC
 \bibliography{00_Main/References.bib} % adds the references to the document
 }
 
 \newpage
-\renewcommand{\appendixpagename}{Appendix} % Heading of appendix
-\renewcommand{\appendixtocname}{Appendix} % name of appendix in TOC
+\renewcommand{\appendixpagename}{Apéndice} % Heading of appendix
+\renewcommand{\appendixtocname}{Apéndice} % name of appendix in TOC
 \appendixpage 
 \addappheadtotoc
 

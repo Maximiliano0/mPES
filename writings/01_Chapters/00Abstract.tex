@@ -1,12 +1,46 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
-El Abstract puede estar en inglés y castellano, o solo en el idioma en que está escrito el PF.  Es un resumen del trabajo en sí mismo.  Lo que hay que hacer es poder resumirlo incluyendo todo, el qué, cómo, qué resultados y qué conclusiones.  Tiene que estar siempre.
 
+Esta tesis presenta el \emph{framework} \textbf{mPES} (\emph{Multiple
+Pandemic Experiment Scenario}), un entorno de trabajo multi-paquete
+desarrollado \'integramente en Python y dise\~nado como un ecosistema
+de experimentaci\'on para evaluar el rendimiento de agentes de
+Inteligencia Artificial. El objetivo central de la investigaci\'on es
+\emph{investigar y evaluar emp\'iricamente} c\'omo diversas
+arquitecturas de Aprendizaje por Refuerzo (\emph{Reinforcement
+Learning}, RL) pueden optimizar la toma de decisiones en la
+asignaci\'on de recursos cr\'iticos durante crisis sanitarias.
 
+Para ello, el estudio compara \textbf{ocho enfoques algor\'itmicos}
+que abarcan desde m\'etodos tabulares cl\'asicos hasta arquitecturas
+de vanguardia como Transformers causales y \emph{ensembles} de redes
+profundas. El n\'ucleo de la propuesta reside en superar la
+``miop\'ia'' de los algoritmos tradicionales mediante el modelado de
+trayectorias epidemiol\'ogicas como secuencias temporales,
+integrando adem\'as la Cuantificaci\'on de Incertidumbre
+(\emph{Uncertainty Quantification}, UQ) basada en la Entrop\'ia de
+Shannon para dotar al sistema de transparencia y confiabilidad.
 
+En \'ultima instancia, esta investigaci\'on busca \emph{generalizar}
+el problema de la distribuci\'on de recursos limitados ante din\'amicas
+de propagaci\'on complejas y no lineales. Los resultados emp\'iricos
+sobre un \emph{benchmark} de $22$ escenarios \emph{out-of-distribution}
+($n = 64$ secuencias por escenario) confirman \emph{parcialmente} la
+hip\'otesis de trabajo: el Transformer causal (\texttt{pes\_trf},
+$\bar{r} = 0{,}927$) es la mejor arquitectura \emph{individual},
+pero el \emph{ensemble} ponderado (\texttt{pes\_ens}, $\bar{r} =
+0{,}937$, $\sigma = 0{,}035$) lo supera como sistema desplegable.
+Todos los hiperpar\'ametros fueron sintonizados mediante
+Optimizaci\'on Bayesiana con el estimador estructurado en \'arbol de
+Parzen (TPE).
 
-\par\vspace*{\fill} % Moves keywords to the bottom of the page
-\textbf{\textit{Keywords --}} hardship, engineering, tired, verytired % Add you all the keywords associated with your thesis here
+\par\vspace{0.5\baselineskip}
+\noindent\textbf{Palabras clave:} mPES, Aprendizaje por Refuerzo,
+Inteligencia Artificial, Transformer Causal, \emph{Deep Ensembles},
+Cuantificaci\'on de Incertidumbre, Entrop\'ia de Shannon,
+Optimizaci\'on Bayesiana, Asignaci\'on de Recursos, Secuencias
+Temporales, Evaluaci\'on \emph{Out-of-Distribution}.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
+
