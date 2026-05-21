@@ -91,7 +91,8 @@ y combinaciones extremas conjuntas.
   \includegraphics[width=\linewidth]{per_sequence_4panel.pdf}
   \caption{Desempe\~no por secuencia para cuatro familias OOD del
   benchmark ($n = 64$ secuencias por panel, ordenadas de menor a
-  mayor retorno). El \emph{ensemble} \texttt{pes\_ens} se traza en
+  mayor desempe\~no normalizado $\bar{r}$, v\'ease
+  Ec.~\eqref{eq:mean-perf}). El \emph{ensemble} \texttt{pes\_ens} se traza en
   negro y con trazo m\'as grueso para destacar su rol de cota
   superior frente a los siete paquetes individuales.}
   \label{fig:per-sequence}
@@ -114,22 +115,22 @@ de validaci\'on, garantizando una comparaci\'on rigurosa
 \centering
 \caption{Las ocho arquitecturas evaluadas en el \emph{workspace}
 \texttt{mPES}. Las dos \'ultimas filas corresponden a las
-extensiones recurrente y de \emph{ensemble} integradas en el
-benchmark final.}
+extensiones Transformer causal y al \emph{ensemble} por
+\emph{soft voting} integradas en el benchmark final.}
 \label{tab:packages}
 \small
 \begin{tabular}{@{}lll@{}}
 \toprule
 \textbf{Paquete} & \textbf{Familia} & \textbf{Caracter\'istica distintiva} \\
 \midrule
-\texttt{pes\_base} & Tabular & Q-Learning de referencia~\citep{Watkins1992}.\\
+\texttt{pes\_base} & Tabular & Q-Learning de referencia.\\
 \texttt{pes\_ql}   & Tabular & Q-Learning + Optuna/TPE.\\
 \texttt{pes\_dql}  & Tabular & Double Q-Learning + PBRS + $\varepsilon$ \emph{warm-up}.\\
-\texttt{pes\_dqn}  & Profundo & DQN con \emph{replay} y red objetivo~\citep{Mnih2015}.\\
-\texttt{pes\_rdqn} & Profundo & Recurrent DQN con codificador LSTM~\citep{Hausknecht2015,Hochreiter1997}.\\
-\texttt{pes\_a2c}  & Profundo & Actor--Cr\'itico (A2C)~\citep{Mnih2016}.\\
-\texttt{pes\_trf}  & Profundo & Codificador Transformer causal sobre historia~\citep{Vaswani2017}.\\
-\texttt{pes\_ens}  & Profundo & \emph{Soft voting} de DQN+RDQN+TRF~\citep{Lakshminarayanan2017}.\\
+\texttt{pes\_dqn}  & Profundo & DQN con \emph{replay} y red objetivo.\\
+\texttt{pes\_rdqn} & Profundo & Recurrent DQN con codificador LSTM.\\
+\texttt{pes\_a2c}  & Profundo & Actor--Cr\'itico (A2C).\\
+\texttt{pes\_trf}  & Profundo & Codificador Transformer causal sobre historia.\\
+\texttt{pes\_ens}  & Profundo & \emph{Soft voting} de DQN+RDQN+TRF.\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -143,7 +144,7 @@ hiperpar\'ametros fijos; sirve de l\'inea de base inferior.
 muestrea $\alpha,\gamma$ y la pol\'itica de $\varepsilon$.
 
 \paragraph{\texttt{pes\_dql}.} Implementa Double
-Q-Learning~\citep{Hasselt2010}, una fase de calentamiento de
+Q-Learning~\citep{Hasselt2010}, una fase de \emph{warm-up} de
 $\varepsilon$ y \emph{Potential-Based Reward Shaping}
 $\Phi(s) = -S$~\citep{Ng1999}, especialmente \'util para acelerar la
 convergencia ante una se\~nal de recompensa concentrada al final del
@@ -159,7 +160,7 @@ arquitectura concreta es
 \texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\! \texttt{Dense}(11)$,
 operando sobre el vector normalizado
 $s = [r/30,\, t/10,\, \sigma/9]$. La interpolaci\'on entre estados
-contiguos elimina la maldici\'on de la dimensionalidad que aquejaba a
+contiguos elimina la maldici\'on de la dimensionalidad que aqueja a
 la familia tabular.
 
 \paragraph{\texttt{pes\_rdqn}.} Variante recurrente que incorpora
@@ -230,8 +231,9 @@ $\sigma_{\mathrm{ens}}^2 = \bar{\sigma}^2 \bigl(\rho +
 Cada paquete profundo expone un m\'odulo \texttt{optimize\_*.py} que
 ejecuta un estudio Optuna con estimador estructurado en \'arbol de
 Parzen (TPE)~\citep{Bergstra2011,Snoek2012,Akiba2019}. La funci\'on
-objetivo $f(\boldsymbol{\theta})$ es la mediana del retorno
-descontado sobre las $n = 64$ secuencias de validaci\'on. Los
+objetivo $f(\boldsymbol{\theta})$ es la \emph{performance normalizada
+media} $\bar{r}$ (Ec.~\eqref{eq:mean-perf}) sobre las $n = 64$
+secuencias de validaci\'on. Los
 estudios incluyen \emph{pruning} mediante \texttt{MedianPruner}
 para descartar tempranamente configuraciones inviables y conservan
 el almacenamiento SQLite (\texttt{optuna\_storage.db}) en
@@ -304,9 +306,11 @@ de evaluaci\'on OOD.
     \label{fig:proc-trf}
   \end{subfigure}
   \caption{Curvas de recompensa acumulada por episodio durante el
-  entrenamiento de los cuatro modelos profundos y tabular
-  optimizados. Cada panel se obtuvo con los hiperpar\'ametros
-  resultantes del estudio Optuna correspondiente.}
+  entrenamiento de cuatro modelos optimizados: uno tabular
+  (\texttt{pes\_dql}) y tres profundos (\texttt{pes\_dqn},
+  \texttt{pes\_a2c} y \texttt{pes\_trf}). Cada panel se obtuvo con
+  los hiperpar\'ametros resultantes del estudio Optuna
+  correspondiente.}
   \label{fig:training-process}
 \end{figure}
 
@@ -325,22 +329,10 @@ sobre el azar}.
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{random_player_sequence_performance.png}
-    \caption{Desempe\~no por secuencia.}
-    \label{fig:rand-seq}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{random_player_normalised_performance.png}
-    \caption{Desempe\~no normalizado acumulado.}
-    \label{fig:rand-norm}
-  \end{subfigure}
-  \caption{Agente aleatorio de referencia evaluado sobre las
-  $64$ secuencias de validaci\'on. Sirve como cota inferior para
-  interpretar los resultados de los modelos entrenados.}
+  \includegraphics[width=\linewidth]{random_player_sequence_performance.png}
+  \caption{Agente aleatorio de referencia: desempe\~no por secuencia
+  sobre las $64$ secuencias de validaci\'on. Sirve como cota inferior
+  para interpretar los resultados de los modelos entrenados.}
   \label{fig:baseline-random}
 \end{figure}
 
@@ -385,19 +377,132 @@ confianza~\citep{Boldt2015,Fleming2024}.
   \end{subfigure}
   \caption{Trazas internas del agente \texttt{pes\_trf} durante el
   entrenamiento. Los paneles superiores ilustran la se\~nal de
-  confianza utilizada en el Cap.~\ref{sec:discussion}.}
+  confianza (\emph{softmax} cruda y remapeada al espacio de
+  severidad) utilizada en el Cap.~\ref{sec:discussion}; los
+  paneles inferiores muestran el desempe\~no acumulado y su
+  versi\'on normalizada $\bar{r}$ a lo largo de las secuencias
+  de validaci\'on.}
   \label{fig:trf-internals}
 \end{figure}
+
+\subsection{Cat\'alogo de escenarios OOD}\label{sec:scenario-catalogue}
+
+El banco de pruebas \texttt{general/} (v\'ease
+\texttt{general/README.md}) define un \textbf{cat\'alogo de
+$22$ escenarios} que estresan a cada modelo entrenado a lo largo
+de cuatro ejes de variaci\'on con respecto a la distribuci\'on
+emp\'irica de entrenamiento (etiquetada \texttt{sev\_empirical}).
+El orquestador (\texttt{general/scripts/orchestrate.py}) ejecuta
+el producto cartesiano $\{7~\text{paquetes}\} \times
+\{22~\text{escenarios}\} = 154~\text{celdas}$, evaluando
+$n = 64$ secuencias por celda con semilla fija $42$ --- lo que
+garantiza que los siete modelos enfrenten exactamente las mismas
+secuencias dentro de cada escenario. La evaluaci\'on es de pura
+\emph{inferencia}: ning\'un paquete se reentrena durante el
+barrido.
+
+Las cuatro familias responden a hip\'otesis cualitativamente
+distintas:
+
+\begin{itemize}
+  \item \textbf{Severidad ($10$ escenarios).} Sustituyen la
+  distribuci\'on emp\'irica de severidades por familias param\'etricas
+  (uniforme, gaussianas truncadas a baja/media/alta intensidad,
+  Weibull con cola pesada, Beta sesgadas, mezcla bimodal) y un
+  caso \emph{out-of-support} (\texttt{sev\_extrapolate\_high},
+  $U(10, 12)$, fuera del rango $\{0, \ldots, 9\}$ de entrenamiento).
+  Aislan la \emph{covariate shift} sobre la se\~nal de entrada
+  manteniendo la estructura temporal.
+  \item \textbf{Longitud ($5$ escenarios).} Modifican la
+  distribuci\'on de longitudes de secuencia (todas cortas,
+  todas largas, geom\'etrica, Poisson y un caso extrapolante
+  con $U\{11, \ldots, 20\}$ fuera del rango de entrenamiento
+  $[3, 10]$). Estresan la capacidad de los agentes con memoria
+  (\texttt{pes\_rdqn}, \texttt{pes\_trf}) para sostener decisiones
+  consistentes sobre horizontes m\'as largos.
+  \item \textbf{Conjunta ($4$ escenarios).} Combinan severidad y
+  longitud en pares correlacionados (alta--larga, baja--corta,
+  uniforme--geom\'etrica y un escenario doblemente extrapolante).
+  Permiten observar interacciones no lineales entre ambos ejes que
+  no son visibles al variarlos por separado.
+  \item \textbf{Estructural ($3$ escenarios).} Reconfiguran la
+  jerarqu\'ia del benchmark (n\'umero de bloques y secuencias por
+  bloque), incluyendo una variante con $n = 128$ secuencias totales
+  (el doble del presupuesto nominal). Examinan la robustez ante
+  cambios en la estad\'istica de agregaci\'on temporal.
+\end{itemize}
+
+La Tabla~\ref{tab:scenarios} enumera el cat\'alogo completo.
+La distribuci\'on \texttt{sev\_empirical} act\'ua como referencia
+\emph{in-distribution} frente a la cual se calculan dos m\'etricas
+de degradaci\'on por paquete: la \emph{degradaci\'on OOD}
+$\Delta\bar{r} = \bar{r}_{\text{baseline}} - \bar{r}_{\text{celda}}$
+y la divergencia KL entre las distribuciones emp\'iricas de
+acciones de la celda y de la baseline. La significancia se evalua
+con un test $t$ de Welch a dos colas y el tama\~no del efecto
+con $d$ de Cohen.
+
+\begin{table}[h!]
+\centering
+\caption{Cat\'alogo de $22$ escenarios OOD del banco de pruebas
+\texttt{general/}. La fila \texttt{sev\_empirical} act\'ua como
+distribuci\'on \emph{in-distribution} de referencia. Los escenarios
+con etiqueta \texttt{extrapolate} caen fuera del soporte de
+entrenamiento (severidad en $[10, 12]$ o longitud en $\{11, \ldots, 20\}$).}
+\label{tab:scenarios}
+\small
+\begin{tabular}{@{}llp{0.55\linewidth}@{}}
+\toprule
+\textbf{Familia} & \textbf{Identificador} & \textbf{Descripci\'on} \\
+\midrule
+baseline      & \texttt{sev\_empirical}        & Distribuci\'on emp\'irica de entrenamiento (in-distribution).\\
+\midrule
+severidad     & \texttt{sev\_uniform}          & $U(0, 9)$, sin estructura modal.\\
+severidad     & \texttt{sev\_gauss\_low}       & $\mathcal{N}(2, 1{,}5)$ truncada, brotes leves.\\
+severidad     & \texttt{sev\_gauss\_mid}       & $\mathcal{N}(4{,}5, 2{,}0)$ truncada, brotes medios.\\
+severidad     & \texttt{sev\_gauss\_high}      & $\mathcal{N}(7, 1{,}5)$ truncada, brotes intensos.\\
+severidad     & \texttt{sev\_weibull}          & Weibull($k=1{,}5$), cola superior pesada.\\
+severidad     & \texttt{sev\_beta\_lowskew}    & $9 \cdot \mathrm{Beta}(2, 5)$, sesgo bajo.\\
+severidad     & \texttt{sev\_beta\_highskew}   & $9 \cdot \mathrm{Beta}(5, 2)$, sesgo alto.\\
+severidad     & \texttt{sev\_bimodal}          & $0{,}5\,\mathcal{N}(2, 1) + 0{,}5\,\mathcal{N}(7, 1)$.\\
+severidad     & \texttt{sev\_extrapolate\_high}& OOD: $U(10, 12)$, fuera del soporte.\\
+\midrule
+longitud      & \texttt{len\_all\_short}       & Todas las secuencias con longitud $3$.\\
+longitud      & \texttt{len\_all\_long}        & Todas las secuencias con longitud $10$.\\
+longitud      & \texttt{len\_geometric}        & $\mathrm{Geom}(p = 0{,}2)$, recortada a $[3, 10]$.\\
+longitud      & \texttt{len\_poisson}          & $\mathrm{Poisson}(\lambda = 5)$, recortada a $[3, 10]$.\\
+longitud      & \texttt{len\_extrapolate\_long}& OOD: $U\{11, \ldots, 20\}$.\\
+\midrule
+conjunta      & \texttt{joint\_high\_long}     & Gaussiana alta $\times$ todas-largas.\\
+conjunta      & \texttt{joint\_low\_short}     & Gaussiana baja $\times$ todas-cortas.\\
+conjunta      & \texttt{joint\_uniform\_geom}  & Uniforme $\times$ geom\'etrica.\\
+conjunta      & \texttt{joint\_extrap\_both}   & OOD severidad $\times$ OOD longitud.\\
+\midrule
+estructural   & \texttt{struct\_few\_long\_blocks}  & $4$ bloques $\times$ $16$ secuencias.\\
+estructural   & \texttt{struct\_many\_short\_blocks}& $16$ bloques $\times$ $4$ secuencias.\\
+estructural   & \texttt{struct\_more\_total}        & $8$ bloques $\times$ $16$ secuencias ($n = 128$).\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Protocolo de entrenamiento y evaluaci\'on}
 
 \begin{enumerate}
-\item \textbf{B\'usqueda Bayesiana.} 100--300 \emph{trials} Optuna por
-paquete (las redes profundas requieren m\'as \emph{trials} por su
-mayor dimensi\'on de hiperpar\'ametros).
-\item \textbf{Reentrenamiento final.} El mejor conjunto
-$\boldsymbol{\theta}^{*}$ se reentrena desde cero por
-$E_{\max} = 2000$ episodios.
+\item \textbf{B\'usqueda Bayesiana.} Entre $30$ y $100$ \emph{trials}
+Optuna/TPE por paquete seg\'un la dimensi\'on del espacio de
+hiperpar\'ametros: \texttt{pes\_ql} (100), \texttt{pes\_dqn}
+(60), \texttt{pes\_rdqn} (60), \texttt{pes\_trf} (60),
+\texttt{pes\_dql} (50) y \texttt{pes\_a2c} (30). Estos valores
+por defecto son configurables v\'ia argumento CLI.
+\item \textbf{Reentrenamiento final.} Con el mejor conjunto de
+hiperpar\'ametros $\boldsymbol{\theta}^{*}$, cada paquete reentrena
+desde cero usando el presupuesto de episodios fijado por el mejor
+\emph{trial}: \texttt{pes\_ql} ($900\,000$), \texttt{pes\_dql}
+($860\,000$), \texttt{pes\_a2c} ($250\,000$) y
+\texttt{pes\_dqn}/\texttt{pes\_rdqn}/\texttt{pes\_trf}
+($175\,000$ cada uno). \texttt{pes\_base}, al no disponer de
+optimizaci\'on, entrena con par\'ametros fijos durante $20\,000$
+episodios.
 \item \textbf{Evaluaci\'on \emph{out-of-policy}.} Se evaluan las
 $n = 64$ secuencias de validaci\'on con la pol\'itica
 $\varepsilon$-greedy ($\varepsilon = 0$).
@@ -407,15 +512,6 @@ Cohen~\citep{Cohen1988}, $t$/$p$ de Welch~\citep{Welch1947} y
 divergencia KL entre los histogramas de acci\'on, agregadas como
 matrices y \emph{heatmaps} (Cap.~\ref{sec:results}).
 \end{enumerate}
-
-\subsection{Generaci\'on autom\'atica del reporte}
-
-El orquestador \texttt{general/scripts/orchestrate.py} ejecuta todos
-los paquetes, agrega resultados con \texttt{aggregate.py}, produce
-los \emph{heatmaps} con \texttt{plot\_matrix.py} y emite el reporte
-final \texttt{benchmark\_report.md} mediante \texttt{report.py}. Esto
-garantiza que cada cifra reportada en el Cap.~\ref{sec:results}
-provenga de un pipeline reproducible y versionado.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

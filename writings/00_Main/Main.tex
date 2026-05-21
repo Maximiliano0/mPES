@@ -113,7 +113,7 @@
 
 \def\biblio{} % resets the biblio command, if not here a new reference list will be produced after every chapter
 
-\include{01_Chapters/000NHH-Frontpage}
+\include{../01_Chapters/000NHH-Frontpage}
 \restoregeometry % restores the margins after frontpage
 %\nocite{*} % uncomment if you want all sources to be printed in the reference list, including the ones which are not cited in the text 
 
@@ -124,11 +124,11 @@
 \pagenumbering{roman} % starting roman page numbering
 % \newpage
 % \section*{Introduction}
-%     \subfile{01_Chapters/Introduction}
+%     \subfile{../01_Chapters/Introduction}
 
 \newpage
 \section*{Resumen}
-    \subfile{01_Chapters/00Abstract}
+    \subfile{../01_Chapters/00Abstract}
 
 \newpage
 \tableofcontents
@@ -148,37 +148,37 @@
 \setcounter{tocdepth}{0}
 
 \section{Introducción} % section/chapter name
-    \subfile{01_Chapters/01Introduction} % including the subfile for the chapter
+    \subfile{../01_Chapters/01Introduction} % including the subfile for the chapter
 \clearpage % clears the page after the chapter is finished
 
 \section{Marco Teórico}
-    \subfile{01_Chapters/02Background}
+    \subfile{../01_Chapters/02Background}
 \clearpage
 
 
 \section{Estado de la Cuestión}
-    \subfile{01_Chapters/03StateOfTheArt}
+    \subfile{../01_Chapters/03StateOfTheArt}
 \clearpage
   
 \section{Metodología}
-    \subfile{01_Chapters/04Materials}
+    \subfile{../01_Chapters/04Materials}
 \clearpage
 
-\section{Resultados y Solución}
-    \subfile{01_Chapters/05Results}
+\section{Resultados}
+    \subfile{../01_Chapters/05Results}
 \clearpage
 
 
 \section{Discusión}
-    \subfile{01_Chapters/06Discussion}
+    \subfile{../01_Chapters/06Discussion}
 \clearpage
 
 \section{Conclusiones}
-    \subfile{01_Chapters/07Conclusion}
+    \subfile{../01_Chapters/07Conclusion}
 \clearpage
 
 \section{Agradecimientos}
-    \subfile{01_Chapters/Acknowledgement}
+    \subfile{../01_Chapters/Acknowledgement}
 \clearpage
 
 % \section{Acknowledgements}
@@ -189,7 +189,7 @@
 \renewcommand\refname{Referencias Bibliográficas} % name for the reference list
 {\setstretch{1.0} % linespacing for the references
 \addcontentsline{toc}{section}{Referencias Bibliográficas} % to change the name of the references in the TOC
-\bibliography{00_Main/References.bib} % adds the references to the document
+\bibliography{References.bib} % adds the references to the document
 }
 
 \newpage
@@ -199,7 +199,7 @@
 \addappheadtotoc
 
 \begin{appendices}
-    \subfile{01_Chapters/Appendix}
+    \subfile{../01_Chapters/Appendix}
 \end{appendices}
 
 

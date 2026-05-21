@@ -20,7 +20,7 @@ secci\'on discute las implicaciones m\'as relevantes.
 
 La din\'amica de severidad
 $S_{t+1} = \max(0, \beta S_t - \alpha a_t)$ (Ec.~\ref{eq:transicion})
-es ex\'oticamente \emph{ag\'rega} en el tiempo: un d\'eficit de
+es agregada en el tiempo: un d\'eficit de
 recursos en $t$ no se traduce en costo inmediato, sino en una
 amplificaci\'on geom\'etrica sobre los \emph{trials} siguientes. Esta
 estructura penaliza fuertemente a los m\'etodos ``mi\'opes'' (tabular
@@ -57,26 +57,6 @@ $1 - H_{\mathrm{norm}}(\pi(a \mid s))$, calculable en cualquier
 modelo con salida \texttt{softmax}, sin necesidad de hardware de
 neuroimagen.
 
-\subsection{Del EEG al \emph{softmax}: validez externa}
-
-La transici\'on del paradigma neurocognitivo (Oxford, ds004477) al
-algor\'itmico (mPES) admite dos lecturas complementarias:
-
-\begin{enumerate}
-    \item \textbf{Operacional.} Permite construir sistemas de soporte
-    de decisi\'on que comunican su confianza al humano supervisor,
-    abilitando \emph{human-in-the-loop} significativo. Cuando el
-    agente reporta $H_{\mathrm{norm}} > 0{,}7$, el sistema puede
-    delegar al operador humano la decisi\'on, alineando IA y
-    epidemiolog\'ia~\citep{Kuhl2021}.
-    \item \textbf{Te\'orica.} Aporta evidencia computacional a la
-    hip\'otesis de que la confianza es un fen\'omeno
-    \emph{representacional}, no exclusivamente neuronal: cualquier
-    sistema que mantenga una distribuci\'on de creencias sobre sus
-    propias acciones genera, naturalmente, una se\~nal de UQ
-    interpretable~\citep{Chen2025,Pei2021}.
-\end{enumerate}
-
 \subsection{Limitaciones}
 
 \begin{itemize}
@@ -92,17 +72,6 @@ algor\'itmico (mPES) admite dos lecturas complementarias:
     \texttt{pes\_dqn}, y \texttt{pes\_ens} suma el costo de
     inferencia de sus tres miembros; ambos factores pueden ser
     decisivos en despliegues con presupuesto limitado.
-    \item \textbf{Simplicidad del entorno.} El \emph{Pandemic
-    Scenario} es un proxy abstracto; la validaci\'on externa contra
-    datos reales (p.~ej.~series temporales de hospitalizaciones)
-    queda como trabajo futuro.
-    \item \textbf{$H$ como UQ.} La entrop\'ia de Shannon es una
-    medida \emph{epist\'emica} sobre la pol\'itica, no sobre la
-    funci\'on de valor; refinamientos como la entrop\'ia jer\'arquica
-    de Pei \emph{et al.}~\citep{Pei2021}, \emph{MC
-    Dropout}~\citep{Gal2016} o la varianza emp\'irica entre miembros
-    del ensemble~\citep{Lakshminarayanan2017} merecen una
-    evaluaci\'on dedicada.
 \end{itemize}
 
 \subsection{El ensemble como mejor sistema desplegable}\label{sec:ens-best}
@@ -119,8 +88,7 @@ sugieren lo contrario:
     peor-caso m\'as alto y, por tanto, en menor riesgo en las
     decisiones cr\'iticas.
     \item \textbf{Descomposici\'on sesgo--varianza.} El
-    promediado~\citep{Lakshminarayanan2017,Dietterich2000} no
-    elimina el sesgo del miembro mediano pero reduce la varianza
+    promediado no    elimina el sesgo del miembro mediano pero reduce la varianza
     en un factor $\rho + (1 - \rho)/K$, donde $\rho$ es la
     correlaci\'on entre miembros y $K = 3$. En mPES los miembros
     son arquitect\'onicamente distintos
@@ -149,12 +117,12 @@ de ambos). Estas tres condiciones constituyen el verdadero
 debe priorizarlas frente a las dem\'as celdas. Las columnas
 estructurales (\texttt{struct\_*}), por el contrario, exhiben
 degradaci\'on cero y act\'uan como banda de control que valida la
-invarianza del propio \emph{arn\'es} de evaluaci\'on antes que la
-robustez del modelo.
+    invarianza del propio \emph{esquema} de evaluaci\'on antes que la
+    robustez del modelo.
 
 \subsection{El falso aprobado de \texttt{pes\_a2c}}\label{sec:a2c-collapse}
 
-El paquete \texttt{pes\_a2c} alcanza una recompensa media
+El paquete \texttt{pes\_a2c} alcanza una performance media
 competitiva ($\bar{r} \approx 0{,}887$) pero la divergencia KL de su
 distribuci\'on de acci\'on respecto del agente bajo perturbaciones
 de severidad es esencialmente cero
@@ -197,31 +165,6 @@ sobrecoste de inferencia 3$\times$. En sistemas con presupuesto
 computacional estricto, el camino \texttt{pes\_dql} + un proxy
 entr\'opico simple ofrece la mejor relaci\'on coste--robustez
 entre los modelos tabulares.
-
-\subsection{Comparaci\'on con modelos epidemiol\'ogicos cl\'asicos}\label{sec:vs-classical}
-
-Los modelos compartimentales SIR, SEIR y sus variantes
-estoc\'asticas~\citep{Kuhl2021,Csefalvay2023} dominan a\'un la
-pr\'actica de la epidemiolog\'ia matem\'atica. Su fortaleza es la
-interpretabilidad: cada par\'ametro tiene una lectura mecanicista
-(tasa de contacto, periodo infeccioso, mortalidad por edad) y
-permite a las autoridades sanitarias razonar sobre el efecto de
-una intervenci\'on antes de aplicarla. Su debilidad,
-reiteradamente se\~nalada por la pandemia de COVID-19, es la
-rigidez: requieren especificaci\'on explicit\'a de la estructura
-de transici\'on y se degradan r\'apido frente a din\'amicas no
-modelizadas (nuevas variantes, comportamientos sociales
-emergentes, cambios de pol\'itica). El enfoque RL adoptado en
-esta tesis es complementario en lugar de sustitutivo: el agente
-aprende una pol\'itica \emph{libre de modelo} sobre un simulador
-que s\'i incorpora la f\'isica del compartimentalismo, y la
-entrop\'ia de su salida \emph{softmax} act\'ua como una se\~nal
-de alarma cuando la trayectoria observada se aparta de las
-trayectorias vistas en entrenamiento. Una integraci\'on natural,
-esbozada por Hamida \emph{et al.}~\citep{Hamida2024}, ser\'ia
-acoplar el agente RL como m\'odulo de control sobre un n\'ucleo
-SEIR calibrado, manteniendo la interpretabilidad del modelo
-cl\'asico y la adaptabilidad del agente.
 
 \subsection{Amenazas a la validez del estudio}\label{sec:threats}
 

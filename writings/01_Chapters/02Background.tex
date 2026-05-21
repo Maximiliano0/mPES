@@ -10,8 +10,7 @@ profunda de funciones, codificadores recurrentes y basados en
 atenci\'on, optimizaci\'on bayesiana de hiperpar\'ametros y, finalmente,
 la Entrop\'ia de Shannon como m\'etrica de Cuantificaci\'on de
 Incertidumbre (UQ). El tratamiento es deliberadamente compacto; las
-referencias can\'onicas son Sutton \& Barto~\citep{SuttonBarto2018} y,
-para la programaci\'on din\'amica original, Bellman~\citep{Bellman1957}.
+referencias can\'onicas son Sutton \& Barto~\citep{SuttonBarto2018}.
 
 \subsection{Procesos de Decisi\'on de Markov}
 
@@ -52,7 +51,7 @@ Q(s, a) \;\leftarrow\; Q(s, a) \;+\; \alpha\,
 \label{eq:qlearning}
 \end{equation}
 
-con tasa de aprendizaje $\alpha$ y exploraci\'on $\varepsilon$-voraz.
+con tasa de aprendizaje $\alpha$ y exploraci\'on $\varepsilon$-\emph{greedy}.
 
 \subsubsection{Double Q-Learning}
 
@@ -210,15 +209,6 @@ significa que el modelo concentra toda su masa en una sola acci\'on
 como proxy de \emph{confianza metacognitiva} del agente, en analog\'ia
 con los marcadores neuronales de confianza identificados por Boldt
 \& Yeung~\citep{Boldt2015} y revisados por Fleming~\citep{Fleming2024}.
-Trabajos como el de Pei \emph{et al.}~\citep{Pei2021} formalizan la
-estimaci\'on de incertidumbre en Transformers mediante \emph{atenci\'on
-estoc\'astica jer\'arquica}, y Chen \emph{et al.}~\citep{Chen2025}
-ofrecen una panor\'amica accesible del campo UQ. Existen alternativas
-bayesianas aproximadas, como \emph{Monte~Carlo
-Dropout}~\citep{Gal2016}, y frecuentistas, como los \emph{deep
-ensembles}~\citep{Lakshminarayanan2017}, que tambi\'en producen
-se\~nales de incertidumbre interpretables y motivan el paquete
-\texttt{pes\_ens} de esta tesis.
 
 \subsection{Optimizaci\'on Bayesiana de Hiperpar\'ametros}
 
@@ -236,7 +226,7 @@ $p(x \mid y < y^{*})$ y $p(x \mid y \geq y^{*})$ con KDEs separados.
 \subsection{Comparaci\'on Estad\'istica de Agentes}
 
 Para comparar dos agentes estoc\'asticos $A$ y $B$ sobre $n$ semillas
-independientes reportamos tres cantidades:
+independientes se reportan tres cantidades:
 
 \begin{description}
     \item[Tama\~no del efecto.] $d$ de Cohen~\citep{Cohen1988},

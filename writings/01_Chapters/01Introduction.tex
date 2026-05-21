@@ -34,17 +34,15 @@ artefacto, reproducibilidad estricta, control de versiones del
 entorno computacional y validaci\'on \emph{out-of-distribution} como
 requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
 como un experimento aislado sino como un \emph{sistema} ---
-ocho arquitecturas, un arn\'es de evaluaci\'on com\'un y un
+ocho arquitecturas, un esquema de evaluaci\'on com\'un y un
 orquestador reproducible --- pensado para soportar la transici\'on
 entre la prueba acad\'emica y la herramienta operativa en dominios
-de alto impacto como el Aprendizaje Autom\'atico, la Miner\'ia de
-Datos y, prospectivamente, los Modelos de Lenguaje a Gran Escala
-(\emph{LLMs}).
+de alto impacto.
 
-\subsection{Definici\'on del Problema y Escenario Pand\'emico}\label{sec:problema}
+\subsection{Definici\'on del Problema}\label{sec:problema}
 
 El entorno computacional desarrollado modela una crisis donde un
-tomador de decisiones (que puede ser un agente de RL o un humano) debe
+tomador de decisiones (un agente de RL) debe
 distribuir un \emph{presupuesto limitado} de recursos m\'edicos o
 log\'isticos entre diversas ciudades afectadas simult\'aneamente. Las
 principales caracter\'isticas del escenario incluyen:
@@ -65,9 +63,12 @@ principales caracter\'isticas del escenario incluyen:
         S'_i \;=\; \max\bigl(0,\; \beta \cdot S_i - \alpha \cdot a_i\bigr),
         \label{eq:transicion-intro}
     \end{equation}
-    donde $\alpha = 0{,}4$ representa la efectividad de los recursos
-    asignados y $\beta = 1{,}4$ act\'ua como factor multiplicador de
-    la propagaci\'on del virus.
+    donde $S'_i$ es la severidad actualizada de la ciudad $i$,
+    $S_i$ su nivel de severidad en el paso actual, $a_i$ la cantidad
+    de recursos asignados a dicha ciudad, $\alpha = 0{,}4$ la
+    efectividad de la intervenci\'on (capacidad de los recursos para
+    reducir la severidad) y $\beta = 1{,}4$ el factor multiplicador
+    de propagaci\'on del virus \citep{BCINE2022}.
 \end{itemize}
 
 \subsection{Formulaci\'on del Proceso de Decisi\'on de Markov (MDP)}\label{sec:mdp}
@@ -79,10 +80,12 @@ eval\'uan sobre un \emph{benchmark} fijo de $64$ secuencias:
 
 \begin{itemize}
     \item \textbf{Espacio de estados} ($s$). El estado del sistema se
-    define por la combinaci\'on de los recursos disponibles restantes,
-    el n\'umero de ensayo actual (\emph{trial}) y la severidad
-    acumulada en las ciudades. Esto conforma un espacio discreto de
-    $3{.}410$ estados posibles.
+    define por tres componentes: los recursos disponibles restantes
+    en la secuencia ($0$--$30$, es decir $31$ valores), el índice
+    del ensayo actual (\emph{trial}, $0$--$10$, es decir $11$ valores)
+    y la severidad de la ciudad entrante ($0$--$9$, es decir $10$
+    valores enteros). El espacio resulta discreto con
+    $31 \times 11 \times 10 = 3{.}410$ estados posibles.
     \item \textbf{Espacio de acciones} ($a$). Se encuentra discretizado
     en un rango de $0$ a $10$ recursos posibles a asignar por cada
     turno de intervenci\'on.
@@ -131,13 +134,13 @@ Las principales contribuciones de esta tesis son:
     \emph{workspace} \textbf{mPES} --- donde \textbf{ocho variantes
     algor\'itmicas} comparten el mismo entorno Gymnasium, el mismo
     \emph{pipeline} de optimizaci\'on bayesiana con Optuna y el mismo
-    arn\'es de evaluaci\'on sobre $n = 64$ secuencias \emph{fijas}.
+    esquema de evaluaci\'on sobre $n = 64$ secuencias \emph{fijas}.
     \item Una comparaci\'on cuantitativa y estad\'isticamente
     fundamentada entre m\'etodos tabulares
     (\texttt{pes\_base}, \texttt{pes\_ql}, \texttt{pes\_dql}) y
     arquitecturas profundas (\texttt{pes\_dqn},
     \texttt{pes\_rdqn}, \texttt{pes\_a2c}, \texttt{pes\_trf},
-    \texttt{pes\_ens}), abarcando los cuatro paradigmas dominantes
+    \texttt{pes\_ens}), abarcando los cuatro paradigmas 
     del RL contempor\'aneo: valor tabular, valor profundo,
     recurrente, gradiente de pol\'itica, atenci\'on causal y
     promediado de modelos.
@@ -152,9 +155,7 @@ Las principales contribuciones de esta tesis son:
     neurocognitivas de la confianza humana.
     \item Una implementaci\'on reproducible y multi-plataforma
     (Windows 10 y Ubuntu, Python 3.12, TensorFlow 2.21) liberada
-    junto con la tesis, con \emph{orquestador} autom\'atico
-    (\texttt{general/scripts/}) que regenera todas las matrices CSV,
-    los \emph{heatmaps} y el reporte ejecutivo en una sola llamada.
+    junto con la tesis.
 \end{enumerate}
 
 \subsection{Estructura del Documento}
