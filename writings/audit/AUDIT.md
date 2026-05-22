@@ -4,8 +4,8 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
-- ✅ Compilación exitosa — **52 páginas**.
-- 📄 PDF: `out/mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
+- ✅ Compilación exitosa — **53 páginas**.
+- 📄 PDF: `out/Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
 
 - ✅ Sin Overfull \hbox.
 
