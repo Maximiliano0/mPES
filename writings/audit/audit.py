@@ -20,6 +20,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 import unicodedata
 from pathlib import Path
 
@@ -30,10 +31,14 @@ WRITINGS_DIR  = Path(__file__).resolve().parent.parent
 MAIN_DIR      = WRITINGS_DIR / "00_Main"
 MAIN_TEX      = MAIN_DIR / "Main.tex"
 CHAPTERS_DIR  = WRITINGS_DIR / "01_Chapters"
+IMAGES_DIR    = WRITINGS_DIR / "02_Images"
 BIB_FILE      = MAIN_DIR / "References.bib"
 OUT_DIR       = WRITINGS_DIR / "out"
 AUDIT_FILE    = WRITINGS_DIR / "audit" / "AUDIT.md"
 FRONTPAGE_TEX = CHAPTERS_DIR / "000NHH-Frontpage.tex"
+
+#: Extensiones de imagen reconocidas por pdflatex (orden = preferencia).
+_IMAGE_EXTS = (".pdf", ".png", ".jpg", ".jpeg")
 
 # Slug de respaldo si no se puede extraer el título del .tex
 _FALLBACK_SLUG = "mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas"
@@ -189,6 +194,159 @@ def audit_key_concepts() -> dict[str, bool]:
     content = all_tex_content()
     return {name: bool(re.search(pat, content)) for name, pat in CONCEPTS.items()}
 
+
+def audit_duplicate_labels() -> list[str]:
+    """Detecta etiquetas (`\\label{}`) declaradas más de una vez."""
+    content = strip_comments(all_tex_content())
+    labels  = re.findall(r"\\label\{([^}]+)\}", content)
+    seen: dict[str, int] = {}
+    for lbl in labels:
+        seen[lbl] = seen.get(lbl, 0) + 1
+    return sorted(lbl for lbl, n in seen.items() if n > 1)
+
+
+def audit_todo_markers() -> list[tuple[str, int, str]]:
+    """Detecta marcadores TODO/FIXME/XXX en los `.tex`.
+
+    Returns
+    -------
+    list[tuple[str, int, str]]
+        Tuplas ``(ruta_relativa, nro_línea, texto)``.
+    """
+    # Coincide cuando la palabra clave va seguida de ':' o '(' (marcador real)
+    # o cuando aparece dentro de un comentario LaTeX (% ... TODO ...).
+    pat_inline  = re.compile(
+        r"\b(TODO|FIXME|XXX|HACK|REVISAR|PENDIENTE)\s*[:(]", re.IGNORECASE)
+    pat_comment = re.compile(
+        r"%[^%\n]*\b(TODO|FIXME|XXX|HACK|REVISAR|PENDIENTE)\b", re.IGNORECASE)
+    hits: list[tuple[str, int, str]] = []
+    for tex in [MAIN_TEX, *included_chapters()]:
+        for i, line in enumerate(read(tex).splitlines(), start=1):
+            if pat_inline.search(line) or pat_comment.search(line):
+                hits.append((
+                    tex.relative_to(WRITINGS_DIR).as_posix(),
+                    i,
+                    line.strip()[:120],
+                ))
+    return hits
+
+
+def audit_images() -> dict:
+    """Cruza `\\includegraphics{...}` con los archivos de ``02_Images/``.
+
+    Returns
+    -------
+    dict
+        - ``referenced``: nombres únicos referenciados desde los `.tex`.
+        - ``missing``: referencias sin archivo correspondiente.
+        - ``orphans``: archivos de imagen presentes pero no referenciados.
+    """
+    content = strip_comments(all_tex_content())
+    refs    = re.findall(
+        r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", content)
+    referenced = {Path(r.strip()).name for r in refs}
+
+    files_by_stem: dict[str, list[Path]] = {}
+    if IMAGES_DIR.exists():
+        for f in IMAGES_DIR.rglob("*"):
+            if f.is_file() and f.suffix.lower() in _IMAGE_EXTS:
+                files_by_stem.setdefault(f.stem, []).append(f)
+
+    def _resolved(name: str) -> bool:
+        """¿Existe un archivo cuyo nombre (con o sin ext.) coincida?"""
+        p = Path(name)
+        if p.suffix.lower() in _IMAGE_EXTS:
+            return any(f.name == p.name for f in IMAGES_DIR.rglob(p.name))
+        return p.stem in files_by_stem
+
+    missing = sorted({r for r in referenced if not _resolved(r)})
+
+    referenced_stems: set[str] = set()
+    for r in referenced:
+        referenced_stems.add(Path(r).stem)
+    orphan_files = sorted(
+        f.relative_to(WRITINGS_DIR).as_posix()
+        for stem, files in files_by_stem.items()
+        for f in files
+        if stem not in referenced_stems
+    )
+
+    return {
+        "referenced": sorted(referenced),
+        "missing":    missing,
+        "orphans":    orphan_files,
+    }
+
+##########################
+##  Limpieza            ##
+##########################
+
+#: Extensiones de artefactos que genera pdflatex / bibtex / latexmk.
+_ARTIFACT_EXTS = {
+    ".aux", ".log", ".bbl", ".blg",
+    ".toc", ".lof", ".lot", ".out", ".synctex.gz",
+    ".fdb_latexmk", ".fls",
+}
+
+#: Nombres exactos de archivos de basura del SO / editores.
+_GARBAGE_NAMES = {
+    "Thumbs.db", ".DS_Store", "desktop.ini",
+}
+
+#: Extensiones de basura del SO / editores / Python.
+_GARBAGE_EXTS = {
+    ".tmp", ".bak", ".swp", ".swo", ".pyc",
+}
+
+
+def clean_artifacts() -> list[str]:
+    """Elimina todos los archivos prescindibles dentro de ``writings/``.
+
+    Recorre recursivamente el árbol completo de ``writings/`` y borra:
+
+    * artefactos de compilación LaTeX/latexmk (``.aux``, ``.log``,
+      ``.bbl``, ``.blg``, ``.toc``, ``.lof``, ``.lot``, ``.out``,
+      ``.synctex.gz``, ``.fdb_latexmk``, ``.fls``);
+    * archivos con extensión ``.synctex(busy)`` (bloqueo de SyncTeX);
+    * basura del SO/editores (`Thumbs.db``, ``.DS_Store``,
+      ``desktop.ini``, ``.tmp``, ``.bak``, ``.swp``, ``.swo``);
+    * bytecode Python (``.pyc``) y directorios ``__pycache__`` vacíos.
+
+    Returns
+    -------
+    list[str]
+        Rutas relativas (respecto a ``writings/``) de los archivos
+        eliminados.
+    """
+    removed: list[str] = []
+
+    for f in WRITINGS_DIR.rglob("*"):
+        if not f.is_file():
+            continue
+        suffix = f.suffix.lower()
+        name   = f.name
+        if (suffix in _ARTIFACT_EXTS
+                or suffix in _GARBAGE_EXTS
+                or name in _GARBAGE_NAMES
+                or name.endswith(".synctex(busy)")):
+            try:
+                f.unlink()
+                removed.append(str(f.relative_to(WRITINGS_DIR)))
+            except PermissionError:
+                pass  # archivo en uso por otro proceso; se omite
+
+    # Eliminar directorios __pycache__ que hayan quedado vacíos
+    for d in WRITINGS_DIR.rglob("__pycache__"):
+        if d.is_dir() and not any(d.iterdir()):
+            try:
+                d.rmdir()
+                removed.append(str(d.relative_to(WRITINGS_DIR)) + "/")
+            except OSError:
+                pass
+
+    return removed
+
+
 ##########################
 ##  Compilación LaTeX   ##
 ##########################
@@ -271,6 +429,9 @@ def compile_latex() -> dict:
     log = log_file.read_text(encoding="utf-8", errors="replace") if log_file.exists() else ""
 
     overfull = re.findall(r"Overfull \\hbox[^\n]+", log)
+    underfull = re.findall(r"Underfull \\hbox[^\n]+", log)
+    warnings = re.findall(
+        r"^(?:LaTeX|Package [^\s]+) Warning:[^\n]+", log, re.MULTILINE)
     errors   = re.findall(r"^!.+", log, re.MULTILINE)
     pages    = None
     m_out    = re.search(r"Output written on[^\n]+", log)
@@ -279,16 +440,27 @@ def compile_latex() -> dict:
         pages = int(m_pg.group(1)) if m_pg else None
 
     # Mover artefactos de compilación a OUT_DIR
-    _ARTIFACT_PATTERNS = [
-        "*.aux", "*.log", "*.bbl", "*.blg",
-        "*.toc", "*.lof", "*.lot", "*.out", "*.synctex.gz",
-    ]
-    for pattern in _ARTIFACT_PATTERNS:
-        for f in MAIN_DIR.glob(pattern):
+    for f in MAIN_DIR.iterdir():
+        if f.suffix.lower() in _ARTIFACT_EXTS:
             dest = OUT_DIR / f.name
             if dest.exists():
                 dest.unlink()
-            shutil.move(str(f), str(dest))
+            # shutil.move puede fallar en Windows si el archivo está bloqueado
+            # (p.ej. LaTeX Workshop). En ese caso se intenta copiar y luego
+            # borrar; si tampoco es posible, se ignora silenciosamente.
+            try:
+                shutil.move(str(f), str(dest))
+            except PermissionError:
+                try:
+                    shutil.copy2(str(f), str(dest))
+                    for _ in range(3):
+                        try:
+                            f.unlink()
+                            break
+                        except PermissionError:
+                            time.sleep(0.5)
+                except PermissionError:
+                    pass  # archivo en uso; se queda en MAIN_DIR
 
     # Renombrar y mover PDF a OUT_DIR
     src_pdf  = MAIN_DIR / "Main.pdf"
@@ -306,6 +478,8 @@ def compile_latex() -> dict:
         "pages":      pages,
         "pdf_name":   pdf_name,
         "overfull":   overfull,
+        "underfull":  underfull,
+        "warnings":   warnings,
         "errors":     errors,
     }
 
@@ -348,6 +522,20 @@ def build_report(tex_result: dict | None) -> str:
             L.append("")
         else:
             L.append("- ✅ Sin Overfull \\hbox.\n")
+        if tex_result.get("underfull"):
+            L.append(f"- ⚠️ {len(tex_result['underfull'])} Underfull "
+                     f"\\hbox (mostrando primeros 5):\n")
+            L += [f"  - `{u}`" for u in tex_result["underfull"][:5]]
+            L.append("")
+        else:
+            L.append("- ✅ Sin Underfull \\hbox.\n")
+        if tex_result.get("warnings"):
+            L.append(f"- ⚠️ {len(tex_result['warnings'])} warnings "
+                     f"LaTeX/paquete (mostrando primeros 5):\n")
+            L += [f"  - `{w}`" for w in tex_result["warnings"][:5]]
+            L.append("")
+        else:
+            L.append("- ✅ Sin warnings LaTeX/paquete.\n")
 
     # 2 ── Figuras y tablas
     L.append("## 2. Figuras, tablas y numeración\n")
@@ -362,6 +550,32 @@ def build_report(tex_result: dict | None) -> str:
         L.append("")
     else:
         L.append("- ✅ Sin referencias rotas.\n")
+
+    dups = audit_duplicate_labels()
+    if dups:
+        L.append("**Etiquetas duplicadas (`\\label` repetidos):**\n")
+        L += [f"- `{d}`" for d in dups]
+        L.append("")
+    else:
+        L.append("- ✅ Sin etiquetas duplicadas.\n")
+
+    img = audit_images()
+    L.append(f"- Imágenes referenciadas con `\\includegraphics`: "
+             f"**{len(img['referenced'])}**.")
+    if img["missing"]:
+        L.append("**Imágenes referenciadas pero ausentes en "
+                 "`02_Images/`:**\n")
+        L += [f"- `{m}`" for m in img["missing"]]
+        L.append("")
+    else:
+        L.append("- ✅ Todas las imágenes referenciadas existen.\n")
+    if img["orphans"]:
+        L.append(f"**Imágenes huérfanas en `02_Images/` "
+                 f"(no referenciadas, {len(img['orphans'])} archivos):**\n")
+        L += [f"- `{o}`" for o in img["orphans"]]
+        L.append("")
+    else:
+        L.append("- ✅ Sin imágenes huérfanas.\n")
 
     # 3 ── Citas
     L.append("## 3. Citas y bibliografía (APA)\n")
@@ -405,6 +619,16 @@ def build_report(tex_result: dict | None) -> str:
           for concept, found in audit_key_concepts().items()]
     L.append("")
 
+    # 7 ── TODO / FIXME
+    L.append("## 7. Marcadores pendientes (TODO / FIXME)\n")
+    todos = audit_todo_markers()
+    if todos:
+        L.append(f"- ⚠️ {len(todos)} marcador(es) pendiente(s):\n")
+        L += [f"- `{p}:{n}` — {t}" for p, n, t in todos[:20]]
+        L.append("")
+    else:
+        L.append("- ✅ Sin marcadores TODO/FIXME pendientes.\n")
+
     return "\n".join(L)
 
 ##########################
@@ -417,7 +641,19 @@ def main() -> int:
         description="Auditoría programática de la tesis LaTeX.")
     parser.add_argument("--no-tex", action="store_true",
                         help="Omite la compilación pdflatex.")
+    parser.add_argument("--clean", action="store_true",
+                        help="Elimina artefactos de compilación y sale.")
     args = parser.parse_args()
+
+    if args.clean:
+        removed = clean_artifacts()
+        if removed:
+            print("Artefactos eliminados:")
+            for r in removed:
+                print(f"  {r}")
+        else:
+            print("No había artefactos que limpiar.")
+        return 0
 
     try:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")

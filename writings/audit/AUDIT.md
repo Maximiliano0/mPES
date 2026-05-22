@@ -4,10 +4,14 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
-- ✅ Compilación exitosa — **53 páginas**.
+- ✅ Compilación exitosa — **52 páginas**.
 - 📄 PDF: `out/mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
 
 - ✅ Sin Overfull \hbox.
+
+- ✅ Sin Underfull \hbox.
+
+- ✅ Sin warnings LaTeX/paquete.
 
 ## 2. Figuras, tablas y numeración
 
@@ -16,6 +20,31 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 - Referencias internas (`\ref`/`\autoref`/`\eqref`): **80**.
 
 - ✅ Sin referencias rotas.
+
+- ✅ Sin etiquetas duplicadas.
+
+- Imágenes referenciadas con `\includegraphics`: **27**.
+- ✅ Todas las imágenes referenciadas existen.
+
+**Imágenes huérfanas en `02_Images/` (no referenciadas, 17 archivos):**
+
+- `02_Images/baseline/random_player_normalised_performance.png`
+- `02_Images/heatmaps/heatmaps_4panel.pdf`
+- `02_Images/heatmaps/heatmaps_4panel.png`
+- `02_Images/ood_curves/PES_A2C_joint_extrap_both.png`
+- `02_Images/ood_curves/PES_DQL_sev_extrapolate_high.png`
+- `02_Images/ood_curves/PES_TRF_joint_extrap_both.png`
+- `02_Images/ood_curves/PES_TRF_len_extrapolate_long.png`
+- `02_Images/ood_curves/PES_TRF_sev_extrapolate_high.png`
+- `02_Images/per_sequence/joint_extrap_both.pdf`
+- `02_Images/per_sequence/joint_high_long.pdf`
+- `02_Images/per_sequence/len_extrapolate_long.pdf`
+- `02_Images/per_sequence/len_poisson.pdf`
+- `02_Images/per_sequence/sev_bimodal.pdf`
+- `02_Images/per_sequence/sev_empirical.pdf`
+- `02_Images/per_sequence/sev_extrapolate_high.pdf`
+- `02_Images/per_sequence/sev_gauss_high.pdf`
+- `02_Images/per_sequence/struct_more_total.pdf`
 
 ## 3. Citas y bibliografía (APA)
 
@@ -41,7 +70,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 **Palabras en inglés detectadas:**
 
-`after`, `before`, `both`, `can`, `from`, `here`, `must`, `that`, `the`, `these`, `this`, `when`, `which`, `will`, `with`, `without`
+`after`, `before`, `both`, `can`, `from`, `here`, `least`, `must`, `that`, `the`, `these`, `this`, `when`, `which`, `will`, `with`, `without`
 
 ## 6. Cobertura de los `doc/` del proyecto
 
@@ -68,3 +97,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 - ✅ Cohen d / Welch / KL
 - ✅ Shannon entropy / UQ
 - ✅ Atención causal / Transformer
+
+## 7. Marcadores pendientes (TODO / FIXME)
+
+- ✅ Sin marcadores TODO/FIXME pendientes.
