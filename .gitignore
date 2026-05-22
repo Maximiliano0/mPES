@@ -46,9 +46,6 @@ MANIFEST
 *.swo
 *~
 
-# Keep VS Code config
-!.vscode/extensions.json
-!.vscode/tasks.json
 
 # ── Testing & coverage ─────────────────────────────────────────────────────
 .pytest_cache/
