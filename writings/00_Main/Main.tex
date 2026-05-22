@@ -2,6 +2,9 @@
 \documentclass[spanish, a4paper, 12pt, twoside]{article} 
 
 % -------------- Setup, do not change these ---------------
+% xcolor must load BEFORE any package that pulls it without options
+% (subcaption, hyperref, etc.) to avoid "option clash on xcdraw".
+\usepackage[table,xcdraw]{xcolor}
 \usepackage{subcaption} 
 \usepackage{textcomp}
 \usepackage[T1]{fontenc, url}
@@ -18,11 +21,10 @@
 \usepackage{amsmath, amssymb, amsthm} % Mathematical packages
 \usepackage{parskip} % Removing indenting in new paragraphs
 \urlstyle{sf}
-\usepackage{color}
 \usepackage{subcaption} 
 \usepackage{appendix}
 \usepackage{chngcntr} % needed for correct table numbering
-\usepackage[hidelinks]{hyperref}
+\usepackage[hidelinks,hyperfootnotes=false]{hyperref}
 \counterwithin{table}{section} % numbering of tables 
 \counterwithin{figure}{section} % numbering of figures
 \numberwithin{equation}{section} % numbering of equations
@@ -55,7 +57,10 @@
 \usepackage[margin=2.54cm]{geometry} % sets margins for the document
 \usepackage{setspace}
 \linespread{1.5} % line spread for the document
-\usepackage{microtype}
+\usepackage[babel=true,activate={true,nocompatibility},final,
+            tracking=true,kerning=true,spacing=true,factor=1100,
+            stretch=10,shrink=10,
+            patch=none]{microtype}
 
 
 % ----- Sections -----
@@ -71,6 +76,7 @@
 
 % ----- Figures and tables ----- 
 \usepackage{fancyhdr}
+\setlength{\headheight}{15pt} % required by fancyhdr to avoid headheight warning
 \usepackage{subfiles}
 \usepackage{array}
 \usepackage[rightcaption]{sidecap}
@@ -79,7 +85,6 @@
 \usepackage[labelfont=bf]{caption} % bold text for captions
 \usepackage[para]{threeparttable} % fancy tables, check these before you use them
 \usepackage{url}
-\usepackage[table,xcdraw]{xcolor}
 \usepackage{makecell}
 \usepackage{hhline}
 
@@ -99,13 +104,13 @@
 
 
 % ----- Header of the frontpage ----- 
+% El logo se inserta directamente en el cuerpo de la portada
+% (000NHH-Frontpage.tex) en lugar de \fancyhead para evitar el
+% warning "\headheight is too small" que requeriría 152pt.
 \fancypagestyle{frontpage}{
 	\fancyhf{}
 	\renewcommand{\headrulewidth}{0pt}
 	\renewcommand{\footrulewidth}{0pt}
-	\vspace*{4\baselineskip}
-	
-	\fancyhead[C]{ \includegraphics[width=3in]{LOGO-ITBA.jpg}}
 }
 
 % ----- Document starts here ----- 
@@ -113,8 +118,10 @@
 
 \def\biblio{} % resets the biblio command, if not here a new reference list will be produced after every chapter
 
+\hypersetup{pageanchor=false} % avoid duplicate page.N hyperref destinations across pagenumbering resets
 \include{../01_Chapters/000NHH-Frontpage}
 \restoregeometry % restores the margins after frontpage
+\hypersetup{pageanchor=true}
 %\nocite{*} % uncomment if you want all sources to be printed in the reference list, including the ones which are not cited in the text 
 
 \pagenumbering{gobble} % suppress page numbering
@@ -160,7 +167,7 @@
     \subfile{../01_Chapters/03StateOfTheArt}
 \clearpage
   
-\section{Metodología}
+\section{Materiales y Métodos}
     \subfile{../01_Chapters/04Materials}
 \clearpage
 

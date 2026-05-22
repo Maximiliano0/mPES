@@ -71,7 +71,7 @@ brecha entre familias es real ($d$ medio entre
 \texttt{pes\_trf}/\texttt{pes\_rdqn} $\approx 0{,}60$) pero no
 desplaza al Transformer del podio individual.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering
 \caption{Performance normalizada media $\bar{r}$
 (Ec.~\eqref{eq:mean-perf}) y desviaci\'on est\'andar por
@@ -100,21 +100,22 @@ $\approx 23$\,\% respecto del mejor modelo individual.}
 
 Tomando \texttt{pes\_ql} como l\'inea de base y midiendo la
 mortalidad como $1 - \bar{r}$ promediada sobre
-las $22$ condiciones, se obtiene una reducci\'on relativa de
+las $22$ condiciones, se obtiene una reducci\'on relativa de:
 
-\begin{equation}
-\Delta_{\mathrm{trf}} \;=\;
-\frac{(1 - \bar{r}_{\mathrm{ql}}) - (1 - \bar{r}_{\mathrm{trf}})}
-{1 - \bar{r}_{\mathrm{ql}}}
-\;=\; \frac{0{,}113 - 0{,}073}{0{,}113}
-\;\approx\; \mathbf{0{,}35},
-\qquad
-\Delta_{\mathrm{ens}} \;=\;
-\frac{0{,}113 - 0{,}063}{0{,}113}
-\;\approx\; \mathbf{0{,}45},
-\end{equation}
+\begin{align}
+  \Delta_{\mathrm{trf}} &\;=\;
+  \frac{(1 - \bar{r}_{\mathrm{ql}}) - (1 - \bar{r}_{\mathrm{trf}})}
+  {1 - \bar{r}_{\mathrm{ql}}}
+  \;=\; \frac{0{,}113 - 0{,}073}{0{,}113}
+  \;\approx\; \mathbf{0{,}35},
+  \label{eq:delta-trf} \\
+  \Delta_{\mathrm{ens}} &\;=\;
+  \frac{0{,}113 - 0{,}063}{0{,}113}
+  \;\approx\; \mathbf{0{,}45}.
+  \label{eq:delta-ens}
+\end{align}
 
-es decir, \texttt{pes\_trf} reduce la severidad acumulada en torno a
+\noindent\texttt{pes\_trf} reduce la severidad acumulada en torno a
 un \textbf{35\,\%} respecto de la l\'inea de base tabular, y el
 \emph{ensemble} \texttt{pes\_ens} llega hasta un \textbf{45\,\%}
 respecto del mismo punto de partida. La hip\'otesis $H_{1a}$ del
@@ -125,7 +126,7 @@ desplegable) queda \emph{refutada}: el ensemble lo supera con un
 tama\~no de efecto $d \approx 0{,}25$ y una significancia de Welch
 $t \approx 3{,}4$ ($p < 10^{-3}$).
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering
 \caption{Estad\'isticos pareados sobre las $22$ condiciones del
 benchmark. La fila TRF--RDQN cuantifica la hip\'otesis $H_{1a}$;
@@ -247,9 +248,9 @@ distribuciones de acci\'on, revelando que los agentes profundos
 convergen a pol\'iticas similares mientras que los tabulares
 divergen entre s\'i.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{heatmap_global_mean.png}
     \caption{Performance normalizada media $\bar r$
@@ -257,7 +258,7 @@ divergen entre s\'i.
     \label{fig:hm-mean}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{heatmap_welch_logp.png}
     \caption{Test de Welch: $\log_{10} p$ recortado a $[-10,\,0]$
@@ -266,8 +267,8 @@ divergen entre s\'i.
     \texttt{sev\_empirical}).}
     \label{fig:hm-welch}
   \end{subfigure}
-  \\[0.6em]
-  \begin{subfigure}[t]{0.48\textwidth}
+  \\[0.2em]
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{heatmap_ood_degradation.png}
     \caption{Degradaci\'on OOD $\Delta\bar{r} =
@@ -277,7 +278,7 @@ divergen entre s\'i.
     \label{fig:hm-ood}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{heatmap_action_kl.png}
     \caption{$D_{\mathrm{KL}}\!\bigl(P_{\text{celda}} \,\|\,
@@ -314,7 +315,7 @@ hereda lo mejor de cada miembro y comprime la banda intercuart\'ilica de forma
 visible: es el \'unico panel en que el percentil 25 nunca cae por debajo de
 $0{,}57$.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
@@ -355,7 +356,7 @@ $0{,}57$.
   \label{fig:training-curves-a}
 \end{figure}
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
@@ -410,7 +411,7 @@ curva), penalizando a los modelos miopes; el panel conjunto
 (\texttt{joint\_high\_long}) combina ambos efectos y es donde la
 brecha tabular--profundo se vuelve m\'as evidente.
 
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \includegraphics[width=\linewidth]{per_sequence_extra_6panel.pdf}
   \caption{Curvas adicionales de desempe\~no por secuencia,
@@ -447,7 +448,7 @@ alternativas o bien colapsan (\texttt{pes\_dql} sobre
 pol\'itica con independencia del contexto (\texttt{pes\_a2c}
 sobre \texttt{joint\_extrap\_both}, traza pr\'acticamente plana
 en $\bar r \approx 0{,}95$).
-\begin{figure}[h!]
+\begin{figure}[!ht]
   \centering
   \includegraphics[width=\linewidth]{ood_curves_3panel.pdf}
   \caption{Curvas de desempe\~no por secuencia bajo los tres

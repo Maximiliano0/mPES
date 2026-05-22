@@ -50,17 +50,6 @@ $1 - H_{\mathrm{norm}}(\pi(a \mid s))$, calculable en cualquier
 modelo con salida \texttt{softmax}, sin necesidad de hardware de
 neuroimagen.
 
-\subsection{Limitaciones}
-
-El benchmark agregado de \texttt{general/} se ejecut\'o con semilla
-$42$ por celda. Si bien las $n = 64$ secuencias por escenario
-otorgan suficiente poder estad\'istico para los contrastes de Welch
-reportados, una r\'eplica multi-semilla permitir\'ia separar mejor el
-componente algor\'itmico del componente aleatorio en los bordes del
-ranking. El costo computacional --- factor cr\'itico en despliegues
-con presupuesto limitado --- se discute en detalle en la
-Sec.~\ref{sec:cost}.
-
 \subsection{El ensemble como mejor sistema desplegable}\label{sec:ens-best}
 
 Una lectura ingenua de la Tabla~\ref{tab:global-mean} podr\'ia
@@ -149,11 +138,19 @@ entre los modelos tabulares.
 
 \subsection{Amenazas a la validez del estudio}\label{sec:threats}
 
-M\'as all\'a de las limitaciones t\'ecnicas enumeradas, conviene
-explicitar tres amenazas a la validez del experimento que
-acompa\~nan a cualquier estudio de RL aplicado~\citep{Henderson2018,Kirk2023}:
+M\'as all\'a del costo computacional discutido arriba
+(Sec.~\ref{sec:cost}), conviene explicitar cuatro amenazas a la
+validez del experimento que acompa\~nan a cualquier estudio de RL
+aplicado~\citep{Henderson2018,Kirk2023}:
 
 \begin{itemize}
+    \item \textbf{Validez externa --- semilla \'unica.} El
+    benchmark agregado de \texttt{general/} se ejecut\'o con
+    semilla $42$ por celda. Si bien las $n = 64$ secuencias por
+    escenario otorgan suficiente poder estad\'istico para los
+    contrastes de Welch reportados, una r\'eplica multi-semilla
+    permitir\'ia separar mejor el componente algor\'itmico del
+    componente aleatorio en los bordes del ranking.
     \item \textbf{Validez interna.} La elecci\'on del simulador
     \emph{Pandemic Scenario} introduce un sesgo no aleatorio: las
     arquitecturas con sesgo inductivo afin a la din\'amica
