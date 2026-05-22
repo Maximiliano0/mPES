@@ -3,18 +3,11 @@
 
 \label{sec:discussion}
 
-Los resultados del Cap.~\ref{sec:results} permiten responder, de
-manera matizada, la hip\'otesis de trabajo. La componente $H_{1a}$
-(Transformer como mejor \emph{arquitectura individual}) queda
-confirmada: \texttt{pes\_trf} domina la columna global con un
-tama\~no de efecto medio frente al mejor competidor recurrente
-($d \approx 0{,}60$). La componente $H_{1b}$ (Transformer como
-mejor \emph{sistema desplegable}) queda en cambio \emph{refutada}:
-el \emph{soft voting} \texttt{pes\_ens} lo supera con un tama\~no
-de efecto peque\~no pero estad\'isticamente significativo
-($d \approx 0{,}25$, $p < 10^{-3}$) y, sobre todo, con una
-reducci\'on de varianza estructural del $\approx 23$\,\%. Esta
-secci\'on discute las implicaciones m\'as relevantes.
+Los resultados del Cap.~\ref{sec:results} confirman parcialmente la
+hip\'otesis de trabajo: H1a se sostiene y H1b se refuta. El detalle
+cuantitativo (Tabla~\ref{tab:pairwise-stats}) ya fue presentado en
+la Sec.~\ref{sec:results}; esta secci\'on discute las implicaciones
+m\'as relevantes.
 
 \subsection{Por qu\'e gana el Transformer}
 
@@ -23,7 +16,7 @@ $S_{t+1} = \max(0, \beta S_t - \alpha a_t)$ (Ec.~\ref{eq:transicion})
 es agregada en el tiempo: un d\'eficit de
 recursos en $t$ no se traduce en costo inmediato, sino en una
 amplificaci\'on geom\'etrica sobre los \emph{trials} siguientes. Esta
-estructura penaliza fuertemente a los m\'etodos ``mi\'opes'' (tabular
+estructura penaliza fuertemente a los m\'etodos ``miopes'' (tabular
 y, en menor medida, DQN feed-forward) que tienden a sub-asignar al
 principio de las secuencias largas.
 
@@ -59,20 +52,14 @@ neuroimagen.
 
 \subsection{Limitaciones}
 
-\begin{itemize}
-    \item \textbf{Una sola semilla.} El benchmark agregado de
-    \texttt{general/} se ejecut\'o con semilla $42$ por celda. Si
-    bien las $n = 64$ secuencias por escenario otorgan suficiente
-    poder estad\'istico para los contrastes de Welch reportados,
-    una r\'eplica multi-semilla permitir\'ia separar mejor el
-    componente algor\'itmico del componente aleatorio en los
-    bordes del ranking.
-    \item \textbf{Costo computacional.} \texttt{pes\_trf} requiere
-    aproximadamente $5\times$ m\'as tiempo de entrenamiento que
-    \texttt{pes\_dqn}, y \texttt{pes\_ens} suma el costo de
-    inferencia de sus tres miembros; ambos factores pueden ser
-    decisivos en despliegues con presupuesto limitado.
-\end{itemize}
+El benchmark agregado de \texttt{general/} se ejecut\'o con semilla
+$42$ por celda. Si bien las $n = 64$ secuencias por escenario
+otorgan suficiente poder estad\'istico para los contrastes de Welch
+reportados, una r\'eplica multi-semilla permitir\'ia separar mejor el
+componente algor\'itmico del componente aleatorio en los bordes del
+ranking. El costo computacional --- factor cr\'itico en despliegues
+con presupuesto limitado --- se discute en detalle en la
+Sec.~\ref{sec:cost}.
 
 \subsection{El ensemble como mejor sistema desplegable}\label{sec:ens-best}
 
@@ -88,16 +75,16 @@ sugieren lo contrario:
     peor-caso m\'as alto y, por tanto, en menor riesgo en las
     decisiones cr\'iticas.
     \item \textbf{Descomposici\'on sesgo--varianza.} El
-    promediado no    elimina el sesgo del miembro mediano pero reduce la varianza
-    en un factor $\rho + (1 - \rho)/K$, donde $\rho$ es la
+    promediado no elimina el sesgo del miembro mediano pero reduce
+    la varianza en un factor $\rho + (1 - \rho)/K$, donde $\rho$ es la
     correlaci\'on entre miembros y $K = 3$. En mPES los miembros
     son arquitect\'onicamente distintos
     (\texttt{dqn}, \texttt{rdqn}, \texttt{trf}), lo que mantiene
     $\rho$ alejado de uno y materializa la ganancia te\'orica.
     \item \textbf{Resiliencia OOD.} En los tres estresores
     universales (Sec.~\ref{sec:universal-stressors}), el ensemble
-    obtiene la mejor m\'etrica peor-caso, indicando que aporta
-    robustez justo donde m\'as duele.
+    obtiene la mejor m\'etrica peor-caso, aportando robustez
+    precisamente en las condiciones m\'as adversas.
 \end{enumerate}
 
 En s\'intesis: el Transformer sigue siendo el mejor punto de
@@ -106,19 +93,13 @@ el ensemble.
 
 \subsection{Los tres estresores universales}\label{sec:universal-stressors}
 
-El an\'alisis estad\'istico sobre las 22 condiciones del benchmark
-revela que tres escenarios producen una ca\'ida significativa
-($p < 0{,}001$) en \emph{todos} los modelos evaluados:
-\texttt{sev\_extrapolate\_high} (severidades fuera del rango de
-entrenamiento), \texttt{len\_extrapolate\_long} (secuencias m\'as
-largas que las vistas) y \texttt{joint\_extrap\_both} (combinaci\'on
-de ambos). Estas tres condiciones constituyen el verdadero
-\emph{n\'ucleo} del benchmark: cualquier discusi\'on de robustez
-debe priorizarlas frente a las dem\'as celdas. Las columnas
-estructurales (\texttt{struct\_*}), por el contrario, exhiben
-degradaci\'on cero y act\'uan como banda de control que valida la
-    invarianza del propio \emph{esquema} de evaluaci\'on antes que la
-    robustez del modelo.
+Las tres condiciones identificadas en la Sec.~\ref{sec:ood-curves}
+constituyen el verdadero \emph{n\'ucleo} del benchmark: cualquier
+discusi\'on de robustez debe priorizarlas frente a las dem\'as
+celdas. Las columnas estructurales (\texttt{struct\_*}), por el
+contrario, exhiben degradaci\'on cero y act\'uan como banda de
+control que valida la invarianza del propio \emph{esquema} de
+evaluaci\'on antes que la robustez del modelo.
 
 \subsection{El falso aprobado de \texttt{pes\_a2c}}\label{sec:a2c-collapse}
 
@@ -150,9 +131,9 @@ entre seis y nueve horas para los modelos profundos
 feed-forward (\texttt{pes\_dqn}, \texttt{pes\_a2c}) y entre doce y
 dieciocho horas para los modelos con memoria expl\'icita
 (\texttt{pes\_rdqn} y \texttt{pes\_trf}). El \emph{ensemble}
-\texttt{pes\_ens} no entrena: re\'utiliza los tres miembros ya
+\texttt{pes\_ens} no entrena: reutiliza los tres miembros ya
 entrenados y suma sus salidas \emph{softmax} con coste
-additivo de inferencia $\mathcal{O}(K)$ por paso de decisi\'on,
+aditivo de inferencia $\mathcal{O}(K)$ por paso de decisi\'on,
 donde $K = 3$ aqu\'i.
 
 A efectos pr\'acticos, este orden de magnitud sugiere una

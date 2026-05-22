@@ -36,45 +36,21 @@ con distintas funciones de recompensa internas.
 \subsection{Familias de variaciones evaluadas}\label{sec:res-variations}
 
 El cat\'alogo completo de las $22$ condiciones se detalla en la
-Sec.~\ref{sec:scenario-catalogue} (Tabla~\ref{tab:scenarios}); aqu\'i
-se resume su organizaci\'on para facilitar la lectura de las matrices
-de resultados. Cada celda del benchmark corresponde a un par
-$(\text{paquete}, \text{escenario})$ ejecutado en modo de pura
-\emph{inferencia} sobre el mismo conjunto de $64$ secuencias generadas
-con semilla $42$:
-
-\begin{itemize}
-  \item \textbf{Severidad ($10$ escenarios).} Reemplazan la
-  distribuci\'on emp\'irica de severidades por familias param\'etricas
-  (uniforme, gaussianas en tres regiones, Weibull, Beta sesgadas y
-  bimodal) m\'as un caso \emph{extrapolante}
-  (\texttt{sev\_extrapolate\_high}, $U(10, 12)$, fuera del soporte
-  $\{0, \ldots, 9\}$ visto durante el entrenamiento).
-  \item \textbf{Longitud ($5$ escenarios).} Alteran la
-  distribuci\'on de longitudes de secuencia: todas-cortas,
-  todas-largas, geom\'etrica, Poisson y una extrapolaci\'on a
-  $U\{11, \ldots, 20\}$, fuera del rango $[3, 10]$ original.
-  \item \textbf{Conjunta ($4$ escenarios).} Combinan severidad y
-  longitud para revelar interacciones no lineales (alta--larga,
-  baja--corta, uniforme--geom\'etrica y un caso doblemente
-  extrapolante).
-  \item \textbf{Estructural ($3$ escenarios).} Reorganizan la
-  jerarqu\'ia bloques\,$\times$\,secuencias, incluyendo una variante
-  con $n = 128$ secuencias totales que duplica el presupuesto
-  nominal.
-\end{itemize}
-
-La condici\'on \texttt{sev\_empirical} act\'ua como
-\emph{baseline in-distribution} de cada modelo: las m\'etricas
-derivadas que aparecen en este cap\'itulo --- degradaci\'on OOD
+Sec.~\ref{sec:scenario-catalogue} (Tabla~\ref{tab:scenarios}); las
+cuatro familias agrupan, respectivamente, $10$ escenarios de
+\emph{severidad}, $5$ de \emph{longitud}, $4$ \emph{conjuntos} y
+$3$ \emph{estructurales}, cada uno con un caso \emph{extrapolante}
+fuera del soporte de entrenamiento. La condici\'on
+\texttt{sev\_empirical} act\'ua como \emph{baseline
+in-distribution} de cada modelo: las m\'etricas derivadas que
+aparecen en este cap\'itulo --- degradaci\'on OOD
 $\Delta\bar{r} = \bar{r}_{\text{baseline}} - \bar{r}_{\text{celda}}$,
 divergencia KL entre distribuciones de acciones, $d$ de Cohen y $t$
 de Welch --- se calculan siempre tomando como referencia esa fila
-por modelo. Las cuatro familias se utilizan a lo largo del cap\'itulo
-para descomponer el desempe\~no global por tipo de perturbaci\'on,
-identificar las arquitecturas m\'as fr\'agiles bajo cada eje y
-fundamentar la discusi\'on cualitativa del
-Cap.~\ref{sec:discussion}.
+por modelo. Cada celda del benchmark corresponde a un par
+$(\text{paquete}, \text{escenario})$ ejecutado en modo de pura
+\emph{inferencia} sobre el mismo conjunto de $64$ secuencias
+generadas con semilla $42$.
 
 \subsection{Visi\'on global}
 
@@ -139,7 +115,7 @@ las $22$ condiciones, se obtiene una reducci\'on relativa de
 \end{equation}
 
 es decir, \texttt{pes\_trf} reduce la severidad acumulada en torno a
-un \textbf{22--35\,\%} respecto de la l\'inea de base tabular, y el
+un \textbf{35\,\%} respecto de la l\'inea de base tabular, y el
 \emph{ensemble} \texttt{pes\_ens} llega hasta un \textbf{45\,\%}
 respecto del mismo punto de partida. La hip\'otesis $H_{1a}$ del
 Cap.~\ref{sec:problema} (Transformer como mejor arquitectura
@@ -242,7 +218,7 @@ forma reproducible:
 
 \begin{itemize}
     \item \texttt{general/results/matrix\_global\_mean.csv} (Tabla
-    completa de los seis modelos $\times$ 22 escenarios).
+    completa de los siete modelos $\times$ 22 escenarios).
     \item Heatmaps \texttt{matrix\_cohen\_d.csv},
     \texttt{matrix\_welch\_p.csv}, \texttt{matrix\_action\_kl.csv}.
     \item Histogramas por secuencia en
@@ -312,7 +288,7 @@ divergen entre s\'i.
   \caption{Mapas de calor del benchmark OOD ($7$ modelos
   $\times$ $22$ escenarios $=$ $154$ celdas; $n = 64$ secuencias
   por celda, semilla $= 42$). La columna \texttt{sev\_empirical}
-  actua como referencia \emph{in-distribution}: la celda
+  act\'ua como referencia \emph{in-distribution}: la celda
   \subref{fig:hm-welch} la deja en blanco y las celdas
   \subref{fig:hm-ood}--\subref{fig:hm-kl} toman su valor como
   cota de comparaci\'on. Las columnas estructurales (tres
@@ -367,8 +343,12 @@ $0{,}57$.
     \caption{\texttt{pes\_dqn} (DQN con \emph{replay}).}
     \label{fig:c-dqn}
   \end{subfigure}
-  \caption{Desempe\~no por secuencia ($n = 64$ secuencias de
-  validaci\'on) --- m\'etodos tabulares y red densa.
+  \caption{Dashboards de evaluaci\'on por paquete sobre las
+  $n = 64$ secuencias de validaci\'on. Cada subfigura agrupa
+  seis subpaneles: \emph{performance} normalizada por secuencia
+  con media y banda $\pm\sigma$, histograma de la distribuci\'on
+  con media y mediana, diagramas de caja y barras por bloque,
+  curva de media acumulada y tabla de estad\'isticos descriptivos.
   \subref{fig:c-base}~l\'inea de base sin optimizaci\'on;
   \subref{fig:c-ql}--\subref{fig:c-dql}~variantes tabulares
   optimizadas; \subref{fig:c-dqn}~primer modelo profundo.}
@@ -404,9 +384,9 @@ $0{,}57$.
     \caption{\texttt{pes\_ens} (\emph{soft voting}).}
     \label{fig:c-ens}
   \end{subfigure}
-  \caption{Desempe\~no por secuencia ($n = 64$ secuencias de
-  validaci\'on) --- modelos profundos con memoria, gradiente de
-  pol\'itica y \emph{ensemble}.
+  \caption{Dashboards de evaluaci\'on por paquete sobre las
+  $n = 64$ secuencias de validaci\'on (misma composici\'on de
+  seis subpaneles que en la Figura~\ref{fig:training-curves-a}).
   \subref{fig:c-rdqn}~recurrente (LSTM);
   \subref{fig:c-a2c}~gradiente de pol\'itica (A2C);
   \subref{fig:c-trf}~codificador Transformer;
@@ -414,77 +394,37 @@ $0{,}57$.
   \label{fig:training-curves-b}
 \end{figure}
 
-\subsection{Distribuciones adicionales por escenario}\label{sec:per-seq-extended}
+\subsection{Curvas por escenario}\label{sec:per-seq-extended}
 
-La Figura~\ref{fig:per-seq-extended} presenta, en forma de
-\emph{histogramas} de \emph{performance} por secuencia, c\'omo cada
-arquitectura redistribuye su masa de probabilidad ante seis
-condiciones representativas que cubren las tres familias OOD del
-cat\'alogo: dos de severidad
-(\subref{fig:hs-bimodal}--\subref{fig:hs-gaussh}), dos de longitud
-(\subref{fig:hs-lpois}--\subref{fig:hs-lext}) y dos conjuntas
-(\subref{fig:hs-jhl}--\subref{fig:hs-jls}). Los paneles severos
-mantienen pr\'acticamente toda la masa por encima de
-$\bar r \approx 0{,}65$ y todos los modelos los resuelven sin gran
-p\'erdida; las distribuciones de longitud, en cambio, exhiben
-colas inferiores que penalizan a los modelos mi\'opes (en
-particular \texttt{pes\_rdqn}); los paneles conjuntos combinan
-ambos efectos y son donde la separaci\'on entre arquitecturas
-tabulares y profundas se vuelve m\'as evidente.
+La Figura~\ref{fig:per-seq-extended} a\~nade seis condiciones
+representativas a las cuatro ya mostradas en el
+Cap.~\ref{sec:methods} (Fig.~\ref{fig:per-sequence}) y permite
+contrastar familias de perturbaci\'on. Los paneles severos
+(\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high},
+\texttt{sev\_beta\_highskew}) se mantienen agrupados cerca del
+techo de retorno, y todos los modelos los resuelven sin gran
+p\'erdida; los paneles de \emph{longitud} (\texttt{len\_poisson},
+\texttt{len\_extrapolate\_long}) muestran mayor dispersi\'on en
+las secuencias m\'as dif\'iciles (extremo izquierdo de cada
+curva), penalizando a los modelos miopes; el panel conjunto
+(\texttt{joint\_high\_long}) combina ambos efectos y es donde la
+brecha tabular--profundo se vuelve m\'as evidente.
 
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_sev_bimodal.png}
-    \caption{\texttt{sev\_bimodal}.}
-    \label{fig:hs-bimodal}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_sev_gauss_high.png}
-    \caption{\texttt{sev\_gauss\_high}.}
-    \label{fig:hs-gaussh}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_len_poisson.png}
-    \caption{\texttt{len\_poisson}.}
-    \label{fig:hs-lpois}
-  \end{subfigure}
-  \\[0.6em]
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_len_extrapolate_long.png}
-    \caption{\texttt{len\_extrapolate\_long}.}
-    \label{fig:hs-lext}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_joint_high_long.png}
-    \caption{\texttt{joint\_high\_long}.}
-    \label{fig:hs-jhl}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_joint_low_short.png}
-    \caption{\texttt{joint\_low\_short}.}
-    \label{fig:hs-jls}
-  \end{subfigure}
-  \caption{Histogramas de \emph{performance} normalizada por
-  secuencia ($n = 64$ secuencias por panel; eje $x$: performance
-  $\bar r \in [0, 1]$ seg\'un la Ec.~\eqref{eq:mean-perf}; eje $y$:
-  recuento absoluto) para seis escenarios representativos del
-  cat\'alogo OOD. Cada color identifica a uno de los siete
+  \includegraphics[width=\linewidth]{per_sequence_extra_6panel.pdf}
+  \caption{Curvas adicionales de desempe\~no por secuencia,
+  organizadas por familia de perturbaci\'on. \emph{Fila superior:}
+  severidad (\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high},
+  \texttt{sev\_beta\_highskew}). \emph{Fila inferior:} longitud
+  (\texttt{len\_poisson}, \texttt{len\_extrapolate\_long}) y
+  combinaci\'on conjunta (\texttt{joint\_high\_long}). Cada panel
+  ordena las $n = 64$ secuencias de menor a mayor performance
+  normalizada $\bar r$ (Ec.~\eqref{eq:mean-perf}) para los siete
   paquetes optimizados (\texttt{pes\_base} se excluye del
   \emph{benchmark} al carecer de sintonizaci\'on de
-  hiperpar\'ametros). Filas superior y central: severidad y
-  longitud, aisladas; fila inferior: combinaciones conjuntas que
-  mezclan ambos ejes.}
+  hiperpar\'ametros); el \emph{ensemble} \texttt{pes\_ens} se
+  traza en negro y con trazo m\'as grueso.}
   \label{fig:per-seq-extended}
 \end{figure}
 
@@ -494,55 +434,33 @@ El reporte autom\'atico identifica tres condiciones
 que producen $p < 0{,}001$ en \emph{todos} los modelos:
 \texttt{sev\_extrapolate\_high}, \texttt{len\_extrapolate\_long}
 y \texttt{joint\_extrap\_both}. La Figura~\ref{fig:ood-curves}
-expone las distribuciones de \emph{performance} por secuencia
-para los siete paquetes optimizados bajo cada uno de estos
-estresores universales. Tres patrones emergen con claridad:
-(i)~\texttt{pes\_a2c}, \texttt{pes\_trf} y \texttt{pes\_ens}
-concentran toda su masa por encima de $\bar r = 0{,}9$ en los
-tres paneles, mostrando una respuesta robusta al desplazamiento de
-soporte; (ii)~las variantes tabulares (\texttt{pes\_ql},
-\texttt{pes\_dql}) se desplazan hacia el centro de la distribuci\'on
-($\bar r \in [0{,}70,\ 0{,}85]$), revelando que el descenso ocurre
-pero sin colapso catastr\'ofico; (iii)~\texttt{pes\_rdqn} es el
-\'unico modelo que pierde masa hasta $\bar r \approx 0{,}65$ en la
-severidad extrapolada, indicando una fragilidad localizada del
-codificador recurrente ante valores de severidad fuera del rango
-visto en entrenamiento.
-
+contrasta el comportamiento de \texttt{pes\_trf} frente al modelo
+tabular m\'as competitivo (\texttt{pes\_dql}) en la severidad
+extrapolada, frente al \'unico modelo profundo basado en
+gradiente de pol\'itica (\texttt{pes\_a2c}) en la extrapolaci\'on
+conjunta y frente al \emph{ensemble} (\texttt{pes\_ens}) en las
+longitudes extrapoladas. La forma de las curvas confirma las
+observaciones de la Sec.~\ref{sec:results}: el Transformer
+mantiene una respuesta proporcional al estresor, mientras que las
+alternativas o bien colapsan (\texttt{pes\_dql} sobre
+\texttt{sev\_extrapolate\_high}) o bien aplican la misma
+pol\'itica con independencia del contexto (\texttt{pes\_a2c}
+sobre \texttt{joint\_extrap\_both}, traza pr\'acticamente plana
+en $\bar r \approx 0{,}95$).
 \begin{figure}[h!]
   \centering
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_sev_extrapolate_high.png}
-    \caption{\texttt{sev\_extrapolate\_high}.}
-    \label{fig:ood-sev}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_len_extrapolate_long.png}
-    \caption{\texttt{len\_extrapolate\_long}.}
-    \label{fig:ood-len}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.32\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{persec_joint_extrap_both.png}
-    \caption{\texttt{joint\_extrap\_both}.}
-    \label{fig:ood-joint}
-  \end{subfigure}
-  \caption{Histogramas de \emph{performance} por secuencia bajo los
-  tres estresores universales del cat\'alogo OOD
-  (Tabla~\ref{tab:scenarios}), todos fuera del soporte de
-  entrenamiento. \subref{fig:ood-sev}~severidad extrapolada al
-  rango $[10, 12]$, fuera del intervalo $[0, 9]$ visto durante
-  el entrenamiento. \subref{fig:ood-len}~longitudes en
-  $\{11, \ldots, 20\}$, fuera del rango $[3, 10]$.
-  \subref{fig:ood-joint}~doble extrapolaci\'on simult\'anea sobre
-  severidad y longitud. Eje $x$: performance normalizada $\bar r$
-  (Ec.~\eqref{eq:mean-perf}); eje $y$: recuento absoluto sobre
-  $n = 64$ secuencias. Cada color identifica uno de los siete
-  paquetes optimizados.}
+  \includegraphics[width=\linewidth]{ood_curves_3panel.pdf}
+  \caption{Curvas de desempe\~no por secuencia bajo los tres
+  estresores universales, con las secuencias ordenadas de menor a
+  mayor performance normalizada $\bar r$
+  (Ec.~\eqref{eq:mean-perf}). \emph{Izquierda:} severidad
+  extrapolada (\texttt{pes\_dql} en azul, \texttt{pes\_trf} en
+  rojo). \emph{Centro:} extrapolaci\'on conjunta (\texttt{pes\_a2c}
+  en naranja, \texttt{pes\_trf} en rojo; ambas trazas pr\'acticamente
+  planas indican una pol\'itica sin sensibilidad al estresor).
+  \emph{Derecha:} longitudes extrapoladas (\texttt{pes\_ens} en
+  negro, \texttt{pes\_trf} en rojo). Las l\'ineas punteadas marcan
+  la media de cada modelo a lo largo de las $64$ secuencias.}
   \label{fig:ood-curves}
 \end{figure}
 

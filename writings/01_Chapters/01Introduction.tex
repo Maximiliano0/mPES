@@ -42,59 +42,21 @@ de alto impacto.
 \subsection{Definici\'on del Problema}\label{sec:problema}
 
 El entorno computacional desarrollado modela una crisis donde un
-tomador de decisiones (un agente de RL) debe
-distribuir un \emph{presupuesto limitado} de recursos m\'edicos o
-log\'isticos entre diversas ciudades afectadas simult\'aneamente. Las
-principales caracter\'isticas del escenario incluyen:
-
-\begin{itemize}
-    \item \textbf{Din\'amica acumulativa.} Las decisiones tienen
-    consecuencias temporales compuestas. Si una ciudad no es atendida
-    a tiempo, su nivel de severidad epidemiol\'ogica crece de forma
-    exponencial.
-    \item \textbf{Intervenci\'on temprana.} Los recursos asignados
-    generan un impacto sostenido que reduce la severidad en los pasos
-    subsiguientes del entorno. Esto premia fuertemente a los modelos
-    capaces de \emph{prever} escenarios y actuar con rapidez.
-    \item \textbf{Evoluci\'on matem\'atica.} La severidad de cada
-    ciudad se actualiza paso a paso siguiendo la f\'ormula de
-    transici\'on
-    \begin{equation}
-        S'_i \;=\; \max\bigl(0,\; \beta \cdot S_i - \alpha \cdot a_i\bigr),
-        \label{eq:transicion-intro}
-    \end{equation}
-    donde $S'_i$ es la severidad actualizada de la ciudad $i$,
-    $S_i$ su nivel de severidad en el paso actual, $a_i$ la cantidad
-    de recursos asignados a dicha ciudad, $\alpha = 0{,}4$ la
-    efectividad de la intervenci\'on (capacidad de los recursos para
-    reducir la severidad) y $\beta = 1{,}4$ el factor multiplicador
-    de propagaci\'on del virus \citep{BCINE2022}.
-\end{itemize}
-
-\subsection{Formulaci\'on del Proceso de Decisi\'on de Markov (MDP)}\label{sec:mdp}
-
-Para garantizar que las comparaciones entre las distintas
-aproximaciones algor\'itmicas sean \emph{justas} y \emph{sistem\'aticas},
-todos los enfoques comparten la misma formulaci\'on de entorno y se
-eval\'uan sobre un \emph{benchmark} fijo de $64$ secuencias:
-
-\begin{itemize}
-    \item \textbf{Espacio de estados} ($s$). El estado del sistema se
-    define por tres componentes: los recursos disponibles restantes
-    en la secuencia ($0$--$30$, es decir $31$ valores), el índice
-    del ensayo actual (\emph{trial}, $0$--$10$, es decir $11$ valores)
-    y la severidad de la ciudad entrante ($0$--$9$, es decir $10$
-    valores enteros). El espacio resulta discreto con
-    $31 \times 11 \times 10 = 3{.}410$ estados posibles.
-    \item \textbf{Espacio de acciones} ($a$). Se encuentra discretizado
-    en un rango de $0$ a $10$ recursos posibles a asignar por cada
-    turno de intervenci\'on.
-    \item \textbf{Funci\'on de recompensa} ($r$). Se define como el
-    negativo de la severidad total acumulada en todas las ciudades
-    afectadas, $r = -\sum_i S_i$. Esta formulaci\'on fuerza al agente
-    artificial a descubrir pol\'iticas que \emph{minimicen el impacto
-    global} de la enfermedad.
-\end{itemize}
+tomador de decisiones (un agente de RL) debe distribuir un
+\emph{presupuesto limitado} de recursos m\'edicos o log\'isticos entre
+diversas ciudades afectadas simult\'aneamente. Tres rasgos
+cualitativos definen el escenario: la \emph{din\'amica acumulativa}
+(la severidad no atendida crece de forma exponencial en los pasos
+subsiguientes), la \emph{intervenci\'on temprana} (los recursos
+asignados generan un impacto sostenido que premia a los modelos
+capaces de anticipar) y una \emph{evoluci\'on matem\'atica} regida
+por la ley exponencial-corregida
+$S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i)$
+con $\alpha = 0{,}4$ y $\beta = 1{,}4$~\citep{BCINE2022}. La
+formulaci\'on completa como MDP finito ($|\mathcal{S}| = 3\,410$,
+$|\mathcal{A}| = 11$, recompensa $r = -\sum_i S_i$) y el
+\emph{benchmark} fijo de $64$ secuencias compartido por todos los
+enfoques se detallan en la Sec.~\ref{sec:methods}.
 
 \subsection{Hip\'otesis de Trabajo}\label{sec:hypothesis}
 
@@ -140,7 +102,7 @@ Las principales contribuciones de esta tesis son:
     (\texttt{pes\_base}, \texttt{pes\_ql}, \texttt{pes\_dql}) y
     arquitecturas profundas (\texttt{pes\_dqn},
     \texttt{pes\_rdqn}, \texttt{pes\_a2c}, \texttt{pes\_trf},
-    \texttt{pes\_ens}), abarcando los cuatro paradigmas 
+    \texttt{pes\_ens}), abarcando los principales paradigmas
     del RL contempor\'aneo: valor tabular, valor profundo,
     recurrente, gradiente de pol\'itica, atenci\'on causal y
     promediado de modelos.

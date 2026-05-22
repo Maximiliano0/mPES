@@ -97,8 +97,8 @@ actualiza por copia dura cada $C$ pasos o, alternativamente, por
 \emph{soft update} $\theta^{-} \leftarrow \tau\theta + (1-\tau)\theta^{-}$
 con $\tau \ll 1$. La p\'erdida se optimiza con
 Adam~\citep{Kingma2015} y, opcionalmente, con un \emph{schedule}
-tipo \emph{warm restarts}~\citep{Loshchilov2017}. Para regularizar
-la red se utiliza \emph{dropout}~\citep{Srivastava2014}.
+tipo \emph{warm restarts}. Para regularizar
+la red se utiliza \emph{dropout}.
 
 \subsection{Redes recurrentes y LSTM}
 
@@ -123,7 +123,7 @@ paquete \texttt{pes\_rdqn} adopta exactamente esta estrategia.
 
 \subsection{Pol\'iticas, Gradientes y Actor--Critic}
 
-Los m\'etodos de \emph{gradiente de pol\'itica}~\citep{Williams1992,Sutton2000}
+Los m\'etodos de \emph{gradiente de pol\'itica}~\citep{Williams1992}
 parametrizan la pol\'itica $\pi_\theta(a \mid s)$ y actualizan
 $\theta$ a lo largo del gradiente del retorno esperado:
 
@@ -140,7 +140,7 @@ $A^{\pi}(s, a) = Q^{\pi}(s, a) - V^{\pi}(s)$. El
 simult\'aneamente un actor que produce $\pi_\theta$ y un cr\'itico que
 estima $V_{\phi}$. La estimaci\'on de la ventaja puede refinarse con
 \emph{Generalized Advantage Estimation}
-(GAE)~\citep{Schulman2016},
+(GAE),
 
 \begin{equation}
 \hat{A}_t^{\mathrm{GAE}(\gamma,\lambda)} \;=\;
@@ -153,14 +153,14 @@ varianza) y \emph{bootstrapping} de un paso ($\lambda{=}0$). El
 actor se regulariza con un t\'ermino de entrop\'ia
 $-\beta H(\pi_\theta(\cdot \mid s))$ que combate el colapso
 prematuro de la pol\'itica~\citep{Mnih2016}. Variantes m\'as
-estables como PPO~\citep{Schulman2017} introducen un objetivo
+estables como PPO introducen un objetivo
 recortado para evitar pasos demasiado agresivos; el estudio
 emp\'irico de Andrychowicz \emph{et al.}~\citep{Andrychowicz2021}
 resume las decisiones de dise\~no que m\'as inciden en el resultado.
 
 \subsection{Atenci\'on y el Transformer}
 
-El \emph{Transformer}~\citep{Vaswani2017,Turner2024} reemplaza la
+El \emph{Transformer}~\citep{Vaswani2017} reemplaza la
 recurrencia por \emph{atenci\'on de producto escalar escalado}. Dadas
 consultas $Q$, claves $K$ y valores $V$,
 
@@ -187,14 +187,14 @@ largo plazo, ofreciendo una soluci\'on al problema de la
 ``miop\'ia temporal'' que afecta a los m\'etodos tabulares en
 escenarios de inercia epidemiol\'ogica. En esta tesis cada bloque
 Transformer incluye conexiones residuales y
-\emph{layer normalization}~\citep{Ba2016}, indispensable para
+\emph{layer normalization}, indispensable para
 estabilizar el entrenamiento de pol\'iticas profundas.
 
 \subsection{Cuantificaci\'on de Incertidumbre y Entrop\'ia de Shannon}
 
 Dada una distribuci\'on de probabilidad discreta $p(a \mid s)$ sobre
 $|\mathcal{A}|$ acciones, la \emph{entrop\'ia de
-Shannon}~\citep{Shannon1948} es
+Shannon} es
 
 \begin{equation}
 H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s).
@@ -218,7 +218,7 @@ Un agente de RL tiene varios hiperpar\'ametros no diferenciables
 interacciones son altamente no lineales. La \emph{Optimizaci\'on
 Bayesiana} trata el puntaje de validaci\'on como una funci\'on de caja
 negra ruidosa y la explora con un \emph{surrogate}
-probabil\'istico~\citep{Snoek2012}. Se utiliza el estimador
+probabil\'istico. Se utiliza el estimador
 estructurado en \'arbol de Parzen (TPE)~\citep{Bergstra2011}
 implementado en Optuna~\citep{Akiba2019}, que modela
 $p(x \mid y < y^{*})$ y $p(x \mid y \geq y^{*})$ con KDEs separados.

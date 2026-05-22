@@ -4,7 +4,7 @@
 \label{sec:methods}
 
 Este cap\'itulo describe el aparato experimental: el repositorio
-\texttt{mPES}, la definici\'on formal del entorno, los seis paquetes
+\texttt{mPES}, la definici\'on formal del entorno, los ocho paquetes
 algor\'itmicos comparados, el pipeline de optimizaci\'on bayesiana de
 hiperpar\'ametros y el protocolo de evaluaci\'on.
 
@@ -15,7 +15,7 @@ Todos los experimentos se ejecutan dentro del \emph{workspace}
 proyecto Python organizado en dos familias: \texttt{tabular/}
 (m\'etodos enumerativos) y \texttt{ml/} (aprendizaje profundo). Cada
 paquete es autocontenido: provee su propio entorno
-\texttt{gymnasium}~\citep{Brockman2016,Towers2024}, su rutina de
+\texttt{gymnasium}~\citep{Towers2024}, su rutina de
 entrenamiento, su m\'odulo de optimizaci\'on bayesiana y su carpeta
 \texttt{outputs/} versionada por fecha. Las dependencias principales
 son TensorFlow 2.21, Keras 3.13, NumPy 2.4, Optuna 4.7,
@@ -89,12 +89,18 @@ y combinaciones extremas conjuntas.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{per_sequence_4panel.pdf}
-  \caption{Desempe\~no por secuencia para cuatro familias OOD del
-  benchmark ($n = 64$ secuencias por panel, ordenadas de menor a
-  mayor desempe\~no normalizado $\bar{r}$, v\'ease
-  Ec.~\eqref{eq:mean-perf}). El \emph{ensemble} \texttt{pes\_ens} se traza en
-  negro y con trazo m\'as grueso para destacar su rol de cota
-  superior frente a los siete paquetes individuales.}
+  \caption{Desempe\~no por secuencia para cuatro escenarios
+  representativos: el empírico \emph{in-distribution} y tres
+  familias OOD (extrapolaci\'on de severidades altas, escenario
+  estructural con mayor n\'umero total de \emph{trials} y
+  extrapolaci\'on conjunta de severidad y estructura).
+  Cada panel ordena las $n = 64$ secuencias de menor a mayor
+  desempe\~no normalizado $\bar{r}$ (v\'ease
+  Ec.~\eqref{eq:mean-perf}) para los siete paquetes optimizados
+  (\texttt{pes\_base} se excluye del \emph{benchmark} al carecer
+  de sintonizaci\'on). El \emph{ensemble} \texttt{pes\_ens} se
+  traza en negro y con trazo m\'as grueso para destacar su rol
+  de cota superior.}
   \label{fig:per-sequence}
 \end{figure}
 
@@ -220,20 +226,23 @@ de cada miembro. El paquete no introduce par\'ametros entrenables
 nuevos: se limita a cargar los modelos \texttt{.keras} producidos
 por sus hermanos y promediar sus distribuciones, en l\'inea con la
 formulaci\'on cl\'asica de \emph{deep ensembles} para
-incertidumbre predictiva~\citep{Lakshminarayanan2017,Dietterich2000}.
+incertidumbre predictiva~\citep{Lakshminarayanan2017}.
 La reducci\'on de varianza es estructural: si cada miembro tiene
 error $\sigma_k^2$ y correlaci\'on $\rho$,
 $\sigma_{\mathrm{ens}}^2 = \bar{\sigma}^2 \bigl(\rho +
 (1-\rho)/K\bigr) \le \bar{\sigma}^2$.
 
-\subsection{Optimizaci\'on Bayesiana de Hiperpar\'ametros}
+\subsection{Pipeline de optimizaci\'on bayesiana}
 
 Cada paquete profundo expone un m\'odulo \texttt{optimize\_*.py} que
 ejecuta un estudio Optuna con estimador estructurado en \'arbol de
-Parzen (TPE)~\citep{Bergstra2011,Snoek2012,Akiba2019}. La funci\'on
+Parzen (TPE)~\citep{Bergstra2011,Akiba2019}.
+Los fundamentos te\'oricos del m\'etodo se introducen en la
+Sec.~\ref{sec:background}; aqu\'i s\'olo se describe su instanciaci\'on
+concreta en el banco de pruebas. La funci\'on
 objetivo $f(\boldsymbol{\theta})$ es la \emph{performance normalizada
 media} $\bar{r}$ (Ec.~\eqref{eq:mean-perf}) sobre las $n = 64$
-secuencias de validaci\'on. Los
+secuencias de validaci\'on definidas en la Sec.~\ref{sec:scenario-catalogue}. Los
 estudios incluyen \emph{pruning} mediante \texttt{MedianPruner}
 para descartar tempranamente configuraciones inviables y conservan
 el almacenamiento SQLite (\texttt{optuna\_storage.db}) en
@@ -305,12 +314,13 @@ de evaluaci\'on OOD.
     \caption{\texttt{pes\_trf} (Transformer causal).}
     \label{fig:proc-trf}
   \end{subfigure}
-  \caption{Curvas de recompensa acumulada por episodio durante el
+  \caption{Curvas de recompensa promedio por episodio durante el
   entrenamiento de cuatro modelos optimizados: uno tabular
   (\texttt{pes\_dql}) y tres profundos (\texttt{pes\_dqn},
-  \texttt{pes\_a2c} y \texttt{pes\_trf}). Cada panel se obtuvo con
-  los hiperpar\'ametros resultantes del estudio Optuna
-  correspondiente.}
+  \texttt{pes\_a2c} y \texttt{pes\_trf}). Eje $x$: episodios de
+  entrenamiento; eje $y$: \emph{average reward} (promediado por
+  ventana). Cada panel se obtuvo con los hiperpar\'ametros
+  resultantes del estudio Optuna correspondiente.}
   \label{fig:training-process}
 \end{figure}
 
@@ -330,9 +340,13 @@ sobre el azar}.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\linewidth]{random_player_sequence_performance.png}
-  \caption{Agente aleatorio de referencia: desempe\~no por secuencia
-  sobre las $64$ secuencias de validaci\'on. Sirve como cota inferior
-  para interpretar los resultados de los modelos entrenados.}
+  \caption{Agente aleatorio de referencia: severidad final
+  alcanzada (escala cruda, no normalizada) en cada una de las
+  $64$ secuencias de validaci\'on. La gran variabilidad y los
+  picos por encima de $300$ ilustran la incapacidad de la
+  pol\'itica uniforme para contener el aumento de severidad y
+  sirven como cota inferior para interpretar los resultados de
+  los modelos entrenados.}
   \label{fig:baseline-random}
 \end{figure}
 
@@ -438,7 +452,7 @@ La distribuci\'on \texttt{sev\_empirical} act\'ua como referencia
 de degradaci\'on por paquete: la \emph{degradaci\'on OOD}
 $\Delta\bar{r} = \bar{r}_{\text{baseline}} - \bar{r}_{\text{celda}}$
 y la divergencia KL entre las distribuciones emp\'iricas de
-acciones de la celda y de la baseline. La significancia se evalua
+acciones de la celda y de la baseline. La significancia se eval\'ua
 con un test $t$ de Welch a dos colas y el tama\~no del efecto
 con $d$ de Cohen.
 
@@ -507,7 +521,7 @@ episodios.
 $n = 64$ secuencias de validaci\'on con la pol\'itica
 $\varepsilon$-greedy ($\varepsilon = 0$).
 \item \textbf{An\'alisis estad\'istico.} Para cada par de paquetes
-$(A, B)$ se reporta la media, desv\'iaci\'on est\'andar, $d$ de
+$(A, B)$ se reporta la media, desviaci\'on est\'andar, $d$ de
 Cohen~\citep{Cohen1988}, $t$/$p$ de Welch~\citep{Welch1947} y
 divergencia KL entre los histogramas de acci\'on, agregadas como
 matrices y \emph{heatmaps} (Cap.~\ref{sec:results}).

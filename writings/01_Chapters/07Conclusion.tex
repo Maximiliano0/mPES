@@ -19,19 +19,18 @@ y cinco profundas (\texttt{pes\_dqn}, \texttt{pes\_rdqn},
     hiperpar\'ametros.} El salto entre \texttt{pes\_ql}
     (Q-Learning optimizado con Optuna) y \texttt{pes\_trf}
     (Transformer causal) es estructural: aproximadamente un
-    \textbf{22--35\,\%} de reducci\'on en mortalidad acumulada, no
+    \textbf{35\,\%} de reducci\'on en mortalidad acumulada, no
     alcanzable por una mejor b\'usqueda de hiperpar\'ametros sobre
     la representaci\'on tabular.
-    \item \textbf{El Transformer es la mejor arquitectura
-    individual.} La auto-atenci\'on causal anticipa el crecimiento
-    exponencial del contagio, condici\'on \emph{sine qua non} para
-    decisiones de inercia alta.
-    \item \textbf{El ensemble es el mejor sistema desplegable.} El
-    \emph{soft voting} sobre $\{\texttt{dqn}, \texttt{rdqn},
-    \texttt{trf}\}$ (Ec.~\ref{eq:ens-soft}) reduce la varianza un
-    $\approx 23$\,\% y eleva el piso peor-caso, lo que importa
-    cuando la m\'etrica relevante es el riesgo y no s\'olo la
-    media.
+    \item \textbf{Transformer individual, ensemble desplegable.}
+    La auto-atenci\'on causal hace de \texttt{pes\_trf} la mejor
+    arquitectura individual al anticipar el crecimiento exponencial
+    del contagio, pero el \emph{soft voting} sobre
+    $\{\texttt{dqn}, \texttt{rdqn}, \texttt{trf}\}$
+    (Ec.~\ref{eq:ens-soft}) la supera como sistema desplegable: el
+    ensemble reduce la varianza un $\approx 23$\,\% y eleva el piso
+    peor-caso, lo que importa cuando la m\'etrica relevante es el
+    riesgo y no s\'olo la media.
     \item \textbf{La Entrop\'ia de Shannon es una m\'etrica
     leg\'itima de UQ.} El comportamiento de
     $H_{\mathrm{norm}}(\pi)$ a lo largo de la trayectoria reproduce
@@ -57,7 +56,7 @@ y cinco profundas (\texttt{pes\_dqn}, \texttt{pes\_rdqn},
     \item \textbf{Sustituir el escenario simulado} por series
     temporales reales (p.~ej.~datos COVID-19 desagregados por
     regi\'on) y evaluar generalizaci\'on contra los marcos de
-    modelado cl\'asicos~\citep{Kuhl2021,Csefalvay2023}.
+    modelado cl\'asicos~\citep{Kuhl2021}.
     \item \textbf{Acoplamiento humano--agente.} Dise\~nar interfaces
     que comuniquen $H_{\mathrm{norm}}$ y la varianza del ensemble
     al decisor humano y medir su impacto en la calidad de la
