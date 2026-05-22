@@ -1,20 +1,20 @@
-﻿\documentclass[../00_Main/Main.tex]{subfiles}
+﻿% !TEX root = ../00_Main/Main.tex
+\documentclass[../00_Main/Main.tex]{subfiles}
 
 \begin{document}
 
 La gesti\'on de recursos en una pandemia es un desaf\'io de log\'istica
 y \'etica que requiere decisiones r\'apidas bajo una presi\'on inmensa.
-El proyecto \textbf{mPES} surge como una respuesta a la necesidad de
-herramientas de soporte en la toma de decisiones que no s\'olo optimicen la
-supervivencia, sino que entiendan la \emph{inercia} del escenario
-pand\'emico.
+El \emph{framework} \textbf{mPES} surge como respuesta a la necesidad de
+herramientas de soporte para la toma de decisiones que no s\'olo
+optimicen la supervivencia, sino que entiendan la \emph{inercia}
+del escenario pand\'emico. Para ello, extiende el entorno original
+\emph{Pandemic Experiment Scenario} (PES) del BCI-NE Lab de la
+Universidad de Essex~\citep{BCINE2022}, adopt\'andolo como plataforma
+de comparaci\'on sistem\'atica de arquitecturas de Aprendizaje por
+Refuerzo en condiciones de crisis sanitaria.
 
 \subsection{Motivaci\'on}\label{sec:motivacion}
-
-El presente documento describe el proyecto \textbf{mPES}
-(\emph{Multiple Pandemic Experiment Suite}), un entorno de trabajo
-(\emph{workspace}) multi-paquete desarrollado \'integramente en
-Python. 
 
 La crisis sanitaria provocada por el COVID--19 puso de manifiesto que
 los tomadores de decisiones --- gobiernos, hospitales, cadenas
@@ -29,7 +29,7 @@ de propagaci\'on complejas y no lineales.
 
 El enfoque metodol\'ogico de esta tesis est\'a deliberadamente
 impregnado de la disciplina del \emph{desarrollo de producto}
-propia de la ingenier\'ia electr\'onica: trazabilidad de cada
+propia de la ingenier\'ia: trazabilidad de cada
 artefacto, reproducibilidad estricta, control de versiones del
 entorno computacional y validaci\'on \emph{out-of-distribution} como
 requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
@@ -51,10 +51,10 @@ subsiguientes), la \emph{intervenci\'on temprana} (los recursos
 asignados generan un impacto sostenido que premia a los modelos
 capaces de anticipar) y una \emph{evoluci\'on matem\'atica} regida
 por la ley exponencial-corregida
-$S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i)$
-con $\alpha = 0{,}4$ y $\beta = 1{,}4$~\citep{BCINE2022}. La
-formulaci\'on completa como MDP finito ($|\mathcal{S}| = 3\,410$,
-$|\mathcal{A}| = 11$, recompensa $r = -\sum_i S_i$) y el
+\[
+    S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i) \quad \alpha = 0{,}4 \text{ y } \beta = 1{,}4
+\]
+La formulaci\'on completa como MDP finito y el
 \emph{benchmark} fijo de $64$ secuencias compartido por todos los
 enfoques se detallan en la Sec.~\ref{sec:methods}.
 
@@ -70,29 +70,16 @@ mayor desempe\~no medio en la asignaci\'on de recursos durante una
 pandemia, especialmente en condiciones fuera de distribuci\'on.}
 
 \textbf{H1b (sist\'emica).} \emph{El Transformer, en tanto modelo
-\'unico, constituye la mejor soluci\'on desplegable; en particular,
-no puede ser superado por un sistema compuesto que lo integre como
-miembro.}
+\'unico, constituye la mejor soluci\'on desplegable.}
 \end{quote}
 
-Como se documenta en el Cap.~\ref{sec:results}, H1a se confirma con
-un tama\~no de efecto medio ($d \approx 0{,}60$ frente al mejor
-competidor recurrente), pero H1b se \emph{refuta}: el ensemble
-\texttt{pes\_ens} supera al Transformer con una reducci\'on adicional
-de varianza del $23$\,\%.
-
-De manera complementaria, la incorporaci\'on de la \emph{Entrop\'ia de
-Shannon} sobre la distribuci\'on de salida del agente permite
-caracterizar la \emph{confianza metacognitiva} del sistema, abriendo
-un camino algor\'itmico hacia la transparencia que tradicionalmente
-exig\'ia se\~nales fisiol\'ogicas (EEG).
 
 \subsection{Contribuciones}
 
 Las principales contribuciones de esta tesis son:
 
 \begin{enumerate}
-    \item Un \emph{benchmark} de RL reutilizable --- el
+    \item Un \emph{benchmark} de RL reutilizable ---
     \emph{workspace} \textbf{mPES} --- donde \textbf{ocho variantes
     algor\'itmicas} comparten el mismo entorno Gymnasium, el mismo
     \emph{pipeline} de optimizaci\'on bayesiana con Optuna y el mismo
