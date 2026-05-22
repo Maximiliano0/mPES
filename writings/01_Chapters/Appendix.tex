@@ -1,7 +1,86 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+\section{Comandos de reproducci\'on}\label{ap:repro}
 
-\biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
+La Tabla~\ref{tab:repro-commands} resume los comandos can\'onicos
+que regeneran cada uno de los artefactos reportados en esta tesis.
+Todos se ejecutan desde la ra\'iz del \emph{workspace} \texttt{mPES}
+con el entorno virtual activado (\texttt{win\_mpes\_env} en Windows,
+\texttt{linux\_mpes\_env} en Linux), Python 3.12 y las dependencias
+fijadas en \texttt{utils/config/requirements.txt}.
+
+\begin{table}[!ht]
+\centering
+\caption{Comandos can\'onicos para reentrenar, optimizar y evaluar
+cada paquete del repositorio \texttt{mPES}.}
+\label{tab:repro-commands}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Paquete} & \textbf{Entrenamiento} & \textbf{Optimizaci\'on bayesiana} \\
+\midrule
+\texttt{pes\_base} & \texttt{python -m tabular.pes\_base} & --- \\
+\texttt{pes\_ql}   & \texttt{python -m tabular.pes\_ql}   & \texttt{python -m tabular.pes\_ql.ext.optimize\_rl} \\
+\texttt{pes\_dql}  & \texttt{python -m tabular.pes\_dql}  & \texttt{python -m tabular.pes\_dql.ext.optimize\_rl} \\
+\texttt{pes\_dqn}  & \texttt{python -m ml.pes\_dqn}       & \texttt{python -m ml.pes\_dqn.ext.optimize\_dqn} \\
+\texttt{pes\_rdqn} & \texttt{python -m ml.pes\_rdqn}      & \texttt{python -m ml.pes\_rdqn.ext.optimize\_rdqn} \\
+\texttt{pes\_a2c}  & \texttt{python -m ml.pes\_a2c}       & \texttt{python -m ml.pes\_a2c.ext.optimize\_a2c} \\
+\texttt{pes\_trf}  & \texttt{python -m ml.pes\_trf}       & \texttt{python -m ml.pes\_trf.ext.optimize\_tr} \\
+\texttt{pes\_ens}  & \texttt{python -m ml.pes\_ens}       & --- (sin par\'ametros entrenables) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Orquestador del benchmark}\label{ap:orchestrator}
+
+El barrido completo de $7 \times 22 = 154$ celdas se ejecuta con
+una sola llamada:
+
+\begin{verbatim}
+python -m general.scripts.orchestrate \
+    --models pes_ql pes_dql pes_dqn pes_rdqn pes_a2c pes_trf pes_ens \
+    --scenarios all
+\end{verbatim}
+
+El script:
+
+\begin{enumerate}
+  \item ejecuta cada combinaci\'on \emph{(modelo, escenario)}
+  reutilizando los pesos entrenados en \texttt{<paquete>/outputs/};
+  \item agrega los retornos por secuencia con
+  \texttt{general/scripts/aggregate.py} para producir las matrices
+  CSV en \texttt{general/results/} (\texttt{matrix\_global\_mean.csv},
+  \texttt{matrix\_std.csv}, \texttt{matrix\_cohen\_d.csv},
+  \texttt{matrix\_welch\_p.csv}, \texttt{matrix\_action\_kl.csv},
+  \texttt{matrix\_ood\_degradation.csv});
+  \item dibuja los \emph{heatmaps} con
+  \texttt{general/scripts/plot\_matrix.py};
+  \item emite el reporte ejecutivo
+  \texttt{general/results/benchmark\_report.md} con
+  \texttt{general/scripts/report.py}.
+\end{enumerate}
+
+\section{Estresores universales}\label{ap:stressors}
+
+Los tres escenarios identificados en la
+Sec.~\ref{sec:universal-stressors} como estresores universales
+($p < 10^{-3}$ en \emph{todos} los modelos) son:
+
+\begin{itemize}
+  \item \texttt{sev\_extrapolate\_high}: severidades por encima del
+  rango \emph{in-distribution}.
+  \item \texttt{len\_extrapolate\_long}: secuencias m\'as largas que
+  las observadas durante entrenamiento.
+  \item \texttt{joint\_extrap\_both}: combinaci\'on simult\'anea de
+  las dos anteriores.
+\end{itemize}
+
+Las tres columnas estructurales (\texttt{struct\_more\_total},
+\texttt{struct\_many\_short\_blocks},
+\texttt{struct\_few\_long\_blocks}) exhiben degradaci\'on cero y
+$D_{\mathrm{KL}} = 0$, actuando como banda de control del propio
+\emph{esquema} de evaluaci\'on.
+
+\biblio
 \end{document}

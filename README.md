@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦠 mPES — *multiple Pandemic Experiment Scenario*
+# 🦠 mPES — *Multiple Pandemic Experiment Suite*
 
 **A reinforcement-learning benchmark for resource allocation under uncertainty.**
 

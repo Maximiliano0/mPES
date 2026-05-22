@@ -1,8 +1,181 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
-This section is used to describe why you got the results that you did and how to interpret them.
+\label{sec:discussion}
 
+Los resultados del Cap.~\ref{sec:results} confirman parcialmente la
+hip\'otesis de trabajo: H1a se sostiene y H1b se refuta. El detalle
+cuantitativo (Tabla~\ref{tab:pairwise-stats}) ya fue presentado en
+la Sec.~\ref{sec:results}; esta secci\'on discute las implicaciones
+m\'as relevantes.
 
-\biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
+\subsection{Por qu\'e gana el Transformer}
+
+La din\'amica de severidad
+$S_{t+1} = \max(0, \beta S_t - \alpha a_t)$ (Ec.~\ref{eq:transicion})
+es agregada en el tiempo: un d\'eficit de
+recursos en $t$ no se traduce en costo inmediato, sino en una
+amplificaci\'on geom\'etrica sobre los \emph{trials} siguientes. Esta
+estructura penaliza fuertemente a los m\'etodos ``miopes'' (tabular
+y, en menor medida, DQN feed-forward) que tienden a sub-asignar al
+principio de las secuencias largas.
+
+El codificador Transformer, al observar la \emph{ventana hist\'orica}
+completa $\{s_{t-W+1}, \ldots, s_t\}$ con atenci\'on causal
+(Ec.~\ref{eq:causal-attention}), construye una representaci\'on que
+codifica expl\'icitamente la \emph{velocidad y aceleraci\'on} del
+crecimiento de la severidad. Esto le permite anticipar el
+crecimiento exponencial y movilizar recursos antes de que se vuelva
+incontenible.
+
+\subsection{Entrop\'ia de Shannon como confianza algor\'itmica}
+
+El hallazgo m\'as conceptualmente importante de esta tesis no es la
+mejora en $\bar{r}$ sino el patr\'on de entrop\'ia: la
+$H_{\mathrm{norm}}$ del Transformer \emph{baja} justo cuando la
+amenaza es m\'as grave, y \emph{sube} cuando el entorno se
+estabiliza. Esto sugiere que la red ha aprendido, sin supervisi\'on
+expl\'icita, una forma de \emph{metacognici\'on emergente}:
+
+\begin{quote}
+\emph{El agente sabe cu\'ando sabe.}
+\end{quote}
+
+Este comportamiento es exactamente el descrito por
+Boldt \& Yeung~\citep{Boldt2015} y formalizado por
+Fleming~\citep{Fleming2024} para la confianza humana medida con EEG.
+La aportaci\'on metodol\'ogica de la tesis es haber traducido ese
+biomarcador a una m\'etrica reproducible:
+$1 - H_{\mathrm{norm}}(\pi(a \mid s))$, calculable en cualquier
+modelo con salida \texttt{softmax}, sin necesidad de hardware de
+neuroimagen.
+
+\subsection{El ensemble como mejor sistema desplegable}\label{sec:ens-best}
+
+Una lectura ingenua de la Tabla~\ref{tab:global-mean} podr\'ia
+concluir que la ganancia de \texttt{pes\_ens} sobre \texttt{pes\_trf}
+($\Delta \bar{r} \approx 0{,}010$) es marginal. Tres argumentos
+sugieren lo contrario:
+
+\begin{enumerate}
+    \item \textbf{Reducci\'on de varianza.} La desviaci\'on est\'andar
+    cae de $0{,}045$ a $0{,}035$, un $\approx 23$\,\% menos. Para una
+    aplicaci\'on en producci\'on, esto se traduce en un piso
+    peor-caso m\'as alto y, por tanto, en menor riesgo en las
+    decisiones cr\'iticas.
+    \item \textbf{Descomposici\'on sesgo--varianza.} El
+    promediado no elimina el sesgo del miembro mediano pero reduce
+    la varianza en un factor $\rho + (1 - \rho)/K$, donde $\rho$ es la
+    correlaci\'on entre miembros y $K = 3$. En mPES los miembros
+    son arquitect\'onicamente distintos
+    (\texttt{dqn}, \texttt{rdqn}, \texttt{trf}), lo que mantiene
+    $\rho$ alejado de uno y materializa la ganancia te\'orica.
+    \item \textbf{Resiliencia OOD.} En los tres estresores
+    universales (Sec.~\ref{sec:universal-stressors}), el ensemble
+    obtiene la mejor m\'etrica peor-caso, aportando robustez
+    precisamente en las condiciones m\'as adversas.
+\end{enumerate}
+
+En s\'intesis: el Transformer sigue siendo el mejor punto de
+partida algor\'itmico, pero la \emph{soluci\'on producto} debe ser
+el ensemble.
+
+\subsection{Los tres estresores universales}\label{sec:universal-stressors}
+
+Las tres condiciones identificadas en la Sec.~\ref{sec:ood-curves}
+constituyen el verdadero \emph{n\'ucleo} del benchmark: cualquier
+discusi\'on de robustez debe priorizarlas frente a las dem\'as
+celdas. Las columnas estructurales (\texttt{struct\_*}), por el
+contrario, exhiben degradaci\'on cero y act\'uan como banda de
+control que valida la invarianza del propio \emph{esquema} de
+evaluaci\'on antes que la robustez del modelo.
+
+\subsection{El falso aprobado de \texttt{pes\_a2c}}\label{sec:a2c-collapse}
+
+El paquete \texttt{pes\_a2c} alcanza una performance media
+competitiva ($\bar{r} \approx 0{,}887$) pero la divergencia KL de su
+distribuci\'on de acci\'on respecto del agente bajo perturbaciones
+de severidad es esencialmente cero
+(Fig.~\ref{fig:heatmaps}, panel inferior derecho). En t\'erminos pr\'acticos: \emph{el actor
+ha colapsado a una pol\'itica casi insensible al contexto} que, por
+suerte, queda cerca del \'optimo en la condici\'on emp\'irica. Este
+fen\'omeno --- conocido en la literatura como \emph{policy
+collapse}~\citep{Mnih2016,Andrychowicz2021} --- ilustra por qu\'e
+los m\'etodos de gradiente de pol\'itica sin regularizaci\'on
+entr\'opica fuerte exigen una evaluaci\'on \emph{OOD} expl\'icita:
+una m\'etrica agregada sobre la distribuci\'on de entrenamiento es
+incapaz de detectar el problema.
+
+\subsection{Costo computacional y trade-offs de despliegue}\label{sec:cost}
+
+La comparaci\'on entre arquitecturas no se agota en la
+recompensa media: en un despliegue real, el tiempo de
+entrenamiento, la latencia de inferencia y la memoria del modelo
+son restricciones de primer orden. Aproximadamente, en el banco
+de pruebas utilizado (CPU Intel i7-12700H, $32$\,GB de RAM, sin
+GPU), una sesi\'on completa de optimizaci\'on bayesiana con $30$
+\emph{trials} de Optuna~\citep{Akiba2019} consume entre dos y tres
+horas para los modelos tabulares (\texttt{pes\_ql}, \texttt{pes\_dql}),
+entre seis y nueve horas para los modelos profundos
+feed-forward (\texttt{pes\_dqn}, \texttt{pes\_a2c}) y entre doce y
+dieciocho horas para los modelos con memoria expl\'icita
+(\texttt{pes\_rdqn} y \texttt{pes\_trf}). El \emph{ensemble}
+\texttt{pes\_ens} no entrena: reutiliza los tres miembros ya
+entrenados y suma sus salidas \emph{softmax} con coste
+aditivo de inferencia $\mathcal{O}(K)$ por paso de decisi\'on,
+donde $K = 3$ aqu\'i.
+
+A efectos pr\'acticos, este orden de magnitud sugiere una
+estrategia de despliegue por capas: usar \texttt{pes\_dqn} para
+prototipado r\'apido y benchmarking interno, \texttt{pes\_trf}
+para producci\'on cuando el costo de entrenamiento es amortizable
+(pol\'iticas de larga vida o supervisi\'on humana baja), y
+\texttt{pes\_ens} cuando el riesgo de la decisi\'on justifica el
+sobrecoste de inferencia 3$\times$. En sistemas con presupuesto
+computacional estricto, el camino \texttt{pes\_dql} + un proxy
+entr\'opico simple ofrece la mejor relaci\'on coste--robustez
+entre los modelos tabulares.
+
+\subsection{Amenazas a la validez del estudio}\label{sec:threats}
+
+M\'as all\'a del costo computacional discutido arriba
+(Sec.~\ref{sec:cost}), conviene explicitar cuatro amenazas a la
+validez del experimento que acompa\~nan a cualquier estudio de RL
+aplicado~\citep{Henderson2018,Kirk2023}:
+
+\begin{itemize}
+    \item \textbf{Validez externa --- semilla \'unica.} El
+    benchmark agregado de \texttt{general/} se ejecut\'o con
+    semilla $42$ por celda. Si bien las $n = 64$ secuencias por
+    escenario otorgan suficiente poder estad\'istico para los
+    contrastes de Welch reportados, una r\'eplica multi-semilla
+    permitir\'ia separar mejor el componente algor\'itmico del
+    componente aleatorio en los bordes del ranking.
+    \item \textbf{Validez interna.} La elecci\'on del simulador
+    \emph{Pandemic Scenario} introduce un sesgo no aleatorio: las
+    arquitecturas con sesgo inductivo afin a la din\'amica
+    geom\'etrica $S_{t+1} = \max(0, \beta S_t - \alpha a_t)$
+    (Transformer y modelos recurrentes) parten con ventaja. La
+    Tabla~\ref{tab:global-mean} debe interpretarse como una
+    medida de \emph{ajuste arquitectura--problema} antes que como
+    un ranking universal entre familias de algoritmos.
+    \item \textbf{Validez de constructo.} La equivalencia entre
+    el biomarcador EEG de confianza humana y la entrop\'ia
+    \emph{softmax} de la pol\'itica es una analog\'ia
+    funcional, no una identidad neurofisiol\'ogica. Defendemos
+    que ambas se\~nales codifican la incertidumbre
+    epist\'emica del decisor, pero su mapeo cuantitativo exige
+    estudios concurrentes (agente y operador humano en la misma
+    tarea) que quedan fuera del alcance de esta tesis.
+    \item \textbf{Validez externa.} Generalizar los hallazgos a
+    otros dominios de \emph{decisi\'on bajo crisis} (cl\'inica
+    intensiva, control de redes el\'ectricas, log\'istica
+    humanitaria) exige replicar el benchmark agregado sobre cada
+    nueva familia de escenarios; las conclusiones aqu\'i
+    sostenidas valen para problemas con din\'amica acumulativa y
+    horizonte largo, no para tareas reactivas o de un solo paso.
+\end{itemize}
+
+\biblio
 \end{document}
+

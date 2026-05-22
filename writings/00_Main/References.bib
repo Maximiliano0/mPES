@@ -1,83 +1,281 @@
-\usepackage[utf8]{inputenc}
-\begin{thebibliography}{99}
+% References.bib
+% BibTeX database for the thesis "A Comparative Evaluation of
+% Reinforcement Learning Architectures for Resource Allocation under
+% Uncertainty in Pandemic Scenarios" (Vega, ITBA, 2026).
+%
+% Curated to contain only the references explicitly cited in the
+% manuscript (31 entries).
 
+% ----- Pandemic Experiment Scenario environment -----
 
-@manual{Microsoft.2024,
-title  = "Neurips Conference Analytics",
-mendeley-groups = {Balance},
-author = "Microsoft Academics",
-note   = "\url{https://www.microsoft.com/en-us/research/project/academic/articles/neurips-conference-analytics/}",
-year   = "2024 (accessed Feb 27, 2024)"
+@misc{BCINE2022,
+  title        = {{PES}: Pandemic Experiment Scenario},
+  author       = {{BCI-NE Lab, University of Essex}},
+  year         = {2022},
+  howpublished = {\url{https://github.com/BCI-NE/PES}},
+  note         = {Financiado por Dstl/UK MoD y US/UK DoD BARI. Accedido: mayo 2026}
 }
 
+% ----- Foundations of Reinforcement Learning -----
 
-@article{Endo,
-abstract = {Home Oxydgen Therapy (H.O.T.) is a medical treatment for severe lung diseases in which the patients are supplied concentrated oxygen. This paper investigates the use of a follower robot as a support device for H.O.T. patients, consisting of a two-wheeled differential drive robot connected to the user by tether. Two different control algorithms were studied using dynamic simulation and motion capture experiments with healthy subjects. In further experiments with H.O.T. patients, including a questionnaire survey, it was confirmed that Follow the Leader control was capable of following the user's trajectory more accurately than Pseudo-Joystick control, and that overall H.O.T. patients showed a preference for Follow the Leader control.},
-author = {Endo, Gen and Allan, Ben and Iemura, Yu and Fukushima, Edwardo F. and Iribe, Masatsugu and Takubo, Toshio and Ohira, Mineko},
-doi = {10.1186/s40648-014-0026-3},
-file = {:Users/rramele/Library/Application Support/Mendeley Desktop/Downloaded/Endo et al. - 2015 - Mobile follower robot as an assistive device for home oxygen therapy – evaluation of tether control algorithms.pdf:pdf},
-issn = {21974225},
-journal = {ROBOMECH Journal},
-keywords = {Home oxygen therapy,Leader following,Mobile robot,Tether},
-mendeley-groups = {AlpiBot},
-month = {dec},
-number = {1},
-pages = {6},
-publisher = {Springer International Publishing},
-title = {{Mobile follower robot as an assistive device for home oxygen therapy – evaluation of tether control algorithms}},
-url = {http://www.robomechjournal.com/content/2/1/6},
-volume = {2},
-year = {2015}
+@book{SuttonBarto2018,
+  title     = {Reinforcement Learning: An Introduction},
+  author    = {Sutton, Richard S. and Barto, Andrew G.},
+  year      = {2018},
+  edition   = {2nd},
+  publisher = {The MIT Press},
+  address   = {Cambridge, MA}
 }
 
-
-@article{ramele2019histogram,
-  title={Histogram of gradient orientations of signal plots applied to P300 detection},
-  author={Ramele, Rodrigo and Villar, Ana Julia and Santos, Juan Miguel},
-  journal={Frontiers in computational neuroscience},
-  volume={13},
-  year={2019},
-  publisher={Frontiers Media SA}
+@article{Watkins1992,
+  title   = {Q-learning},
+  author  = {Watkins, Christopher J. C. H. and Dayan, Peter},
+  journal = {Machine Learning},
+  volume  = {8},
+  number  = {3--4},
+  pages   = {279--292},
+  year    = {1992}
 }
 
-@article{uriguen2015eeg,
-  title={EEG artifact removal—state-of-the-art and guidelines},
-  author={Urig{\"u}en, Jose Antonio and Garcia-Zapirain, Bego{\~n}a},
-  journal={Journal of neural engineering},
-  volume={12},
-  number={3},
-  pages={031001},
-  year={2015},
-  publisher={IOP Publishing}
+@incollection{Hasselt2010,
+  title     = {Double {Q}-learning},
+  author    = {van Hasselt, Hado},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {23},
+  pages     = {2613--2621},
+  year      = {2010}
 }
 
-@book{AIAMA,
-  title={Artificial Intelligence: A Modern Approach},
-  author={Norvig, Peter and Russell, Stuart},
-  year={2009},
-  publisher={Prentice Hall Press Upper Saddle River}
+@inproceedings{Ng1999,
+  title     = {Policy invariance under reward transformations: Theory and application to reward shaping},
+  author    = {Ng, Andrew Y. and Harada, Daishi and Russell, Stuart},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {1999}
 }
 
-@book{wolpaw2012brain,
-  title={Brain-computer interfaces: principles and practice},
-  author={Wolpaw, Jonathan and Wolpaw, Elizabeth Winter},
-  year={2012},
-  publisher={OUP USA}
+@article{Williams1992,
+  title   = {Simple statistical gradient-following algorithms for connectionist reinforcement learning},
+  author  = {Williams, Ronald J.},
+  journal = {Machine Learning},
+  volume  = {8},
+  number  = {3--4},
+  pages   = {229--256},
+  year    = {1992}
 }
 
-@Manual{MNE,
-    title = {MNE software for processing MEG and EEG data, NeuroImage, Volume 86},
-    author = {A. Gramfort, M. Luessi, E. Larson, D. Engemann, D. Strohmeier, C. Brodbeck, L. Parkkonen, M. Hämäläinen},
-    year = {2014},
-    url = {https://mne-tools.github.io/0.13/index.html}
-  }
-  
-@Manual{MNE-PYTHON,
-    title = {MEG and EEG data analysis with MNE-Python, Frontiers in Neuroscience, Volume 7},
-    author = {A. Gramfort, M. Luessi, E. Larson, D. Engemann, D. Strohmeier, C. Brodbeck, R. Goj, M. Jas, T. Brooks, L. Parkkonen, M. Hämäläinen},
-    year = {2013},
-    url = {https://mne-tools.github.io/0.13/index.html}
-  }
+% ----- Deep RL -----
 
+@article{Mnih2015,
+  title   = {Human-level control through deep reinforcement learning},
+  author  = {Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A. and Veness, Joel and Bellemare, Marc G. and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K. and Ostrovski, Georg and others},
+  journal = {Nature},
+  volume  = {518},
+  number  = {7540},
+  pages   = {529--533},
+  year    = {2015}
+}
 
-\end{thebibliography}
+@inproceedings{Mnih2016,
+  title     = {Asynchronous methods for deep reinforcement learning},
+  author    = {Mnih, Volodymyr and Badia, Adri{\`a} Puigdom{\`e}nech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2016}
+}
+
+@article{Lin1992,
+  title   = {Self-improving reactive agents based on reinforcement learning, planning and teaching},
+  author  = {Lin, Long-Ji},
+  journal = {Machine Learning},
+  volume  = {8},
+  number  = {3--4},
+  pages   = {293--321},
+  year    = {1992}
+}
+
+@article{Hochreiter1997,
+  title   = {Long short-term memory},
+  author  = {Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  journal = {Neural Computation},
+  volume  = {9},
+  number  = {8},
+  pages   = {1735--1780},
+  year    = {1997}
+}
+
+@inproceedings{Hausknecht2015,
+  title     = {Deep recurrent {Q}-learning for partially observable {MDPs}},
+  author    = {Hausknecht, Matthew and Stone, Peter},
+  booktitle = {AAAI Fall Symposium Series},
+  year      = {2015}
+}
+
+@inproceedings{Kingma2015,
+  title     = {{Adam}: A Method for Stochastic Optimization},
+  author    = {Kingma, Diederik P. and Ba, Jimmy},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2015}
+}
+
+@article{Andrychowicz2021,
+  title   = {What matters for on-policy deep actor-critic methods? A large-scale study},
+  author  = {Andrychowicz, Marcin and Raichuk, Anton and Sta{\'n}czyk, Piotr and Orsini, Manu and Girgin, Sertan and Marinier, Rapha{\"e}l and Hussenot, L{\'e}onard and Geist, Matthieu and Pietquin, Olivier and Michalski, Marcin and Gelly, Sylvain and Bachem, Olivier},
+  journal = {International Conference on Learning Representations (ICLR)},
+  year    = {2021}
+}
+
+% ----- Attention / Transformers -----
+
+@inproceedings{Vaswani2017,
+  title     = {Attention Is All You Need},
+  author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2017}
+}
+
+@inproceedings{Parisotto2020,
+  title     = {Stabilizing transformers for reinforcement learning},
+  author    = {Parisotto, Emilio and Song, H. Francis and Rae, Jack W. and Pascanu, Razvan and Gulcehre, Caglar and Jayakumar, Siddhant M. and Jaderberg, Max and Kaufman, Raphael Lopez and Clark, Aidan and Noury, Seb and Botvinick, Matthew M. and Heess, Nicolas and Hadsell, Raia},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2020}
+}
+
+@inproceedings{Chen2021,
+  title     = {Decision Transformer: Reinforcement Learning via Sequence Modeling},
+  author    = {Chen, Lili and Lu, Kevin and Rajeswaran, Aravind and Lee, Kimin and Grover, Aditya and Laskin, Michael and Abbeel, Pieter and Srinivas, Aravind and Mordatch, Igor},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2021}
+}
+
+% ----- Ensembles -----
+
+@incollection{Dietterich2000,
+  title     = {Ensemble methods in machine learning},
+  author    = {Dietterich, Thomas G.},
+  booktitle = {Multiple Classifier Systems},
+  pages     = {1--15},
+  year      = {2000},
+  publisher = {Springer}
+}
+
+@inproceedings{Osband2016,
+  title     = {Deep exploration via bootstrapped {DQN}},
+  author    = {Osband, Ian and Blundell, Charles and Pritzel, Alexander and Van Roy, Benjamin},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2016}
+}
+
+@inproceedings{Lakshminarayanan2017,
+  title     = {Simple and scalable predictive uncertainty estimation using deep ensembles},
+  author    = {Lakshminarayanan, Balaji and Pritzel, Alexander and Blundell, Charles},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2017}
+}
+
+% ----- Generalisation and OOD -----
+
+@inproceedings{Cobbe2020,
+  title     = {Leveraging procedural generation to benchmark reinforcement learning},
+  author    = {Cobbe, Karl and Hesse, Christopher and Hilton, Jacob and Schulman, John},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2020}
+}
+
+@article{Packer2018,
+  title   = {Assessing Generalization in Deep Reinforcement Learning},
+  author  = {Packer, Charles and Gao, Katelyn and Kos, Jernej and Kr{\"a}henb{\"u}hl, Philipp and Koltun, Vladlen and Song, Dawn},
+  journal = {arXiv:1810.12282},
+  year    = {2018}
+}
+
+@article{Kirk2023,
+  title   = {A survey of zero-shot generalisation in deep reinforcement learning},
+  author  = {Kirk, Robert and Zhang, Amy and Grefenstette, Edward and Rockt{\"a}schel, Tim},
+  journal = {Journal of Artificial Intelligence Research},
+  volume  = {76},
+  pages   = {201--264},
+  year    = {2023}
+}
+
+@inproceedings{Henderson2018,
+  title     = {Deep reinforcement learning that matters},
+  author    = {Henderson, Peter and Islam, Riashat and Bachman, Philip and Pineau, Joelle and Precup, Doina and Meger, David},
+  booktitle = {AAAI Conference on Artificial Intelligence},
+  year      = {2018}
+}
+
+% ----- Hyper-parameter optimisation -----
+
+@inproceedings{Akiba2019,
+  title     = {{Optuna}: A next-generation hyperparameter optimization framework},
+  author    = {Akiba, Takuya and Sano, Shotaro and Yanase, Toshihiko and Ohta, Takeru and Koyama, Masanori},
+  booktitle = {ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)},
+  year      = {2019}
+}
+
+@inproceedings{Bergstra2011,
+  title     = {Algorithms for hyper-parameter optimization},
+  author    = {Bergstra, James and Bardenet, R{\'e}mi and Bengio, Yoshua and K{\'e}gl, Bal{\'a}zs},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2011}
+}
+
+% ----- Statistics -----
+
+@book{Cohen1988,
+  title     = {Statistical Power Analysis for the Behavioral Sciences},
+  author    = {Cohen, Jacob},
+  year      = {1988},
+  edition   = {2nd},
+  publisher = {Lawrence Erlbaum Associates},
+  address   = {Hillsdale, NJ}
+}
+
+@article{Welch1947,
+  title   = {The generalization of {Student}'s problem when several different population variances are involved},
+  author  = {Welch, Bernard L.},
+  journal = {Biometrika},
+  volume  = {34},
+  number  = {1/2},
+  pages   = {28--35},
+  year    = {1947}
+}
+
+% ----- Gymnasium -----
+
+@misc{Towers2024,
+  title  = {{Gymnasium} v1.0: A standard interface for reinforcement learning environments},
+  author = {Towers, Mark and others},
+  year   = {2024},
+  howpublished = {\url{https://gymnasium.farama.org/}}
+}
+
+% ----- Computational epidemiology -----
+
+@book{Kuhl2021,
+  title     = {Computational Epidemiology: Data-Driven Modeling of {COVID-19}},
+  author    = {Kuhl, Ellen},
+  publisher = {Springer},
+  year      = {2021}
+}
+
+% ----- Metacognition / confidence -----
+
+@article{Boldt2015,
+  title   = {Shared neural markers of decision confidence and error detection},
+  author  = {Boldt, Annika and Yeung, Nick},
+  journal = {Journal of Neuroscience},
+  volume  = {35},
+  number  = {8},
+  pages   = {3478--3484},
+  year    = {2015}
+}
+
+@article{Fleming2024,
+  title   = {Metacognition and confidence: A review and synthesis},
+  author  = {Fleming, Stephen M.},
+  journal = {Annual Review of Psychology},
+  volume  = {75},
+  pages   = {241--268},
+  year    = {2024}
+}
+

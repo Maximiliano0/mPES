@@ -1,0 +1,14 @@
+{
+  // Forzar a LaTeX Workshop a usar siempre Main.tex como raíz,
+  // de modo que los subficheros (01_Chapters/*.tex) no se intenten
+  // compilar aislados (lo que produciría falsos "undefined citations"
+  // y "missing references" porque no ven el .bib ni los \label).
+  "latex-workshop.latex.rootFile.doNotPrompt": true,
+  "latex-workshop.latex.rootFile.useSubFile": false,
+  "latex-workshop.latex.rootFile.indicator": "\\begin{document}",
+  "latex-workshop.latex.search.rootFiles.include": [
+    "00_Main/Main.tex"
+  ],
+  // Evitar el auto-build de subficheros al guardar:
+  "latex-workshop.latex.autoBuild.run": "never"
+}
