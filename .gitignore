@@ -1,0 +1,123 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+#  mPES — .gitignore
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Last updated: 2026-05-19
+#
+#  Packages: pes_base · pes_ql · pes_dql · pes_dqn · pes_rdqn · pes_a2c · pes_trf · pes_ens · utils
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# ── Virtual environments ────────────────────────────────────────────────────
+linux_mpes_env/
+win_mpes_env/
+.venv/
+venv/
+env/
+
+# ── Python bytecode / build artefacts ───────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ── IDEs / editors ─────────────────────────────────────────────────────────
+.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Keep VS Code config
+!.vscode/extensions.json
+!.vscode/tasks.json
+
+# ── Testing & coverage ─────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ── Jupyter ─────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+!colab/*.ipynb
+
+# ── OS metadata ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── PID / lock files ──────────────────────────────────────────────────────
+*.pid
+*.lock
+
+# ── Generated experiment artefacts (per package) ───────────────────────────
+#  Keep folder structure via .gitkeep; ignore everything else inside
+#  inputs/ and outputs/ across all packages.
+!pes_*/inputs/.gitkeep
+!pes_*/outputs/.gitkeep
+
+# ── Stand-alone training / log artefacts (any location) ────────────────────
+*.npy
+*.keras
+*.h5
+*.hdf5
+*.weights
+*.ckpt
+*.pkl
+*.joblib
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# ── Run-time logs ──────────────────────────────────────────────────────────
+*.log
+bayesian_opt*.log
+watcher.log
+train_*_stdout.log
+train_*_stderr.log
+
+# ── general/work (per-run model outputs and scenario data) ─────────────────
+general/work/*/outputs/
+general/work/*/scenarios/
+
+# ── LaTeX auxiliary files (writings/) ─────────────────────────────────────
+writings/**/*.aux
+writings/**/*.lof
+writings/**/*.lot
+writings/**/*.toc
+writings/**/*.bbl
+writings/**/*.blg
+writings/**/*.bcf
+writings/**/*.run.xml
+writings/**/*.fls
+writings/**/*.fdb_latexmk
+writings/**/*.synctex.gz
+writings/**/*.synctex(busy)
+writings/**/*.out
+writings/**/*.nav
+writings/**/*.snm
+writings/**/*.vrb
+writings/**/*.idx
+writings/**/*.ind
+writings/**/*.ilg
+writings/**/*.glo
+writings/**/*.gls

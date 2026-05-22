@@ -1,13 +1,248 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
-Background contains all the information that is necessary to know to understand what is being presented in this work.  A sample reference with a website is like the one produced by \cite{Microsoft.2024}
+\label{sec:background}
 
-\subsection{Other similar works}
+Este cap\'itulo introduce la maquinaria formal utilizada a lo largo de
+la tesis: Procesos de Decisi\'on de Markov (MDPs), \emph{Reinforcement
+Learning} basado en valor y en gradiente de pol\'itica, aproximaci\'on
+profunda de funciones, codificadores recurrentes y basados en
+atenci\'on, optimizaci\'on bayesiana de hiperpar\'ametros y, finalmente,
+la Entrop\'ia de Shannon como m\'etrica de Cuantificaci\'on de
+Incertidumbre (UQ). El tratamiento es deliberadamente compacto; las
+referencias can\'onicas son Sutton \& Barto~\citep{SuttonBarto2018}.
 
+\subsection{Procesos de Decisi\'on de Markov}
 
-\subsubsection{More information}
+Un MDP finito es una tupla
+$\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, R, \gamma)$ donde
+$\mathcal{S}$ es un espacio de estados finito, $\mathcal{A}$ un
+espacio de acciones finito, $P(s' \mid s, a)$ un n\'ucleo de
+transici\'on, $R(s, a, s')$ una funci\'on de recompensa acotada y
+$\gamma \in [0, 1)$ el factor de descuento. Bajo una pol\'itica
+$\pi(a \mid s)$ el agente genera una trayectoria
+$\tau = (s_0, a_0, r_1, s_1, a_1, \ldots)$ cuyo \emph{retorno
+descontado} desde el tiempo $t$ es
 
+\begin{equation}
+G_t \;=\; \sum_{k = 0}^{\infty} \gamma^{k}\, r_{t + k + 1}.
+\label{eq:return}
+\end{equation}
+
+La funci\'on de valor de estado--acci\'on de la pol\'itica es
+$Q^{\pi}(s, a) = \mathbb{E}_{\pi}[G_t \mid s_t = s,\, a_t = a]$ y la
+pol\'itica \'optima satisface la ecuaci\'on de Bellman,
+
+\begin{equation}
+Q^{*}(s, a) \;=\; \mathbb{E}\!\left[r + \gamma \max_{a'} Q^{*}(s', a')
+\,\middle|\, s, a\right].
+\label{eq:bellman-opt}
+\end{equation}
+
+\subsection{Q-Learning tabular}
+
+Cuando $\mathcal{S}$ y $\mathcal{A}$ son enumerables, $Q$ se almacena
+como una tabla y se aplica la actualizaci\'on cl\'asica de
+Watkins~\citep{Watkins1992}:
+
+\begin{equation}
+Q(s, a) \;\leftarrow\; Q(s, a) \;+\; \alpha\,
+\bigl[r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr],
+\label{eq:qlearning}
+\end{equation}
+
+con tasa de aprendizaje $\alpha$ y exploraci\'on $\varepsilon$-\emph{greedy}.
+
+\subsubsection{Double Q-Learning}
+
+El operador $\max$ en la Ecuaci\'on~\eqref{eq:qlearning} introduce un
+sesgo positivo en la estimaci\'on del valor. \emph{Double
+Q-Learning}~\citep{Hasselt2010} mantiene dos tablas $Q^{A}$ y $Q^{B}$
+actualizadas alternativamente, desacoplando la selecci\'on y la
+evaluaci\'on de la acci\'on:
+
+\begin{equation}
+Q^{A}(s, a) \leftarrow Q^{A}(s, a) + \alpha\bigl[r + \gamma\,
+Q^{B}\!\bigl(s', \arg\max_{a'} Q^{A}(s', a')\bigr) - Q^{A}(s, a)\bigr].
+\end{equation}
+
+\subsubsection{Reward Shaping Basado en Potencial (PBRS)}
+
+PBRS~\citep{Ng1999} a\~nade un t\'ermino $F(s, s') = \gamma\Phi(s') -
+\Phi(s)$ a la recompensa sin alterar el conjunto de pol\'iticas
+\'optimas. Es la \'unica familia de \emph{shaping} con garant\'ia
+te\'orica de invarianza y se utiliza en \texttt{pes\_dql} para
+acelerar la convergencia frente a una se\~nal de costo final dispersa.
+
+\subsection{Deep Q-Networks (DQN)}
+
+Cuando el espacio de estados es grande, $Q(s, a; \theta)$ se aproxima
+con una red neuronal. El \emph{Deep Q-Network}~\citep{Mnih2015}
+estabiliza el entrenamiento con dos ingredientes: (i) un
+\emph{buffer de repetici\'on de experiencia}~\citep{Lin1992} del cual
+se muestrean mini\-lotes uniformemente, y (ii) una \emph{red objetivo}
+$Q(\cdot;\theta^{-})$ cuyos par\'ametros se copian desde $\theta$
+cada $C$ pasos. La funci\'on de costo es
+
+\begin{equation}
+\mathcal{L}(\theta) \;=\;
+\mathbb{E}_{(s,a,r,s') \sim \mathcal{D}}
+\!\left[\bigl(r + \gamma \max_{a'} Q(s', a'; \theta^{-})
+- Q(s, a; \theta)\bigr)^{2}\right].
+\label{eq:dqn-loss}
+\end{equation}
+
+La red objetivo desacopla el blanco de la regresi\'on y se
+actualiza por copia dura cada $C$ pasos o, alternativamente, por
+\emph{soft update} $\theta^{-} \leftarrow \tau\theta + (1-\tau)\theta^{-}$
+con $\tau \ll 1$. La p\'erdida se optimiza con
+Adam~\citep{Kingma2015} y, opcionalmente, con un \emph{schedule}
+tipo \emph{warm restarts}. Para regularizar
+la red se utiliza \emph{dropout}.
+
+\subsection{Redes recurrentes y LSTM}
+
+Cuando el estado observado no es markoviano --- por ejemplo, cuando
+la din\'amica de severidad acumula informaci\'on hist\'orica no
+representada en $s_t$ --- es habitual recurrir a codificadores
+recurrentes. La \emph{Long Short-Term Memory}
+(LSTM)~\citep{Hochreiter1997} introduce compuertas
+$i_t, f_t, o_t$ que controlan c\'omo el estado de celda $c_t$
+acumula informaci\'on a largo plazo:
+
+\begin{equation}
+c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t,
+\qquad h_t \;=\; o_t \odot \tanh(c_t).
+\label{eq:lstm}
+\end{equation}
+
+Hausknecht y Stone~\citep{Hausknecht2015} demostraron que incorporar
+una capa LSTM dentro de un DQN (\emph{Deep Recurrent Q-Network},
+DRQN) mejora el desempe\~no en entornos parcialmente observables. El
+paquete \texttt{pes\_rdqn} adopta exactamente esta estrategia.
+
+\subsection{Pol\'iticas, Gradientes y Actor--Critic}
+
+Los m\'etodos de \emph{gradiente de pol\'itica}~\citep{Williams1992}
+parametrizan la pol\'itica $\pi_\theta(a \mid s)$ y actualizan
+$\theta$ a lo largo del gradiente del retorno esperado:
+
+\begin{equation}
+\nabla_{\theta} J(\theta) \;=\;
+\mathbb{E}_{\pi_{\theta}}\!\bigl[\nabla_{\theta} \log
+\pi_{\theta}(a \mid s)\, A^{\pi_{\theta}}(s, a)\bigr],
+\label{eq:pg}
+\end{equation}
+
+con la funci\'on de \emph{ventaja}
+$A^{\pi}(s, a) = Q^{\pi}(s, a) - V^{\pi}(s)$. El
+\emph{Advantage Actor--Critic} (A2C)~\citep{Mnih2016} entrena
+simult\'aneamente un actor que produce $\pi_\theta$ y un cr\'itico que
+estima $V_{\phi}$. La estimaci\'on de la ventaja puede refinarse con
+\emph{Generalized Advantage Estimation}
+(GAE),
+
+\begin{equation}
+\hat{A}_t^{\mathrm{GAE}(\gamma,\lambda)} \;=\;
+\sum_{k=0}^{\infty}(\gamma\lambda)^{k}\,\delta_{t+k},
+\quad \delta_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t),
+\end{equation}
+
+que interpola entre Monte~Carlo ($\lambda{=}1$, bajo sesgo / alta
+varianza) y \emph{bootstrapping} de un paso ($\lambda{=}0$). El
+actor se regulariza con un t\'ermino de entrop\'ia
+$-\beta H(\pi_\theta(\cdot \mid s))$ que combate el colapso
+prematuro de la pol\'itica~\citep{Mnih2016}. Variantes m\'as
+estables como PPO introducen un objetivo
+recortado para evitar pasos demasiado agresivos; el estudio
+emp\'irico de Andrychowicz \emph{et al.}~\citep{Andrychowicz2021}
+resume las decisiones de dise\~no que m\'as inciden en el resultado.
+
+\subsection{Atenci\'on y el Transformer}
+
+El \emph{Transformer}~\citep{Vaswani2017} reemplaza la
+recurrencia por \emph{atenci\'on de producto escalar escalado}. Dadas
+consultas $Q$, claves $K$ y valores $V$,
+
+\begin{equation}
+\mathrm{Atenci\acute{o}n}(Q, K, V) \;=\;
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}}\right) V.
+\label{eq:attention}
+\end{equation}
+
+En un entorno autorregresivo, una m\'ascara triangular
+$M_{ij} = -\infty$ para $j > i$ proh\'ibe que una posici\'on atienda
+al futuro:
+
+\begin{equation}
+\mathrm{Atenci\acute{o}n}_{\mathrm{causal}}(Q, K, V) =
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}} + M\right) V.
+\label{eq:causal-attention}
+\end{equation}
+
+En RL, trabajos recientes~\citep{Parisotto2020,Chen2021} demuestran
+que los codificadores Transformer pueden reemplazar funciones de
+valor recurrentes con mejor capacidad de captura de dependencias de
+largo plazo, ofreciendo una soluci\'on al problema de la
+``miop\'ia temporal'' que afecta a los m\'etodos tabulares en
+escenarios de inercia epidemiol\'ogica. En esta tesis cada bloque
+Transformer incluye conexiones residuales y
+\emph{layer normalization}, indispensable para
+estabilizar el entrenamiento de pol\'iticas profundas.
+
+\subsection{Cuantificaci\'on de Incertidumbre y Entrop\'ia de Shannon}
+
+Dada una distribuci\'on de probabilidad discreta $p(a \mid s)$ sobre
+$|\mathcal{A}|$ acciones, la \emph{entrop\'ia de
+Shannon} es
+
+\begin{equation}
+H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s).
+\label{eq:shannon}
+\end{equation}
+
+Normalizada por $\log |\mathcal{A}|$, $H \in [0, 1]$ se interpreta como
+una medida de \emph{incertidumbre intr\'inseca} del agente: $H \to 0$
+significa que el modelo concentra toda su masa en una sola acci\'on
+(alta confianza); $H \to 1$ indica una distribuci\'on uniforme
+(m\'axima duda). En esta tesis se propone usar $1 - H_{\mathrm{norm}}$
+como proxy de \emph{confianza metacognitiva} del agente, en analog\'ia
+con los marcadores neuronales de confianza identificados por Boldt
+\& Yeung~\citep{Boldt2015} y revisados por Fleming~\citep{Fleming2024}.
+
+\subsection{Optimizaci\'on Bayesiana de Hiperpar\'ametros}
+
+Un agente de RL tiene varios hiperpar\'ametros no diferenciables
+($\alpha$, $\gamma$, tama\~no del \emph{replay buffer},
+\emph{schedule} de $\varepsilon$, anchura de red, etc.) cuyas
+interacciones son altamente no lineales. La \emph{Optimizaci\'on
+Bayesiana} trata el puntaje de validaci\'on como una funci\'on de caja
+negra ruidosa y la explora con un \emph{surrogate}
+probabil\'istico. Se utiliza el estimador
+estructurado en \'arbol de Parzen (TPE)~\citep{Bergstra2011}
+implementado en Optuna~\citep{Akiba2019}, que modela
+$p(x \mid y < y^{*})$ y $p(x \mid y \geq y^{*})$ con KDEs separados.
+
+\subsection{Comparaci\'on Estad\'istica de Agentes}
+
+Para comparar dos agentes estoc\'asticos $A$ y $B$ sobre $n$ semillas
+independientes se reportan tres cantidades:
+
+\begin{description}
+    \item[Tama\~no del efecto.] $d$ de Cohen~\citep{Cohen1988},
+    \begin{equation}
+    d \;=\; \frac{\bar{r}_A - \bar{r}_B}
+    {\sqrt{(\sigma_A^{2} + \sigma_B^{2})/2}},
+    \end{equation}
+    clasificado como peque\~no ($|d| \geq 0{,}2$), medio
+    ($|d| \geq 0{,}5$) y grande ($|d| \geq 0{,}8$).
+    \item[Significancia.] $t$ de Welch~\citep{Welch1947} con grados
+    de libertad de Welch--Satterthwaite.
+    \item[Cambio de pol\'itica.] Divergencia de Kullback--Leibler
+    entre los histogramas de acci\'on de ambos agentes,
+    $D_{\mathrm{KL}}(p_A \,\|\, p_B)$.
+\end{description}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
+

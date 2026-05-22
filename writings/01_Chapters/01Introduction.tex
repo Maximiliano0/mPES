@@ -1,29 +1,141 @@
-\documentclass[../00_Main.tex]{subfiles}
+﻿\documentclass[../00_Main/Main.tex]{subfiles}
 
 \begin{document}
 
-This work is bla bla bla bla bla~\cite{Endo}.
+La gesti\'on de recursos en una pandemia es un desaf\'io de log\'istica
+y \'etica que requiere decisiones r\'apidas bajo una presi\'on inmensa.
+El proyecto \textbf{mPES} surge como una respuesta a la necesidad de
+herramientas de soporte en la toma de decisiones que no s\'olo optimicen la
+supervivencia, sino que entiendan la \emph{inercia} del escenario
+pand\'emico.
 
+\subsection{Motivaci\'on}\label{sec:motivacion}
 
-\subsection{Subsection}
+El presente documento describe el proyecto \textbf{mPES}
+(\emph{Multiple Pandemic Experiment Suite}), un entorno de trabajo
+(\emph{workspace}) multi-paquete desarrollado \'integramente en
+Python. 
 
-This is a subsection
+La crisis sanitaria provocada por el COVID--19 puso de manifiesto que
+los tomadores de decisiones --- gobiernos, hospitales, cadenas
+log\'isticas --- act\'uan habitualmente sin una herramienta
+principal que les permita ponderar los beneficios inmediatos contra
+los costos a largo plazo, y que las consecuencias de una asignaci\'on
+sub\'optima se miden en vidas humanas y en costo social. La
+investigaci\'on busca generalizar el problema de la distribuci\'on de
+recursos en tiempos de crisis, evaluando qu\'e modelos matem\'aticos y
+computacionales producen decisiones m\'as adaptativas ante din\'amicas
+de propagaci\'on complejas y no lineales.
 
-\subsection{Another subsection}
+El enfoque metodol\'ogico de esta tesis est\'a deliberadamente
+impregnado de la disciplina del \emph{desarrollo de producto}
+propia de la ingenier\'ia electr\'onica: trazabilidad de cada
+artefacto, reproducibilidad estricta, control de versiones del
+entorno computacional y validaci\'on \emph{out-of-distribution} como
+requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
+como un experimento aislado sino como un \emph{sistema} ---
+ocho arquitecturas, un esquema de evaluaci\'on com\'un y un
+orquestador reproducible --- pensado para soportar la transici\'on
+entre la prueba acad\'emica y la herramienta operativa en dominios
+de alto impacto.
 
-Important stuff
+\subsection{Definici\'on del Problema}\label{sec:problema}
 
-\begin{chronology}[5]{1}{5}{90ex}[\textwidth]
-\event{1}{Human Perception}
-\event{2}{Augmented Reality}
-\event{3}{Sensory Augmentation}
-\event{4}{Brain Computer-Interface Computational Imaging}
-\event{5}{Hybrid Team Collective Perception}
-\caption{Perception}
-%\event{\decimaldate{25}{12}{2001}}{three}
-\label{fig:story}
-\end{chronology}
+El entorno computacional desarrollado modela una crisis donde un
+tomador de decisiones (un agente de RL) debe distribuir un
+\emph{presupuesto limitado} de recursos m\'edicos o log\'isticos entre
+diversas ciudades afectadas simult\'aneamente. Tres rasgos
+cualitativos definen el escenario: la \emph{din\'amica acumulativa}
+(la severidad no atendida crece de forma exponencial en los pasos
+subsiguientes), la \emph{intervenci\'on temprana} (los recursos
+asignados generan un impacto sostenido que premia a los modelos
+capaces de anticipar) y una \emph{evoluci\'on matem\'atica} regida
+por la ley exponencial-corregida
+$S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i)$
+con $\alpha = 0{,}4$ y $\beta = 1{,}4$~\citep{BCINE2022}. La
+formulaci\'on completa como MDP finito ($|\mathcal{S}| = 3\,410$,
+$|\mathcal{A}| = 11$, recompensa $r = -\sum_i S_i$) y el
+\emph{benchmark} fijo de $64$ secuencias compartido por todos los
+enfoques se detallan en la Sec.~\ref{sec:methods}.
+
+\subsection{Hip\'otesis de Trabajo}\label{sec:hypothesis}
+
+El trabajo se organiza alrededor de una hip\'otesis falsable
+desdoblada en dos niveles:
+
+\begin{quote}
+\textbf{H1a (arquitect\'onica).} \emph{Entre las arquitecturas
+individuales evaluadas, el modelo Transformer causal alcanza el
+mayor desempe\~no medio en la asignaci\'on de recursos durante una
+pandemia, especialmente en condiciones fuera de distribuci\'on.}
+
+\textbf{H1b (sist\'emica).} \emph{El Transformer, en tanto modelo
+\'unico, constituye la mejor soluci\'on desplegable; en particular,
+no puede ser superado por un sistema compuesto que lo integre como
+miembro.}
+\end{quote}
+
+Como se documenta en el Cap.~\ref{sec:results}, H1a se confirma con
+un tama\~no de efecto medio ($d \approx 0{,}60$ frente al mejor
+competidor recurrente), pero H1b se \emph{refuta}: el ensemble
+\texttt{pes\_ens} supera al Transformer con una reducci\'on adicional
+de varianza del $23$\,\%.
+
+De manera complementaria, la incorporaci\'on de la \emph{Entrop\'ia de
+Shannon} sobre la distribuci\'on de salida del agente permite
+caracterizar la \emph{confianza metacognitiva} del sistema, abriendo
+un camino algor\'itmico hacia la transparencia que tradicionalmente
+exig\'ia se\~nales fisiol\'ogicas (EEG).
+
+\subsection{Contribuciones}
+
+Las principales contribuciones de esta tesis son:
+
+\begin{enumerate}
+    \item Un \emph{benchmark} de RL reutilizable --- el
+    \emph{workspace} \textbf{mPES} --- donde \textbf{ocho variantes
+    algor\'itmicas} comparten el mismo entorno Gymnasium, el mismo
+    \emph{pipeline} de optimizaci\'on bayesiana con Optuna y el mismo
+    esquema de evaluaci\'on sobre $n = 64$ secuencias \emph{fijas}.
+    \item Una comparaci\'on cuantitativa y estad\'isticamente
+    fundamentada entre m\'etodos tabulares
+    (\texttt{pes\_base}, \texttt{pes\_ql}, \texttt{pes\_dql}) y
+    arquitecturas profundas (\texttt{pes\_dqn},
+    \texttt{pes\_rdqn}, \texttt{pes\_a2c}, \texttt{pes\_trf},
+    \texttt{pes\_ens}), abarcando los principales paradigmas
+    del RL contempor\'aneo: valor tabular, valor profundo,
+    recurrente, gradiente de pol\'itica, atenci\'on causal y
+    promediado de modelos.
+    \item Una matriz \emph{out-of-distribution} de $7 \times 22 = 154$
+    celdas que estresa cada agente contra perturbaciones
+    sistem\'aticas de severidad, longitud, conjuntas y estructurales,
+    junto con un protocolo estad\'istico unificado ($d$ de Cohen,
+    $t$ de Welch y divergencia KL entre pol\'iticas).
+    \item La integraci\'on de la \textbf{Entrop\'ia de Shannon} como
+    m\'etrica de \emph{Cuantificaci\'on de Incertidumbre} (UQ),
+    estableciendo un puente algor\'itmico con las teor\'ias
+    neurocognitivas de la confianza humana.
+    \item Una implementaci\'on reproducible y multi-plataforma
+    (Windows 10 y Ubuntu, Python 3.12, TensorFlow 2.21) liberada
+    junto con la tesis.
+\end{enumerate}
+
+\subsection{Estructura del Documento}
+
+El resto del documento se organiza como sigue. La
+Secci\'on~\ref{sec:background} introduce el marco te\'orico
+(MDPs, Q-Learning, redes recurrentes, atenci\'on, ensembles,
+entrop\'ia de Shannon). La Secci\'on~\ref{sec:soa} presenta el
+estado de la cuesti\'on (legado neurocient\'ifico de Oxford, RL en
+gesti\'on de crisis, Transformers en RL, XAI y UQ). La
+Secci\'on~\ref{sec:methods} describe la metodolog\'ia: el escenario
+pand\'emico, las ocho arquitecturas implementadas y el \emph{pipeline}
+experimental. La Secci\'on~\ref{sec:results} reporta los resultados
+emp\'iricos. La Secci\'on~\ref{sec:discussion} interpreta esos
+resultados a la luz de la hip\'otesis y la
+Secci\'on~\ref{sec:conclusion} cierra el trabajo.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 
 \end{document}
+
