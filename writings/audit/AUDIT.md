@@ -5,7 +5,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 ## 1. Sintaxis y compilación
 
 - ✅ Compilación exitosa — **53 páginas**.
-- 📄 PDF: `out/Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
+- 📄 PDF: `out/mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
 
 - ✅ Sin Overfull \hbox.
 
@@ -17,7 +17,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **32**.
 - Tablas con label: **5**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **80**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **79**.
 
 - ✅ Sin referencias rotas.
 
