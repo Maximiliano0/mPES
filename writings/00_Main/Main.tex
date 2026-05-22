@@ -28,9 +28,15 @@
 \counterwithin{table}{section} % numbering of tables 
 \counterwithin{figure}{section} % numbering of figures
 \numberwithin{equation}{section} % numbering of equations
-\hyphenpenalty=100000 % preventing splitting of words
+\hyphenpenalty=1000 % allow rare hyphenation for better justification
+\hbadness=10000    % suppress underfull \hbox reports (sloppy handles output quality)
 \sloppy 
-\raggedbottom 
+\raggedbottom
+% Float placement: allow figures/tables at page bottom and denser float pages
+\renewcommand{\bottomfraction}{0.7}   % up to 70 % of page for bottom floats
+\renewcommand{\textfraction}{0.1}     % at least 10 % text when floats present
+\setcounter{bottomnumber}{3}          % up to 3 floats at page bottom
+\renewcommand{\floatpagefraction}{0.7} % floats must fill >= 70 % of a float-only page
 \usepackage{xparse,nameref}
 \usepackage{algorithm2e} % For algorithms
 \usepackage[bottom]{footmisc} % Footnotes are fixed to bottom of page
@@ -64,9 +70,9 @@
 
 
 % ----- Sections -----
-\titleformat*{\section}{\LARGE\bfseries} % \section heading
-\titleformat*{\subsection}{\Large\bfseries} % \subsection heading
-\titleformat*{\subsubsection}{\large\bfseries} % \subsubsection heading
+\titleformat*{\section}{\LARGE\bfseries\raggedright} % \section heading
+\titleformat*{\subsection}{\Large\bfseries\raggedright} % \subsection heading
+\titleformat*{\subsubsection}{\large\bfseries\raggedright} % \subsubsection heading
 % next three lines creates the \paragraph command with correct heading 
 \titleformat{\paragraph}
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}

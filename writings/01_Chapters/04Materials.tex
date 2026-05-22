@@ -1,4 +1,4 @@
-﻿\documentclass[../00_Main/Main.tex]{subfiles}
+\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
 \label{sec:methods}
@@ -91,11 +91,11 @@ pol\'itica aprendida: extrapolaci\'on a severidades altas,
 escenarios estructurales con mayor n\'umero total de \emph{trials}
 y combinaciones extremas conjuntas.
 
-\begin{figure}[!ht]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{per_sequence_4panel.pdf}
   \caption{Desempe\~no por secuencia para cuatro escenarios
-  representativos: el empírico \emph{in-distribution} y tres
+  representativos: el emp\'irico \emph{in-distribution} y tres
   familias OOD (extrapolaci\'on de severidades altas, escenario
   estructural con mayor n\'umero total de \emph{trials} y
   extrapolaci\'on conjunta de severidad y estructura).
@@ -122,7 +122,7 @@ bayesiana con Optuna y el mismo conjunto fijo de $64$ secuencias
 de validaci\'on, garantizando una comparaci\'on rigurosa
 \emph{ceteris paribus}.
 
-\begin{table}[!ht]
+\begin{table}[!htb]
 \centering
 \caption{Las ocho arquitecturas evaluadas en el \emph{workspace}
 \texttt{mPES}. Las dos \'ultimas filas corresponden a las
@@ -261,7 +261,7 @@ mejora asint\'otica del estimador, mientras que el panel de
 importancias permite focalizar futuros estudios sobre los
 hiperpar\'ametros cr\'iticos.
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
@@ -289,7 +289,7 @@ din\'amica de aprendizaje y permiten contrastar la velocidad de
 convergencia entre familias antes del despliegue sobre el conjunto
 de evaluaci\'on OOD.
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
@@ -341,9 +341,9 @@ Esta calibraci\'on confirma que el \emph{benchmark} discrimina,
 y permite leer las m\'etricas de los modelos como \emph{ganancia
 sobre el azar}.
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.75\linewidth]{random_player_sequence_performance.png}
+  \includegraphics[width=0.55\linewidth]{random_player_sequence_performance.png}
   \caption{Agente aleatorio de referencia: severidad final
   alcanzada (escala cruda, no normalizada) en cada una de las
   $64$ secuencias de validaci\'on. La gran variabilidad y los
@@ -364,7 +364,7 @@ mismas que en el Cap.~\ref{sec:discussion} se utilizar\'an para
 ligar la entrop\'ia de Shannon con la noci\'on neurocognitiva de
 confianza~\citep{Boldt2015,Fleming2024}.
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
@@ -460,7 +460,7 @@ acciones de la celda y de la baseline. La significancia se eval\'ua
 con un test $t$ de Welch a dos colas y el tama\~no del efecto
 con $d$ de Cohen.
 
-\begin{table}[!ht]
+\begin{table}[!htb]
 \centering
 \caption{Cat\'alogo de $22$ escenarios OOD del banco de pruebas
 \texttt{general/}. La fila \texttt{sev\_empirical} act\'ua como

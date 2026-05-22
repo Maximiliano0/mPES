@@ -1,4 +1,4 @@
-﻿\documentclass[../00_Main/Main.tex]{subfiles}
+\documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
 \label{sec:results}
@@ -71,7 +71,7 @@ brecha entre familias es real ($d$ medio entre
 \texttt{pes\_trf}/\texttt{pes\_rdqn} $\approx 0{,}60$) pero no
 desplaza al Transformer del podio individual.
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \caption{Performance normalizada media $\bar{r}$
 (Ec.~\eqref{eq:mean-perf}) y desviaci\'on est\'andar por
@@ -126,7 +126,7 @@ desplegable) queda \emph{refutada}: el ensemble lo supera con un
 tama\~no de efecto $d \approx 0{,}25$ y una significancia de Welch
 $t \approx 3{,}4$ ($p < 10^{-3}$).
 
-\begin{table}[!ht]
+\begin{table}[!htb]
 \centering
 \caption{Estad\'isticos pareados sobre las $22$ condiciones del
 benchmark. La fila TRF--RDQN cuantifica la hip\'otesis $H_{1a}$;
@@ -248,7 +248,7 @@ distribuciones de acci\'on, revelando que los agentes profundos
 convergen a pol\'iticas similares mientras que los tabulares
 divergen entre s\'i.
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
@@ -315,7 +315,7 @@ hereda lo mejor de cada miembro y comprime la banda intercuart\'ilica de forma
 visible: es el \'unico panel en que el percentil 25 nunca cae por debajo de
 $0{,}57$.
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
@@ -356,7 +356,7 @@ $0{,}57$.
   \label{fig:training-curves-a}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
