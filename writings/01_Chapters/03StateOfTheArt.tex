@@ -16,9 +16,9 @@ m\'etrica de rendimiento, sino que incorporen nociones de
 
 El punto de partida conceptual de este trabajo es el experimento
 original de la Universidad de Oxford (\emph{dataset} p\'ublico
-\texttt{ds004477}), implementado y liberado por el BCI-NE Lab de la
+\texttt{ds004477}\cite{ds004477}), implementado y liberado por el BCI-NE Lab de la
 Universidad de Essex como el entorno \emph{Pandemic Experiment
-Scenario} (PES)~\citep{BCINE2022}. Dicho entorno investig\'o las
+Scenario} (PES)~\citep{BCINE2022}. Dicho grupo investig\'o las
 firmas neuronales de la
 confianza humana ante decisiones bajo presi\'on. Estudios
 fundamentales como los de Boldt \& Yeung~\citep{Boldt2015}
@@ -45,12 +45,12 @@ mundo real~\citep{SuttonBarto2018}.
 
 \begin{itemize}
     \item \textbf{Deep Q-Networks (DQN).} La introducci\'on del
-    \emph{Experience Replay}~\citep{Lin1992} y las
-    \emph{Target Networks} por Mnih \emph{et al.}~\citep{Mnih2015}
+    \emph{Experience Replay} y las
+    \emph{Target Networks} por Mnih \emph{et al.}
     permiti\'o estabilizar el aprendizaje en entornos complejos.
-    Sin embargo, en el contexto epidemiol\'ogico~\citep{Kuhl2021},
+    Sin embargo, en el contexto epidemiol\'ogico,
     estos modelos suelen sufrir de un \emph{sesgo de
-    sobreestimaci\'on} que el Double Q-Learning~\citep{Hasselt2010}
+    sobreestimaci\'on} que el Double Q-Learning
     intenta mitigar mediante el desacoplamiento de la selecci\'on y
     evaluaci\'on de acciones.
     \item \textbf{Mejoras de optimizaci\'on.} El uso de Adam con
@@ -60,7 +60,7 @@ mundo real~\citep{SuttonBarto2018}.
     la convergencia.
     \item \textbf{Actor--Critic (A2C).} La arquitectura Actor--Cr\'itico
     se ha identificado como una soluci\'on robusta para reducir la
-    varianza en los gradientes de pol\'itica~\citep{Mnih2016}. Su
+    varianza en los gradientes de pol\'itica. Su
     capacidad para modelar una funci\'on de ventaja es fundamental
     para gestionar la volatilidad extrema de los datos de contagio.
 \end{itemize}
@@ -135,30 +135,6 @@ emp\'irica y dar por concluida la evaluaci\'on, el sweep completo
 revela qu\'e arquitecturas degradan suavemente y cu\'ales sufren
 colapsos catastr\'oficos (Sec.~\ref{sec:a2c-collapse}).
 
-\subsection{Ensembles y \emph{soft voting} en aprendizaje por refuerzo}
-
-La estrategia de combinar varios estimadores entrenados de forma
-independiente se remonta a los trabajos cl\'asicos de
-Dietterich~\citep{Dietterich2000} sobre \emph{bagging} y
-\emph{boosting}, y fue extendida al RL profundo por Osband
-\emph{et al.}~\citep{Osband2016}, quienes mostraron que un
-ensemble de DQNs ofrece simult\'aneamente una mejor exploraci\'on
-(\emph{Bootstrapped DQN}) y una estimaci\'on de incertidumbre
-epist\'emica. Lakshminarayanan \emph{et al.}~\citep{Lakshminarayanan2017}
-formalizaron el uso de \emph{deep ensembles} como m\'etodo simple
-y robusto de cuantificaci\'on de incertidumbre, con garant\'ias
-emp\'iricas superiores a las de \emph{Bayesian neural networks}
-m\'as elaboradas.
-
-El paquete \texttt{pes\_ens} adopta esta tradici\'on con una
-variante particular: combina las salidas \emph{softmax} de tres
-arquitecturas explicit\'amente diferentes
-(\texttt{dqn} feed-forward, \texttt{rdqn} recurrente y
-\texttt{trf} con atenci\'on causal). Esta diversidad estructural
-mantiene baja la correlaci\'on $\rho$ entre miembros, que es el
-factor cr\'itico que controla la reducci\'on de varianza del
-ensemble (Sec.~\ref{sec:ens-best}).
-
 \subsection{Posici\'on de este trabajo}
 
 Comparado con la literatura precedente, la contribuci\'on de esta
@@ -169,8 +145,8 @@ tesis es:
     Una comparaci\'on \emph{lado a lado} que abarca m\'etodos
     tabulares (Q-Learning, Double Q-Learning), profundos densos
     (DQN), recurrentes (Recurrent DQN con LSTM), actor--cr\'itico
-    (A2C), Transformer causal y \emph{deep
-    ensembles}~\citep{Lakshminarayanan2017}, todos entrenados sobre
+        (A2C), Transformer causal y \emph{deep
+        ensembles}, todos entrenados sobre
     el mismo MDP y evaluados con $n = 64$ secuencias por escenario
     a trav\'es de $22$ condiciones fuera de distribuci\'on.
     \item \textbf{UQ algor\'itmica.} La adopci\'on expl\'icita de la

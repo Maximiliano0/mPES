@@ -26,7 +26,7 @@ $\tau = (s_0, a_0, r_1, s_1, a_1, \ldots)$ cuyo \emph{retorno
 descontado} desde el tiempo $t$ es
 
 \begin{equation}
-G_t \;=\; \sum_{k = 0}^{\infty} \gamma^{k}\, r_{t + k + 1}.
+G_t \;=\; \sum_{k = 0}^{\infty} \gamma^{k}\, r_{t + k + 1}
 \label{eq:return}
 \end{equation}
 
@@ -36,7 +36,7 @@ pol\'itica \'optima satisface la ecuaci\'on de Bellman,
 
 \begin{equation}
 Q^{*}(s, a) \;=\; \mathbb{E}\!\left[r + \gamma \max_{a'} Q^{*}(s', a')
-\,\middle|\, s, a\right].
+\,\middle|\, s, a\right]
 \label{eq:bellman-opt}
 \end{equation}
 
@@ -48,7 +48,7 @@ Watkins~\citep{Watkins1992}:
 
 \begin{equation}
 Q(s, a) \;\leftarrow\; Q(s, a) \;+\; \alpha\,
-\bigl[r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr],
+\bigl[r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr]
 \label{eq:qlearning}
 \end{equation}
 
@@ -64,7 +64,7 @@ evaluaci\'on de la acci\'on:
 
 \begin{equation}
 Q^{A}(s, a) \leftarrow Q^{A}(s, a) + \alpha\bigl[r + \gamma\,
-Q^{B}\!\bigl(s', \arg\max_{a'} Q^{A}(s', a')\bigr) - Q^{A}(s, a)\bigr].
+Q^{B}\!\bigl(s', \arg\max_{a'} Q^{A}(s', a')\bigr) - Q^{A}(s, a)\bigr]
 \end{equation}
 
 \subsubsection{Reward Shaping Basado en Potencial (PBRS)}
@@ -89,7 +89,7 @@ cada $C$ pasos. La funci\'on de costo es
 \mathcal{L}(\theta) \;=\;
 \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}}
 \!\left[\bigl(r + \gamma \max_{a'} Q(s', a'; \theta^{-})
-- Q(s, a; \theta)\bigr)^{2}\right].
+- Q(s, a; \theta)\bigr)^{2}\right]
 \label{eq:dqn-loss}
 \end{equation}
 
@@ -112,8 +112,8 @@ $i_t, f_t, o_t$ que controlan c\'omo el estado de celda $c_t$
 acumula informaci\'on a largo plazo:
 
 \begin{equation}
-c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t,
-\qquad h_t \;=\; o_t \odot \tanh(c_t).
+c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t
+\qquad h_t \;=\; o_t \odot \tanh(c_t)
 \label{eq:lstm}
 \end{equation}
 
@@ -131,7 +131,7 @@ $\theta$ a lo largo del gradiente del retorno esperado:
 \begin{equation}
 \nabla_{\theta} J(\theta) \;=\;
 \mathbb{E}_{\pi_{\theta}}\!\bigl[\nabla_{\theta} \log
-\pi_{\theta}(a \mid s)\, A^{\pi_{\theta}}(s, a)\bigr],
+\pi_{\theta}(a \mid s)\, A^{\pi_{\theta}}(s, a)\bigr]
 \label{eq:pg}
 \end{equation}
 
@@ -146,7 +146,7 @@ estima $V_{\phi}$. La estimaci\'on de la ventaja puede refinarse con
 \begin{equation}
 \hat{A}_t^{\mathrm{GAE}(\gamma,\lambda)} \;=\;
 \sum_{k=0}^{\infty}(\gamma\lambda)^{k}\,\delta_{t+k},
-\quad \delta_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t),
+\quad \delta_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)
 \end{equation}
 
 que interpola entre Monte~Carlo ($\lambda{=}1$, bajo sesgo / alta
@@ -167,7 +167,7 @@ consultas $Q$, claves $K$ y valores $V$,
 
 \begin{equation}
 \mathrm{Atenci\acute{o}n}(Q, K, V) \;=\;
-\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}}\right) V.
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}}\right) V
 \label{eq:attention}
 \end{equation}
 
@@ -177,7 +177,7 @@ al futuro:
 
 \begin{equation}
 \mathrm{Atenci\acute{o}n}_{\mathrm{causal}}(Q, K, V) =
-\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}} + M\right) V.
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}} + M\right) V
 \label{eq:causal-attention}
 \end{equation}
 
@@ -198,7 +198,7 @@ $|\mathcal{A}|$ acciones, la \emph{entrop\'ia de
 Shannon} es
 
 \begin{equation}
-H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s).
+H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s)
 \label{eq:shannon}
 \end{equation}
 
@@ -230,17 +230,16 @@ Para comparar dos agentes estoc\'asticos $A$ y $B$ sobre $n$ semillas
 independientes se reportan tres cantidades:
 
 \begin{description}
-    \item[Tama\~no del efecto.] $d$ de Cohen~\citep{Cohen1988},
-    \begin{equation}
-    d \;=\; \frac{\bar{r}_A - \bar{r}_B}
-    {\sqrt{(\sigma_A^{2} + \sigma_B^{2})/2}},
-    \end{equation}
+    \item[Tama\~no del efecto:] $d$ de Cohen~\citep{Cohen1988}
     clasificado como peque\~no ($|d| \geq 0{,}2$), medio
     ($|d| \geq 0{,}5$) y grande ($|d| \geq 0{,}8$).
-    \item[Significancia.] $t$ de Welch~\citep{Welch1947} con grados
+    \begin{equation}
+    d \;=\; \frac{\bar{r}_A - \bar{r}_B}
+    {\sqrt{(\sigma_A^{2} + \sigma_B^{2})/2}}
+    \end{equation}
+    \item[Significancia:] $t$ de Welch~\citep{Welch1947} con grados
     de libertad de Welch--Satterthwaite.
-    \item[Cambio de pol\'itica.] Divergencia de Kullback--Leibler
-    entre los histogramas de acci\'on de ambos agentes,
+    \item[Cambio de pol\'itica:] Divergencia de Kullback--Leibler entre los histogramas de acci\'on de ambos agentes,
     $D_{\mathrm{KL}}(p_A \,\|\, p_B)$.
 \end{description}
 

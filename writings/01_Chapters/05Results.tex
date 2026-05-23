@@ -16,7 +16,7 @@ es la \emph{performance normalizada media} $\bar{r} \in [0, 1]$
 \begin{equation}
 \bar{r} \;=\; \frac{1}{n} \sum_{i=1}^{n}
   \frac{S^{(i)}_{\text{worst}} - S^{(i)}_{\text{final}}}
-       {S^{(i)}_{\text{worst}} - S^{(i)}_{\text{best}}},
+       {S^{(i)}_{\text{worst}} - S^{(i)}_{\text{best}}}
 \label{eq:mean-perf}
 \end{equation}
 
@@ -108,11 +108,11 @@ las $22$ condiciones, se obtiene una reducci\'on relativa de:
   \frac{(1 - \bar{r}_{\mathrm{ql}}) - (1 - \bar{r}_{\mathrm{trf}})}
   {1 - \bar{r}_{\mathrm{ql}}}
   \;=\; \frac{0{,}113 - 0{,}073}{0{,}113}
-  \;\approx\; \mathbf{0{,}35},
+  \;\approx\; \mathbf{0{,}35}
   \label{eq:delta-trf} \\
   \Delta_{\mathrm{ens}} &\;=\;
   \frac{0{,}113 - 0{,}063}{0{,}113}
-  \;\approx\; \mathbf{0{,}45}.
+  \;\approx\; \mathbf{0{,}45}
   \label{eq:delta-ens}
 \end{align}
 
@@ -253,7 +253,7 @@ divergen entre s\'i.
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{heatmap_global_mean.png}
+    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_global_mean.png}
     \caption{Performance normalizada media $\bar r$
     (viridis; valores $\in [0{,}76,\,1{,}00]$).}
     \label{fig:hm-mean}
@@ -261,7 +261,7 @@ divergen entre s\'i.
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{heatmap_welch_logp.png}
+    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_welch_logp.png}
     \caption{Test de Welch: $\log_{10} p$ recortado a $[-10,\,0]$
     respecto de la propia condici\'on emp\'irica de cada modelo
     (magma; m\'as oscuro\,=\,evidencia m\'as fuerte contra
@@ -271,7 +271,7 @@ divergen entre s\'i.
   \\[0.2em]
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{heatmap_ood_degradation.png}
+    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_ood_degradation.png}
     \caption{Degradaci\'on OOD $\Delta\bar{r} =
     \bar{r}_{\text{emp\'irica}} - \bar{r}_{\text{celda}}$
     (RdBu divergente; naranja-rojo\,$> 0$\,=\,peor que en
@@ -281,7 +281,7 @@ divergen entre s\'i.
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{heatmap_action_kl.png}
+    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_action_kl.png}
     \caption{$D_{\mathrm{KL}}\!\bigl(P_{\text{celda}} \,\|\,
     P_{\text{emp\'irica}}\bigr)$ en nats (viridis, escala
     logar\'itmica; oscuro\,=\,mayor deriva en la pol\'itica).}

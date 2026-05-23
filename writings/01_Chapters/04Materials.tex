@@ -4,28 +4,21 @@
 
 \label{sec:methods}
 
-Este cap\'itulo describe el aparato experimental: el repositorio
+Este cap\'itulo describe el aparato experimental: el \emph{workspace}
 \texttt{mPES}, la definici\'on formal del entorno, los ocho paquetes
 algor\'itmicos comparados, el pipeline de optimizaci\'on bayesiana de
 hiperpar\'ametros y el protocolo de evaluaci\'on.
 
 \subsection{Repositorio y reproducibilidad}
 
-Todos los experimentos se ejecutan dentro del \emph{workspace}
-\texttt{mPES}\footnote{Repositorio oficial:
-\url{https://github.com/Maximiliano0/mPES}.}, derivado y extendido
-a partir del repositorio base \texttt{PES} del grupo BCI-NE
-(\url{https://github.com/BCI-NE/PES}), del cual hereda la
-definici\'on original del entorno \emph{Pandemic Scenario} y la
-infraestructura tabular de Q-Learning. Es un
-proyecto Python organizado en dos familias: \texttt{tabular/}
-(m\'etodos enumerativos) y \texttt{ml/} (aprendizaje profundo). Cada
-paquete es autocontenido: provee su propio entorno
-\texttt{gymnasium}~\citep{Towers2024}, su rutina de
-entrenamiento, su m\'odulo de optimizaci\'on bayesiana y su carpeta
-\texttt{outputs/} versionada por fecha. Las dependencias principales
-son TensorFlow 2.21, Keras 3.13, NumPy 2.4, Optuna 4.7,
-Gymnasium 1.2 y SciPy 1.17.
+Todos los experimentos se ejecutan dentro del \emph{workspace} \texttt{mPES}~\citep{mPES2026},
+derivado y extendido a partir del repositorio base \texttt{PES} del grupo BCI-NE~\citep{BCINE2022},
+del cual hereda la definici\'on original del entorno \emph{Pandemic Scenario} y la infraestructura 
+tabular de Q-Learning. Es un proyecto Python organizado en dos familias: \texttt{tabular/} 
+(m\'etodos enumerativos) y \texttt{ml/} (aprendizaje profundo).
+Cada paquete es autocontenido: provee su propio entorno \texttt{gymnasium}~\citep{Towers2024},
+ su rutina de entrenamiento, su m\'odulo de optimizaci\'on bayesiana y su carpeta \texttt{outputs/} versionada por fecha. 
+ Las dependencias principales son TensorFlow 2.21, Keras 3.13, NumPy 2.4, Optuna 4.7, Gymnasium 1.2 y SciPy 1.17.
 
 \subsection{El entorno: \emph{Pandemic Scenario}}
 
@@ -38,8 +31,8 @@ es
 
 \begin{equation}
 \mathcal{S} \;=\;
-\{(R, t, S) : R \in \{0, \ldots, 39\},\ t \in \{1, \ldots, T\},\
-S \in \{0, \ldots, S_{\max}\}\},
+\{(R, t, S) : R \in \{0, \ldots, 39\} \ t \in \{1, \ldots, T\} \
+S \in \{0, \ldots, S_{\max}\}\}
 \end{equation}
 
 con $R$ los recursos restantes, $t$ el \'indice de \emph{trial} y $S$
@@ -52,8 +45,8 @@ El espacio de acciones es $\mathcal{A} = \{0, 1, \ldots, 10\}$
 La din\'amica de la severidad sigue la ley exponencial-corregida
 
 \begin{equation}
-S_{t+1} \;=\; \max\!\bigl(0,\ \beta \cdot S_{t} - \alpha \cdot a_{t}\bigr),
-\qquad \alpha = 0{,}4,\ \beta = 1{,}4,
+S_{t+1} \;=\; \max\!\bigl(0,\ \beta \cdot S_{t} - \alpha \cdot a_{t}\bigr)
+\qquad \alpha = 0{,}4 \ \beta = 1{,}4
 \label{eq:transicion}
 \end{equation}
 
@@ -62,7 +55,7 @@ con $\beta > 1$ capturando el crecimiento natural del contagio
 recompensa instant\'anea es
 
 \begin{equation}
-r_t \;=\; -\,S_{t},
+r_t \;=\; -\,S_{t}
 \end{equation}
 
 de modo que la pol\'itica \'optima minimiza la severidad
@@ -71,7 +64,7 @@ la pandemia simulada.
 
 \subsubsection{Estructura del benchmark}
 
-Cada experimento del repositorio \texttt{mPES} se organiza
+Cada experimento del \emph{workspace} \texttt{mPES} se organiza
 jer\'arquicamente en \textbf{8 bloques} de \textbf{8 secuencias}
 de \textbf{3--10 \emph{trials}} cada una, totalizando
 $\approx 360$ \emph{trials} por ejecuci\'on. La evaluaci\'on
@@ -191,7 +184,7 @@ comparar al menos dos pasos consecutivos de severidad.
 cr\'itico) sobre un tronco compartido; entrenamiento s\'incrono
 n-\emph{step} con estimaci\'on de ventaja
 (Ecuaci\'on~\ref{eq:pg})~\citep{Mnih2016}. El gradiente sigue el
-teorema de pol\'itica de Sutton \& Barto~\citep{SuttonBarto2018}:
+teorema de pol\'itica de Sutton \& Barto~\citep{SuttonBarto2018}: \\
 $\nabla_\theta J(\theta) =
 \mathbb{E}_{\pi_\theta}\!\left[\nabla_\theta
 \log \pi_\theta(a\mid s)\, A^{\pi}(s,a)\right]$,
@@ -217,13 +210,13 @@ como m\'etrica de UQ.
 arquitecturas profundas con mejores trazas individuales
 ($\{\texttt{pes\_dqn}, \texttt{pes\_rdqn}, \texttt{pes\_trf}\}$). En
 tiempo de inferencia cada miembro $k$ aporta sus \emph{logits}
-$\ell^{(k)}(s)$; el ensemble emite
+$\ell^{(k)}(s)$ , el ensemble emite
 \begin{equation}
   \pi_{\mathrm{ens}}(a \mid s) \;=\;
   \mathrm{softmax}\!\Bigl(
-    \sum_{k=1}^{K} w_k \, \ell^{(k)}(s)
+    \sum_{k=1}^{K} w_k \ \ell^{(k)}(s)
   \Bigr),
-  \qquad \sum_k w_k = 1,
+  \qquad \sum_k w_k = 1
   \label{eq:ens-soft}
 \end{equation}
 con pesos $w_k$ proporcionales al desempe\~no \emph{in-distribution}
@@ -231,7 +224,7 @@ de cada miembro. El paquete no introduce par\'ametros entrenables
 nuevos: se limita a cargar los modelos \texttt{.keras} producidos
 por sus hermanos y promediar sus distribuciones, en l\'inea con la
 formulaci\'on cl\'asica de \emph{deep ensembles} para
-incertidumbre predictiva~\citep{Lakshminarayanan2017}.
+incertidumbre predictiva.
 La reducci\'on de varianza es estructural: si cada miembro tiene
 error $\sigma_k^2$ y correlaci\'on $\rho$,
 $\sigma_{\mathrm{ens}}^2 = \bar{\sigma}^2 \bigl(\rho +
@@ -266,14 +259,14 @@ hiperpar\'ametros cr\'iticos.
   \centering
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{optimization_history.png}
+    \includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{optimization_history.png}
     \caption{Historial de \emph{trials} Optuna/TPE.}
     \label{fig:optuna-history}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
-    \includegraphics[width=\linewidth]{hyperparameter_importances.png}
+    \includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{hyperparameter_importances.png}
     \caption{Importancia relativa (fANOVA).}
     \label{fig:optuna-importance}
   \end{subfigure}
