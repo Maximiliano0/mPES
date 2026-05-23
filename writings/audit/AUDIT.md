@@ -4,7 +4,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
-- ✅ Compilación exitosa — **53 páginas**.
+- ✅ Compilación exitosa — **52 páginas**.
 - 📄 PDF: `out/mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
 
 - ✅ Sin Overfull \hbox.
@@ -17,7 +17,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **32**.
 - Tablas con label: **5**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **79**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **78**.
 
 - ✅ Sin referencias rotas.
 
@@ -49,6 +49,10 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 ## 3. Citas y bibliografía (APA)
 
 - ✅ Todas las claves citadas existen en `References.bib`.
+
+**Entradas `.bib` no citadas:**
+
+- `Lakshminarayanan2017`
 
 ## 4. Coherencia y cohesión
 

@@ -669,6 +669,14 @@ def main() -> int:
         else:
             print(f"  ✅ {tex_result['pages']} páginas  →  out/{tex_result['pdf_name']}")
 
+        # Tras compilar, barrer auxiliares/artefactos residuales en todo
+        # writings/ (los que no haya capturado el movimiento a OUT_DIR,
+        # p.ej. .aux de subfiles en 01_Chapters/, basura del SO, etc.).
+        removed = clean_artifacts()
+        if removed:
+            print(f"  🧹 {len(removed)} archivo(s) auxiliar(es) eliminado(s) "
+                  f"de writings/.")
+
     report = build_report(tex_result)
     AUDIT_FILE.parent.mkdir(exist_ok=True)
     AUDIT_FILE.write_text(report, encoding="utf-8")
