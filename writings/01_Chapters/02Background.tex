@@ -223,6 +223,46 @@ probabil\'istico. Se utiliza el estimador
 estructurado en \'arbol de Parzen (TPE)~\citep{Bergstra2011}
 implementado en Optuna~\citep{Akiba2019}, que modela
 $p(x \mid y < y^{*})$ y $p(x \mid y \geq y^{*})$ con KDEs separados.
+Una \emph{Kernel Density Estimator} (KDE) es un estimador no
+param\'etrico de densidad que representa la distribuci\'on de una
+muestra mediante la suma de funciones n\'ucleo centradas en cada
+observaci\'on. Para una muestra unidimensional
+$x_1,\ldots,x_n$, la estimaci\'on es
+
+\begin{equation}
+\hat{p}_h(x) \;=\; \frac{1}{n h}
+\sum_{i=1}^{n} K\!\left(\frac{x-x_i}{h}\right)
+\label{eq:kde}
+\end{equation}
+
+donde $K$ es la funci\'on n\'ucleo y $h>0$ el ancho de banda, que
+controla el grado de suavizado. En TPE, estas estimaciones se
+construyen por separado para las configuraciones con rendimiento
+inferior a $y^{*}$ y para el resto; la raz\'on entre ambas densidades
+orienta la selecci\'on de nuevos hiperpar\'ametros.
+
+\subsection{Distribuci\'on de entrenamiento y generalizaci\'on}
+
+Sea $P_{\mathrm{train}}(s,a,r,s')$ la distribuci\'on de transiciones
+observadas durante el entrenamiento y sea
+$P_{\mathrm{test}}(s,a,r,s')$ la distribuci\'on utilizada para evaluar
+la pol\'itica aprendida. Una evaluaci\'on
+\emph{in-distribution} (ID) conserva las mismas leyes de generaci\'on
+que el entrenamiento, de modo que
+
+\begin{equation}
+P_{\mathrm{test}} = P_{\mathrm{train}}
+\label{eq:in-distribution}
+\end{equation}
+
+Una evaluaci\'on \emph{out-of-distribution} (OOD), en cambio, modifica
+una o m\'as propiedades de esa distribuci\'on, por lo que
+$P_{\mathrm{test}} \neq P_{\mathrm{train}}$. El cambio puede afectar
+la distribuci\'on de estados o entradas (\emph{covariate shift}), la
+relaci\'on entre entradas y recompensas, o la din\'amica de transici\'on.
+En consecuencia, el rendimiento OOD mide la capacidad de
+generalizaci\'on y robustez de la pol\'itica, y no solamente su ajuste
+a las condiciones conocidas durante el entrenamiento.
 
 \subsection{Comparaci\'on Estad\'istica de Agentes}
 

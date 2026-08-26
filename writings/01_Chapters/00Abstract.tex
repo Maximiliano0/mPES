@@ -12,8 +12,9 @@ arquitecturas de Aprendizaje por Refuerzo (\emph{Reinforcement
 Learning}, RL) pueden optimizar la toma de decisiones en la
 asignaci\'on de recursos cr\'iticos durante crisis sanitarias.
 
-Para ello, el estudio compara \textbf{ocho enfoques algor\'itmicos}
-que abarcan desde m\'etodos tabulares cl\'asicos hasta arquitecturas
+Para ello, el estudio compara \textbf{siete modelos evaluados},
+correspondientes a ocho paquetes implementados, que abarcan desde
+m\'etodos tabulares cl\'asicos hasta arquitecturas
 de vanguardia como Transformers causales y \emph{ensembles} de redes
 profundas. El n\'ucleo de la propuesta reside en superar la
 ``miop\'ia'' de los algoritmos tradicionales mediante el modelado de
@@ -25,15 +26,19 @@ Shannon para dotar al sistema de transparencia y confiabilidad.
 En \'ultima instancia, esta investigaci\'on busca \emph{generalizar}
 el problema de la distribuci\'on de recursos limitados ante din\'amicas
 de propagaci\'on complejas y no lineales. Los resultados emp\'iricos
-sobre un \emph{benchmark} de $22$ escenarios \emph{out-of-distribution}
-($n = 64$ secuencias por escenario) confirman \emph{parcialmente} la
+sobre un \emph{benchmark} de $22$ escenarios evaluados, compuesto por
+una condici\'on \emph{in-distribution} y $21$ condiciones
+\emph{out-of-distribution} ($n = 64$ secuencias por escenario),
+confirman \emph{parcialmente} la
 hip\'otesis de trabajo: el Transformer causal (\texttt{pes\_trf},
 $\bar{r} = 0{,}927$) es la mejor arquitectura \emph{individual},
 pero el \emph{ensemble} ponderado (\texttt{pes\_ens}, $\bar{r} =
-0{,}937$, $\sigma = 0{,}035$) lo supera como sistema desplegable.
-Todos los hiperpar\'ametros fueron sintonizados mediante
-Optimizaci\'on Bayesiana con el estimador estructurado en \'arbol de
-Parzen (TPE).
+0{,}937$, $\sigma = 0{,}035$) lo supera en el rendimiento agregado
+y la consistencia entre secuencias.
+Los hiperpar\'ametros de los modelos optimizables fueron sintonizados
+mediante Optimizaci\'on Bayesiana con el estimador estructurado en
+\'arbol de Parzen (TPE); \texttt{pes\_base} conserva par\'ametros fijos
+y \texttt{pes\_ens} no requiere entrenamiento adicional.
 
 \par\vspace{0.5\baselineskip}
 \noindent\textbf{Palabras clave:} mPES, Aprendizaje por Refuerzo,

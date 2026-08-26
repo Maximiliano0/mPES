@@ -3,29 +3,35 @@
 
 \begin{document}
 
-La gesti\'on de recursos en una pandemia es un desaf\'io de log\'istica
-y \'etica que requiere decisiones r\'apidas bajo una presi\'on inmensa.
-El \emph{framework} \textbf{mPES} surge como respuesta a la necesidad de
-herramientas de soporte para la toma de decisiones que no s\'olo
-optimicen la supervivencia, sino que entiendan la \emph{inercia}
-del escenario pand\'emico. Para ello, extiende el entorno original
-\emph{Pandemic Experiment Scenario} (PES) del BCI-NE Lab de la
-Universidad de Essex~\citep{BCINE2022}, adopt\'andolo como plataforma
-de comparaci\'on sistem\'atica de arquitecturas de Aprendizaje por
-Refuerzo en condiciones de crisis sanitaria.
+La toma de decisiones complejas y secuenciales bajo incertidumbre
+constituye un desaf\'io central para los sistemas de inteligencia
+artificial. En estos problemas, cada acci\'on modifica el estado del
+entorno y condiciona las decisiones posteriores, por lo que una
+pol\'itica eficaz debe anticipar consecuencias acumulativas y asignar
+recursos limitados a lo largo del tiempo.
+El \emph{framework} \textbf{mPES} surge como una plataforma para
+comparar sistem\'aticamente arquitecturas de Aprendizaje por Refuerzo
+en este tipo de escenarios de decisi\'on. La crisis pand\'emica se
+utiliza como un \emph{testbench}: un caso concreto, exigente y
+reproducible que permite estudiar la adaptabilidad de los agentes
+frente a din\'amicas no lineales, informaci\'on incierta y cambios
+fuera de la distribuci\'on de entrenamiento. Para ello, mPES extiende
+el entorno original \emph{Pandemic Experiment Scenario} (PES) del
+BCI-NE Lab de la Universidad de Essex~\citep{BCINE2022}.
 
 \subsection{Motivaci\'on}\label{sec:motivacion}
 
-La crisis sanitaria provocada por el COVID--19 puso de manifiesto que
-los tomadores de decisiones --- gobiernos, hospitales, cadenas
-log\'isticas --- act\'uan habitualmente sin una herramienta
-principal que les permita ponderar los beneficios inmediatos contra
-los costos a largo plazo, y que las consecuencias de una asignaci\'on
-sub\'optima se miden en vidas humanas y en costo social. La
-investigaci\'on busca generalizar el problema de la distribuci\'on de
-recursos en tiempos de crisis, evaluando qu\'e modelos matem\'aticos y
-computacionales producen decisiones m\'as adaptativas ante din\'amicas
-de propagaci\'on complejas y no lineales.
+La crisis sanitaria provocada por el COVID--19 ofrece un caso
+representativo de este tipo de decisiones. Gobiernos, hospitales y
+cadenas log\'isticas deben ponderar beneficios inmediatos contra
+costos a largo plazo, mientras que cada asignaci\'on altera la
+evoluci\'on posterior del sistema. En este trabajo, la pandemia no se
+considera el l\'imite del problema, sino el escenario experimental que
+permite observar y medir esas propiedades. La investigaci\'on busca
+as\'i evaluar qu\'e modelos matem\'aticos y computacionales producen
+decisiones m\'as adaptativas en escenarios complejos y secuenciales,
+utilizando la distribuci\'on de recursos durante una crisis pand\'emica
+como banco de pruebas.
 
 El enfoque metodol\'ogico de esta tesis est\'a deliberadamente
 impregnado de la disciplina del \emph{desarrollo de producto}
@@ -34,15 +40,14 @@ artefacto, reproducibilidad estricta, control de versiones del
 entorno computacional y validaci\'on \emph{out-of-distribution} como
 requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
 como un experimento aislado sino como un \emph{sistema} ---
-ocho arquitecturas, un esquema de evaluaci\'on com\'un y un
-orquestador reproducible --- pensado para soportar la transici\'on
-entre la prueba acad\'emica y la herramienta operativa en dominios
-de alto impacto.
+ocho paquetes implementados, siete modelos evaluados, un esquema de
+evaluaci\'on com\'un y un orquestador reproducible --- pensado para estudiar arquitecturas de
+decisi\'on secuencial en dominios de alta complejidad.
 
 \subsection{Definici\'on del Problema}\label{sec:problema}
 
-El entorno computacional desarrollado modela una crisis donde un
-tomador de decisiones (un agente de RL) debe distribuir un
+El entorno computacional desarrollado implementa, como escenario de
+prueba, una crisis pand\'emica donde un tomador de decisiones (un agente de RL) debe distribuir un
 \emph{presupuesto limitado} de recursos m\'edicos o log\'isticos entre
 diversas ciudades afectadas simult\'aneamente. Tres rasgos
 cualitativos definen el escenario: la \emph{din\'amica acumulativa}
@@ -52,7 +57,7 @@ asignados generan un impacto sostenido que premia a los modelos
 capaces de anticipar) y una \emph{evoluci\'on matem\'atica} regida
 por la ley exponencial-corregida
 \[
-    S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i) \quad \alpha = 0{,}4  \beta = 1{,}4
+    S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i) \quad \alpha = 0{,}4 \ \beta = 1{,}4
 \]
 La formulaci\'on completa como MDP finito y el
 \emph{benchmark} fijo de $64$ secuencias compartido por todos los
@@ -66,11 +71,15 @@ desdoblada en dos niveles:
 \begin{quote}
 \textbf{H1a (arquitect\'onica).} \emph{Entre las arquitecturas
 individuales evaluadas, el modelo Transformer causal alcanza el
-mayor desempe\~no medio en la asignaci\'on de recursos durante una
-pandemia, especialmente en condiciones fuera de distribuci\'on.}
+mayor desempe\~no medio en la toma de decisiones secuenciales bajo
+incertidumbre, utilizando la asignaci\'on de recursos durante una
+pandemia como escenario de prueba, especialmente en condiciones
+fuera de distribuci\'on.}
 
-\textbf{H1b (sist\'emica).} \emph{El Transformer, en tanto modelo
-\'unico, constituye la mejor soluci\'on desplegable.}
+\textbf{H1b (sist\'emica).} \emph{El Transformer, considerado como
+modelo individual, constituye el mejor modelo del benchmark seg\'un
+rendimiento y robustez, por encima de los modelos individuales de
+referencia.}
 \end{quote}
 
 
@@ -93,8 +102,9 @@ Las principales contribuciones de esta tesis son:
     del RL contempor\'aneo: valor tabular, valor profundo,
     recurrente, gradiente de pol\'itica, atenci\'on causal y
     promediado de modelos.
-    \item Una matriz \emph{out-of-distribution} de $7 \times 22 = 154$
-    celdas que estresa cada agente contra perturbaciones
+    \item Una matriz de evaluaci\'on de $7 \times 22 = 154$
+    celdas, con una condici\'on \emph{in-distribution} y $21$
+    condiciones \emph{out-of-distribution}, que estresa cada agente contra perturbaciones
     sistem\'aticas de severidad, longitud, conjuntas y estructurales,
     junto con un protocolo estad\'istico unificado ($d$ de Cohen,
     $t$ de Welch y divergencia KL entre pol\'iticas).

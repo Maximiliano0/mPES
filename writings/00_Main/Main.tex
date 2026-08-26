@@ -17,6 +17,7 @@
 \usepackage{adjustbox}
 \usepackage{chronology}
 \usepackage{graphicx}
+\usepackage{pdflscape}
 \usepackage{mathtools}
 \usepackage{amsmath, amssymb, amsthm} % Mathematical packages
 \usepackage{parskip} % Removing indenting in new paragraphs
@@ -34,9 +35,17 @@
 \raggedbottom
 % Float placement: allow figures/tables at page bottom and denser float pages
 \renewcommand{\bottomfraction}{0.7}   % up to 70 % of page for bottom floats
+\renewcommand{\topfraction}{0.9}      % allow large figures near the top of a page
 \renewcommand{\textfraction}{0.1}     % at least 10 % text when floats present
 \setcounter{bottomnumber}{3}          % up to 3 floats at page bottom
-\renewcommand{\floatpagefraction}{0.7} % floats must fill >= 70 % of a float-only page
+\renewcommand{\floatpagefraction}{0.55} % avoid mostly empty float-only pages
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 3pt}
+\setlength{\intextsep}{10pt plus 2pt minus 3pt}
+\setlength{\abovedisplayskip}{10pt plus 2pt minus 3pt}
+\setlength{\belowdisplayskip}{10pt plus 2pt minus 3pt}
+\setlength{\abovedisplayshortskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayshortskip}{6pt plus 2pt minus 2pt}
 \usepackage{xparse,nameref}
 \usepackage{algorithm2e} % For algorithms
 \usepackage[bottom]{footmisc} % Footnotes are fixed to bottom of page
@@ -88,7 +97,8 @@
 \usepackage[rightcaption]{sidecap}
 \usepackage{wrapfig}
 \usepackage{float}
-\usepackage[labelfont=bf]{caption} % bold text for captions
+\usepackage[font=footnotesize,labelfont=bf]{caption} % compact captions with bold labels
+\captionsetup{skip=6pt}
 \usepackage[para]{threeparttable} % fancy tables, check these before you use them
 \usepackage{url}
 \usepackage{makecell}
@@ -96,9 +106,9 @@
 
 
 % ----- Sources -----
-\usepackage{natbib}
-\bibliographystyle{apalike} % citation and reference list style
-\def\biblio{\clearpage\bibliographystyle{apalike}\bibliography{00_Main/References.bib}} % defines the \biblio command used for referencing in subfiles - DO NOT CHANGE
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat} % numeric citation and reference list style
+\def\biblio{\clearpage\bibliographystyle{unsrtnat}\bibliography{00_Main/References.bib}} % defines the \biblio command used for referencing in subfiles - DO NOT CHANGE
 
 
 % ----- Header and footer -----
@@ -162,37 +172,29 @@
 
 \section{Introducción} % section/chapter name
     \subfile{../01_Chapters/01Introduction} % including the subfile for the chapter
-\clearpage % clears the page after the chapter is finished
 
 \section{Marco Teórico}
     \subfile{../01_Chapters/02Background}
-\clearpage
 
 
 \section{Estado de la Cuestión}
     \subfile{../01_Chapters/03StateOfTheArt}
-\clearpage
   
 \section{Materiales y Métodos}
     \subfile{../01_Chapters/04Materials}
-\clearpage
 
 \section{Resultados}
     \subfile{../01_Chapters/05Results}
-\clearpage
 
 
 \section{Discusión}
     \subfile{../01_Chapters/06Discussion}
-\clearpage
 
 \section{Conclusiones}
     \subfile{../01_Chapters/07Conclusion}
-\clearpage
 
 \section{Agradecimientos}
     \subfile{../01_Chapters/Acknowledgement}
-\clearpage
 
 % \section{Acknowledgements}
 %     \subfile{01_Chapters/Acknowledgements}

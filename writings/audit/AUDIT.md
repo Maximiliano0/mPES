@@ -5,54 +5,36 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 ## 1. Sintaxis y compilación
 
 - ✅ Compilación exitosa — **52 páginas**.
-- 📄 PDF: `out/mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas.pdf`
+- 📄 PDF: `out/mPES-Esquemas-de-Toma-de-Decision-Artificial-para-Escenarios-de-Decision-Secuenciales.pdf`
 
 - ✅ Sin Overfull \hbox.
 
 - ✅ Sin Underfull \hbox.
 
-- ✅ Sin warnings LaTeX/paquete.
+- ⚠️ 3 warnings LaTeX/paquete (mostrando primeros 5):
+
+  - `LaTeX Warning: Text page 30 contains only floats.`
+  - `LaTeX Warning: Text page 31 contains only floats.`
+  - `LaTeX Warning: Text page 32 contains only floats.`
 
 ## 2. Figuras, tablas y numeración
 
-- Figuras con label: **32**.
-- Tablas con label: **5**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **78**.
+- Figuras con label: **16**.
+- Tablas con label: **6**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **72**.
 
 - ✅ Sin referencias rotas.
 
 - ✅ Sin etiquetas duplicadas.
 
-- Imágenes referenciadas con `\includegraphics`: **27**.
+- Imágenes referenciadas con `\includegraphics`: **16**.
 - ✅ Todas las imágenes referenciadas existen.
 
-**Imágenes huérfanas en `02_Images/` (no referenciadas, 17 archivos):**
-
-- `02_Images/baseline/random_player_normalised_performance.png`
-- `02_Images/heatmaps/heatmaps_4panel.pdf`
-- `02_Images/heatmaps/heatmaps_4panel.png`
-- `02_Images/ood_curves/PES_A2C_joint_extrap_both.png`
-- `02_Images/ood_curves/PES_DQL_sev_extrapolate_high.png`
-- `02_Images/ood_curves/PES_TRF_joint_extrap_both.png`
-- `02_Images/ood_curves/PES_TRF_len_extrapolate_long.png`
-- `02_Images/ood_curves/PES_TRF_sev_extrapolate_high.png`
-- `02_Images/per_sequence/joint_extrap_both.pdf`
-- `02_Images/per_sequence/joint_high_long.pdf`
-- `02_Images/per_sequence/len_extrapolate_long.pdf`
-- `02_Images/per_sequence/len_poisson.pdf`
-- `02_Images/per_sequence/sev_bimodal.pdf`
-- `02_Images/per_sequence/sev_empirical.pdf`
-- `02_Images/per_sequence/sev_extrapolate_high.pdf`
-- `02_Images/per_sequence/sev_gauss_high.pdf`
-- `02_Images/per_sequence/struct_more_total.pdf`
+- ✅ Sin imágenes huérfanas.
 
 ## 3. Citas y bibliografía (APA)
 
 - ✅ Todas las claves citadas existen en `References.bib`.
-
-**Entradas `.bib` no citadas:**
-
-- `Lakshminarayanan2017`
 
 ## 4. Coherencia y cohesión
 

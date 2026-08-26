@@ -5,12 +5,12 @@
 \label{sec:results}
 
 Este cap\'itulo presenta los resultados emp\'iricos del benchmark
-mPES, comparando las \textbf{ocho arquitecturas} sobre $n = 64$
-secuencias \emph{out-of-distribution} por escenario, agrupadas en
+mPES, comparando los \textbf{siete modelos evaluados} sobre $n = 64$
+secuencias por escenario, agrupadas en
 \textbf{cuatro familias} --- \emph{severidad}, \emph{longitud},
 \emph{conjunta} y \emph{estructural} --- que cubren las $22$
 condiciones del cat\'alogo \texttt{general/}. La m\'etrica principal
-es la \emph{performance normalizada media} $\bar{r} \in [0, 1]$
+es el \emph{desempe\~no normalizado medio} $\bar{r} \in [0, 1]$
 (reportada en el c\'odigo como \texttt{mean\_perf}), definida por
 
 \begin{equation}
@@ -38,9 +38,10 @@ con distintas funciones de recompensa internas.
 
 El cat\'alogo completo de las $22$ condiciones se detalla en la
 Sec.~\ref{sec:scenario-catalogue} (Tabla~\ref{tab:scenarios}); las
-cuatro familias agrupan, respectivamente, $10$ escenarios de
+cuatro familias agrupan, respectivamente, $9$ escenarios de
 \emph{severidad}, $5$ de \emph{longitud}, $4$ \emph{conjuntos} y
-$3$ \emph{estructurales}, cada uno con un caso \emph{extrapolante}
+$3$ \emph{estructurales}; junto con la condici\'on de referencia
+constituyen las $22$ condiciones, con casos \emph{extrapolantes}
 fuera del soporte de entrenamiento. La condici\'on
 \texttt{sev\_empirical} act\'ua como \emph{baseline
 in-distribution} de cada modelo: las m\'etricas derivadas que
@@ -58,28 +59,25 @@ generadas con semilla $42$.
 La Tabla~\ref{tab:global-mean} resume el desempe\~no global
 agregado sobre las $22$ condiciones del benchmark. El
 \emph{ensemble} \texttt{pes\_ens} encabeza el ranking con
-$\bar{r} = 0{,}937$ y la \emph{menor} desviaci\'on est\'andar
+$\bar{r} = 0{,}937$ y la menor desviaci\'on est\'andar
 entre secuencias ($\sigma = 0{,}035$), seguido por
 \texttt{pes\_trf} ($\bar{r} = 0{,}927$), el mejor modelo
-\emph{individual}. La familia recurrente y profunda densa
-(\texttt{pes\_rdqn}, \texttt{pes\_dql}, \texttt{pes\_dqn}) ocupa
-una meseta intermedia alrededor de $\bar{r} \approx 0{,}89$. El
-m\'etodo de gradiente de pol\'itica (\texttt{pes\_a2c}) y el
+\emph{individual}. Los modelos recurrente y profundo denso
+(\texttt{pes\_rdqn}, \texttt{pes\_dql}, \texttt{pes\_dqn}) ocupan
+una meseta intermedia alrededor de $\bar{r} \approx 0{,}89$.
+El m\'etodo de gradiente de pol\'itica (\texttt{pes\_a2c}) y el
 Q-Learning optimizado (\texttt{pes\_ql}) se sit\'uan inmediatamente
-por debajo, y \texttt{pes\_base}, sin sintonizaci\'on, marca la
-cota inferior en $\bar{r} = 0{,}801$. Este orden confirma que la
-brecha entre familias es real ($d$ medio entre
-\texttt{pes\_trf}/\texttt{pes\_rdqn} $\approx 0{,}60$) pero no
-desplaza al Transformer del podio individual.
+por debajo, mientras que \texttt{pes\_base} act\'ua como referencia
+sin sintonizaci\'on. Este orden sugiere una diferencia entre
+arquitecturas, aunque su interpretaci\'on causal se reserva para la
+Discusi\'on.
 
 \begin{table}[H]
 \centering
-\caption{Performance normalizada media $\bar{r}$
+\caption[Desempe\~no normalizado medio por modelo]{Desempe\~no normalizado medio $\bar{r}$
 (Ec.~\eqref{eq:mean-perf}) y desviaci\'on est\'andar por
 modelo, agregadas sobre las $22$ condiciones del benchmark
-($n = 64$ secuencias por escenario, semilla $= 42$). El
-\emph{ensemble} domina la fila superior y reduce la varianza un
-$\approx 23$\,\% respecto del mejor modelo individual.}
+($n = 64$ secuencias por escenario, semilla $= 42$).}
 \label{tab:global-mean}
 \begin{tabular}{@{}lcc@{}}
 \toprule
@@ -97,11 +95,44 @@ $\approx 23$\,\% respecto del mejor modelo individual.}
 \end{tabular}
 \end{table}
 
-\subsection{Reducci\'on de la mortalidad}
+\subsection{Reducci\'on de la severidad normalizada}
 
-Tomando \texttt{pes\_ql} como l\'inea de base y midiendo la
-mortalidad como $1 - \bar{r}$ promediada sobre
-las $22$ condiciones, se obtiene una reducci\'on relativa de:
+Tomando \texttt{pes\_ql} como l\'inea de base y utilizando
+$1 - \bar{r}$ como una medida normalizada de severidad residual,
+promediada sobre las $22$ condiciones, se obtiene una reducci\'on
+relativa de:
+
+Para mostrar la variaci\'on del desempe\~no dentro de un escenario concreto,
+la Tabla~\ref{tab:block-dynamics} presenta el desempe\~no normalizado
+media por bloque en la condici\'on \texttt{sev\_empirical}. Este
+escenario es la referencia \emph{in-distribution}; cada bloque contiene
+ocho secuencias y los bloques se muestran en el orden de evaluaci\'on.
+La tabla permite observar las diferencias entre bloques de evaluaci\'on
+sin anticipar las curvas detalladas por secuencia de las figuras posteriores.
+
+\begin{table}[H]
+\centering
+\caption[Desempe\~no por bloque de evaluaci\'on]{Desempe\~no normalizado medio
+$\bar{r}$ por bloque de evaluaci\'on para los siete modelos en el escenario
+\texttt{sev\_empirical}. Cada bloque agrupa ocho secuencias y las columnas
+representan la partici\'on utilizada en el protocolo de evaluaci\'on.}
+\label{tab:block-dynamics}
+\resizebox{0.85\linewidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Modelo} & B1 & B2 & B3 & B4 & B5 & B6 & B7 & B8 \\
+\midrule
+\texttt{pes\_ql}   & 0{,}872 & 0{,}850 & 0{,}876 & 0{,}891 & 0{,}919 & 0{,}879 & 0{,}906 & 0{,}898 \\
+\texttt{pes\_dql}  & 0{,}890 & 0{,}887 & 0{,}904 & 0{,}890 & 0{,}898 & 0{,}895 & 0{,}903 & 0{,}904 \\
+\texttt{pes\_dqn}  & 0{,}875 & 0{,}884 & 0{,}885 & 0{,}901 & 0{,}912 & 0{,}874 & 0{,}905 & 0{,}913 \\
+\texttt{pes\_rdqn} & 0{,}910 & 0{,}883 & 0{,}865 & 0{,}900 & 0{,}906 & 0{,}904 & 0{,}912 & 0{,}909 \\
+\texttt{pes\_a2c}  & 0{,}876 & 0{,}876 & 0{,}882 & 0{,}892 & 0{,}897 & 0{,}874 & 0{,}896 & 0{,}905 \\
+\texttt{pes\_trf}  & 0{,}926 & 0{,}912 & 0{,}902 & 0{,}938 & 0{,}953 & 0{,}920 & 0{,}932 & 0{,}935 \\
+\texttt{pes\_ens}  & 0{,}943 & 0{,}926 & 0{,}911 & 0{,}935 & 0{,}945 & 0{,}944 & 0{,}952 & 0{,}942 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
 \begin{align}
   \Delta_{\mathrm{trf}} &\;=\;
@@ -123,13 +154,13 @@ respecto del mismo punto de partida. La hip\'otesis $H_{1a}$ del
 Cap.~\ref{sec:problema} (Transformer como mejor arquitectura
 individual) queda confirmada con $d \approx 0{,}60$ frente al
 recurrente; la hip\'otesis $H_{1b}$ (Transformer como mejor sistema
-desplegable) queda \emph{refutada}: el ensemble lo supera con un
+del benchmark) queda \emph{refutada}: el ensemble lo supera con un
 tama\~no de efecto $d \approx 0{,}25$ y una significancia de Welch
 $t \approx 3{,}4$ ($p < 10^{-3}$).
 
 \begin{table}[!htb]
 \centering
-\caption{Estad\'isticos pareados sobre las $22$ condiciones del
+\caption[Comparaciones entre modelos]{Comparaciones entre modelos sobre las $22$ condiciones del
 benchmark. La fila TRF--RDQN cuantifica la hip\'otesis $H_{1a}$;
 la fila ENS--TRF cuantifica $H_{1b}$. La divergencia KL anormal en
 la \'ultima fila revela el colapso de pol\'itica de \texttt{pes\_a2c}
@@ -192,6 +223,25 @@ bajo perturbaciones de severidad (Sec.~\ref{sec:a2c-collapse}).}
 
 \subsection{An\'alisis de Cuantificaci\'on de Incertidumbre}
 
+El an\'alisis de UQ se restringe deliberadamente a \texttt{pes\_trf}
+como estudio de caso. Aunque todos los agentes producen valores para
+sus acciones, esas salidas no son directamente comparables como
+probabilidades: las tablas Q y las redes DQN/RDQN/Transformer generan
+valores o \emph{logits} cuya escala depende de la parametrizaci\'on y
+del entrenamiento, mientras que A2C produce una distribuci\'on
+\texttt{softmax} de pol\'itica y el ensemble combina las salidas de
+varios modelos. Convertir todas ellas en probabilidades comparables
+exigir\'ia un procedimiento adicional de calibraci\'on, adem\'as de una
+validaci\'on espec\'ifica de la calidad probabil\'istica.
+
+Por esta raz\'on, la tesis utiliza el Transformer para evaluar la
+hip\'otesis de que la entrop\'ia de Shannon puede funcionar como proxy
+de incertidumbre en un agente secuencial, y no presenta la entrop\'ia
+como una comparaci\'on UQ exhaustiva entre arquitecturas. La extensi\'on
+a todos los modelos queda como una l\'inea de trabajo posterior que
+deber\'ia incluir, como m\'inimo, calibraci\'on de temperatura o
+isot\'onica y m\'etricas como Brier score o curvas de confiabilidad.
+
 Calculando la entrop\'ia de Shannon normalizada
 $H_{\mathrm{norm}}(p)$ (Ec.~\ref{eq:shannon}) sobre la distribuci\'on
 \texttt{softmax} del Transformer durante las 64 secuencias, se
@@ -228,206 +278,104 @@ forma reproducible:
     \item Reporte final \texttt{general/results/benchmark\_report.md}.
 \end{itemize}
 
-\subsection{Visualizaci\'on de matrices comparativas}
-
-Las cuatro matrices clave producidas por
-\texttt{plot\_matrix.py} se presentan en la
-Figura~\ref{fig:heatmaps}. El panel de \emph{retorno medio}
-(arriba-izquierda) confirma visualmente la jerarqu\'ia de medias de
-la Tabla~\ref{tab:global-mean}, con \texttt{pes\_trf} dominando la
-columna ``global''. El panel de \emph{significancia} (arriba-derecha)
-muestra el $-\log_{10}(p)$ del test de Welch para cada par de
-modelos: las celdas oscuras corresponden a diferencias
-estad\'isticamente significativas $(p < 0{,}01)$, lo que respalda
-que la ventaja de \texttt{pes\_trf} no es atribuible al azar.
-El panel de \emph{degradaci\'on OOD} (abajo-izquierda) cuantifica
-la ca\'ida de $\bar{r}$ al pasar de la condici\'on emp\'irica a las
-extrapoladas: los m\'etodos tabulares sufren ca\'idas $> 0{,}10$,
-mientras que el Transformer permanece estable. Por \'ultimo, el
-panel de \emph{divergencia KL} (abajo-derecha) reporta la KL entre
-distribuciones de acci\'on, revelando que los agentes profundos
-convergen a pol\'iticas similares mientras que los tabulares
-divergen entre s\'i.
-
-\begin{figure}[!htb]
-  \centering
-  \begin{subfigure}[t]{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_global_mean.png}
-    \caption{Performance normalizada media $\bar r$
-    (viridis; valores $\in [0{,}76,\,1{,}00]$).}
-    \label{fig:hm-mean}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_welch_logp.png}
-    \caption{Test de Welch: $\log_{10} p$ recortado a $[-10,\,0]$
-    respecto de la propia condici\'on emp\'irica de cada modelo
-    (magma; m\'as oscuro\,=\,evidencia m\'as fuerte contra
-    \texttt{sev\_empirical}).}
-    \label{fig:hm-welch}
-  \end{subfigure}
-  \\[0.2em]
-  \begin{subfigure}[t]{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_ood_degradation.png}
-    \caption{Degradaci\'on OOD $\Delta\bar{r} =
-    \bar{r}_{\text{emp\'irica}} - \bar{r}_{\text{celda}}$
-    (RdBu divergente; naranja-rojo\,$> 0$\,=\,peor que en
-    distribuci\'on; azul\,$< 0$\,=\,mejor).}
-    \label{fig:hm-ood}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.49\textwidth}
-    \centering
-    \includegraphics[width=\linewidth,height=0.36\textheight,keepaspectratio]{heatmap_action_kl.png}
-    \caption{$D_{\mathrm{KL}}\!\bigl(P_{\text{celda}} \,\|\,
-    P_{\text{emp\'irica}}\bigr)$ en nats (viridis, escala
-    logar\'itmica; oscuro\,=\,mayor deriva en la pol\'itica).}
-    \label{fig:hm-kl}
-  \end{subfigure}
-  \caption{Mapas de calor del benchmark OOD ($7$ modelos
-  $\times$ $22$ escenarios $=$ $154$ celdas; $n = 64$ secuencias
-  por celda, semilla $= 42$). La columna \texttt{sev\_empirical}
-  act\'ua como referencia \emph{in-distribution}: la celda
-  \subref{fig:hm-welch} la deja en blanco y las celdas
-  \subref{fig:hm-ood}--\subref{fig:hm-kl} toman su valor como
-  cota de comparaci\'on. Las columnas estructurales (tres
-  \'ultimas) no muestran degradaci\'on significativa porque el
-  entorno subyacente es el mismo.}
-  \label{fig:heatmaps}
-\end{figure}
-
 \subsection{Curvas de entrenamiento por algoritmo}
 
-Las Figuras~\ref{fig:training-curves-a} y~\ref{fig:training-curves-b} muestran
-el desempe\~no por secuencia de los \emph{ocho} paquetes evaluados sobre el conjunto
+Las Figuras~\ref{fig:c-base}--\ref{fig:c-ens} muestran
+el desempe\~no por secuencia de los siete modelos evaluados sobre el conjunto
 de validaci\'on. Los m\'etodos tabulares
-(\subref{fig:c-base}--\subref{fig:c-dql},
-Fig.~\ref{fig:training-curves-a}) presentan mayor varianza
+(\ref{fig:c-base}--\ref{fig:c-dql}) presentan mayor varianza
 entre secuencias y se estabilizan en valores medios m\'as bajos,
 mientras que los m\'etodos profundos individuales
-(\subref{fig:c-dqn}, Fig.~\ref{fig:training-curves-a}; y
-\subref{fig:c-rdqn}--\subref{fig:c-trf}, Fig.~\ref{fig:training-curves-b})
+(\ref{fig:c-dqn}--\ref{fig:c-trf})
 exhiben un perfil m\'as homog\'eneo y un techo de desempe\~no superior. El
-\emph{ensemble} (\subref{fig:c-ens}, Fig.~\ref{fig:training-curves-b})
+\emph{ensemble} (Fig.~\ref{fig:c-ens})
 hereda lo mejor de cada miembro y comprime la banda intercuart\'ilica de forma
 visible: es el \'unico panel en que el percentil 25 nunca cae por debajo de
 $0{,}57$.
 
 \begin{figure}[!htb]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_BASE_results.png}
-    \caption{\texttt{pes\_base} (Q-Learning fijo).}
-    \label{fig:c-base}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_QL_results.png}
-    \caption{\texttt{pes\_ql} (Q-Learning + Optuna/TPE).}
-    \label{fig:c-ql}
-  \end{subfigure}
-  \\[0.6em]
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_DQL_results.png}
-    \caption{\texttt{pes\_dql} (Double Q-Learning + PBRS).}
-    \label{fig:c-dql}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_DQN_results.png}
-    \caption{\texttt{pes\_dqn} (DQN con \emph{replay}).}
-    \label{fig:c-dqn}
-  \end{subfigure}
-  \caption{Dashboards de evaluaci\'on por paquete sobre las
-  $n = 64$ secuencias de validaci\'on. Cada subfigura agrupa
-  seis subpaneles: \emph{performance} normalizada por secuencia
-  con media y banda $\pm\sigma$, histograma de la distribuci\'on
-  con media y mediana, diagramas de caja y barras por bloque,
-  curva de media acumulada y tabla de estad\'isticos descriptivos.
-  \subref{fig:c-base}~l\'inea de base sin optimizaci\'on;
-  \subref{fig:c-ql}--\subref{fig:c-dql}~variantes tabulares
-  optimizadas; \subref{fig:c-dqn}~primer modelo profundo.}
-  \label{fig:training-curves-a}
+  \includegraphics[width=0.95\linewidth]{PES_BASE_results.png}
+  \caption[Resultados del modelo base]{Desempe\~no por secuencia, distribuci\'on,
+  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_base}.}
+  \label{fig:c-base}
 \end{figure}
-
 \begin{figure}[!htb]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_RDQN_results.png}
-    \caption{\texttt{pes\_rdqn} (Recurrent DQN + LSTM).}
-    \label{fig:c-rdqn}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_A2C_results.png}
-    \caption{\texttt{pes\_a2c} (Actor--Cr\'itico A2C).}
-    \label{fig:c-a2c}
-  \end{subfigure}
-  \\[0.6em]
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_TRF_results.png}
-    \caption{\texttt{pes\_trf} (Transformer causal).}
-    \label{fig:c-trf}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
-    \centering
-    \includegraphics[width=\linewidth]{PES_ENS_results.png}
-    \caption{\texttt{pes\_ens} (\emph{soft voting}).}
-    \label{fig:c-ens}
-  \end{subfigure}
-  \caption{Dashboards de evaluaci\'on por paquete sobre las
-  $n = 64$ secuencias de validaci\'on (misma composici\'on de
-  seis subpaneles que en la Figura~\ref{fig:training-curves-a}).
-  \subref{fig:c-rdqn}~recurrente (LSTM);
-  \subref{fig:c-a2c}~gradiente de pol\'itica (A2C);
-  \subref{fig:c-trf}~codificador Transformer;
-  \subref{fig:c-ens}~\emph{ensemble} de los tres mejores modelos.}
-  \label{fig:training-curves-b}
+  \includegraphics[width=0.95\linewidth]{PES_QL_results.png}
+  \caption[Resultados de Q-Learning optimizado]{Desempe\~no por secuencia,
+  distribuci\'on, estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ql}.}
+  \label{fig:c-ql}
+\end{figure}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{PES_DQL_results.png}
+  \caption[Resultados de Double Q-Learning]{Desempe\~no por secuencia,
+  distribuci\'on, estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_dql}.}
+  \label{fig:c-dql}
+\end{figure}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{PES_DQN_results.png}
+  \caption[Resultados de DQN]{Desempe\~no por secuencia, distribuci\'on,
+  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_dqn}.}
+  \label{fig:c-dqn}
+\end{figure}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{PES_RDQN_results.png}
+  \caption[Resultados de RDQN]{Desempe\~no por secuencia, distribuci\'on,
+  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_rdqn}.}
+  \label{fig:c-rdqn}
+\end{figure}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{PES_A2C_results.png}
+  \caption[Resultados de A2C]{Desempe\~no por secuencia, distribuci\'on,
+  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_a2c}.}
+  \label{fig:c-a2c}
+\end{figure}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{PES_TRF_results.png}
+  \caption[Resultados del Transformer]{Desempe\~no por secuencia, distribuci\'on,
+  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_trf}.}
+  \label{fig:c-trf}
+\end{figure}
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{PES_ENS_results.png}
+  \caption[Resultados del ensemble]{Desempe\~no por secuencia, distribuci\'on,
+  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ens}.}
+  \label{fig:c-ens}
 \end{figure}
 
 \subsection{Curvas por escenario}\label{sec:per-seq-extended}
 
-La Figura~\ref{fig:per-seq-extended} a\~nade seis condiciones
-representativas a las cuatro ya mostradas en el
-Cap.~\ref{sec:methods} (Fig.~\ref{fig:per-sequence}) y permite
-contrastar familias de perturbaci\'on. Los paneles severos
+La Figura~\ref{fig:extra-sev-skew} presenta curvas adicionales de
+desempe\~no por secuencia, organizadas por familia de perturbaci\'on.
+La fila superior corresponde a severidad
 (\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high},
-\texttt{sev\_beta\_highskew}) se mantienen agrupados cerca del
-techo de retorno, y todos los modelos los resuelven sin gran
-p\'erdida; los paneles de \emph{longitud} (\texttt{len\_poisson},
-\texttt{len\_extrapolate\_long}) muestran mayor dispersi\'on en
-las secuencias m\'as dif\'iciles (extremo izquierdo de cada
-curva), penalizando a los modelos miopes; el panel conjunto
-(\texttt{joint\_high\_long}) combina ambos efectos y es donde la
-brecha tabular--profundo se vuelve m\'as evidente.
+\texttt{sev\_beta\_highskew}); la fila inferior corresponde a longitud
+(\texttt{len\_poisson}, \texttt{len\_extrapolate\_long}) y a la
+combinaci\'on conjunta (\texttt{joint\_high\_long}).
 
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{per_sequence_extra_6panel.pdf}
-  \caption{Curvas adicionales de desempe\~no por secuencia,
-  organizadas por familia de perturbaci\'on. \emph{Fila superior:}
-  severidad (\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high},
-  \texttt{sev\_beta\_highskew}). \emph{Fila inferior:} longitud
+  \includegraphics[width=\linewidth,height=0.84\textheight,keepaspectratio]{per_sequence_extra_6panel.pdf}
+  \caption[Curvas adicionales por familia de perturbaci\'on]{Curvas adicionales de desempe\~no por secuencia, organizadas por
+  familia de perturbaci\'on. Fila superior: severidad
+  (\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high},
+  \texttt{sev\_beta\_highskew}). Fila inferior: longitud
   (\texttt{len\_poisson}, \texttt{len\_extrapolate\_long}) y
   combinaci\'on conjunta (\texttt{joint\_high\_long}). Cada panel
-  ordena las $n = 64$ secuencias de menor a mayor performance
-  normalizada $\bar r$ (Ec.~\eqref{eq:mean-perf}) para los siete
-  paquetes optimizados (\texttt{pes\_base} se excluye del
-  \emph{benchmark} al carecer de sintonizaci\'on de
-  hiperpar\'ametros); el \emph{ensemble} \texttt{pes\_ens} se
-  traza en negro y con trazo m\'as grueso.}
-  \label{fig:per-seq-extended}
+  ordena las $n = 64$ secuencias de menor a mayor desempe\~no
+  normalizada $\bar{r}$ (Ec.~\eqref{eq:mean-perf}) para los siete
+  modelos evaluados. El modelo de referencia \texttt{pes\_base} se
+  excluye del conjunto optimizado al carecer de sintonizaci\'on de
+  hiperpar\'ametros; el ensemble
+  \texttt{pes\_ens} se traza en negro y con trazo m\'as grueso.}
+  \label{fig:extra-sev-skew}
 \end{figure}
 
 \subsection{Comportamiento bajo los estresores universales}\label{sec:ood-curves}
@@ -449,12 +397,12 @@ alternativas o bien colapsan (\texttt{pes\_dql} sobre
 pol\'itica con independencia del contexto (\texttt{pes\_a2c}
 sobre \texttt{joint\_extrap\_both}, traza pr\'acticamente plana
 en $\bar r \approx 0{,}95$).
-\begin{figure}[!ht]
+\begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth]{ood_curves_3panel.pdf}
-  \caption{Curvas de desempe\~no por secuencia bajo los tres
+  \includegraphics[width=0.95\linewidth]{ood_curves_3panel.pdf}
+  \caption[Curvas bajo estresores universales]{Curvas de desempe\~no por secuencia bajo los tres
   estresores universales, con las secuencias ordenadas de menor a
-  mayor performance normalizada $\bar r$
+  mayor desempe\~no normalizado $\bar r$
   (Ec.~\eqref{eq:mean-perf}). \emph{Izquierda:} severidad
   extrapolada (\texttt{pes\_dql} en azul, \texttt{pes\_trf} en
   rojo). \emph{Centro:} extrapolaci\'on conjunta (\texttt{pes\_a2c}

@@ -12,14 +12,14 @@ en sistemas de soporte de decisiones que no s\'olo optimicen una
 m\'etrica de rendimiento, sino que incorporen nociones de
 \emph{confianza}.
 
-\subsection{El Legado de Oxford: de la Metacognici\'on Humana a la IA}
+\subsection{De la Metacognici\'on Humana a la IA}
 
-El punto de partida conceptual de este trabajo es el experimento
-original de la Universidad de Oxford (\emph{dataset} p\'ublico
-\texttt{ds004477}\cite{ds004477}), implementado y liberado por el BCI-NE Lab de la
-Universidad de Essex como el entorno \emph{Pandemic Experiment
-Scenario} (PES)~\citep{BCINE2022}. Dicho grupo investig\'o las
-firmas neuronales de la
+El punto de partida conceptual de este trabajo es un \emph{dataset}
+p\'ublico (\texttt{ds004477}\cite{ds004477}) originado en una
+colaboraci\'on brit\'anica entre varias universidades e implementado
+y liberado por el BCI-NE Lab de la Universidad de Essex como el
+entorno \emph{Pandemic Experiment Scenario} (PES)~\citep{BCINE2022}.
+Esta l\'inea de investigaci\'on examin\'o las firmas neuronales de la
 confianza humana ante decisiones bajo presi\'on. Estudios
 fundamentales como los de Boldt \& Yeung~\citep{Boldt2015}
 identificaron que el cerebro humano
@@ -29,6 +29,12 @@ recientes~\citep{Fleming2024} formalizan la relaci\'on entre
 confianza, an\'alisis secuencial y teor\'ia de detecci\'on de
 se\~nales, mostrando que estos biomarcadores son cruciales en
 tareas de alta carga cognitiva.
+
+La perspectiva de los equipos humano-m\'aquina ampl\'ia este puente
+al considerar que la toma de decisiones puede distribuirse entre
+personas y sistemas artificiales, de modo que la confianza y la
+adaptaci\'on constituyen propiedades relevantes del equipo
+completo~\citep{Nijjar2025}.
 
 La originalidad de mPES radica en \emph{tomar esta premisa
 neurofisiol\'ogica y trasladarla al plano algor\'itmico}: sustituir
@@ -69,7 +75,7 @@ mundo real~\citep{SuttonBarto2018}.
 
 El mayor obst\'aculo en la gesti\'on de pandemias es la
 \emph{inercia temporal}: una decisi\'on hoy afecta la curva de
-mortalidad semanas despu\'es. Los modelos tradicionales basados en
+severidad acumulada semanas despu\'es. Los modelos tradicionales basados en
 MDPs suelen ser ``miopes'', ya que priorizan el estado inmediato.
 
 La propuesta de Vaswani \emph{et al.}~\citep{Vaswani2017} con la
@@ -93,8 +99,8 @@ de entrop\'ia en Transformers permite
 que el sistema informe cu\'ando ``no est\'a seguro'' de una
 decisi\'on.
 
-Esto cierra el c\'irculo iniciado en Oxford: si el agente detecta
-una alta entrop\'ia (incertidumbre), emula el proceso de duda
+Si el agente detecta una alta entrop\'ia (incertidumbre), emula el
+proceso de duda
 humana, permitiendo una intervenci\'on supervisada m\'as segura en
 escenarios de crisis. La originalidad de esta tesis consiste,
 precisamente, en \emph{operacionalizar} ese puente neurocognitivo
@@ -151,7 +157,7 @@ tesis es:
     a trav\'es de $22$ condiciones fuera de distribuci\'on.
     \item \textbf{UQ algor\'itmica.} La adopci\'on expl\'icita de la
     Entrop\'ia de Shannon como proxy de confianza, en l\'inea con
-    el legado neurocient\'ifico de Oxford.
+    el estudio algor\'itmico de la confianza humana.
     \item \textbf{Rigor estad\'istico.} Cada diferencia reportada
     viene acompa\~nada de un tama\~no de efecto ($d$ de Cohen),
     una significancia ($p$ de Welch) y una divergencia de
