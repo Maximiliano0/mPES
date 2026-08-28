@@ -5,7 +5,7 @@
 \label{sec:results}
 
 Este cap\'itulo presenta los resultados emp\'iricos del benchmark
-mPES, comparando los \textbf{siete modelos evaluados} sobre $n = 64$
+mPES, comparando los \textbf{ocho modelos evaluados} sobre $n = 64$
 secuencias por escenario, agrupadas en
 \textbf{cuatro familias} --- \emph{severidad}, \emph{longitud},
 \emph{conjunta} y \emph{estructural} --- que cubren las $22$
@@ -100,11 +100,27 @@ modelo, agregadas sobre las $22$ condiciones del benchmark
 Tomando \texttt{pes\_ql} como l\'inea de base y utilizando
 $1 - \bar{r}$ como una medida normalizada de severidad residual,
 promediada sobre las $22$ condiciones, se obtiene una reducci\'on
-relativa de:
+relativa de
+
+\begin{equation}
+\Delta_{\mathrm{rel}} =
+\frac{(1 - \bar{r}_{\mathrm{ql}}) - (1 - \bar{r}_{\mathrm{m}})}
+{1 - \bar{r}_{\mathrm{ql}}}
+\times 100\,\%
+\label{eq:severity-reduction}
+\end{equation}
+
+con $\bar{r}_{\mathrm{m}}$ el desempe\~no normalizado medio del modelo
+comparado. En la configuraci\'on de referencia, la l\'inea base
+\texttt{pes\_ql} presenta $1 - \bar{r}_{\mathrm{ql}} \approx 0{,}113$;
+los modelos m\'as fuertes reducen esta severidad residual hasta
+$0{,}073$ para \texttt{pes\_trf} y $0{,}063$ para \texttt{pes\_ens},
+lo que equivale a una ca\'ida relativa aproximada del $35\,\%$ y
+$45\,\%$, respectivamente.
 
 Para mostrar la variaci\'on del desempe\~no dentro de un escenario concreto,
 la Tabla~\ref{tab:block-dynamics} presenta el desempe\~no normalizado
-media por bloque en la condici\'on \texttt{sev\_empirical}. Este
+medio por bloque en la condici\'on \texttt{sev\_empirical}. Este
 escenario es la referencia \emph{in-distribution}; cada bloque contiene
 ocho secuencias y los bloques se muestran en el orden de evaluaci\'on.
 La tabla permite observar las diferencias entre bloques de evaluaci\'on
@@ -113,7 +129,7 @@ sin anticipar las curvas detalladas por secuencia de las figuras posteriores.
 \begin{table}[H]
 \centering
 \caption[Desempe\~no por bloque de evaluaci\'on]{Desempe\~no normalizado medio
-$\bar{r}$ por bloque de evaluaci\'on para los siete modelos en el escenario
+$\bar{r}$ por bloque de evaluaci\'on para los ocho modelos en el escenario
 \texttt{sev\_empirical}. Cada bloque agrupa ocho secuencias y las columnas
 representan la partici\'on utilizada en el protocolo de evaluaci\'on.}
 \label{tab:block-dynamics}
@@ -133,6 +149,7 @@ representan la partici\'on utilizada en el protocolo de evaluaci\'on.}
 \end{tabular}%
 }
 \end{table}
+\vspace{-1.0em}
 
 \begin{align}
   \Delta_{\mathrm{trf}} &\;=\;
@@ -141,9 +158,10 @@ representan la partici\'on utilizada en el protocolo de evaluaci\'on.}
   \;=\; \frac{0{,}113 - 0{,}073}{0{,}113}
   \;\approx\; \mathbf{0{,}35}
   \label{eq:delta-trf} \\
-  \Delta_{\mathrm{ens}} &\;=\;
+  &\quad\text{y} \quad
+  \Delta_{\mathrm{ens}} =
   \frac{0{,}113 - 0{,}063}{0{,}113}
-  \;\approx\; \mathbf{0{,}45}
+  \approx \mathbf{0{,}45}
   \label{eq:delta-ens}
 \end{align}
 
@@ -155,7 +173,8 @@ Cap.~\ref{sec:problema} (Transformer como mejor arquitectura
 individual) queda confirmada con $d \approx 0{,}60$ frente al
 recurrente; la hip\'otesis $H_{1b}$ (Transformer como mejor sistema
 del benchmark) queda \emph{refutada}: el ensemble lo supera con un
-tama\~no de efecto $d \approx 0{,}25$ y una significancia de Welch
+tama\~no de efecto $d \approx 0{,}25$ y una significancia estad\'istica
+seg\'un Welch
 $t \approx 3{,}4$ ($p < 10^{-3}$).
 
 \begin{table}[!htb]
@@ -240,7 +259,7 @@ de incertidumbre en un agente secuencial, y no presenta la entrop\'ia
 como una comparaci\'on UQ exhaustiva entre arquitecturas. La extensi\'on
 a todos los modelos queda como una l\'inea de trabajo posterior que
 deber\'ia incluir, como m\'inimo, calibraci\'on de temperatura o
-isot\'onica y m\'etricas como Brier score o curvas de confiabilidad.
+isot\'onica y curvas de confiabilidad.
 
 Calculando la entrop\'ia de Shannon normalizada
 $H_{\mathrm{norm}}(p)$ (Ec.~\ref{eq:shannon}) sobre la distribuci\'on
@@ -270,7 +289,7 @@ forma reproducible:
 
 \begin{itemize}
     \item \texttt{general/results/matrix\_global\_mean.csv} (Tabla
-    completa de los siete modelos $\times$ 22 escenarios).
+    completa de los ocho modelos $\times$ 22 escenarios).
     \item Heatmaps \texttt{matrix\_cohen\_d.csv},
     \texttt{matrix\_welch\_p.csv}, \texttt{matrix\_action\_kl.csv}.
     \item Histogramas por secuencia en
@@ -278,10 +297,56 @@ forma reproducible:
     \item Reporte final \texttt{general/results/benchmark\_report.md}.
 \end{itemize}
 
+Las cuatro matrices principales se representan visualmente en las
+Figuras~\ref{fig:heatmap-global}--\ref{fig:heatmap-kl}. Esta
+representaci\'on facilita la comparaci\'on simult\'anea entre modelos y
+escenarios: el desempe\~no medio, la degradaci\'on OOD, la significancia
+estad\'istica seg\'un Welch y el desplazamiento de la pol\'itica medido
+mediante divergencia KL.
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{heatmap_global_mean.pdf}
+  \caption[Mapa de calor del desempe\~no global]{Mapa de calor del
+  desempe\~no normalizado medio por modelo y escenario.}
+  \label{fig:heatmap-global}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{heatmap_ood_degradation.pdf}
+  \caption[Mapa de calor de la degradaci\'on OOD]{Mapa de calor de la
+  degradaci\'on respecto de la condici\'on de referencia
+  \texttt{sev\_empirical}; los valores positivos indican p\'erdida de
+  desempe\~no y los negativos, mejora.}
+  \label{fig:heatmap-ood}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{heatmap_welch_logp.pdf}
+  \caption[Mapa de calor de significancia seg\'un Welch]{Mapa de calor
+  de $\log_{10}(p)$ del test $t$ de Welch. Los valores m\'as bajos
+  representan una evidencia estad\'istica m\'as fuerte de cambio respecto
+  de la referencia.}
+  \label{fig:heatmap-welch}
+\end{figure}
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.95\linewidth]{heatmap_action_kl.pdf}
+  \caption[Mapa de calor de divergencia KL]{Mapa de calor de la
+  divergencia KL entre las distribuciones de acciones de cada escenario
+  y la condici\'on de referencia.}
+  \label{fig:heatmap-kl}
+\end{figure}
+
+\FloatBarrier
+
 \subsection{Curvas de entrenamiento por algoritmo}
 
 Las Figuras~\ref{fig:c-base}--\ref{fig:c-ens} muestran
-el desempe\~no por secuencia de los siete modelos evaluados sobre el conjunto
+el desempe\~no por secuencia de los ocho modelos evaluados sobre el conjunto
 de validaci\'on. Los m\'etodos tabulares
 (\ref{fig:c-base}--\ref{fig:c-dql}) presentan mayor varianza
 entre secuencias y se estabilizan en valores medios m\'as bajos,
@@ -295,61 +360,62 @@ $0{,}57$.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_BASE_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_BASE_results.png}
   \caption[Resultados del modelo base]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_base}.}
   \label{fig:c-base}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_QL_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_QL_results.png}
   \caption[Resultados de Q-Learning optimizado]{Desempe\~no por secuencia,
   distribuci\'on, estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ql}.}
   \label{fig:c-ql}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_DQL_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_DQL_results.png}
   \caption[Resultados de Double Q-Learning]{Desempe\~no por secuencia,
   distribuci\'on, estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_dql}.}
   \label{fig:c-dql}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_DQN_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_DQN_results.png}
   \caption[Resultados de DQN]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_dqn}.}
   \label{fig:c-dqn}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_RDQN_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_RDQN_results.png}
   \caption[Resultados de RDQN]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_rdqn}.}
   \label{fig:c-rdqn}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_A2C_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_A2C_results.png}
   \caption[Resultados de A2C]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_a2c}.}
   \label{fig:c-a2c}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_TRF_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_TRF_results.png}
   \caption[Resultados del Transformer]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_trf}.}
   \label{fig:c-trf}
 \end{figure}
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{PES_ENS_results.png}
+  \includegraphics[width=0.80\linewidth]{PES_ENS_results.png}
   \caption[Resultados del ensemble]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ens}.}
   \label{fig:c-ens}
 \end{figure}
 
+\FloatBarrier
 \subsection{Curvas por escenario}\label{sec:per-seq-extended}
 
 La Figura~\ref{fig:extra-sev-skew} presenta curvas adicionales de
@@ -362,7 +428,7 @@ combinaci\'on conjunta (\texttt{joint\_high\_long}).
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=\linewidth,height=0.84\textheight,keepaspectratio]{per_sequence_extra_6panel.pdf}
+  \includegraphics[width=\linewidth,height=0.95\textheight,keepaspectratio]{per_sequence_extra_6panel.pdf}
   \caption[Curvas adicionales por familia de perturbaci\'on]{Curvas adicionales de desempe\~no por secuencia, organizadas por
   familia de perturbaci\'on. Fila superior: severidad
   (\texttt{sev\_bimodal}, \texttt{sev\_gauss\_high},
@@ -377,6 +443,7 @@ combinaci\'on conjunta (\texttt{joint\_high\_long}).
   \texttt{pes\_ens} se traza en negro y con trazo m\'as grueso.}
   \label{fig:extra-sev-skew}
 \end{figure}
+\vspace{-1.0em}
 
 \subsection{Comportamiento bajo los estresores universales}\label{sec:ood-curves}
 
@@ -397,9 +464,10 @@ alternativas o bien colapsan (\texttt{pes\_dql} sobre
 pol\'itica con independencia del contexto (\texttt{pes\_a2c}
 sobre \texttt{joint\_extrap\_both}, traza pr\'acticamente plana
 en $\bar r \approx 0{,}95$).
+
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.95\linewidth]{ood_curves_3panel.pdf}
+  \includegraphics[width=0.90\linewidth]{ood_curves_3panel.pdf}
   \caption[Curvas bajo estresores universales]{Curvas de desempe\~no por secuencia bajo los tres
   estresores universales, con las secuencias ordenadas de menor a
   mayor desempe\~no normalizado $\bar r$
@@ -413,6 +481,8 @@ en $\bar r \approx 0{,}95$).
   la media de cada modelo a lo largo de las $64$ secuencias.}
   \label{fig:ood-curves}
 \end{figure}
+\vspace{-1.0em}
+\FloatBarrier
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

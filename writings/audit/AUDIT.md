@@ -4,31 +4,39 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
-- ✅ Compilación exitosa — **52 páginas**.
+- ✅ Compilación exitosa — **54 páginas**.
 - 📄 PDF: `out/mPES-Esquemas-de-Toma-de-Decision-Artificial-para-Escenarios-de-Decision-Secuenciales.pdf`
 
 - ✅ Sin Overfull \hbox.
 
 - ✅ Sin Underfull \hbox.
 
-- ⚠️ 3 warnings LaTeX/paquete (mostrando primeros 5):
-
-  - `LaTeX Warning: Text page 30 contains only floats.`
-  - `LaTeX Warning: Text page 31 contains only floats.`
-  - `LaTeX Warning: Text page 32 contains only floats.`
+- ✅ Sin warnings LaTeX/paquete.
 
 ## 2. Figuras, tablas y numeración
 
-- Figuras con label: **16**.
+- Figuras con label: **20**.
 - Tablas con label: **6**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **72**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **73**.
 
 - ✅ Sin referencias rotas.
 
 - ✅ Sin etiquetas duplicadas.
 
-- Imágenes referenciadas con `\includegraphics`: **16**.
+- Imágenes referenciadas con `\includegraphics`: **20**.
 - ✅ Todas las imágenes referenciadas existen.
+
+**Imágenes incluidas mediante figuras compuestas (9 archivos):**
+
+- `02_Images/ood_curves/joint_extrap_both.pdf`
+- `02_Images/ood_curves/len_extrapolate_long.pdf`
+- `02_Images/ood_curves/sev_extrapolate_high.pdf`
+- `02_Images/per_sequence/joint_high_long.pdf`
+- `02_Images/per_sequence/len_extrapolate_long.pdf`
+- `02_Images/per_sequence/len_poisson.pdf`
+- `02_Images/per_sequence/sev_beta_highskew.pdf`
+- `02_Images/per_sequence/sev_bimodal.pdf`
+- `02_Images/per_sequence/sev_gauss_high.pdf`
 
 - ✅ Sin imágenes huérfanas.
 

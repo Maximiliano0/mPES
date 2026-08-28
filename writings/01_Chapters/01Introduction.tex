@@ -40,7 +40,7 @@ artefacto, reproducibilidad estricta, control de versiones del
 entorno computacional y validaci\'on \emph{out-of-distribution} como
 requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
 como un experimento aislado sino como un \emph{sistema} ---
-ocho paquetes implementados, siete modelos evaluados, un esquema de
+ocho paquetes implementados, ocho modelos evaluados, un esquema de
 evaluaci\'on com\'un y un orquestador reproducible --- pensado para estudiar arquitecturas de
 decisi\'on secuencial en dominios de alta complejidad.
 
@@ -59,7 +59,7 @@ por la ley exponencial-corregida
 \[
     S'_i = \max(0,\, \beta\, S_i - \alpha\, a_i) \quad \alpha = 0{,}4 \ \beta = 1{,}4
 \]
-La formulaci\'on completa como MDP finito y el
+La formulaci\'on completa como MDP (\emph{Markov Decision Process}) finito y el
 \emph{benchmark} fijo de $64$ secuencias compartido por todos los
 enfoques se detallan en la Sec.~\ref{sec:methods}.
 
@@ -90,7 +90,7 @@ Las principales contribuciones de esta tesis son:
 \begin{enumerate}
     \item Un \emph{benchmark} de RL reutilizable ---
     \emph{workspace} \textbf{mPES} --- donde \textbf{ocho variantes
-    algor\'itmicas} comparten el mismo entorno Gymnasium, el mismo
+    algor\'itmicas} comparten el mismo entorno Gymnasium~\citep{Towers2024}, el mismo
     \emph{pipeline} de optimizaci\'on bayesiana con Optuna y el mismo
     esquema de evaluaci\'on sobre $n = 64$ secuencias \emph{fijas}.
     \item Una comparaci\'on cuantitativa y estad\'isticamente
@@ -99,9 +99,7 @@ Las principales contribuciones de esta tesis son:
     arquitecturas profundas (\texttt{pes\_dqn},
     \texttt{pes\_rdqn}, \texttt{pes\_a2c}, \texttt{pes\_trf},
     \texttt{pes\_ens}), abarcando los principales paradigmas
-    del RL contempor\'aneo: valor tabular, valor profundo,
-    recurrente, gradiente de pol\'itica, atenci\'on causal y
-    promediado de modelos.
+    del RL contempor\'aneo.
     \item Una matriz de evaluaci\'on de $7 \times 22 = 154$
     celdas, con una condici\'on \emph{in-distribution} y $21$
     condiciones \emph{out-of-distribution}, que estresa cada agente contra perturbaciones
@@ -114,7 +112,7 @@ Las principales contribuciones de esta tesis son:
     neurocognitivas de la confianza humana.
     \item Una implementaci\'on reproducible y multi-plataforma
     (Windows 10 y Ubuntu, Python 3.12, TensorFlow 2.21) liberada
-    junto con la tesis.
+    junto con la tesis en \textbf{GitHub}.
 \end{enumerate}
 
 \subsection{Estructura del Documento}

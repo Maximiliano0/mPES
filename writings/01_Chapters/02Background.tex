@@ -277,10 +277,24 @@ independientes se reportan tres cantidades:
     d \;=\; \frac{\bar{r}_A - \bar{r}_B}
     {\sqrt{(\sigma_A^{2} + \sigma_B^{2})/2}}
     \end{equation}
-    \item[Significancia:] $t$ de Welch~\citep{Welch1947} con grados
-    de libertad de Welch--Satterthwaite.
-    \item[Cambio de pol\'itica:] Divergencia de Kullback--Leibler entre los histogramas de acci\'on de ambos agentes,
-    $D_{\mathrm{KL}}(p_A \,\|\, p_B)$.
+    \item[Significancia:] El test $t$ de Welch~\citep{Welch1947}
+    contrasta si la diferencia entre las medias de $A$ y $B$ es
+    compatible con la variabilidad observada, sin asumir varianzas
+    iguales. Los grados de libertad se estiman mediante la correcci\'on
+    de Welch--Satterthwaite. El valor $p$ de Welch es la probabilidad,
+    bajo la hip\'otesis de medias iguales, de observar una diferencia
+    tan extrema como la obtenida; un valor peque\~no de $p$ indica
+    evidencia estad\'istica contra esa hip\'otesis, mientras que no
+    demuestra por s\'i solo relevancia pr\'actica.
+    \item[Cambio de pol\'itica:] La divergencia de Kullback--Leibler
+    mide cu\'anto se aleja la distribuci\'on de acciones de $A$ respecto
+    de la de $B$:
+    $D_{\mathrm{KL}}(p_A \,\|\, p_B) =
+    \sum_a p_A(a)\log\frac{p_A(a)}{p_B(a)}$.
+    Vale $0$ cuando ambas pol\'iticas coinciden y aumenta cuanto mayor
+    es el cambio en sus decisiones; no es sim\'etrica, por lo que
+    $D_{\mathrm{KL}}(p_A \,\|\, p_B)$ no tiene por qu\'e coincidir con
+    $D_{\mathrm{KL}}(p_B \,\|\, p_A)$.
 \end{description}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

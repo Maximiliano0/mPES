@@ -40,6 +40,18 @@ FRONTPAGE_TEX = CHAPTERS_DIR / "000NHH-Frontpage.tex"
 #: Extensiones de imagen reconocidas por pdflatex (orden = preferencia).
 _IMAGE_EXTS = (".pdf", ".png", ".jpg", ".jpeg")
 
+# Figuras compuestas que reúnen paneles generados como archivos individuales.
+_COMPOSITE_COMPONENTS = {
+    "per_sequence_extra_6panel": {
+        "sev_bimodal", "sev_gauss_high", "sev_beta_highskew",
+        "len_poisson", "len_extrapolate_long", "joint_high_long",
+    },
+    "ood_curves_3panel": {
+        "sev_extrapolate_high", "joint_extrap_both",
+        "len_extrapolate_long",
+    },
+}
+
 # Slug de respaldo si no se puede extraer el título del .tex
 _FALLBACK_SLUG = "mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas"
 
@@ -239,6 +251,7 @@ def audit_images() -> dict:
     dict
         - ``referenced``: nombres únicos referenciados desde los `.tex`.
         - ``missing``: referencias sin archivo correspondiente.
+        - ``composed``: paneles incluidos dentro de una figura compuesta.
         - ``orphans``: archivos de imagen presentes pero no referenciados.
     """
     content = strip_comments(all_tex_content())
@@ -264,16 +277,29 @@ def audit_images() -> dict:
     referenced_stems: set[str] = set()
     for r in referenced:
         referenced_stems.add(Path(r).stem)
+    composed_stems = set().union(*(
+        components
+        for composite, components in _COMPOSITE_COMPONENTS.items()
+        if composite in referenced_stems and composite in files_by_stem
+    ))
+    effective_referenced_stems = referenced_stems | composed_stems
+    composed_files = sorted(
+        f.relative_to(WRITINGS_DIR).as_posix()
+        for stem, files in files_by_stem.items()
+        for f in files
+        if stem in composed_stems
+    )
     orphan_files = sorted(
         f.relative_to(WRITINGS_DIR).as_posix()
         for stem, files in files_by_stem.items()
         for f in files
-        if stem not in referenced_stems
+        if stem not in effective_referenced_stems
     )
 
     return {
         "referenced": sorted(referenced),
         "missing":    missing,
+        "composed":   composed_files,
         "orphans":    orphan_files,
     }
 
@@ -569,6 +595,11 @@ def build_report(tex_result: dict | None) -> str:
         L.append("")
     else:
         L.append("- ✅ Todas las imágenes referenciadas existen.\n")
+    if img["composed"]:
+        L.append("**Imágenes incluidas mediante figuras compuestas "
+                 f"({len(img['composed'])} archivos):**\n")
+        L += [f"- `{c}`" for c in img["composed"]]
+        L.append("")
     if img["orphans"]:
         L.append(f"**Imágenes huérfanas en `02_Images/` "
                  f"(no referenciadas, {len(img['orphans'])} archivos):**\n")

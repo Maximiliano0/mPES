@@ -27,14 +27,7 @@ Cada paquete es autocontenido: provee su propio entorno \texttt{gymnasium}~\cite
 El entorno modela una pandemia simplificada como un MDP finito en el
 que el agente decide, en cada \emph{trial}, cu\'antas unidades de un
 recurso escaso destinar a contener un brote. El espacio de estados
-es
-
-La formulaci\'on como un sistema din\'amico de decisiones se relaciona
-con los modelos formales en los que las decisiones actuales modifican
-el estado y las opciones disponibles en etapas posteriores
-\citep{FonParisi2003}. En este trabajo, esa estructura se instancia
-en un modelo epidemiol\'ogico simplificado utilizado como banco de
-pruebas, no como una reproducci\'on de una pandemia real.
+se define como
 
 \begin{equation}
 \mathcal{S} \;=\;
@@ -45,6 +38,12 @@ S \in \{0, \ldots, S_{\max}\}\}
 con $R$ los recursos restantes, $t$ el \'indice de \emph{trial}
 (con $t=0$ en el estado inicial) y $S$
 la severidad actual; $|\mathcal{S}| = 3\,410$ estados alcanzables.
+La formulaci\'on como un sistema din\'amico de decisiones se relaciona
+con los modelos formales en los que las decisiones actuales modifican
+el estado y las opciones disponibles en etapas posteriores
+\citep{FonParisi2003}. En este trabajo, esa estructura se instancia
+en un modelo epidemiol\'ogico simplificado utilizado como banco de
+pruebas, no como una reproducci\'on de una pandemia real.
 El presupuesto total de cada secuencia es de $39$ recursos; como $9$
 se asignan previamente, el estado observa $R\in\{0,\ldots,30\}$
 recursos disponibles.
@@ -79,7 +78,7 @@ jer\'arquicamente en \textbf{8 bloques} de \textbf{8 secuencias}
 de \textbf{3--10 \emph{trials}} cada una, totalizando
 $\approx 360$ \emph{trials} por ejecuci\'on. La evaluaci\'on
 final se realiza sobre $n = 64$ secuencias fijas
-($8 \times 8$, semilla $= 42$), garantizando que los siete modelos
+($8 \times 8$, semilla $= 42$), garantizando que los ocho modelos
 evaluados enfrenten el \emph{mismo} conjunto de escenarios. El
 cat\'alogo incluye \textbf{22 escenarios}: una condici\'on de referencia
 \emph{in-distribution} y 21 condiciones \emph{out-of-distribution},
@@ -110,7 +109,7 @@ de validaci\'on, garantizando una comparaci\'on rigurosa
 \centering
 \caption[Arquitecturas evaluadas]{Paquetes y familias algor\'itmicas incluidos en mPES,
 con la caracter\'istica distintiva de cada implementaci\'on. El benchmark
-eval\'ua siete modelos; \texttt{pes\_base} se conserva como referencia y
+eval\'ua ocho modelos; \texttt{pes\_base} se conserva como referencia y
 \texttt{pes\_ens} combina tres modelos profundos.}
 \label{tab:packages}
 \small
@@ -213,6 +212,24 @@ lo que completa la especificaci\'on te\'orica del agente.
 
 \subsubsection{Familia profunda}
 
+Para reproducir los agentes profundos se utiliza la misma representaci\'on
+normalizada del estado $s=[R/30,\,t/10,\,S/9]$, la semilla fija $42$ y
+el optimizador Adam. Los agentes DQN, RDQN y Transformer se entrenan
+durante $175\,000$ episodios mediante \emph{experience replay} de
+capacidad $20\,000$, lotes de $128$ transiciones y sincronizaci\'on de
+la red objetivo cada $1\,000$ pasos. Sus valores comunes reportados son
+una tasa de aprendizaje de $0{,}001508$, factor de descuento
+$\gamma=0{,}9634$, exploraci\'on inicial $\varepsilon_0=0{,}9627$ y
+m\'inima $\varepsilon_{\min}=0{,}0691$, con calentamiento durante el
+$27{,}79\,\%$ inicial y decaimiento hasta el m\'inimo en el
+$62{,}90\,\%$ del entrenamiento. A2C se entrena de forma *on-policy*
+con redes actor y cr\'itico independientes de una capa oculta de $128$
+unidades; emplea tasas de aprendizaje $0{,}000648$ y $0{,}004299$,
+respectivamente, y $\gamma=0{,}8545$. Estos valores corresponden a la
+configuraci\'on seleccionada para el reentrenamiento final; el ensemble
+no se entrena, sino que carga los modelos guardados y combina sus
+salidas durante la inferencia.
+
 \paragraph{\texttt{pes\_dqn}.} Red densa Multi-Layer Perceptron con
 buffer de repetici\'on de experiencia~\citep{Lin1992} y red objetivo
 sincronizada cada $C$ pasos (Ecuaci\'on~\ref{eq:dqn-loss}). La
@@ -220,17 +237,12 @@ arquitectura concreta es
 \texttt{Input}$(3) \!\to\! \texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\!
 \texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\! \texttt{Dense}(11)$,
 operando sobre el vector normalizado
-$s = [r/30,\, t/10,\, \sigma/9]$. La interpolaci\'on entre estados
-contiguos permite compartir par\'ametros entre estados y constituye
-una posible ventaja de generalizaci\'on frente al almacenamiento
-independiente de valores en una tabla~\citep{Mnih2015}. No se asume,
-sin embargo, que esta ventaja elimine por s\'i sola la maldici\'on de
-la dimensionalidad: su efecto sobre este benchmark se comprueba
-emp\'iricamente en el Cap.~\ref{sec:results}.
+$s = [R/30,\, t/10,\, S/9]$. La salida contiene un valor $Q$ para
+cada una de las $11$ acciones posibles.
 
 \paragraph{\texttt{pes\_rdqn}.} Variante recurrente que incorpora
 una capa \emph{Long Short-Term Memory}~\citep{Hochreiter1997} entre
-la entrada normalizada y el cabezal de valor. Sigue la receta del
+la entrada normalizada y el cabezal de valores. Sigue la receta del
 \emph{Deep Recurrent Q-Network}
 (DRQN)~\citep{Hausknecht2015}: la red recibe una ventana hist\'orica
 $(s_{t-W+1}, \ldots, s_t)$, propaga el estado oculto $h_t$ a trav\'es
@@ -243,19 +255,15 @@ comparar al menos dos pasos consecutivos de severidad.
 \paragraph{\texttt{pes\_a2c}.} Dos cabezales independientes (actor y
 cr\'itico) sobre un tronco compartido; entrenamiento s\'incrono
 n-\emph{step} con estimaci\'on de ventaja
-(Ecuaci\'on~\ref{eq:pg})~\citep{Mnih2016}. El gradiente sigue el
-teorema de pol\'itica de Sutton \& Barto~\citep{SuttonBarto2018}: \\
-$\nabla_\theta J(\theta) =
-\mathbb{E}_{\pi_\theta}\!\left[\nabla_\theta
-\log \pi_\theta(a\mid s)\, A^{\pi}(s,a)\right]$,
-con $A^{\pi}(s,a) = Q^{\pi}(s,a) - V^{\pi}(s)$ estimada por el
-cr\'itico para reducir la varianza del estimador Monte Carlo.
+(Ecuaci\'on~\ref{eq:pg})~\citep{Mnih2016}. El actor produce la
+distribuci\'on de probabilidad sobre las $11$ acciones y el cr\'itico
+estima el valor del estado para calcular la ventaja.
 
 \paragraph{\texttt{pes\_trf}.} Codificador Transformer causal de
-$L$ capas, $h$ cabezas y dimensi\'on $d_{\mathrm{model}}$. La entrada
+$L$ capas, $h$ cabezas de atenci\'on y dimensi\'on $d_{\mathrm{model}}$. La entrada
 es la \emph{historia} de las \'ultimas $W$ tuplas
 $(s_{t-W+1}, a_{t-W+1}, r_{t-W+1}, \ldots, s_t)$; la salida sobre la
-\'ultima posici\'on alimenta una cabeza lineal que produce los
+\'ultima posici\'on alimenta un cabezal lineal que produce los
 $|\mathcal{A}|$ \emph{logits}. La m\'ascara causal
 (Ecuaci\'on~\ref{eq:causal-attention}) impide cualquier fuga
 temporal. El n\'ucleo computacional es la \emph{scaled dot-product
@@ -285,10 +293,6 @@ nuevos: se limita a cargar los modelos \texttt{.keras} producidos
 por sus hermanos y promediar sus distribuciones, en l\'inea con la
 formulaci\'on cl\'asica de \emph{deep ensembles} para
 incertidumbre predictiva~\citep{Lakshminarayanan2017}.
-La reducci\'on de varianza es estructural: si cada miembro tiene
-error $\sigma_k^2$ y correlaci\'on $\rho$,
-$\sigma_{\mathrm{ens}}^2 = \bar{\sigma}^2 \bigl(\rho +
-(1-\rho)/K\bigr) \le \bar{\sigma}^2$.
 
 \subsection{Pipeline de optimizaci\'on bayesiana}
 
@@ -354,7 +358,7 @@ $S_{\mathrm{cruda}}$ del agente aleatorio y no una m\'etrica de
 desempe\~no normalizada.
 
 Para comparar secuencias con distinta severidad inicial, se utiliza la
-\textbf{Desempe\~no normalizado de severidad final}. Se calculan dos
+\textbf{El desempe\~no normalizado de severidad final}. Se calculan dos
 referencias para cada secuencia: $S_{\mathrm{peor}}$, obtenida con
 asignaci\'on cero en todos los trials, y $S_{\mathrm{mejor}}$, obtenida
 con la mejor asignaci\'on factible bajo el presupuesto disponible. Si
@@ -374,7 +378,7 @@ los resultados de las arquitecturas entrenadas.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.55\linewidth]{random_player_sequence_performance.png}
+  \includegraphics[width=0.9\linewidth]{random_player_sequence_performance.png}
   \caption[Severidad cruda del decisor aleatorio]{Severidad final acumulada
   $S_{\mathrm{cruda}}$ del decisor aleatorio en cada una de las $64$
   secuencias de validaci\'on. La escala vertical conserva las unidades
@@ -410,7 +414,7 @@ confianza~\citep{Boldt2015,Fleming2024}.
     remapeada desde el espacio de acciones al espacio de severidad.}
     \label{fig:trf-conf-remap}
   \end{subfigure}
-  \\[0.4em]
+  \\[0.3em]
   \begin{subfigure}[t]{0.48\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_cumulative_performance.png}
@@ -447,7 +451,7 @@ El orquestador (\texttt{general/scripts/orchestrate.py}) ejecuta
 el producto cartesiano $\{7~\text{paquetes}\} \times
 \{22~\text{escenarios}\} = 154~\text{celdas}$, evaluando
 $n = 64$ secuencias por celda con semilla fija $42$ --- lo que
-garantiza que los siete modelos enfrenten exactamente las mismas
+garantiza que los ocho modelos enfrenten exactamente las mismas
 secuencias dentro de cada escenario. La evaluaci\'on es de pura
 \emph{inferencia}: ning\'un paquete se reentrena durante el
 barrido.
