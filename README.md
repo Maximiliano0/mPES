@@ -12,19 +12,17 @@
 
 </div>
 
-> An agent must distribute **39 resources** across ≈ 360 trials
-> (8 blocks × 8 sequences × 3–10 trials) to minimise disease severity.
-> Eight algorithmic variants share the same experiment framework, making
-> side-by-side comparison straightforward.
+> The repository is split into two experiment lines: `h1/` is active and
+> validated; `h2/` contains experimental work that is currently suspended.
 
 ---
 
 ## ✨ Highlights
 
-- 🧠 **Eight RL variants** under one roof — tabular, deep, recurrent, actor-critic, transformer, ensemble.
-- 📊 **22-scenario OOD benchmark** ([`general/`](general/)) producing 9 statistical matrices and 4 publication-quality heatmaps (PNG + PDF).
+- 🧠 **Seven implemented h1 variants** — three tabular and four neural models.
+- 📊 **22-scenario OOD benchmark** ([`h1/general/`](h1/general/)) producing 9 statistical matrices and 4 publication-quality heatmaps (PNG + PDF).
 - 🔬 **Bayesian hyperparameter optimisation** via Optuna for every learnable model.
-- 🌍 **Cross-platform** — Windows 10 + Ubuntu, Python 3.12, parity in environment and entry points.
+- 🌍 **Windows-first** — Python 3.12 and the `win_mpes_env` virtual environment.
 - 📚 **Documentation per package** (Markdown + KaTeX-rendered HTML).
 
 ---
@@ -37,27 +35,26 @@ Packages are grouped by algorithm family under two top-level directories.
 
 | Package | Algorithm | Key files |
 |---------|-----------|-----------|
-| `pes_base` | Tabular Q-Learning *(baseline)* | [`ext/pandemic.py`](tabular/pes_base/ext/pandemic.py), [`ext/train_rl.py`](tabular/pes_base/ext/train_rl.py) |
-| `pes_ql`   | Q-Learning + Bayesian optimisation | [`ext/optimize_rl.py`](tabular/pes_ql/ext/optimize_rl.py) |
-| `pes_dql`  | Double Q-Learning + ε-decay warm-up + PBRS | [`ext/pandemic.py`](tabular/pes_dql/ext/pandemic.py), [`ext/optimize_rl.py`](tabular/pes_dql/ext/optimize_rl.py) |
+| `pes_base` | Tabular Q-Learning *(baseline)* | [`ext/pandemic.py`](h1/tabular/pes_base/ext/pandemic.py), [`ext/train_rl.py`](h1/tabular/pes_base/ext/train_rl.py) |
+| `pes_ql`   | Q-Learning + Bayesian optimisation | [`ext/optimize_rl.py`](h1/tabular/pes_ql/ext/optimize_rl.py) |
+| `pes_dql`  | Double Q-Learning + ε-decay warm-up + PBRS | [`ext/pandemic.py`](h1/tabular/pes_dql/ext/pandemic.py), [`ext/optimize_rl.py`](h1/tabular/pes_dql/ext/optimize_rl.py) |
 
 ### `ml/` — deep & neural RL
 
 | Package | Algorithm | Key files |
 |---------|-----------|-----------|
-| `pes_dqn`  | Deep Q-Network (replay + target net) | [`ext/dqn_model.py`](ml/pes_dqn/ext/dqn_model.py), [`ext/train_dqn.py`](ml/pes_dqn/ext/train_dqn.py), [`ext/optimize_dqn.py`](ml/pes_dqn/ext/optimize_dqn.py) |
-| `pes_rdqn` | Recurrent DQN (LSTM over trial history) | [`ext/rdqn_model.py`](ml/pes_rdqn/ext/rdqn_model.py), [`ext/train_rdqn.py`](ml/pes_rdqn/ext/train_rdqn.py), [`ext/optimize_rdqn.py`](ml/pes_rdqn/ext/optimize_rdqn.py) |
-| `pes_a2c`  | Advantage Actor-Critic (separate actor + critic nets) | [`ext/ac_model.py`](ml/pes_a2c/ext/ac_model.py), [`ext/train_a2c.py`](ml/pes_a2c/ext/train_a2c.py), [`ext/optimize_a2c.py`](ml/pes_a2c/ext/optimize_a2c.py) |
-| `pes_trf`  | Causal Transformer encoder + DQN (sliding window) | [`ext/transformer_model.py`](ml/pes_trf/ext/transformer_model.py), [`ext/train_transformer.py`](ml/pes_trf/ext/train_transformer.py), [`ext/optimize_tr.py`](ml/pes_trf/ext/optimize_tr.py) |
-| `pes_ens`  | Ensemble (soft voting of `dqn` + `rdqn` + `trf`) | [`ext/ensemble_model.py`](ml/pes_ens/ext/ensemble_model.py) |
+| `pes_dqn`  | Deep Q-Network (replay + target net) | [`ext/dqn_model.py`](h1/ml/pes_dqn/ext/dqn_model.py), [`ext/train_dqn.py`](h1/ml/pes_dqn/ext/train_dqn.py), [`ext/optimize_dqn.py`](h1/ml/pes_dqn/ext/optimize_dqn.py) |
+| `pes_rdqn` | Recurrent DQN (LSTM over trial history) | [`ext/rdqn_model.py`](h1/ml/pes_rdqn/ext/rdqn_model.py), [`ext/train_rdqn.py`](h1/ml/pes_rdqn/ext/train_rdqn.py), [`ext/optimize_rdqn.py`](h1/ml/pes_rdqn/ext/optimize_rdqn.py) |
+| `pes_a2c`  | Advantage Actor-Critic (separate actor + critic nets) | [`ext/ac_model.py`](h1/ml/pes_a2c/ext/ac_model.py), [`ext/train_a2c.py`](h1/ml/pes_a2c/ext/train_a2c.py), [`ext/optimize_a2c.py`](h1/ml/pes_a2c/ext/optimize_a2c.py) |
+| `pes_trf`  | Causal Transformer encoder + DQN (sliding window) | [`ext/transformer_model.py`](h1/ml/pes_trf/ext/transformer_model.py), [`ext/train_transformer.py`](h1/ml/pes_trf/ext/train_transformer.py), [`ext/optimize_tr.py`](h1/ml/pes_trf/ext/optimize_tr.py) |
 
 ### Support directories
 
 | Path | Purpose |
 |------|---------|
-| [`general/`](general/) | Cross-model OOD benchmark harness (22 scenarios × 7 models) |
-| [`utils/`](utils/) | Cross-platform shell scripts, requirements, lint config |
-| [`general/doc/`](general/doc/) | Cross-package theoretical comparison material |
+| [`h1/general/`](h1/general/) | Cross-model OOD benchmark harness (22 scenarios × 6 models) |
+| [`utils/`](utils/) | Windows scripts, requirements, and lint config |
+| [`h1/general/doc/`](h1/general/doc/) | Cross-package theoretical comparison material |
 
 ---
 
@@ -99,12 +96,6 @@ Packages are grouped by algorithm family under two top-level directories.
 ### Virtual environment
 
 ```bash
-# Linux
-python3 -m venv linux_mpes_env
-source linux_mpes_env/bin/activate
-```
-
-```powershell
 # Windows (PowerShell)
 python -m venv win_mpes_env
 win_mpes_env\Scripts\Activate.ps1
@@ -130,9 +121,14 @@ Set these **before** running training or optimisation:
 
 ## ▶️ Usage
 
+> `h1/` is a plain directory, not a Python package (no `__init__.py` at that
+> level). Run every command below with `h1/` as the current working
+> directory: `cd h1`.
+
 ### Run an experiment
 
 ```bash
+cd h1
 python -m tabular.pes_base    # Tabular Q-Learning (baseline)
 python -m tabular.pes_ql      # Q-Learning  (Optuna-tuned)
 python -m tabular.pes_dql     # Double Q-Learning + PBRS
@@ -141,12 +137,13 @@ python -m ml.pes_dqn          # Deep Q-Network
 python -m ml.pes_rdqn         # Recurrent DQN (LSTM)
 python -m ml.pes_a2c          # Advantage Actor-Critic
 python -m ml.pes_trf          # Causal Transformer DQN
-python -m ml.pes_ens          # Ensemble (soft voting, no training)
 ```
 
 ### Train an agent
 
 ```bash
+cd h1
+
 # --- Tabular models (Q-table episodes) ---
 python -m tabular.pes_base.ext.train_rl   1000000
 python -m tabular.pes_ql.ext.train_rl     1000000
@@ -158,22 +155,16 @@ python -m ml.pes_rdqn.ext.train_rdqn        175000
 python -m ml.pes_a2c.ext.train_a2c          175000
 python -m ml.pes_trf.ext.train_transformer  175000
 
-# pes_ens has no training phase; it loads pre-trained sibling models.
 ```
 
 ### Bayesian hyperparameter optimisation
 
-```bash
-# Linux
-./utils/linux/run_bayesian_opt.sh bayesian    100  # pes_ql
-./utils/linux/run_bayesian_opt.sh dql         100  # pes_dql
-./utils/linux/run_bayesian_opt.sh dqn          30  # pes_dqn
-./utils/linux/run_bayesian_opt.sh rdqn         30  # pes_rdqn
-./utils/linux/run_bayesian_opt.sh ac           30  # pes_a2c
-./utils/linux/run_bayesian_opt.sh transformer  30  # pes_trf
-```
+> **Known issue:** [`utils/win/run_bayesian_opt.ps1`](utils/win/run_bayesian_opt.ps1)
+> still resolves package paths as `tabular\<pkg>` / `ml\<pkg>` (pre-`h1/h2`
+> layout) and needs a code fix before these commands work again. This is a
+> `.ps1` script issue, not a documentation issue.
 
-```powershell
+```bash
 # Windows (PowerShell)
 .\utils\win\run_bayesian_opt.ps1 bayesian 100
 .\utils\win\run_bayesian_opt.ps1 dqn       30
@@ -208,40 +199,43 @@ Experiment (1)
 ## 📚 Documentation
 
 Each package ships its own in-depth Markdown documentation under
-[`<group>/<pkg>/doc/`](ml/pes_dqn/doc/) (Spanish). The cross-package
+[`h1/<group>/<pkg>/doc/`](h1/ml/pes_dqn/doc/) (Spanish, under `h1/`). The cross-package
 theoretical comparison lives at
-[`general/doc/comparacion_modelos.md`](general/doc/comparacion_modelos.md).
+[`h1/general/doc/comparacion_modelos.md`](h1/general/doc/comparacion_modelos.md).
 All maths uses **inline KaTeX** (`$ … $`) so it renders natively on
 GitHub.
 
 | Package | Theory | Implementation guide |
 |---------|--------|----------------------|
-| `pes_base`  | [`theory_rl.md`](tabular/pes_base/doc/theory_rl.md) | [`explained_pes.md`](tabular/pes_base/doc/explained_pes.md) · [`how_to_train_and_test.md`](tabular/pes_base/doc/how_to_train_and_test.md) |
-| `pes_ql`    | [`pes_ql_theory.md`](tabular/pes_ql/doc/pes_ql_theory.md) | [`pes_ql_explained.md`](tabular/pes_ql/doc/pes_ql_explained.md) |
-| `pes_dql`   | [`pes_dql_theory.md`](tabular/pes_dql/doc/pes_dql_theory.md) | [`pes_dql_explained.md`](tabular/pes_dql/doc/pes_dql_explained.md) |
-| `pes_dqn`   | [`pes_dqn_theory.md`](ml/pes_dqn/doc/pes_dqn_theory.md) | [`pes_dqn_explained.md`](ml/pes_dqn/doc/pes_dqn_explained.md) |
-| `pes_rdqn`  | [`pes_rdqn_theory.md`](ml/pes_rdqn/doc/pes_rdqn_theory.md) | [`pes_rdqn_explained.md`](ml/pes_rdqn/doc/pes_rdqn_explained.md) |
-| `pes_a2c`   | [`pes_a2c_theory.md`](ml/pes_a2c/doc/pes_a2c_theory.md) | [`pes_a2c_explained.md`](ml/pes_a2c/doc/pes_a2c_explained.md) |
-| `pes_trf`   | [`pes_trf_theory.md`](ml/pes_trf/doc/pes_trf_theory.md) | [`pes_trf_explained.md`](ml/pes_trf/doc/pes_trf_explained.md) |
-| `pes_ens`   | [`pes_ens_theory.md`](ml/pes_ens/doc/pes_ens_theory.md) | [`pes_ens_explained.md`](ml/pes_ens/doc/pes_ens_explained.md) · [`how_to_train_and_test.md`](ml/pes_ens/doc/how_to_train_and_test.md) |
+| `pes_base`  | [`theory_rl.md`](h1/tabular/pes_base/doc/theory_rl.md) | [`explained_pes.md`](h1/tabular/pes_base/doc/explained_pes.md) · [`how_to_train_and_test.md`](h1/tabular/pes_base/doc/how_to_train_and_test.md) |
+| `pes_ql`    | [`pes_ql_theory.md`](h1/tabular/pes_ql/doc/pes_ql_theory.md) | [`pes_ql_explained.md`](h1/tabular/pes_ql/doc/pes_ql_explained.md) |
+| `pes_dql`   | [`pes_dql_theory.md`](h1/tabular/pes_dql/doc/pes_dql_theory.md) | [`pes_dql_explained.md`](h1/tabular/pes_dql/doc/pes_dql_explained.md) |
+| `pes_dqn`   | [`pes_dqn_theory.md`](h1/ml/pes_dqn/doc/pes_dqn_theory.md) | [`pes_dqn_explained.md`](h1/ml/pes_dqn/doc/pes_dqn_explained.md) |
+| `pes_rdqn`  | [`pes_rdqn_theory.md`](h1/ml/pes_rdqn/doc/pes_rdqn_theory.md) | [`pes_rdqn_explained.md`](h1/ml/pes_rdqn/doc/pes_rdqn_explained.md) |
+| `pes_a2c`   | [`pes_a2c_theory.md`](h1/ml/pes_a2c/doc/pes_a2c_theory.md) | [`pes_a2c_explained.md`](h1/ml/pes_a2c/doc/pes_a2c_explained.md) |
+| `pes_trf`   | [`pes_trf_theory.md`](h1/ml/pes_trf/doc/pes_trf_theory.md) | [`pes_trf_explained.md`](h1/ml/pes_trf/doc/pes_trf_explained.md) |
 
 ---
 
-## 📈 Cross-model OOD benchmark — `general/`
+## 📈 Cross-model OOD benchmark — `h1/general/`
 
-The [`general/`](general/) harness evaluates every model against a
+The [`h1/general/`](h1/general/) harness evaluates six active models against a
 catalogue of **22 out-of-distribution scenarios** (severity, length,
 joint, structural families) and aggregates the results into nine
 `matrix_*.csv` files plus four publication-quality heatmaps under
-[`general/results/`](general/results/). The full sweep is **154 cells**
-(7 models × 22 scenarios). See
-[general/results/benchmark_report.md](general/results/benchmark_report.md)
-for the full numerical analysis.
+[`h1/general/results/`](h1/general/results/). The active sweep is **132 cells**
+(6 models × 22 scenarios).
+
+> **Pending regeneration.** `benchmark_report.md`, the heatmaps, and the raw
+> per-model JSON cells were produced together with `pes_ens` and have been
+> removed along with its data. Re-run the sweep below to regenerate them for
+> the current 6-model catalogue.
 
 ### Run the sweep
 
 ```bash
-python -m general.scripts.orchestrate    # full 154-cell sweep (resumable)
+cd h1
+python -m general.scripts.orchestrate    # full 132-cell sweep (resumable)
 python -m general.scripts.progress       # live progress bars + ETA
 python -m general.scripts.aggregate      # build matrix_*.csv from raw/
 python -m general.scripts.plot_matrix    # render heatmaps (PNG + PDF)
@@ -258,21 +252,18 @@ in-cell (`≤-10` in the Welch heatmap).
 
 | Metric | Heatmap | Colour map | Scale |
 |--------|---------|-----------|-------|
-| Global mean performance | [PNG](general/results/heatmap_global_mean.png) · [PDF](general/results/heatmap_global_mean.pdf) | `viridis` | auto-bounded |
-| OOD degradation (Δ vs baseline) | [PNG](general/results/heatmap_ood_degradation.png) · [PDF](general/results/heatmap_ood_degradation.pdf) | `RdBu_r` (diverging) | symmetric around 0 |
-| Welch test, log₁₀(p) | [PNG](general/results/heatmap_welch_logp.png) · [PDF](general/results/heatmap_welch_logp.pdf) | `magma_r` | clipped to `[-10, 0]` |
-| Action-distribution KL | [PNG](general/results/heatmap_action_kl.png) · [PDF](general/results/heatmap_action_kl.pdf) | `cividis` | `LogNorm` |
+| Global mean performance | `general/results/heatmap_global_mean.png` | `viridis` | auto-bounded |
+| OOD degradation (Δ vs baseline) | `general/results/heatmap_ood_degradation.png` | `RdBu_r` (diverging) | symmetric around 0 |
+| Welch test, log₁₀(p) | `general/results/heatmap_welch_logp.png` | `magma_r` | clipped to `[-10, 0]` |
+| Action-distribution KL | `general/results/heatmap_action_kl.png` | `cividis` | `LogNorm` |
 
-<div align="center">
+### Historical benchmark conclusions (archived)
 
-![global mean](general/results/heatmap_global_mean.png)
-![ood degradation](general/results/heatmap_ood_degradation.png)
-![welch log10 p](general/results/heatmap_welch_logp.png)
-![action KL](general/results/heatmap_action_kl.png)
-
-</div>
-
-### Headline conclusions
+The conclusions below were written from a prior benchmark run that included
+`pes_ens`. Both `pes_ens` and its raw results have since been removed from the
+project, so these numbers are kept only as narrative context for the thesis
+and are **not** reproducible from the current repository state. Re-run the
+h1 sweep to obtain current, ensemble-free numbers.
 
 1. **Overall ranking** (mean performance across 22 scenarios):
    `pes_ens` (0.937) > `pes_trf` (0.927) > `pes_rdqn` (0.899) ≈
