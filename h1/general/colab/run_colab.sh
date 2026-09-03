@@ -39,12 +39,12 @@ fi
 
 WORKSPACE_DIR="${WORKSPACE_DIR:-/content/mPES}"
 REPO_DIR="${REPO_DIR:-$WORKSPACE_DIR}"
-H1_DIR="${H1_DIR:-${WORKSPACE_DIR}/h1}"
+H_DIR="${H_DIR:-${WORKSPACE_DIR}/h1}"
 DRIVE_DIR="${DRIVE_DIR:-/content/drive/MyDrive/mPES}"
 
 # shellcheck disable=SC1091
 source /content/mpes_env.sh
-cd "$H1_DIR"
+cd "$H_DIR"
 
 # â”€â”€â”€ Resolve alias â†’ (PKG, OPT_MODULE) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Module paths include the algorithm-family group prefix introduced in the

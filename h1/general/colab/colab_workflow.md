@@ -31,8 +31,14 @@ carpeta `models/` separada.
    bash h1/general/colab/setup_colab.sh
    ```
 
-   El script instala `utils/config/requirements.txt`, comprueba Drive y genera
-   `/content/mpes_env.sh`.
+   El script no instala el archivo completo
+   `utils/config/requirements.txt`. Comprueba las dependencias runtime exactas
+   necesarias para optimizacion y entrenamiento: `numpy==2.4.3`,
+   `tensorflow==2.21.0`, `keras==3.13.2`, `gymnasium==1.2.3`,
+   `optuna==4.7.0`, `matplotlib==3.10.8` y `pygame==2.5.2`. Si una dependencia
+   falta o su version no coincide, instala la version fijada; si ya coincide,
+   no realiza ninguna instalacion. El script no usa `MPES_FAST_SETUP`.
+   Tambien comprueba Drive y genera `/content/mpes_env.sh`.
 
 3. Los modulos Python se ejecutan desde `/content/mPES/h1`:
 
