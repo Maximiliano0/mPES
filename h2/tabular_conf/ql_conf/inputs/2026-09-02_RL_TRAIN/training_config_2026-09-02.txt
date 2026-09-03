@@ -1,0 +1,39 @@
+================================================================================
+RL-AGENT TRAINING CONFIGURATION
+================================================================================
+
+Training Date: 2026-09-02
+Training Time: 2026-09-02 18:19:36
+
+Q-LEARNING HYPERPARAMETERS
+--------------------------------------------------------------------------------
+Learning Rate (α):           0.28025264638178427
+Discount Factor (γ):         0.8898420747240623
+Initial Epsilon (ε):         0.5353705994251405
+Minimum Epsilon (ε_min):     0.10414110271946805
+Confidence exploration strength: 0.08060770535442632
+Confidence exploration exponent: 1.533278957134728
+Number of Episodes:          550,000
+Epsilon Decay:               Linear (0.5353705994251405 → 0.10414110271946805)
+
+TRAINING RESULTS
+--------------------------------------------------------------------------------
+Q-Table Shape:               (31, 11, 10, 11)
+State Space:
+  - Available Resources:     31
+  - Trial Numbers:           11
+  - Severity Levels:         10
+  - Action Space:            11
+Rewards History Length:      55
+
+OUTPUT FILES
+--------------------------------------------------------------------------------
+Q-Table File:                q_2026-09-02.npy
+Rewards File:                rewards_2026-09-02.npy
+Configuration File:          training_config_2026-09-02.txt
+
+DESCRIPTION
+--------------------------------------------------------------------------------
+Files saved from Q-Learning training on the Pandemic Scenario.
+The Q-table maps (resources, trial, severity) states to action values.
+The rewards file contains average reward progression every 10,000 episodes.

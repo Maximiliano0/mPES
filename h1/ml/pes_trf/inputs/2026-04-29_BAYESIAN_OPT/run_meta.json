@@ -1,0 +1,20 @@
+{
+  "package": "pes_trf",
+  "module": "pes_trf.ext.optimize_tr",
+  "n_trials": 10,
+  "run_date": "2026-04-29",
+  "resume_date": "2026-04-29",
+  "launch_ts": "2026-04-30T19:56:34Z",
+  "git_branch": "drl_models",
+  "git_sha": "f95a17f",
+  "python": "3.12.13",
+  "host": "93115a15d345",
+  "gpu_mode": "1",
+  "out_dir": "/content/drive/MyDrive/mPES/pes_trf/2026-04-29_BAYESIAN_OPT",
+  "storage": "sqlite:////content/drive/MyDrive/mPES/pes_trf/2026-04-29_BAYESIAN_OPT/optuna_study_2026-04-29.db",
+  "log_file": "/content/drive/MyDrive/mPES/pes_trf/2026-04-29_BAYESIAN_OPT/bayesian_opt.log",
+  "err_file": "/content/drive/MyDrive/mPES/pes_trf/2026-04-29_BAYESIAN_OPT/bayesian_opt_err.log",
+  "pid_file": "/content/drive/MyDrive/mPES/pes_trf/2026-04-29_BAYESIAN_OPT/optimize.pid",
+  "extra_args": "",
+  "pid": 399820
+}

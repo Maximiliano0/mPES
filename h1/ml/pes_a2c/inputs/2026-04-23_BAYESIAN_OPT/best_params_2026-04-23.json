@@ -1,0 +1,31 @@
+{
+  "opt_date": "2026-04-23",
+  "best_trial_number": 89,
+  "mean_perf": 0.8872361556083254,
+  "std_perf": 0.06316151054622658,
+  "min_perf": 0.6842047102497142,
+  "max_perf": 0.9830508474576272,
+  "trial_seed": 132,
+  "actor_hidden_units": [
+    128
+  ],
+  "critic_hidden_units": [
+    128
+  ],
+  "hyperparameters": {
+    "actor_lr": 0.0006475886789033675,
+    "critic_lr": 0.004299396121439639,
+    "discount_factor": 0.8545464903255913,
+    "entropy_coeff": 0.005278050634190006,
+    "num_episodes": 125000,
+    "actor_hidden_dim": 128,
+    "critic_hidden_dim": 128,
+    "n_hidden_layers": 1,
+    "penalty_coeff": 0.1527141911212227,
+    "gae_lambda": 0.9134752045271409,
+    "max_grad_norm": 1.200061343068206,
+    "lr_min_ratio": 0.23749310142258717,
+    "spend_cost_coeff": 0.010385577983525567,
+    "last_action_bias": -1.3894095635313632
+  }
+}

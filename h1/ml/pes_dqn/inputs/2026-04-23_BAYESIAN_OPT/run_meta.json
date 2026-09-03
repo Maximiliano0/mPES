@@ -1,0 +1,20 @@
+{
+  "package": "pes_dqn",
+  "module": "pes_dqn.ext.optimize_dqn",
+  "n_trials": 30,
+  "run_date": "2026-04-23",
+  "resume_date": "2026-04-23",
+  "launch_ts": "2026-04-24T18:06:32Z",
+  "git_branch": "models_improvement",
+  "git_sha": "9caea6a",
+  "python": "3.12.13",
+  "host": "5573aa7d478c",
+  "gpu_mode": "1",
+  "out_dir": "/content/drive/MyDrive/mPES/pes_dqn/2026-04-23_BAYESIAN_OPT",
+  "storage": "sqlite:////content/drive/MyDrive/mPES/pes_dqn/2026-04-23_BAYESIAN_OPT/optuna_study_2026-04-23.db",
+  "log_file": "/content/drive/MyDrive/mPES/pes_dqn/2026-04-23_BAYESIAN_OPT/bayesian_opt.log",
+  "err_file": "/content/drive/MyDrive/mPES/pes_dqn/2026-04-23_BAYESIAN_OPT/bayesian_opt_err.log",
+  "pid_file": "/content/drive/MyDrive/mPES/pes_dqn/2026-04-23_BAYESIAN_OPT/optimize.pid",
+  "extra_args": "",
+  "pid": 5954
+}
