@@ -9,7 +9,8 @@
 
 .PARAMETER Project
     Alias o nombre del paquete: bayesian|pes_ql, dql|pes_dql, dqn|pes_dqn,
-    ac|a2c|pes_a2c, transformer|tr|pes_trf. Si se omite, muestra menú.
+    rdqn|pes_rdqn, ac|a2c|pes_a2c, transformer|tr|pes_trf, sprb|pes_ens_sprb,
+    accq|pes_ens_accq. Si se omite, muestra menú.
 
 .PARAMETER Port
     Puerto HTTP (default: 8080).
@@ -38,8 +39,11 @@ $PkgInputs = @{
     'pes_ql'  = 'tabular\pes_ql\inputs'
     'pes_dql' = 'tabular\pes_dql\inputs'
     'pes_dqn' = 'ml\pes_dqn\inputs'
+    'pes_rdqn' = 'ml\pes_rdqn\inputs'
     'pes_a2c' = 'ml\pes_a2c\inputs'
     'pes_trf' = 'ml\pes_trf\inputs'
+    'pes_ens_sprb' = 'ens\pes_ens_sprb\inputs'
+    'pes_ens_accq' = 'ens\pes_ens_accq\inputs'
 }
 
 function Resolve-Package([string]$alias) {
@@ -47,8 +51,11 @@ function Resolve-Package([string]$alias) {
         '^(bayesian|bay|pes_ql|1)$'           { return 'pes_ql' }
         '^(dql|ql|pes_dql|2)$'                { return 'pes_dql' }
         '^(dqn|pes_dqn|3)$'                   { return 'pes_dqn' }
+        '^(rdqn|pes_rdqn|7)$'                 { return 'pes_rdqn' }
         '^(ac|a2c|actor-critic|pes_a2c|4)$'   { return 'pes_a2c' }
         '^(transformer|tr|pes_trf|5)$'        { return 'pes_trf' }
+        '^(sprb|ens_sprb|pes_ens_sprb|8)$'    { return 'pes_ens_sprb' }
+        '^(accq|ens_accq|pes_ens_accq|9)$'    { return 'pes_ens_accq' }
         default                               { return $null }
     }
 }
@@ -99,7 +106,7 @@ function Show-Menu {
     Write-Host "════════════════════════════════════════════════════════════"
     Write-Host ""
 
-    $pkgs = @('pes_ql', 'pes_dql', 'pes_dqn', 'pes_a2c', 'pes_trf')
+    $pkgs = @('pes_ql', 'pes_dql', 'pes_dqn', 'pes_rdqn', 'pes_a2c', 'pes_trf', 'pes_ens_sprb', 'pes_ens_accq')
     $menuDb = @{}
     for ($i = 0; $i -lt $pkgs.Length; $i++) {
         $pkg = $pkgs[$i]
@@ -114,9 +121,9 @@ function Show-Menu {
     Write-Host "  q) Salir" -ForegroundColor Yellow
     Write-Host ""
 
-    $choice = Read-Host "  Selección [1-5/q]"
+    $choice = Read-Host "  Selección [1-$($pkgs.Length)/q]"
     if ($choice -match '^[qQ]$') { exit 0 }
-    if ($choice -notmatch '^[1-5]$') {
+    if ($choice -notmatch "^[1-$($pkgs.Length)]$") {
         Write-Host "❌ Opción inválida: $choice" -ForegroundColor Red
         exit 1
     }
@@ -137,7 +144,7 @@ if ([string]::IsNullOrWhiteSpace($Project)) {
     $pkgName = Resolve-Package $Project
     if (-not $pkgName) {
         Write-Host "❌ Proyecto desconocido: '$Project'" -ForegroundColor Red
-        Write-Host "   Uso: .\optuna_dashboard.ps1 [bayesian|dql|dqn|ac|transformer] [puerto]"
+        Write-Host "   Uso: .\optuna_dashboard.ps1 [bayesian|dql|dqn|rdqn|ac|transformer|sprb|accq] [puerto]"
         exit 1
     }
     $db = Find-LatestDb (Join-Path $ProjectDir $PkgInputs[$pkgName])
