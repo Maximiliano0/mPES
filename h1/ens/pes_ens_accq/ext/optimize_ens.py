@@ -69,8 +69,12 @@ def main() -> None:
     parser.add_argument('--resume', default='', help='Existing run date; retained for launcher compatibility.')
     arguments = parser.parse_args()
     if arguments.out_dir:
+        os.makedirs(arguments.out_dir, exist_ok=True)
         arguments.output = os.path.join(arguments.out_dir, 'best_params.json')
     storage = arguments.storage
+    if storage and storage.startswith('sqlite:///'):
+        storage_dir = os.path.dirname(os.path.abspath(storage.removeprefix('sqlite:///')))
+        os.makedirs(storage_dir, exist_ok=True)
     study_name = 'pes_ens_accq'
     _, _, _, convert_globalseq_to_seqs = _load_evaluation_helpers()
     trials_per_sequence = numpy.loadtxt(arguments.lengths, delimiter=',')
