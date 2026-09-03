@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-#  utils/colab/run_colab.sh â€” launch a Bayesian optimisation on Colab Pro+
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+#
+#  utils/colab/run_colab.sh  launch a Bayesian optimisation on Colab Pro+
+#
 #  What it does
-#  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#
 #  1. Resolves the package alias to (PKG, OPT_MODULE) using the same map as
 #     utils/linux/run_bayesian_opt.sh.
 #  2. Stores the Optuna SQLite DB on Google Drive so the study survives Colab
@@ -23,10 +23,10 @@
 #      !bash utils/colab/run_colab.sh ql  150 2026-04-20
 #      !bash h1/general/colab/run_colab.sh ens_sprb 50
 #      !bash h1/general/colab/run_colab.sh ens_accq 50
-# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+#
 set -euo pipefail
 
-# â”€â”€â”€ Inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Inputs
 PKG_ALIAS="${1:-}"
 N_TRIALS="${2:-30}"
 RESUME_DATE="${3:-}"
@@ -46,7 +46,7 @@ DRIVE_DIR="${DRIVE_DIR:-/content/drive/MyDrive/mPES}"
 source /content/mpes_env.sh
 cd "$H_DIR"
 
-# â”€â”€â”€ Resolve alias â†’ (PKG, OPT_MODULE) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Resolve alias  (PKG, OPT_MODULE)
 # Module paths include the algorithm-family group prefix introduced in the
 # 2026-05 workspace reorg: tabular/* and ml/* live under top-level group
 # directories, so every fully-qualified module starts with `tabular.` or
@@ -63,7 +63,7 @@ case "$PKG_ALIAS" in
     *)                     echo "Unknown alias: $PKG_ALIAS"; exit 1 ;;
 esac
 
-# â”€â”€â”€ Resolve run date and Drive paths â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Resolve run date and Drive paths
 RUN_DATE="${RESUME_DATE:-$(date +%Y-%m-%d)}"
 PKG_DRIVE_DIR="${DRIVE_DIR}/${PKG}/${RUN_DATE}_BAYESIAN_OPT"
 mkdir -p "$PKG_DRIVE_DIR"
@@ -75,16 +75,16 @@ ERR_FILE="${PKG_DRIVE_DIR}/bayesian_opt_err.log"
 PID_FILE="${PKG_DRIVE_DIR}/optimize.pid"
 META_FILE="${PKG_DRIVE_DIR}/run_meta.json"
 
-# â”€â”€â”€ Collect launch metadata â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Collect launch metadata
 LAUNCH_TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 GIT_SHA="$(git -C "$REPO_DIR" rev-parse --short HEAD 2>/dev/null || echo 'unknown')"
 GIT_BRANCH_NAME="$(git -C "$REPO_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'unknown')"
 PY_VERSION="$(python3 -c 'import sys; print(sys.version.split()[0])' 2>/dev/null || echo 'unknown')"
 HOSTNAME_STR="$(hostname 2>/dev/null || echo 'unknown')"
 
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo ""
 echo "  Launching Bayesian optimisation on Colab Pro+"
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo ""
 echo "  Package         : $PKG"
 echo "  Module          : $OPT_MODULE"
 echo "  Trials          : $N_TRIALS"
@@ -95,9 +95,9 @@ echo "  Git             : ${GIT_BRANCH_NAME}@${GIT_SHA}"
 echo "  Python          : $PY_VERSION"
 echo "  GPU mode        : ${MPES_USE_GPU:-0}"
 [[ -n "$RESUME_DATE" ]] && echo "  Resuming        : $RESUME_DATE"
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo ""
 
-# â”€â”€â”€ Build optimise command â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Build optimise command
 OPT_ARGS=(
     "$N_TRIALS"
     --out-dir "$PKG_DRIVE_DIR"
@@ -112,13 +112,13 @@ if [[ -n "${EXTRA_ARGS:-}" ]]; then
     OPT_ARGS+=( ${EXTRA_ARGS} )
 fi
 
-# â”€â”€â”€ Write a structured banner into the log itself â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Write a structured banner into the log itself
 # This means `tail` of the log always carries the run context, even when
 # inspected days later from a different machine.
 {
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
-    echo "  mPES Bayesian-Optimisation run â€” ${LAUNCH_TS}"
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+    echo ""
+    echo "  mPES Bayesian-Optimisation run  ${LAUNCH_TS}"
+    echo ""
     echo "  package      : $PKG"
     echo "  module       : $OPT_MODULE"
     echo "  n_trials     : $N_TRIALS"
@@ -132,10 +132,10 @@ fi
     echo "  resume_date  : ${RESUME_DATE:-none}"
     echo "  extra_args   : ${EXTRA_ARGS:-none}"
     echo "  cmd          : python3 -u -m $OPT_MODULE ${OPT_ARGS[*]}"
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+    echo ""
 } >> "$LOG_FILE"
 
-# â”€â”€â”€ Write machine-readable metadata sidecar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Write machine-readable metadata sidecar
 cat > "$META_FILE" <<EOF
 {
   "package":     "$PKG",
@@ -158,7 +158,7 @@ cat > "$META_FILE" <<EOF
 }
 EOF
 
-# â”€â”€â”€ Reattach to a still-running optimiser, if any â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Reattach to a still-running optimiser, if any
 # Prevents a second cell-run from launching a duplicate process when the
 # user just refreshed the browser or re-ran Cell 4 to re-establish the
 # foreground stream after a network blip.
@@ -171,10 +171,10 @@ if [[ -f "$PID_FILE" ]]; then
 fi
 
 if [[ -n "$EXISTING_PID" ]]; then
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
-    echo "  â–º Found a running optimiser (PID $EXISTING_PID) for this run."
+    echo ""
+    echo "   Found a running optimiser (PID $EXISTING_PID) for this run."
     echo "    Reattaching to its log instead of launching a duplicate."
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+    echo ""
     OPT_PID="$EXISTING_PID"
     # Skip launch + autorestart loop; jump straight to the foreground waiter.
     SKIP_LAUNCH=1
@@ -182,8 +182,8 @@ else
     SKIP_LAUNCH=0
 fi
 
-# â”€â”€â”€ Launch optimisation under nohup (with auto-restart loop) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-# MPES_USE_GPU is honoured by pes_*/__init__.py: 1 â†’ use GPU, 0 â†’ pin CPU.
+#  Launch optimisation under nohup (with auto-restart loop)
+# MPES_USE_GPU is honoured by pes_*/__init__.py: 1  use GPU, 0  pin CPU.
 # PYTHONUNBUFFERED guarantees line-buffered stdout/stderr even when the OS
 # detects the file descriptor as a regular file (Drive-backed log).
 #
@@ -249,35 +249,35 @@ with open(path, 'w', encoding='utf-8') as f:
     json.dump(meta, f, indent=2)
 PY
 
-echo "â†’ Optimisation PID    : $OPT_PID"
-echo "â†’ stdout              : $LOG_FILE"
-echo "â†’ stderr              : $ERR_FILE"
-echo "â†’ metadata            : $META_FILE"
+echo " Optimisation PID    : $OPT_PID"
+echo " stdout              : $LOG_FILE"
+echo " stderr              : $ERR_FILE"
+echo " metadata            : $META_FILE"
 
 echo ""
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
-echo "  Optimisation supervisor launched."
-echo "  â–¸ Cell BLOCKS in foreground tailing the Drive log so Colab Pro+"
-echo "    Background Execution keeps the VM alive after browser close."
-echo "  â–¸ If the python child dies, the supervisor relaunches it with"
-echo "    --resume (up to MAX_RESTARTS=${MAX_RESTARTS:-10} times)."
-echo "  â–¸ If you re-run this cell while a previous PID is still alive,"
-echo "    it just reattaches â€” no duplicate processes."
 echo ""
-echo "  Required: Runtime â†’ Manage sessions â†’ Background execution = ON."
+echo "  Optimisation supervisor launched."
+echo "   Cell BLOCKS in foreground tailing the Drive log so Colab Pro+"
+echo "    Background Execution keeps the VM alive after browser close."
+echo "   If the python child dies, the supervisor relaunches it with"
+echo "    --resume (up to MAX_RESTARTS=${MAX_RESTARTS:-10} times)."
+echo "   If you re-run this cell while a previous PID is still alive,"
+echo "    it just reattaches  no duplicate processes."
+echo ""
+echo "  Required: Runtime  Manage sessions  Background execution = ON."
 echo "  Safe to close the browser once that toggle is on."
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo ""
 echo "  Live monitoring (any other Colab cell, any machine):"
 echo "      from utils.colab.monitor import monitor; monitor()"
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo ""
 echo ""
 
-# â”€â”€â”€ Foreground waiter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+#  Foreground waiter
 # Why block the cell:
 #   1. Colab Pro+ Background Execution only persists the VM while at least
 #      one cell is actively executing. A detached nohup that returns
-#      immediately makes the notebook look idle â†’ VM reclaimed within
-#      minutes of the browser disconnecting â†’ process killed.
+#      immediately makes the notebook look idle  VM reclaimed within
+#      minutes of the browser disconnecting  process killed.
 #   2. Streaming the Drive-backed log to the cell stdout gives a live view
 #      that any monitor() / tail-from-another-machine call also sees.
 #
@@ -286,7 +286,7 @@ echo ""
 # cases, the cell exits when that PID exits, which only happens when the
 # optimisation has either finished or burned through all restart attempts.
 #
-# Set FOREGROUND=0 to skip the wait (legacy detached behaviour) â€” use only
+# Set FOREGROUND=0 to skip the wait (legacy detached behaviour)  use only
 # if you intend to keep at least one OTHER cell running for the whole run.
 FOREGROUND="${FOREGROUND:-1}"
 
@@ -308,7 +308,7 @@ if [[ "$FOREGROUND" == "1" ]]; then
     python3 - <<'PY'
 import os, sys, time
 sys.path.insert(0, os.environ['REPO_DIR'])
-from utils.colab.monitor import monitor  # noqa: E402
+from h1.general.colab.monitor import monitor  # noqa: E402
 
 run_dir  = os.environ['PKG_DRIVE_DIR']
 pkg      = os.environ['PKG']
@@ -335,7 +335,7 @@ try:
         except Exception as exc:  # pylint: disable=broad-except
             print(f"  (monitor() error: {exc})")
         sys.stdout.write(
-            f"\n  Refreshing every {refresh}s â€” "
+            f"\n  Refreshing every {refresh}s  "
             f"close the browser anytime; the supervisor keeps running.\n"
         )
         sys.stdout.flush()
@@ -345,7 +345,7 @@ try:
                 break
             time.sleep(1)
 except KeyboardInterrupt:
-    print("\n  Foreground watcher interrupted â€” supervisor PID still running.")
+    print("\n  Foreground watcher interrupted  supervisor PID still running.")
 PY
     _mon_rc=$?
     if (( _mon_rc != 0 )); then
@@ -365,17 +365,17 @@ PY
     fi
 
     echo ""
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+    echo ""
     if [[ $EXIT_CODE -eq 0 ]]; then
-        echo "  âœ“ Optimisation finished cleanly (supervisor PID $OPT_PID)."
+        echo "   Optimisation finished cleanly (supervisor PID $OPT_PID)."
     else
-        echo "  âœ— Supervisor exited with code $EXIT_CODE."
+        echo "   Supervisor exited with code $EXIT_CODE."
         echo "    See $ERR_FILE and ${PKG_DRIVE_DIR}/supervisor.log"
     fi
-    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+    echo ""
     exit $EXIT_CODE
 fi
 
-echo "  FOREGROUND=0 set â€” cell returns immediately."
-echo "  âš  Keep at least one other cell running, or the VM will be reclaimed."
-echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
+echo "  FOREGROUND=0 set  cell returns immediately."
+echo "   Keep at least one other cell running, or the VM will be reclaimed."
+echo ""
