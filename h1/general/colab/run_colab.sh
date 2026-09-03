@@ -301,6 +301,7 @@ if [[ "$FOREGROUND" == "1" ]]; then
     REPO_DIR="$REPO_DIR" \
     PKG="$PKG" \
     PKG_DRIVE_DIR="$PKG_DRIVE_DIR" \
+    DRIVE_DIR="$DRIVE_DIR" \
     OPT_PID="$OPT_PID" \
     LOG_FILE="$LOG_FILE" \
     ERR_FILE="$ERR_FILE" \
@@ -312,6 +313,7 @@ from h1.general.colab.monitor import monitor  # noqa: E402
 
 run_dir  = os.environ['PKG_DRIVE_DIR']
 pkg      = os.environ['PKG']
+drive_dir = os.environ['DRIVE_DIR']
 opt_pid  = int(os.environ['OPT_PID'])
 err_path = os.environ['ERR_FILE']
 refresh  = max(5, int(os.environ['PROGRESS_REFRESH']))
@@ -331,7 +333,7 @@ try:
         sys.stdout.write('\x1b[2J\x1b[H')
         sys.stdout.flush()
         try:
-            monitor(pkg=pkg, date=run_date, n_log_lines=12, n_err_lines=4)
+            monitor(pkg=pkg, date=run_date, n_log_lines=12, n_err_lines=4, drive_root=drive_dir)
         except Exception as exc:  # pylint: disable=broad-except
             print(f"  (monitor() error: {exc})")
         sys.stdout.write(
