@@ -58,7 +58,6 @@ required = {
     'matplotlib': 'matplotlib==3.10.8',
     'numpy': 'numpy==2.4.3',
     'optuna': 'optuna==4.7.0',
-    'pygame': 'pygame==2.5.2',
     'tensorflow': 'tensorflow==2.21.0',
 }
 
