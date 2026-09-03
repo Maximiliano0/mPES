@@ -4,7 +4,8 @@
 
 .DESCRIPTION
     Busca procesos de optimizacion activos (optimize_rl, optimize_dqn,
-    optimize_a2c, optimize_tr).  Para cada paquete detecta:
+    optimize_rdqn, optimize_a2c, optimize_tr, optimize_ens).  Para cada
+    paquete detecta:
       - PID del proceso de optimizacion.
       - Ultimo trial completado, mejor valor y tiempo transcurrido.
       - Ultimas lineas del log de errores (si las hay).
@@ -13,12 +14,14 @@
 
 .PARAMETER Package
     (Opcional) Filtrar por un paquete especifico.
-    Valores: pes_ql, pes_dql, pes_dqn, pes_a2c, pes_trf, all (default).
+    Valores: pes_ql, pes_dql, pes_dqn, pes_rdqn, pes_a2c, pes_trf, pes_ens_sprb,
+    pes_ens_accq, all (default).
 
 .EXAMPLE
     .\utils\optimization_status.ps1
     .\utils\optimization_status.ps1 pes_dqn
     .\utils\optimization_status.ps1 ac
+    .\utils\optimization_status.ps1 sprb
 #>
 param(
     [Parameter(Position = 0)][string]$Package = 'all'
@@ -36,14 +39,17 @@ $pkgMap = @{
     'pes_ql'='pes_ql';   'bayesian'='pes_ql'; 'bay'='pes_ql'; '1'='pes_ql'
     'pes_dql'='pes_dql'; 'dql'='pes_dql';     'ql'='pes_dql'; '2'='pes_dql'
     'pes_dqn'='pes_dqn'; 'dqn'='pes_dqn';                     '3'='pes_dqn'
+    'pes_rdqn'='pes_rdqn'; 'rdqn'='pes_rdqn';                 '7'='pes_rdqn'
     'pes_a2c'='pes_a2c';   'ac'='pes_a2c';  'a2c'='pes_a2c';      '4'='pes_a2c'
     'pes_trf'='pes_trf'; 'transformer'='pes_trf'; 'tr'='pes_trf'; '5'='pes_trf'
+    'pes_ens_sprb'='pes_ens_sprb'; 'sprb'='pes_ens_sprb'; 'ens_sprb'='pes_ens_sprb'; '8'='pes_ens_sprb'
+    'pes_ens_accq'='pes_ens_accq'; 'accq'='pes_ens_accq'; 'ens_accq'='pes_ens_accq'; '9'='pes_ens_accq'
     'all'='all'
 }
 
 $FilterPkg = $pkgMap[$Package]
 if (-not $FilterPkg) {
-    Write-Error "Paquete desconocido: '$Package'. Opciones: pes_ql, pes_dql, pes_dqn, pes_a2c, pes_trf, all"
+    Write-Error "Paquete desconocido: '$Package'. Opciones: pes_ql, pes_dql, pes_dqn, pes_rdqn, pes_a2c, pes_trf, pes_ens_sprb, pes_ens_accq, all"
     exit 1
 }
 
@@ -52,11 +58,14 @@ $modMap = @{
     'pes_ql'  = 'optimize_rl'
     'pes_dql' = 'optimize_rl'
     'pes_dqn' = 'optimize_dqn'
+    'pes_rdqn' = 'optimize_rdqn'
     'pes_a2c'  = 'optimize_a2c'
     'pes_trf' = 'optimize_tr'
+    'pes_ens_sprb' = 'pes_ens_sprb.ext.optimize_ens'
+    'pes_ens_accq' = 'pes_ens_accq.ext.optimize_ens'
 }
 
-$allPackages = @('pes_ql', 'pes_dql', 'pes_dqn', 'pes_a2c', 'pes_trf')
+$allPackages = @('pes_ql', 'pes_dql', 'pes_dqn', 'pes_rdqn', 'pes_a2c', 'pes_trf', 'pes_ens_sprb', 'pes_ens_accq')
 
 if ($FilterPkg -ne 'all') {
     $allPackages = @($FilterPkg)
@@ -70,6 +79,8 @@ $pkgDirMap = @{
     'pes_rdqn' = 'ml\pes_rdqn'
     'pes_a2c'  = 'ml\pes_a2c'
     'pes_trf'  = 'ml\pes_trf'
+    'pes_ens_sprb' = 'ens\pes_ens_sprb'
+    'pes_ens_accq' = 'ens\pes_ens_accq'
 }
 
 # ── Colores ──────────────────────────────────────────────────────

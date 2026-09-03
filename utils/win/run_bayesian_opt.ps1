@@ -12,7 +12,8 @@
 
 .PARAMETER Package
     Alias o nombre del paquete destino.
-    Valores: bayesian|bay|1, dql|ql|2, dqn|3, ac|a2c|4, transformer|tr|5
+    Valores: bayesian|bay|1, dql|ql|2, dqn|3, ac|a2c|4, transformer|tr|5,
+    rdqn|7, sprb|ens_sprb|8, accq|ens_accq|9
 
 .PARAMETER NTrials
     Numero de trials de optimizacion (por defecto 30).
@@ -24,6 +25,8 @@
     .\utils\run_bayesian_opt.ps1 dqn 110
     .\utils\run_bayesian_opt.ps1 ac 100
     .\utils\run_bayesian_opt.ps1 bayesian 100 2026-02-12
+    .\utils\run_bayesian_opt.ps1 sprb 60
+    .\utils\run_bayesian_opt.ps1 accq 60
 #>
 param(
     [Parameter(Mandatory, Position = 0)][string]$Package,
@@ -53,11 +56,13 @@ $pkgMap = @{
     'pes_rdqn'='pes_rdqn'; 'rdqn'='pes_rdqn';                 '7'='pes_rdqn'
     'pes_a2c'='pes_a2c';   'ac'='pes_a2c';  'a2c'='pes_a2c'; 'actor-critic'='pes_a2c'; '4'='pes_a2c'
     'pes_trf'='pes_trf'; 'transformer'='pes_trf'; 'tr'='pes_trf';   '5'='pes_trf'
+    'pes_ens_sprb'='pes_ens_sprb'; 'sprb'='pes_ens_sprb'; 'ens_sprb'='pes_ens_sprb'; '8'='pes_ens_sprb'
+    'pes_ens_accq'='pes_ens_accq'; 'accq'='pes_ens_accq'; 'ens_accq'='pes_ens_accq'; '9'='pes_ens_accq'
 }
 
 $PkgName = $pkgMap[$Package]
 if (-not $PkgName) {
-    Write-Error "Paquete desconocido: '$Package'. Opciones: bayesian, dql, dqn, rdqn, ac, transformer"
+    Write-Error "Paquete desconocido: '$Package'. Opciones: bayesian, dql, dqn, rdqn, ac, transformer, sprb, accq"
     exit 1
 }
 
@@ -69,6 +74,8 @@ $modMap = @{
     'pes_rdqn' = 'ml.pes_rdqn.ext.optimize_rdqn'
     'pes_a2c'  = 'ml.pes_a2c.ext.optimize_a2c'
     'pes_trf' = 'ml.pes_trf.ext.optimize_tr'
+    'pes_ens_sprb' = 'ens.pes_ens_sprb.ext.optimize_ens'
+    'pes_ens_accq' = 'ens.pes_ens_accq.ext.optimize_ens'
 }
 $OptModule = $modMap[$PkgName]
 
@@ -80,6 +87,8 @@ $pkgDirMap = @{
     'pes_rdqn' = 'ml\pes_rdqn'
     'pes_a2c'  = 'ml\pes_a2c'
     'pes_trf'  = 'ml\pes_trf'
+    'pes_ens_sprb' = 'ens\pes_ens_sprb'
+    'pes_ens_accq' = 'ens\pes_ens_accq'
 }
 $PkgDir = $pkgDirMap[$PkgName]
 

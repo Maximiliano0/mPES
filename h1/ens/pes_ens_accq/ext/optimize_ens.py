@@ -6,7 +6,7 @@ import os
 from typing import Any
 import optuna
 import numpy
-from .ensemble import ActionVotingEnsemble, MODEL_PATHS
+from .ensemble import ActionVotingEnsemble
 
 
 def _load_evaluation_helpers() -> tuple[Any, Any, Any, Any]:
@@ -59,16 +59,25 @@ def main() -> None:
     """Optimize accQ parameters on the shared fixed experiment sequences."""
     parser = argparse.ArgumentParser(description='Optimize the accQ ensemble.')
     parser.add_argument('n_trials', nargs='?', type=int, default=50)
-    default_inputs = os.path.dirname(MODEL_PATHS['dqn'])
+    default_inputs = os.path.abspath(os.path.join(
+        os.path.dirname(__file__), '..', '..', '..', 'ml', 'pes_dqn', 'inputs'))
     parser.add_argument('--severity', default=os.path.join(default_inputs, 'initial_severity.csv'))
     parser.add_argument('--lengths', default=os.path.join(default_inputs, 'sequence_lengths.csv'))
     parser.add_argument('--output', default=os.path.join(os.path.dirname(__file__), '..', 'inputs', 'best_params.json'))
+    parser.add_argument('--out-dir', default=None, help='Directory for resumable optimisation artifacts.')
+    parser.add_argument('--storage', default=None, help='Optuna storage URL.')
+    parser.add_argument('--resume', default='', help='Existing run date; retained for launcher compatibility.')
     arguments = parser.parse_args()
+    if arguments.out_dir:
+        arguments.output = os.path.join(arguments.out_dir, 'best_params.json')
+    storage = arguments.storage
+    study_name = 'pes_ens_accq'
     _, _, _, convert_globalseq_to_seqs = _load_evaluation_helpers()
     trials_per_sequence = numpy.loadtxt(arguments.lengths, delimiter=',')
     initial_severity = numpy.loadtxt(arguments.severity, delimiter=',')
     severities = convert_globalseq_to_seqs(trials_per_sequence, initial_severity)
-    study = optuna.create_study(direction='maximize', sampler=optuna.samplers.TPESampler(seed=42))
+    study = optuna.create_study(direction='maximize', sampler=optuna.samplers.TPESampler(seed=42),
+                                study_name=study_name, storage=storage, load_if_exists=True)
     study.optimize(lambda trial: _objective(trial, trials_per_sequence, severities), n_trials=arguments.n_trials)
     os.makedirs(os.path.dirname(os.path.abspath(arguments.output)), exist_ok=True)
     payload = {'hyperparameters': study.best_params, 'value': study.best_value,
