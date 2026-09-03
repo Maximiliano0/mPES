@@ -353,16 +353,10 @@ PY
         echo "  Tail the log directly:  tail -f $LOG_FILE"
     fi
 
-    # Best-effort wait in case the supervisor was a child of this shell.
-    wait "$OPT_PID" 2>/dev/null
-    EXIT_CODE=$?
-    # The supervisor is `disown`-ed, so `wait` typically returns 127 even on
-    # success.  Re-derive the true status from process liveness: if the PID
-    # is dead by now, treat the run as completed cleanly (the supervisor
-    # writes its own success/failure record to supervisor.log).
-    if (( EXIT_CODE != 0 )) && ! kill -0 "$OPT_PID" 2>/dev/null; then
-        EXIT_CODE=0
-    fi
+    # The supervisor is intentionally disowned, so wait would return 127
+    # even after a successful run. The monitor loop above exits only after
+    # its PID has stopped, or after the user interrupts the foreground view.
+    EXIT_CODE=0
 
     echo ""
     echo ""
