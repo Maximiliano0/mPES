@@ -85,6 +85,22 @@ def _push_package(repo_root: Path, drive_root: Path, line: str, package: str) ->
         _copy_tree(local / 'outputs', remote / 'outputs')
 
 
+def _push_project_tree(repo_root: Path, line: str, package: str, project_mirror: Path) -> None:
+    """Mirror package inputs/outputs under a project-layout export tree.
+
+    The mirror reproduces the local repository structure
+    (``<line>/<group>/<package>/{inputs,outputs}``) so the user can download
+    and paste it directly onto the local repository root.
+    """
+    packages = (package,) + PACKAGE_DEPENDENCIES.get(package, ())
+    for dependency in packages:
+        local = _package_dir(repo_root, line, dependency)
+        group = str(PACKAGE_REGISTRY[line][dependency]['group'])
+        mirrored = project_mirror / line / group / dependency
+        _copy_tree(local / 'inputs', mirrored / 'inputs')
+        _copy_tree(local / 'outputs', mirrored / 'outputs')
+
+
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     """Write JSON metadata atomically."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -131,7 +147,7 @@ def _command(line: str, package: str, operation: str, trials: int, resume_date: 
 
 def _run_package(repo_root: Path, drive_root: Path, line: str, package: str,
                  operation: str, trials: int, resume_date: str | None,
-                 run_dir: Path, sync_interval: int) -> int:
+                 run_dir: Path, sync_interval: int, project_mirror: Path) -> int:
     """Run one package, stream its output, and periodically sync its files."""
     _pull_package(repo_root, drive_root, line, package)
     command = _command(line, package, operation, trials, resume_date)
@@ -173,6 +189,7 @@ def _run_package(repo_root: Path, drive_root: Path, line: str, package: str,
                 status['last_sync'] = _timestamp()
                 _write_json(status_path, status)
                 _push_package(repo_root, drive_root, line, package)
+                _push_project_tree(repo_root, line, package, project_mirror)
                 _copy_tree(run_dir, drive_root / 'runs' / run_dir.name)
                 last_sync = time.monotonic()
     return_code = process.wait()
@@ -181,6 +198,7 @@ def _run_package(repo_root: Path, drive_root: Path, line: str, package: str,
                    'last_sync': _timestamp()})
     _write_json(status_path, status)
     _push_package(repo_root, drive_root, line, package)
+    _push_project_tree(repo_root, line, package, project_mirror)
     _copy_tree(run_dir, drive_root / 'runs' / run_dir.name)
     return return_code
 
@@ -206,6 +224,7 @@ def main() -> None:
         parser.error('--sync-interval debe ser >= 10 segundos')
     run_id = arguments.run_id or f'{arguments.line}_{arguments.operation}_{datetime_module.datetime.now().strftime("%Y%m%d_%H%M%S")}'
     run_dir = arguments.repo_root / '.colab_runs' / run_id
+    project_mirror = arguments.drive_root / 'runs' / run_id / 'project'
     manifest = {
         'run_id': run_id, 'line': arguments.line, 'packages': packages,
         'operation': arguments.operation, 'requested_trials': arguments.trials,
@@ -218,7 +237,7 @@ def main() -> None:
     for package in packages:
         code = _run_package(arguments.repo_root, arguments.drive_root, arguments.line, package,
                              arguments.operation, arguments.trials, arguments.resume_date,
-                             run_dir, arguments.sync_interval)
+                             run_dir, arguments.sync_interval, project_mirror)
         if code != 0:
             raise SystemExit(code)
     manifest.update({'state': 'completed', 'finished_at': _timestamp()})
