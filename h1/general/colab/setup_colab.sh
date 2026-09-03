@@ -20,22 +20,16 @@ set -euo pipefail
 
 WORKSPACE_DIR="${WORKSPACE_DIR:-/content/mPES}"
 REPO_DIR="${REPO_DIR:-$WORKSPACE_DIR}"
-H1_DIR="${H1_DIR:-${WORKSPACE_DIR}/h1}"
+H_DIR="${H_DIR:-${WORKSPACE_DIR}/h1}"
 DRIVE_DIR="${DRIVE_DIR:-/content/drive/MyDrive/mPES}"
-REQ_FILE="${REQ_FILE:-${WORKSPACE_DIR}/requirements.txt}"
 
 echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo "  mPES â€” Colab Pro+ bootstrap"
 echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 
 # --- Sanity checks --------------------------------------------------------
-if [[ ! -d "$H1_DIR" ]]; then
-    echo "ERROR: h1 not found at $H1_DIR"
-    exit 1
-fi
-
-if [[ ! -f "$REQ_FILE" ]]; then
-    echo "ERROR: requirements file not found at $REQ_FILE"
+if [[ ! -d "$H_DIR" ]]; then
+    echo "ERROR: h1 not found at $H_DIR"
     exit 1
 fi
 
@@ -54,16 +48,39 @@ echo "â†’ Drive workspace: $DRIVE_DIR"
 echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 echo "  Installing Python dependencies"
 echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
-pip install --quiet --upgrade pip
-pip install --quiet -r "$REQ_FILE"
+echo "  Checking pinned optimisation and training dependencies"
+runtime_packages="$(python3 - <<'PY'
+from importlib.metadata import PackageNotFoundError, version
 
-# --- Repair Colab pyparsing/httplib2 incompatibility ---------------------
-# Colab base image ships pyparsing < 3.1 but httplib2.auth (pulled in by
-# googleapiclient â†’ tensorflow.python.distribute) calls pp.DelimitedList
-# (added in pyparsing 3.1).  Symptom on `import tensorflow`:
-#   AttributeError: module 'pyparsing' has no attribute 'DelimitedList'.
-# Pin pyparsing to a compatible recent release.
-pip install --quiet --upgrade 'pyparsing>=3.1.0'
+required = {
+    'gymnasium': 'gymnasium==1.2.3',
+    'keras': 'keras==3.13.2',
+    'matplotlib': 'matplotlib==3.10.8',
+    'numpy': 'numpy==2.4.3',
+    'optuna': 'optuna==4.7.0',
+    'pygame': 'pygame==2.5.2',
+    'tensorflow': 'tensorflow==2.21.0',
+}
+
+install = []
+for distribution, requirement in required.items():
+    try:
+        installed = version(distribution)
+    except PackageNotFoundError:
+        install.append(requirement)
+    else:
+        expected = requirement.split('==', maxsplit=1)[1]
+        if installed != expected:
+            install.append(requirement)
+print(' '.join(install))
+PY
+)"
+if [[ -n "$runtime_packages" ]]; then
+    echo "  Installing pinned runtime packages: $runtime_packages"
+    pip install --quiet --prefer-binary $runtime_packages
+else
+    echo "  Required runtime packages already match project versions."
+fi
 
 # --- Export env vars (written to /etc/profile.d for persistence) ---------
 echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
@@ -87,7 +104,7 @@ export TF_CUDNN_DETERMINISTIC="1"
 # CUDA_VISIBLE_DEVICES alone so TF can see the Colab GPU; otherwise the
 # package itself pins CPU.
 export MPES_USE_GPU="${MPES_USE_GPU:-0}"
-export PYTHONPATH="${WORKSPACE_DIR}:${H1_DIR}:\${PYTHONPATH:-}"
+export PYTHONPATH="${WORKSPACE_DIR}:${H_DIR}:\${PYTHONPATH:-}"
 EOF
 # shellcheck disable=SC1090
 source "$ENV_FILE"
