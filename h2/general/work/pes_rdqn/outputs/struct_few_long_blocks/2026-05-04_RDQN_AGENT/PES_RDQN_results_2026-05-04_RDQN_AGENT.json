@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_RDQN_AGENT",
+    "timestamp": "2026-05-04T17:46:13.813113",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "RDQN_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 4,
+    "num_sequences": 16,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.8986516586690941,
+    "overall_median": 0.9091493009562615,
+    "overall_std": 0.048763940386604004,
+    "overall_min": 0.7724743777452416,
+    "overall_max": 0.992443495390908,
+    "total_sequences": 64,
+    "first_block_mean": 0.9100684366834707,
+    "last_block_mean": 0.9085677164216683,
+    "improvement": -0.0015007202618023685,
+    "percentile_25": 0.8778374516495518,
+    "percentile_75": 0.930972823014318,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.8963689741794787,
+        "median": 0.9102381561088284,
+        "std": 0.04802831206879216,
+        "min": 0.7724743777452416,
+        "max": 0.9768048551531424,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 2,
+        "mean": 0.8829713763946597,
+        "median": 0.9069861816127635,
+        "std": 0.05761656846316599,
+        "min": 0.7724743777452416,
+        "max": 0.9394314131807098,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 3,
+        "mean": 0.9051833351989914,
+        "median": 0.9099275820631205,
+        "std": 0.03767695778195859,
+        "min": 0.8061016949152545,
+        "max": 0.951612024572119,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 4,
+        "mean": 0.9100829489032465,
+        "median": 0.902263911466213,
+        "std": 0.04518105314584747,
+        "min": 0.8310536044362292,
+        "max": 0.992443495390908,
+        "num_sequences": 16
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "RDQN_AGENT",
+    "num_blocks": 4,
+    "num_sequences": 16,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_RDQN_results_2026-05-04_RDQN_AGENT.png",
+    "this_file": "PES_RDQN_results_2026-05-04_RDQN_AGENT.json"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "opt_date": "2026-04-29",
+  "best_trial_number": 2,
+  "mean_perf": 0.9245053687621196,
+  "std_perf": 0.04297699183280934,
+  "min_perf": 0.7767884935087838,
+  "max_perf": 0.9841449950770209,
+  "trial_seed": 45,
+  "hidden_units": [
+    32
+  ],
+  "hyperparameters": {
+    "learning_rate": 0.000215262809722153,
+    "discount_factor": 0.9233920466682904,
+    "epsilon_initial": 0.8650660661526529,
+    "epsilon_min": 0.08384868504100158,
+    "num_episodes": 30000,
+    "hidden_layer_size": 32,
+    "num_hidden_layers": 1,
+    "batch_size": 128,
+    "buffer_size": 30000,
+    "target_sync_freq": 500,
+    "max_grad_norm": 4.169576428046754,
+    "use_pbrs": 0,
+    "warmup_ratio": 0.24281758667148645,
+    "target_ratio": 0.5333200932803407,
+    "learning_starts_frac": 0.12169314570885453,
+    "history_len": 3,
+    "d_model": 16,
+    "num_heads": 8,
+    "key_dim": 16,
+    "ff_dim": 128,
+    "num_layers": 4,
+    "dropout": 0.14813867890931723
+  }
+}

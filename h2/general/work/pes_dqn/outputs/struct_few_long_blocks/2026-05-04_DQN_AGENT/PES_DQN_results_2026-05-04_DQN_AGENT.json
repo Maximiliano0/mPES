@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_DQN_AGENT",
+    "timestamp": "2026-05-04T17:32:07.233317",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "DQN_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 4,
+    "num_sequences": 16,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.8937286762082891,
+    "overall_median": 0.8882558870587943,
+    "overall_std": 0.05516982834262271,
+    "overall_min": 0.720885576103117,
+    "overall_max": 0.9830508474576272,
+    "total_sequences": 64,
+    "first_block_mean": 0.8750409807533477,
+    "last_block_mean": 0.9129311099684295,
+    "improvement": 0.037890129215081836,
+    "percentile_25": 0.8623469718203095,
+    "percentile_75": 0.9376297156756055,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.8794263711784791,
+        "median": 0.8816579887884104,
+        "std": 0.04962715090174101,
+        "min": 0.749019190448207,
+        "max": 0.9502196193265008,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 2,
+        "mean": 0.893365321296185,
+        "median": 0.8860094089801629,
+        "std": 0.06555683196105483,
+        "min": 0.720885576103117,
+        "max": 0.9800717417297728,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 3,
+        "mean": 0.8932079640583503,
+        "median": 0.8865037896196597,
+        "std": 0.04691631980967178,
+        "min": 0.8273709877148936,
+        "max": 0.9830508474576272,
+        "num_sequences": 16
+      },
+      {
+        "block_number": 4,
+        "mean": 0.908915048300142,
+        "median": 0.9167381576749416,
+        "std": 0.05270257541265975,
+        "min": 0.7940032647773384,
+        "max": 0.9815157116451018,
+        "num_sequences": 16
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "DQN_AGENT",
+    "num_blocks": 4,
+    "num_sequences": 16,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_DQN_results_2026-05-04_DQN_AGENT.png",
+    "this_file": "PES_DQN_results_2026-05-04_DQN_AGENT.json"
+  }
+}

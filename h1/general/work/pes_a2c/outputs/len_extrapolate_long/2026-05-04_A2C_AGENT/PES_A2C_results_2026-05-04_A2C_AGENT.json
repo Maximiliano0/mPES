@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_A2C_AGENT",
+    "timestamp": "2026-05-04T17:52:36.036627",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "A2C_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.8256723535570889,
+    "overall_median": 0.8214834215958842,
+    "overall_std": 0.053423436287211,
+    "overall_min": 0.7090763081362224,
+    "overall_max": 0.921353850167851,
+    "total_sequences": 64,
+    "first_block_mean": 0.8179722194851311,
+    "last_block_mean": 0.7979796412116975,
+    "improvement": -0.019992578273433592,
+    "percentile_25": 0.786585489839248,
+    "percentile_75": 0.8550216160980111,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.8179722194851311,
+        "median": 0.8076207480058117,
+        "std": 0.0682092398910322,
+        "min": 0.730085870340596,
+        "max": 0.921353850167851,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 2,
+        "mean": 0.8259880524407259,
+        "median": 0.8120457034009172,
+        "std": 0.04484497663023203,
+        "min": 0.7807276564329161,
+        "max": 0.9201005685431092,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 3,
+        "mean": 0.8368782645966899,
+        "median": 0.8266365081480238,
+        "std": 0.06407018336260917,
+        "min": 0.7090763081362224,
+        "max": 0.9162822181359298,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 4,
+        "mean": 0.8189159717996606,
+        "median": 0.8068022373324019,
+        "std": 0.04860323537388905,
+        "min": 0.7577158458225896,
+        "max": 0.9154482609301645,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 5,
+        "mean": 0.8314816064501884,
+        "median": 0.8381400544685081,
+        "std": 0.042863693633082824,
+        "min": 0.7796055445795094,
+        "max": 0.9145985361204672,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 6,
+        "mean": 0.8416054676077938,
+        "median": 0.830200321777435,
+        "std": 0.03523575363216353,
+        "min": 0.8023818580205982,
+        "max": 0.9119375369504176,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 7,
+        "mean": 0.8345576048648234,
+        "median": 0.8356628023598685,
+        "std": 0.04451099154547063,
+        "min": 0.7823048526704907,
+        "max": 0.9103544203548138,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 8,
+        "mean": 0.7979796412116975,
+        "median": 0.7968067740026945,
+        "std": 0.057249731751677815,
+        "min": 0.7115575241819417,
+        "max": 0.9038362531198528,
+        "num_sequences": 8
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "A2C_AGENT",
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_A2C_results_2026-05-04_A2C_AGENT.png",
+    "this_file": "PES_A2C_results_2026-05-04_A2C_AGENT.json"
+  }
+}

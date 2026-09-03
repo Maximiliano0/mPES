@@ -1,0 +1,48 @@
+================================================================================
+RL-AGENT TRAINING CONFIGURATION
+================================================================================
+
+Training Date: 2026-04-21
+Training Time: 2026-04-21 18:49:32
+
+Q-LEARNING HYPERPARAMETERS
+--------------------------------------------------------------------------------
+Algorithm:                   Double Q-Learning
+Learning Rate (α):           0.11320391141177716
+Discount Factor (γ):         0.9777324201779083
+Initial Epsilon (ε):         0.5998368910791798
+Minimum Epsilon (ε_min):     0.032676417657817626
+Number of Episodes:          360,000
+Decay Rate (λ):              0.9999868986 (computed from N=360,000)
+Warm-up Ratio:               0.026038553653599705 (9,373 episodes)
+Target Ratio:                0.6430179407605754 (231,486 episodes)
+Exploitation Phase:          128,514 episodes
+Epsilon Decay:               Exponential with warm-up (0.5998368910791798 → 0.032676417657817626)
+Decay Formula:               λ = (ε_min / ε₀)^(1 / ((target - warmup) · N))
+Reward Shaping (β):          0.0003916814960230879
+Random Seed:                 46  (= SEED + best_trial_number + 1)
+Track Confidence:            False
+Hyperparameters Source:      C:\Users\maxvega\Documents\Win_mPES\pes_dql\inputs\best_params.json
+Reference mean_perf (opt):   0.896344
+
+TRAINING RESULTS
+--------------------------------------------------------------------------------
+Q-Table Shape:               (31, 11, 10, 11)
+State Space:
+  - Available Resources:     31
+  - Trial Numbers:           11
+  - Severity Levels:         10
+  - Action Space:            11
+Rewards History Length:      36
+
+OUTPUT FILES
+--------------------------------------------------------------------------------
+Q-Table File:                q_2026-04-21.npy
+Rewards File:                rewards_2026-04-21.npy
+Configuration File:          training_config_2026-04-21.txt
+
+DESCRIPTION
+--------------------------------------------------------------------------------
+Files saved from Q-Learning training on the Pandemic Scenario.
+The Q-table maps (resources, trial, severity) states to action values.
+The rewards file contains average reward progression every 10,000 episodes.

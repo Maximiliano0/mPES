@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_RL_AGENT",
+    "timestamp": "2026-05-04T17:20:36.425291",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "RL_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.8072593458834785,
+    "overall_median": 0.8080637609333978,
+    "overall_std": 0.0019948122058009088,
+    "overall_min": 0.802680958888003,
+    "overall_max": 0.8089443040759073,
+    "total_sequences": 64,
+    "first_block_mean": 0.8068510722434006,
+    "last_block_mean": 0.8078957092653634,
+    "improvement": 0.0010446370219627799,
+    "percentile_25": 0.8069087832299536,
+    "percentile_75": 0.808647728372045,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.8068510722434006,
+        "median": 0.8079945222844676,
+        "std": 0.0024441516244576448,
+        "min": 0.802680958888003,
+        "max": 0.8088208426612843,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 2,
+        "mean": 0.8075293908344771,
+        "median": 0.808647728372045,
+        "std": 0.002039474476314869,
+        "min": 0.802680958888003,
+        "max": 0.8089443040759071,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 3,
+        "mean": 0.8071992629423822,
+        "median": 0.8078239822526461,
+        "std": 0.0016151785574857723,
+        "min": 0.8046042240666111,
+        "max": 0.8089443040759073,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 4,
+        "mean": 0.8078306216212225,
+        "median": 0.8078239822526461,
+        "std": 0.0008464407077382578,
+        "min": 0.8059551892903292,
+        "max": 0.8088208426612843,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 5,
+        "mean": 0.8067810296225782,
+        "median": 0.8082343009652191,
+        "std": 0.002526555140048027,
+        "min": 0.802680958888003,
+        "max": 0.8088208426612844,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 6,
+        "mean": 0.8071048466547179,
+        "median": 0.8081159659719698,
+        "std": 0.002155844791127721,
+        "min": 0.802680958888003,
+        "max": 0.8089443040759072,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 7,
+        "mean": 0.8068828338836859,
+        "median": 0.8075842035718943,
+        "std": 0.0020117945716649033,
+        "min": 0.802680958888003,
+        "max": 0.8086477283720449,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 8,
+        "mean": 0.8078957092653634,
+        "median": 0.8085262846845427,
+        "std": 0.0013885928994547593,
+        "min": 0.8046042240666115,
+        "max": 0.8089443040759073,
+        "num_sequences": 8
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "RL_AGENT",
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_QL_results_2026-05-04_RL_AGENT.png",
+    "this_file": "PES_QL_results_2026-05-04_RL_AGENT.json"
+  }
+}
