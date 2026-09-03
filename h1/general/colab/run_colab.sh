@@ -207,34 +207,52 @@ if [[ "$SKIP_LAUNCH" == "0" ]]; then
         echo "  max_restarts: $MAX_RESTARTS"
     } >> "$SUPERVISOR_LOG"
 
-    # Run the optimiser + restart loop in the background as one supervisor.
-    (
-        attempt=1
-        while (( attempt <= MAX_RESTARTS + 1 )); do
-            echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] launching attempt $attempt" \
-                >> "$SUPERVISOR_LOG"
-            env MPES_USE_GPU="${MPES_USE_GPU:-0}" PYTHONUNBUFFERED=1 \
-                python3 -u -m "$OPT_MODULE" "${OPT_ARGS[@]}" \
-                >> "$LOG_FILE" 2>> "$ERR_FILE"
-            rc=$?
-            if (( rc == 0 )); then
-                echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] optimiser exited cleanly (attempt $attempt)" \
-                    >> "$SUPERVISOR_LOG"
-                exit 0
-            fi
-            echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] optimiser died with code $rc on attempt $attempt" \
-                >> "$SUPERVISOR_LOG"
-            if (( attempt > MAX_RESTARTS )); then
-                echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] giving up after $MAX_RESTARTS restarts" \
-                    >> "$SUPERVISOR_LOG"
-                exit "$rc"
-            fi
-            attempt=$(( attempt + 1 ))
-            sleep 5
-        done
-    ) >/dev/null 2>&1 &
-    disown
+    # Run the optimiser + restart loop as a detached supervisor in its own
+    # session. A plain `( ... ) & disown` subshell gets reaped by the Colab
+    # runtime a few seconds after launch (the orphaned python child keeps
+    # running, but the monitor then thinks the run is over and the cell
+    # exits). setsid + nohup makes the supervisor immune to SIGHUP and to
+    # process-group kills, so the foreground monitor below can track it for
+    # the whole run. The loop lives in a real script file to keep quoting
+    # simple and inspectable after the fact.
+    SUPERVISOR_SCRIPT="${PKG_DRIVE_DIR}/supervisor.sh"
+    {
+        echo '#!/usr/bin/env bash'
+        echo "SUPERVISOR_LOG=$(printf '%q' "$SUPERVISOR_LOG")"
+        echo "LOG_FILE=$(printf '%q' "$LOG_FILE")"
+        echo "ERR_FILE=$(printf '%q' "$ERR_FILE")"
+        echo "OPT_MODULE=$(printf '%q' "$OPT_MODULE")"
+        echo "MAX_RESTARTS=$(printf '%q' "$MAX_RESTARTS")"
+        echo "MPES_USE_GPU=$(printf '%q' "${MPES_USE_GPU:-0}")"
+        printf 'OPT_ARGS=('
+        printf ' %q' "${OPT_ARGS[@]}"
+        printf ')\n'
+        cat <<'SUPV'
+attempt=1
+while (( attempt <= MAX_RESTARTS + 1 )); do
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] launching attempt $attempt" >> "$SUPERVISOR_LOG"
+    env MPES_USE_GPU="$MPES_USE_GPU" PYTHONUNBUFFERED=1 \
+        python3 -u -m "$OPT_MODULE" "${OPT_ARGS[@]}" >> "$LOG_FILE" 2>> "$ERR_FILE"
+    rc=$?
+    if (( rc == 0 )); then
+        echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] optimiser exited cleanly (attempt $attempt)" >> "$SUPERVISOR_LOG"
+        exit 0
+    fi
+    echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] optimiser died with code $rc on attempt $attempt" >> "$SUPERVISOR_LOG"
+    if (( attempt > MAX_RESTARTS )); then
+        echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] giving up after $MAX_RESTARTS restarts" >> "$SUPERVISOR_LOG"
+        exit "$rc"
+    fi
+    attempt=$(( attempt + 1 ))
+    sleep 5
+done
+SUPV
+    } > "$SUPERVISOR_SCRIPT"
+    chmod +x "$SUPERVISOR_SCRIPT"
+
+    setsid nohup bash "$SUPERVISOR_SCRIPT" </dev/null >>"$SUPERVISOR_LOG" 2>&1 &
     OPT_PID=$!
+    disown 2>/dev/null || true
     echo "$OPT_PID" > "$PID_FILE"
 fi
 
