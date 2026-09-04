@@ -31,7 +31,7 @@ import numpy
 ##########################
 ##  Imports internos    ##
 ##########################
-from .runner import ALL_PACKAGES, GENERAL_ROOT, RAW_RESULTS_DIR
+from .runner import GENERAL_ROOT, RAW_RESULTS_DIR, SUITE_PACKAGES
 from .scenarios import build_scenarios
 from .runner import _find_baseline_paths
 
@@ -103,12 +103,14 @@ def _kl(p: numpy.ndarray, q: numpy.ndarray, eps: float = 1e-9) -> float:
 ###############
 ##  Loading
 ###############
-def _load_all() -> dict:
+def _load_all(suite: str) -> dict:
     """Returns ``{model: {scenario: cell_dict}}``."""
     out: dict = {}
     for path in glob.glob(os.path.join(RAW_RESULTS_DIR, '*.json')):
         with open(path, 'r', encoding='utf-8') as f:
             cell = json.load(f)
+        if cell.get('suite') != suite:
+            continue
         out.setdefault(cell['model'], {})[cell['scenario']] = cell
     return out
 
@@ -130,7 +132,7 @@ def _write_matrix(path: str, models: list, scenarios: list, getter):
 ###############
 ##  Main
 ###############
-def aggregate(reference_pkg: str = 'pes_dqn') -> str:
+def aggregate(reference_pkg: str = 'pes_dqn', suite: str = 'individual') -> str:
     """Build matrices + summary JSON from raw per-cell results.
 
     Parameters
@@ -145,7 +147,9 @@ def aggregate(reference_pkg: str = 'pes_dqn') -> str:
         Absolute path of the written ``matrix_summary.json`` file.
     """
     os.makedirs(RESULTS_DIR, exist_ok=True)
-    data = _load_all()
+    if suite not in SUITE_PACKAGES:
+        raise ValueError(f'Unknown benchmark suite: {suite}')
+    data = _load_all(suite)
     if not data:
         raise RuntimeError(f'No raw cells found under {RAW_RESULTS_DIR}.')
 
@@ -155,7 +159,7 @@ def aggregate(reference_pkg: str = 'pes_dqn') -> str:
     scenarios = [s.scenario_id for s in catalogue]
     baseline_id = next(s.scenario_id for s in catalogue if s.is_baseline)
 
-    models = [m for m in ALL_PACKAGES if m in data]
+    models = [m for m in SUITE_PACKAGES[suite] if m in data]
 
     def cell(m, s):
         return data.get(m, {}).get(s, {})
@@ -235,31 +239,39 @@ def aggregate(reference_pkg: str = 'pes_dqn') -> str:
             return ''
         return f'{_kl(a, b):.6f}'
 
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_global_mean.csv'),     models, scenarios, gm)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_std.csv'),             models, scenarios, st)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_min.csv'),             models, scenarios, mn)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_max.csv'),             models, scenarios, mx)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_stress_degradation.csv'), models, scenarios, degr)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_welch_p.csv'),         models, scenarios, welch_p)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_welch_logp.csv'),      models, scenarios, welch_logp)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_cohen_d.csv'),         models, scenarios, cohen)
-    _write_matrix(os.path.join(RESULTS_DIR, 'matrix_action_kl.csv'),       models, scenarios, kl)
+    suite_results_dir = os.path.join(RESULTS_DIR, suite)
+    os.makedirs(suite_results_dir, exist_ok=True)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_global_mean.csv'), models, scenarios, gm)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_std.csv'), models, scenarios, st)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_min.csv'), models, scenarios, mn)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_max.csv'), models, scenarios, mx)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_stress_degradation.csv'), models, scenarios, degr)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_welch_p.csv'), models, scenarios, welch_p)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_welch_logp.csv'), models, scenarios, welch_logp)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_cohen_d.csv'), models, scenarios, cohen)
+    _write_matrix(os.path.join(suite_results_dir, 'matrix_action_kl.csv'), models, scenarios, kl)
 
     # Machine-readable consolidation.
     summary = {
+        'suite': suite,
         'baseline_scenario': baseline_id,
         'models': models,
         'scenarios': scenarios,
         'cells': data,
     }
-    summary_path = os.path.join(RESULTS_DIR, 'matrix_summary.json')
+    summary_path = os.path.join(suite_results_dir, 'matrix_summary.json')
     with open(summary_path, 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2)
     return summary_path
 
 
 def _main():
-    out = aggregate()
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--suite', choices=['individual', 'ensemble'], default='individual')
+    parser.add_argument('--reference-pkg', default='pes_dqn')
+    args = parser.parse_args()
+    out = aggregate(reference_pkg=args.reference_pkg, suite=args.suite)
     print(f"[aggregate] wrote summary -> {out}")
 
 

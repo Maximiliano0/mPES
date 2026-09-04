@@ -55,7 +55,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description='Evaluate the Transformer-Guard ensemble.')
     package_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     default_inputs = os.path.join(package_root, 'inputs')
-    default_outputs = os.path.join(package_root, 'outputs')
+    default_outputs = os.environ.get('MPES_OUTPUTS_PATH', os.path.join(package_root, 'outputs'))
     parser.add_argument('--severity', default=os.path.join(default_inputs, 'initial_severity.csv'))
     parser.add_argument('--lengths', default=os.path.join(default_inputs, 'sequence_lengths.csv'))
     parser.add_argument('--params', default=None)

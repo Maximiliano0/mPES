@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "subject_id": "2026-09-04_ENS_TRF_GUARD",
+    "timestamp": "2026-09-04T19:57:03.690817",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "ENS_TRF_GUARD"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 30,
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.9066310052042829,
+    "overall_median": 0.9061521991005732,
+    "overall_std": 0.0676793144252317,
+    "overall_min": 0.6546535405299664,
+    "overall_max": 1.0,
+    "total_sequences": 64,
+    "first_block_mean": 0.9320340155304134,
+    "last_block_mean": 0.9168350615867944,
+    "improvement": -0.015198953943619031,
+    "percentile_25": 0.8617794455898118,
+    "percentile_75": 0.9612684482275168,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.9320340155304134,
+        "median": 0.937085289097303,
+        "std": 0.05390355806225739,
+        "min": 0.8588481883053609,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 2,
+        "mean": 0.9046053890588364,
+        "median": 0.9001280554414967,
+        "std": 0.05455172258394687,
+        "min": 0.8205448111194195,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 3,
+        "mean": 0.882492678186138,
+        "median": 0.8861857125187672,
+        "std": 0.0496283448103698,
+        "min": 0.7850987574536431,
+        "max": 0.9624906226556639,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 4,
+        "mean": 0.9079962307659974,
+        "median": 0.9431982733844662,
+        "std": 0.10589142649401022,
+        "min": 0.6546535405299664,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 5,
+        "mean": 0.9059454385255818,
+        "median": 0.9114340939036318,
+        "std": 0.0598655075123202,
+        "min": 0.7847581357416921,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 6,
+        "mean": 0.8770078952364477,
+        "median": 0.8721629110805258,
+        "std": 0.060367358180563505,
+        "min": 0.7889621772567943,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 7,
+        "mean": 0.926131332744053,
+        "median": 0.9345807871941961,
+        "std": 0.06508606885273041,
+        "min": 0.8296351334121775,
+        "max": 0.9991853864852359,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 8,
+        "mean": 0.9168350615867944,
+        "median": 0.9126322918213994,
+        "std": 0.055007724831368184,
+        "min": 0.8409176793325337,
+        "max": 0.9885233358837032,
+        "num_sequences": 8
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 30,
+    "agent_type": "ENS_TRF_GUARD",
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_ENS_TRF_GUARD_results_2026-09-04_ENS_TRF_GUARD.png",
+    "this_file": "PES_ENS_TRF_GUARD_results_2026-09-04_ENS_TRF_GUARD.json"
+  }
+}

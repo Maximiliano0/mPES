@@ -10,7 +10,7 @@ Executes ONE (model, scenario) cell by:
 5. Restoring the original CSVs (always, via ``try/finally``).
 6. Locating the run's results JSON + responses TXT and computing the
    benchmark metric block.
-7. Writing ``general/results/raw/<model>__<sid>.json``.
+7. Writing ``general/results/raw/<suite>__<model>__<sid>.json``.
 
 Idempotent and resumable: a cell whose result JSON already exists is
 skipped unless ``force=True``.
@@ -54,7 +54,7 @@ WORK_ROOT = os.path.join(GENERAL_ROOT, 'work')
 RAW_RESULTS_DIR = os.path.join(GENERAL_ROOT, 'results', 'raw')
 
 # Group of every benchmarked package.
-PACKAGE_GROUPS = {
+INDIVIDUAL_PACKAGE_GROUPS = {
     'pes_ql':   'tabular',
     'pes_dql':  'tabular',
     'pes_dqn':  'ml',
@@ -62,6 +62,20 @@ PACKAGE_GROUPS = {
     'pes_a2c':  'ml',
     'pes_trf':  'ml',
 }
+ENSEMBLE_PACKAGE_GROUPS = {
+    'pes_ens':             'ens',
+    'pes_ens_sprb':        'ens',
+    'pes_ens_accq':        'ens',
+    'pes_ens_consensus':   'ens',
+    'pes_ens_consensus_prior': 'ens',
+    'pes_ens_trf_guard':   'ens',
+}
+SUITE_PACKAGE_GROUPS = {
+    'individual': INDIVIDUAL_PACKAGE_GROUPS,
+    'ensemble': ENSEMBLE_PACKAGE_GROUPS,
+}
+PACKAGE_GROUPS = {**INDIVIDUAL_PACKAGE_GROUPS, **ENSEMBLE_PACKAGE_GROUPS}
+SUITE_PACKAGES = {suite: list(packages) for suite, packages in SUITE_PACKAGE_GROUPS.items()}
 ALL_PACKAGES = list(PACKAGE_GROUPS.keys())
 
 
@@ -84,8 +98,18 @@ def _scenario_outputs_dir(pkg: str, scenario_id: str) -> str:
     return os.path.join(WORK_ROOT, pkg, 'outputs', scenario_id)
 
 
+def _suite_for_package(pkg: str) -> str:
+    """Return the comparison suite owning ``pkg``."""
+    for suite, packages in SUITE_PACKAGES.items():
+        if pkg in packages:
+            return suite
+    raise ValueError(f'Unknown benchmark package: {pkg}')
+
+
 def _result_json_path(pkg: str, scenario_id: str) -> str:
-    return os.path.join(RAW_RESULTS_DIR, f'{pkg}__{scenario_id}.json')
+    """Return the isolated raw-result path for one package and scenario."""
+    suite = _suite_for_package(pkg)
+    return os.path.join(RAW_RESULTS_DIR, f'{suite}__{pkg}__{scenario_id}.json')
 
 
 def _stash_then_copy(scenario_csvs: "tuple[str, str]", pkg: str):
@@ -222,6 +246,7 @@ def run_cell(pkg: str, scenario: Scenario, *,
     # 6. Parse outputs.
     metrics = {
         'model': pkg,
+            'suite': _suite_for_package(pkg),
         'scenario': scenario.scenario_id,
         'family': scenario.family,
         'is_baseline': scenario.is_baseline,
@@ -260,6 +285,18 @@ def run_cell(pkg: str, scenario: Scenario, *,
             metrics['report_overall_std'] = stats.get('overall_std')
         except (OSError, json.JSONDecodeError) as exc:
             metrics['parse_error'] = f'results JSON: {exc}'
+
+    # Ensemble evaluators persist the per-sequence vector as an NPY file but
+    # do not print the legacy ``Sequence ... Performance`` log lines.
+    if not per_seq:
+        performance_files = glob.glob(os.path.join(out_dir, '**', '*performances*.npy'),
+                                      recursive=True)
+        if performance_files:
+            performance_files.sort(key=os.path.getmtime, reverse=True)
+            try:
+                per_seq = numpy.asarray(numpy.load(performance_files[0]), dtype=float).tolist()
+            except (OSError, ValueError):
+                per_seq = []
 
     if per_seq:
         arr = numpy.asarray(per_seq, dtype=float)

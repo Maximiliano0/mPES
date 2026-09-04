@@ -1,0 +1,7 @@
+model,sev_empirical,sev_uniform,sev_gauss_low,sev_gauss_mid,sev_gauss_high,sev_weibull,sev_beta_lowskew,sev_beta_highskew,sev_bimodal,sev_extrapolate_high,len_all_short,len_all_long,len_geometric,len_poisson,len_extrapolate_long,joint_high_long,joint_low_short,joint_uniform_geom,joint_extrap_both,struct_few_long_blocks,struct_many_short_blocks,struct_more_total
+pes_ql,0.886642,,,,,,,,,,,,,,,,,,,,,
+pes_dql,0.896341,,,,,,,,,,,,,,,,,,,,,
+pes_dqn,0.893733,,,,,,,,,,,,,,,,,,,,,
+pes_rdqn,0.898650,,,,,,,,,,,,,,,,,,,,,
+pes_a2c,0.887242,,,,,,,,,,,,,,,,,,,,,
+pes_trf,0.927189,,,,,,,,,,,,,,,,,,,,,

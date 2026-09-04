@@ -14,6 +14,7 @@ Run after :mod:`general.scripts.aggregate` and :mod:`general.scripts.plot_matrix
 ##  Imports externos    ##
 ##########################
 import datetime as _dt
+import argparse
 import json
 import os
 
@@ -27,15 +28,16 @@ from .runner import GENERAL_ROOT
 RESULTS_DIR = os.path.join(GENERAL_ROOT, 'results')
 
 
-def _load_summary() -> dict:
-    with open(os.path.join(RESULTS_DIR, 'matrix_summary.json'),
+def _load_summary(suite: str) -> dict:
+    with open(os.path.join(RESULTS_DIR, suite, 'matrix_summary.json'),
               'r', encoding='utf-8') as f:
         return json.load(f)
 
 
-def write_report() -> str:
+def write_report(suite: str = 'individual') -> str:
     """Render ``benchmark_report.md`` from the aggregated summary JSON."""
-    summary = _load_summary()
+    suite_results_dir = os.path.join(RESULTS_DIR, suite)
+    summary = _load_summary(suite)
     models = summary['models']
     scenarios = summary['scenarios']
     baseline_id = summary['baseline_scenario']
@@ -64,12 +66,12 @@ def write_report() -> str:
             continue
         means = {s: cells.get(m, {}).get(s, {}).get('global_mean_perf')
                  for s in scenarios if s != baseline_id}
-        means = {k: v for k, v in means.items() if v is not None}
+        means = {k: float(v) for k, v in means.items() if v is not None}
         if not means:
             lines.append(f'| {m} | {baseline:.4f} | - | - | - | - | - |')
             continue
-        best_s = max(means, key=means.get)
-        worst_s = min(means, key=means.get)
+        best_s = max(means, key=means.__getitem__)
+        worst_s = min(means, key=means.__getitem__)
         avg_degr = float(numpy.mean([baseline - v for v in means.values()]))
         lines.append(
             f'| {m} | {baseline:.4f} | `{best_s}` | {means[best_s]:.4f} | '
@@ -137,7 +139,7 @@ def write_report() -> str:
     lines.append('')
     for fig in ('heatmap_global_mean.png', 'heatmap_stress_degradation.png',
                 'heatmap_welch_logp.png', 'heatmap_action_kl.png'):
-        if os.path.isfile(os.path.join(RESULTS_DIR, fig)):
+        if os.path.isfile(os.path.join(suite_results_dir, fig)):
             stem = fig[:-4]
             lines.append(f'* ![{stem}]({fig})  \n'
                          f'  vector: [`{stem}.pdf`]({stem}.pdf)')
@@ -146,14 +148,17 @@ def write_report() -> str:
                  '(both `.png` and `.pdf`).')
     lines.append('')
 
-    out = os.path.join(RESULTS_DIR, 'benchmark_report.md')
+    out = os.path.join(suite_results_dir, 'benchmark_report.md')
     with open(out, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
     return out
 
 
 def _main():
-    out = write_report()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--suite', choices=['individual', 'ensemble'], default='individual')
+    args = parser.parse_args()
+    out = write_report(args.suite)
     print(f'[report] wrote {out}')
 
 
