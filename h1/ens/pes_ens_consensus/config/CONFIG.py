@@ -15,3 +15,4 @@ ACTION_COUNT = 11
 DEFAULT_WEIGHTS = {'dqn': 0.15, 'a2c': 0.10, 'rdqn': 0.25, 'trf': 0.50}
 DEFAULT_CONFIDENCE_POWER = 1.0
 SEED = 42
+NUM_SEQUENCES = 8  # Sequences per block; mirrors ml/pes_dqn/config/CONFIG.py

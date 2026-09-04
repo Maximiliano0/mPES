@@ -23,6 +23,11 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
 - Si una tarea requiere modificar algo dentro de `h2/` o `h3/`, indícalo
   explícitamente al usuario y explícale qué cambio haría falta, en vez de
   hacerlo tú mismo.
+- NEVER modify, create, or delete any file inside `h1/ml/` or `h1/tabular/`.
+  Puedes **leer** libremente ambos directorios para consultar o comparar,
+  pero cualquier escritura ahí queda prohibida — incluso si la tarea parece
+  requerirlo. Si una tarea requiere modificar algo dentro de `ml/` o
+  `tabular/`, indícalo explícitamente al usuario en vez de hacerlo tú mismo.
 - NEVER create or modify files whose names end in `.md`. Documentation
   (`README.md`, `doc/*.md`, `copilot-instructions.md`, any other `.md`) is the
   exclusive responsibility of the **Markdown Actualize** agent.
@@ -38,7 +43,8 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
 
 | Directorio | Permiso |
 |------------|---------|
-| `h1/` (línea activa: `tabular/`, `ml/`, `general/`) | ✅ Lectura y escritura |
+| `h1/general/` (línea activa) | ✅ Lectura y escritura |
+| `h1/ml/`, `h1/tabular/` | 🔒 Solo lectura |
 | `h2/` (línea experimental, suspendida) | 🔒 Solo lectura |
 | `h3/` | 🔒 Solo lectura |
 | `utils/` | ✅ Lectura y escritura |

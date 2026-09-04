@@ -1,12 +1,15 @@
 """Evaluate the confidence-weighted soft-voting ensemble."""
 import argparse
 from datetime import datetime
-import importlib
 import json
 import os
 from typing import Any
 import numpy
 from .ensemble import SoftVotingEnsemble
+from ..config.CONFIG import NUM_SEQUENCES
+from ..src.pandemic_env import Pandemic, run_experiment
+from ..src.tools_env import convert_globalseq_to_seqs
+from ..src.result_formatter_env import generate_results_report
 
 
 def _load_params(path: str) -> dict[str, Any]:
@@ -14,16 +17,6 @@ def _load_params(path: str) -> dict[str, Any]:
     with open(path, 'r', encoding='utf-8') as file:
         payload = json.load(file)
     return dict(payload.get('hyperparameters', payload))
-
-
-def _load_evaluation_helpers() -> tuple[Any, Any, Any, Any]:
-    """Load the shared environment and fixed-sequence evaluation helpers."""
-    pandemic_module = importlib.import_module('ml.pes_dqn.ext.pandemic')
-    tools_module = importlib.import_module('ml.pes_dqn.ext.tools')
-    formatter_module = importlib.import_module('ml.pes_dqn.src.result_formatter')
-    return (getattr(pandemic_module, 'Pandemic'), getattr(pandemic_module, 'run_experiment'),
-            getattr(tools_module, 'convert_globalseq_to_seqs'),
-            getattr(formatter_module, 'generate_results_report'))
 
 
 def _normalize_state(state: Any, max_resources: int, max_trials: int,
@@ -51,11 +44,10 @@ def main() -> None:
     weights = {name: float(params.get(f'weight_{name}', default))
                for name, default in {'dqn': 0.15, 'a2c': 0.10, 'rdqn': 0.25, 'trf': 0.50}.items()}
     ensemble = SoftVotingEnsemble(weights, float(params.get('temperature', 1.0)), float(params.get('confidence_power', 1.0)))
-    pandemic_class, run_experiment, convert_globalseq_to_seqs, generate_results_report = _load_evaluation_helpers()
     trials_per_sequence = numpy.loadtxt(arguments.lengths, delimiter=',')
     initial_severity = numpy.loadtxt(arguments.severity, delimiter=',')
     severities = convert_globalseq_to_seqs(trials_per_sequence, initial_severity)
-    environment = pandemic_class()
+    environment = Pandemic()
     environment.verbose = False
     current_sequence = [-1]
 
@@ -76,7 +68,7 @@ def main() -> None:
     subject_id = f'{datetime.now():%Y-%m-%d}_ENS_SPRB'
     output_path = os.path.join(arguments.output, subject_id)
     os.makedirs(output_path, exist_ok=True)
-    block_size = int(getattr(importlib.import_module('ml.pes_dqn'), 'NUM_SEQUENCES'))
+    block_size = int(NUM_SEQUENCES)
     performances_by_block = [performances[index:index + block_size]
                              for index in range(0, len(performances), block_size)]
     resource_data = {
