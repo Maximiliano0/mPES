@@ -27,6 +27,7 @@ Run after :mod:`general.scripts.aggregate`.
 ##  Imports externos    ##
 ##########################
 import csv as _csv
+import argparse
 import json
 import math
 import os
@@ -107,9 +108,9 @@ _register_palettes()
 ##########################
 ##  IO helpers          ##
 ##########################
-def _load_summary() -> dict:
+def _load_summary(suite: str) -> dict:
     """Load the consolidated ``matrix_summary.json``."""
-    path = os.path.join(RESULTS_DIR, 'matrix_summary.json')
+    path = os.path.join(GENERAL_ROOT, 'results', suite, 'matrix_summary.json')
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
@@ -243,7 +244,7 @@ def _heatmap(matrix: numpy.ndarray,
                         color=colour, fontsize=7)
 
         cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.012)
-        cbar.outline.set_visible(False)
+        cbar.ax.spines['outline'].set_visible(False)
         cbar.ax.tick_params(length=0)
         if cbar_label:
             cbar.set_label(cbar_label)
@@ -274,9 +275,12 @@ def _matrix_from(summary: dict, getter) -> numpy.ndarray:
 ##########################
 ##  Public API          ##
 ##########################
-def plot_all() -> None:
+def plot_all(suite: str = 'individual') -> None:
     """Render every benchmark figure into ``general/results/``."""
-    summary = _load_summary()
+    global RESULTS_DIR, HIST_DIR
+    RESULTS_DIR = os.path.join(GENERAL_ROOT, 'results', suite)
+    HIST_DIR = os.path.join(RESULTS_DIR, 'per_sequence_histograms')
+    summary = _load_summary(suite)
     models = summary['models']
     scenarios = summary['scenarios']
     baseline_id = summary['baseline_scenario']
@@ -399,7 +403,10 @@ def plot_all() -> None:
 
 
 def _main() -> None:
-    plot_all()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--suite', choices=['individual', 'ensemble'], default='individual')
+    args = parser.parse_args()
+    plot_all(args.suite)
     print(f'[plot_matrix] figures written to {RESULTS_DIR}')
 
 

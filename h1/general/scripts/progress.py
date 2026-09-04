@@ -24,7 +24,7 @@ from datetime import datetime, timedelta
 ##########################
 ##  Imports internos    ##
 ##########################
-from .runner import ALL_PACKAGES, RAW_RESULTS_DIR, _find_baseline_paths
+from .runner import RAW_RESULTS_DIR, SUITE_PACKAGES, _find_baseline_paths
 from .scenarios import build_scenarios
 
 # ANSI colors (keep self-contained; matches ext/__init__.py palette).
@@ -52,21 +52,23 @@ def _color_for(frac: float) -> str:
     return _RED
 
 
-def _snapshot(scenario_ids: list[str]) -> None:
+def _snapshot(scenario_ids: list[str], suite: str) -> None:
     """Print one progress snapshot."""
     raw_dir = RAW_RESULTS_DIR
     os.makedirs(raw_dir, exist_ok=True)
     files = [f for f in os.listdir(raw_dir) if f.endswith('.json')]
 
     # Bucket completed cells per package.
-    done_per_pkg: dict[str, set[str]] = {p: set() for p in ALL_PACKAGES}
+    packages = SUITE_PACKAGES[suite]
+    done_per_pkg: dict[str, set[str]] = {p: set() for p in packages}
     timestamps: list[float] = []
     last_pkg, last_scen, last_ts = None, None, 0.0
     for fname in files:
         stem = fname[:-5]                     # strip '.json'
-        if '__' not in stem:
+        parts = stem.split('__', 2)
+        if len(parts) != 3 or parts[0] != suite:
             continue
-        pkg, sid = stem.split('__', 1)
+        _, pkg, sid = parts
         if pkg not in done_per_pkg:
             continue
         if sid not in scenario_ids:
@@ -82,7 +84,7 @@ def _snapshot(scenario_ids: list[str]) -> None:
             continue
 
     n_scen = len(scenario_ids)
-    total = len(ALL_PACKAGES) * n_scen
+    total = len(packages) * n_scen
     done = sum(len(s) for s in done_per_pkg.values())
 
     # Header.
@@ -95,7 +97,7 @@ def _snapshot(scenario_ids: list[str]) -> None:
           f"({overall_frac * 100:5.1f}%)")
 
     # Per-package breakdown.
-    for pkg in ALL_PACKAGES:
+    for pkg in packages:
         n = len(done_per_pkg[pkg])
         frac = n / n_scen if n_scen else 0.0
         col = _color_for(frac)
@@ -132,6 +134,8 @@ def _snapshot(scenario_ids: list[str]) -> None:
                 data = json.load(fh)
         except (OSError, json.JSONDecodeError):
             continue
+        if data.get('suite') != suite:
+            continue
         if data.get('parse_error') or data.get('returncode', 0) != 0:
             bad.append((fname, data.get('parse_error'),
                         data.get('returncode')))
@@ -149,6 +153,7 @@ def _main() -> None:
                         help='Refresh every --interval seconds.')
     parser.add_argument('--interval', type=float, default=30.0)
     parser.add_argument('--reference-pkg', default='pes_dqn')
+    parser.add_argument('--suite', choices=['individual', 'ensemble'], default='individual')
     args = parser.parse_args()
 
     sev_path, len_path = _find_baseline_paths(args.reference_pkg)
@@ -156,13 +161,13 @@ def _main() -> None:
     scenario_ids = [s.scenario_id for s in catalogue]
 
     if not args.watch:
-        _snapshot(scenario_ids)
+        _snapshot(scenario_ids, args.suite)
         return
 
     try:
         while True:
             print()
-            _snapshot(scenario_ids)
+            _snapshot(scenario_ids, args.suite)
             time.sleep(args.interval)
     except KeyboardInterrupt:
         print('\n[progress] stopped.')

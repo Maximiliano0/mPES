@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "subject_id": "2026-09-04_ENS_SPRB",
+    "timestamp": "2026-09-04T19:09:47.794654",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "ENS_SPRB"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 30,
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.9206865331727623,
+    "overall_median": 0.9488675575632097,
+    "overall_std": 0.10726777292077326,
+    "overall_min": 0.28571428571428575,
+    "overall_max": 1.0,
+    "total_sequences": 64,
+    "first_block_mean": 0.8815034670888253,
+    "last_block_mean": 0.9399998087007527,
+    "improvement": 0.058496341611927405,
+    "percentile_25": 0.8717020780188457,
+    "percentile_75": 1.0,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.8815034670888253,
+        "median": 0.9100272017564055,
+        "std": 0.09878149916104206,
+        "min": 0.6627318718381112,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 2,
+        "mean": 0.9592119884215687,
+        "median": 0.9611792197867739,
+        "std": 0.031610521884581494,
+        "min": 0.9017038007863697,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 3,
+        "mean": 0.9600466943540549,
+        "median": 0.9740411293927154,
+        "std": 0.04875424066716845,
+        "min": 0.8460591133004925,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 4,
+        "mean": 0.9392285390617818,
+        "median": 0.9519831288605992,
+        "std": 0.04654620789885151,
+        "min": 0.8460591133004925,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 5,
+        "mean": 0.9266200998799939,
+        "median": 0.969240693182815,
+        "std": 0.07493639191055244,
+        "min": 0.804839968774395,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 6,
+        "mean": 0.9049105564726057,
+        "median": 0.9110042559409648,
+        "std": 0.09242030739468893,
+        "min": 0.7334754797441364,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 7,
+        "mean": 0.8539711114025149,
+        "median": 0.9368907764855965,
+        "std": 0.22021473994761015,
+        "min": 0.28571428571428575,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 8,
+        "mean": 0.9399998087007527,
+        "median": 0.9713698734154015,
+        "std": 0.06386209819185135,
+        "min": 0.8485499462943072,
+        "max": 1.0,
+        "num_sequences": 8
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 30,
+    "agent_type": "ENS_SPRB",
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_ENS_SPRB_results_2026-09-04_ENS_SPRB.png",
+    "this_file": "PES_ENS_SPRB_results_2026-09-04_ENS_SPRB.json"
+  }
+}

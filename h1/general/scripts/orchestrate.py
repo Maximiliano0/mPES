@@ -23,12 +23,15 @@ import time
 ##########################
 ##  Imports internos    ##
 ##########################
-from .runner import (ALL_PACKAGES, _find_baseline_paths, run_cell)
+from .runner import (ALL_PACKAGES, SUITE_PACKAGES, _find_baseline_paths, run_cell)
 from .scenarios import build_scenarios
 
 
 def _main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--suite', choices=['individual', 'ensemble', 'both'],
+                        default='individual',
+                        help='Comparison suite to execute (default: individual).')
     parser.add_argument('--pkg', choices=ALL_PACKAGES, action='append',
                         help='Restrict to one or more packages (repeatable).')
     parser.add_argument('--scenario', action='append',
@@ -43,7 +46,12 @@ def _main():
     sev_path, len_path = _find_baseline_paths(args.reference_pkg)
     catalogue = build_scenarios(sev_path, len_path)
 
-    pkgs = args.pkg or ALL_PACKAGES
+    if args.pkg:
+        pkgs = args.pkg
+    elif args.suite == 'both':
+        pkgs = SUITE_PACKAGES['individual'] + SUITE_PACKAGES['ensemble']
+    else:
+        pkgs = SUITE_PACKAGES[args.suite]
     if args.scenario:
         catalogue = [s for s in catalogue if s.scenario_id in args.scenario]
         if not catalogue:
