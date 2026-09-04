@@ -12,17 +12,26 @@
 
 </div>
 
-> This project documentation reflects the active branch: `h1/`. Legacy and suspended material is intentionally excluded from the current workflow.
+> This repository contains three experiment lines. The active benchmark workflow is in `h1/`; `h2/` and `h3/` remain experimental staging areas and are not part of the current benchmark report.
 
 ---
 
 ## ✨ Current scope
 
 - 🧠 **Active benchmark line:** `h1/` with tabular, neural and ensemble training packages.
+- 🧪 **Experimental staging lines:** `h2/` (`tabular_conf/ql_conf`) and `h3/` (`tabular_uq/ql_uq`) remain out of the validated benchmark path.
 - 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over six active benchmark models.
 - 🔬 **Bayesian optimisation:** Optuna for the trainable variants.
 - 🌍 **Windows-first workflow:** Python 3.12 and the `win_mpes_env` environment.
-- 📚 **Package-level docs:** focused on the active models and their executable workflows.
+- 📚 **Package-level docs:** focused on the active models and their executable workflows, while legacy variants remain documented as archive material.
+
+### Repository lines
+
+| Line | Status | Current package(s) |
+|------|--------|--------------------|
+| [`h1/`](h1/) | Active and validated | `tabular/`, `ml/`, `ens/`, `general/` |
+| [`h2/`](h2/) | Suspended / staging | `tabular_conf/ql_conf` |
+| [`h3/`](h3/) | Experimental prototype | `tabular_uq/ql_uq` |
 
 ---
 
@@ -53,6 +62,8 @@
 | `pes_ens_accq` | Confidence-weighted action/Q-value ensemble | [`__main__.py`](h1/ens/pes_ens_accq/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_accq/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_accq/ext/optimize_ens.py) |
 | `pes_ens_trf_guard` | Transformer-first confidence-gated ensemble | [`__main__.py`](h1/ens/pes_ens_trf_guard/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_trf_guard/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_trf_guard/ext/optimize_ens.py) |
 | `pes_ens_consensus` | Agreement/disagreement confidence consensus | [`__main__.py`](h1/ens/pes_ens_consensus/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_consensus/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_consensus/ext/optimize_ens.py) |
+
+> Legacy archive variants also remain in the repository: `h1/ens/pes_ens/` and `h1/ens/pes_ens_consensus_prior/`. They are retained for reference and do not form part of the active benchmark workflow.
 
 ### Support directories
 
@@ -109,14 +120,18 @@ The active repository documentation is centred on the executable packages in `h1
 
 | Package | Guide |
 |---------|-------|
-| `pes_base` | [`explained_pes.md`](h1/tabular/pes_base/doc/explained_pes.md) · [`how_to_train_and_test.md`](h1/tabular/pes_base/doc/how_to_train_and_test.md) |
-| `pes_ql` | [`pes_ql_explained.md`](h1/tabular/pes_ql/doc/pes_ql_explained.md) |
-| `pes_dql` | [`pes_dql_explained.md`](h1/tabular/pes_dql/doc/pes_dql_explained.md) |
-| `pes_dqn` | [`pes_dqn_explained.md`](h1/ml/pes_dqn/doc/pes_dqn_explained.md) |
-| `pes_rdqn` | [`pes_rdqn_explained.md`](h1/ml/pes_rdqn/doc/pes_rdqn_explained.md) |
-| `pes_a2c` | [`pes_a2c_explained.md`](h1/ml/pes_a2c/doc/pes_a2c_explained.md) |
-| `pes_trf` | [`pes_trf_explained.md`](h1/ml/pes_trf/doc/pes_trf_explained.md) |
-| ensemble packages | [`h1/general/README.md`](h1/general/README.md) |
+| `pes_base` | [`pes_base_explained.md`](h1/tabular/pes_base/doc/pes_base_explained.md) · [`pes_base_theory.md`](h1/tabular/pes_base/doc/pes_base_theory.md) |
+| `pes_ql` | [`pes_ql_explained.md`](h1/tabular/pes_ql/doc/pes_ql_explained.md) · [`pes_ql_theory.md`](h1/tabular/pes_ql/doc/pes_ql_theory.md) |
+| `pes_dql` | [`pes_dql_explained.md`](h1/tabular/pes_dql/doc/pes_dql_explained.md) · [`pes_dql_theory.md`](h1/tabular/pes_dql/doc/pes_dql_theory.md) |
+| `pes_dqn` | [`pes_dqn_explained.md`](h1/ml/pes_dqn/doc/pes_dqn_explained.md) · [`pes_dqn_theory.md`](h1/ml/pes_dqn/doc/pes_dqn_theory.md) |
+| `pes_rdqn` | [`pes_rdqn_explained.md`](h1/ml/pes_rdqn/doc/pes_rdqn_explained.md) · [`pes_rdqn_theory.md`](h1/ml/pes_rdqn/doc/pes_rdqn_theory.md) |
+| `pes_a2c` | [`pes_a2c_explained.md`](h1/ml/pes_a2c/doc/pes_a2c_explained.md) · [`pes_a2c_theory.md`](h1/ml/pes_a2c/doc/pes_a2c_theory.md) |
+| `pes_trf` | [`pes_trf_explained.md`](h1/ml/pes_trf/doc/pes_trf_explained.md) · [`pes_trf_theory.md`](h1/ml/pes_trf/doc/pes_trf_theory.md) |
+| `pes_ens_sprb` | [`pes_ens_sprb_explained.md`](h1/ens/pes_ens_sprb/doc/pes_ens_sprb_explained.md) · [`pes_ens_sprb_theory.md`](h1/ens/pes_ens_sprb/doc/pes_ens_sprb_theory.md) |
+| `pes_ens_accq` | [`pes_ens_accq_explained.md`](h1/ens/pes_ens_accq/doc/pes_ens_accq_explained.md) · [`pes_ens_accq_theory.md`](h1/ens/pes_ens_accq/doc/pes_ens_accq_theory.md) |
+| `pes_ens_trf_guard` | [`pes_ens_trf_guard_explained.md`](h1/ens/pes_ens_trf_guard/doc/pes_ens_trf_guard_explained.md) · [`pes_ens_trf_guard_theory.md`](h1/ens/pes_ens_trf_guard/doc/pes_ens_trf_guard_theory.md) |
+| `pes_ens_consensus` | [`pes_ens_consensus_explained.md`](h1/ens/pes_ens_consensus/doc/pes_ens_consensus_explained.md) · [`pes_ens_consensus_theory.md`](h1/ens/pes_ens_consensus/doc/pes_ens_consensus_theory.md) |
+| general benchmark | [`h1/general/README.md`](h1/general/README.md) |
 
 ---
 
