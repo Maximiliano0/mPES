@@ -1,6 +1,7 @@
 """Evaluate the confidence-weighted action/Q-value ensemble."""
 import argparse
 from datetime import datetime
+import glob
 import json
 import os
 from typing import Any
@@ -17,6 +18,26 @@ def _load_params(path: str) -> dict[str, Any]:
     with open(path, 'r', encoding='utf-8') as file:
         payload = json.load(file)
     return dict(payload.get('hyperparameters', payload))
+
+
+def _find_best_params(default_inputs: str) -> str:
+    """Find the optimization result with the highest recorded objective value."""
+    candidates = [os.path.join(default_inputs, 'best_params.json')]
+    candidates.extend(glob.glob(os.path.join(default_inputs, '*_BAYESIAN_OPT', 'best_params.json')))
+    valid_candidates: list[tuple[float, float, str]] = []
+    for path in candidates:
+        if not os.path.isfile(path):
+            continue
+        try:
+            with open(path, 'r', encoding='utf-8') as file:
+                payload = json.load(file)
+            value = float(payload.get('value', float('-inf')))
+        except (OSError, TypeError, ValueError, json.JSONDecodeError):
+            continue
+        valid_candidates.append((value, os.path.getmtime(path), path))
+    if not valid_candidates:
+        return candidates[0]
+    return max(valid_candidates)[2]
 
 
 def _normalize_state(state: Any, max_resources: int, max_trials: int,
@@ -37,10 +58,11 @@ def main() -> None:
     default_outputs = os.path.join(package_root, 'outputs')
     parser.add_argument('--severity', default=os.path.join(default_inputs, 'initial_severity.csv'))
     parser.add_argument('--lengths', default=os.path.join(default_inputs, 'sequence_lengths.csv'))
-    parser.add_argument('--params', default=os.path.join(default_inputs, 'best_params.json'))
+    parser.add_argument('--params', default=None)
     parser.add_argument('--output', default=default_outputs)
     arguments = parser.parse_args()
-    params = _load_params(arguments.params) if os.path.isfile(arguments.params) else {}
+    params_path = arguments.params or _find_best_params(default_inputs)
+    params = _load_params(params_path) if os.path.isfile(params_path) else {}
     weights = {name: float(params.get(f'weight_{name}', default))
                for name, default in {'dqn': 0.15, 'a2c': 0.10, 'rdqn': 0.25, 'trf': 0.50}.items()}
     ensemble = ActionVotingEnsemble(weights, float(params.get('confidence_power', 1.0)))
