@@ -18,3 +18,4 @@ DEFAULT_PRIOR_WEIGHT = 0.10
 DEFAULT_PRIOR_SIGMA = 1.5
 MAX_SEVERITY = 9
 SEED = 42
+NUM_SEQUENCES = 8  # Sequences per block; mirrors ml/pes_dqn/config/CONFIG.py

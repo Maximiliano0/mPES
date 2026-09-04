@@ -22,15 +22,18 @@ framework.
 | `ml/pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
 | `ml/pes_a2c` | Advantage Actor-Critic (A2C, separate actor + critic nets) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
 | `ml/pes_trf` | Causal Transformer encoder + RL | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
-| `ens/pes_ens_sprb` | Confidence-weighted soft voting over action probabilities (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/train_ens.py`, `ext/optimize_ens.py` |
-| `ens/pes_ens_accq` | Confidence-weighted action voting with Q-value tie-breaking (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/train_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens_sprb` | Confidence-weighted soft voting over action probabilities (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens_accq` | Confidence-weighted action voting with Q-value tie-breaking (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens_trf_guard` | Transformer-first confidence-gated fallback ensemble | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens_consensus` | Confidence consensus with agreement and disagreement terms | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `general/` | Cross-model Under Stress Experiments harness (22 scenarios × 6 models) | `scripts/orchestrate.py`, `scripts/aggregate.py`, `scripts/report.py` |
 
-> The ensemble implementations are split into `ens/pes_ens_sprb` for
-> confidence-weighted soft voting over action probabilities and
-> `ens/pes_ens_accq` for confidence-weighted action voting with normalized
-> Q-value tie-breaking. Both combine `pes_dqn`, `pes_rdqn`, and `pes_trf` and
-> expose tunable parameters through `ext/optimize_ens.py`.
+> The ensemble implementations combine `pes_dqn`, `pes_rdqn`, and `pes_trf`.
+> `pes_ens_sprb` uses soft voting, `pes_ens_accq` uses action voting with
+> normalized-Q tie-breaking, `pes_ens_trf_guard` gives the Transformer a
+> confidence gate with fallback, and `pes_ens_consensus` rewards agreement
+> while penalizing disagreement. All expose tunable parameters through
+> `ext/optimize_ens.py` and evaluate through `ext/evaluate_ens.py`.
 
 ### `h2/` — experimental line (suspended)
 
@@ -58,7 +61,9 @@ h1/                 # Active experiment line
 │   ├── pes_a2c/    #     Advantage Actor-Critic
 │   ├── pes_trf/    #     Causal Transformer DQN
 │   ├── pes_ens_sprb/ #   Confidence-weighted soft voting ensemble
-│   └── pes_ens_accQ/ #   Confidence-weighted action/Q-value ensemble
+│   ├── pes_ens_accq/ #   Confidence-weighted action/Q-value ensemble
+│   ├── pes_ens_trf_guard/ # Transformer-first confidence-gated ensemble
+│   └── pes_ens_consensus/ # Confidence consensus ensemble
 └── general/        #   Cross-model Under Stress Experiments harness + comparison doc
 
 h2/                  # Experimental line (suspended)
@@ -87,6 +92,8 @@ utils/               # Shared scripts and config (Windows only)
 | `ml/pes_trf` | `python -m ml.pes_trf` |
 | `ens/pes_ens_sprb` | `python -m ens.pes_ens_sprb` |
 | `ens/pes_ens_accq` | `python -m ens.pes_ens_accq` |
+| `ens/pes_ens_trf_guard` | `python -m ens.pes_ens_trf_guard` |
+| `ens/pes_ens_consensus` | `python -m ens.pes_ens_consensus` |
 
 ### Bayesian optimisation commands (from within `h1/`)
 
@@ -100,6 +107,8 @@ utils/               # Shared scripts and config (Windows only)
 | `ml/pes_trf` | `python -m ml.pes_trf.ext.optimize_tr [n_trials]` |
 | `ens/pes_ens_sprb` | `python -m ens.pes_ens_sprb.ext.optimize_ens [n_trials]` |
 | `ens/pes_ens_accq` | `python -m ens.pes_ens_accq.ext.optimize_ens [n_trials]` |
+| `ens/pes_ens_trf_guard` | `python -m ens.pes_ens_trf_guard.ext.optimize_ens [n_trials]` |
+| `ens/pes_ens_consensus` | `python -m ens.pes_ens_consensus.ext.optimize_ens [n_trials]` |
 
 ### Common package layout
 

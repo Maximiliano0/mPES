@@ -19,7 +19,7 @@
 
 ## ✨ Highlights
 
-- 🧠 **Nine package folders under `h1/`** — three tabular, four neural, and two ensemble variants.
+- 🧠 **Eleven package folders under `h1/`** — three tabular, four neural, and four ensemble variants.
 - 📊 **22-scenario Under Stress Experiments** ([`h1/general/`](h1/general/)) over six benchmarked models.
 - 🔬 **Bayesian hyperparameter optimisation** via Optuna for the learnable models.
 - 🌍 **Windows-first** — Python 3.12 and the `win_mpes_env` virtual environment.
@@ -54,6 +54,8 @@ Packages are grouped by algorithm family under the active workspace lines.
 |---------|-----------|-----------|
 | `pes_ens_sprb` | Confidence-weighted soft voting ensemble | [`__main__.py`](h1/ens/pes_ens_sprb/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_sprb/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_sprb/ext/optimize_ens.py) |
 | `pes_ens_accq` | Confidence-weighted action/Q-value ensemble | [`__main__.py`](h1/ens/pes_ens_accq/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_accq/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_accq/ext/optimize_ens.py) |
+| `pes_ens_trf_guard` | Transformer-first confidence-gated ensemble | [`__main__.py`](h1/ens/pes_ens_trf_guard/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_trf_guard/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_trf_guard/ext/optimize_ens.py) |
+| `pes_ens_consensus` | Confidence consensus with agreement bonus and disagreement penalty | [`__main__.py`](h1/ens/pes_ens_consensus/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_consensus/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_consensus/ext/optimize_ens.py) |
 
 ### Support directories
 
@@ -148,6 +150,15 @@ python -m ml.pes_a2c          # Advantage Actor-Critic
 python -m ml.pes_trf          # Causal Transformer DQN
 ```
 
+Ensembles de evaluación:
+
+```bash
+python -m ens.pes_ens_sprb
+python -m ens.pes_ens_accq
+python -m ens.pes_ens_trf_guard
+python -m ens.pes_ens_consensus
+```
+
 ### Train an agent
 
 ```bash
@@ -164,6 +175,22 @@ python -m ml.pes_rdqn.ext.train_rdqn        175000
 python -m ml.pes_a2c.ext.train_a2c          175000
 python -m ml.pes_trf.ext.train_transformer  175000
 
+```
+
+### Evaluate and optimise ensembles
+
+The ensembles do not train neural networks. They load the trained DQN, RDQN
+and Transformer models, read the local `initial_severity.csv`,
+`sequence_lengths.csv` and `best_params.json` files, and evaluate fixed
+sequences. Optimisation is independent for each ensemble and writes its own
+`best_params.json`.
+
+```bash
+cd h1
+python -m ens.pes_ens_sprb.ext.optimize_ens 50
+python -m ens.pes_ens_accq.ext.optimize_ens 50
+python -m ens.pes_ens_trf_guard.ext.optimize_ens 50
+python -m ens.pes_ens_consensus.ext.optimize_ens 50
 ```
 
 ### Bayesian hyperparameter optimisation
@@ -225,6 +252,10 @@ GitHub.
 | `pes_rdqn`  | [`pes_rdqn_theory.md`](h1/ml/pes_rdqn/doc/pes_rdqn_theory.md) | [`pes_rdqn_explained.md`](h1/ml/pes_rdqn/doc/pes_rdqn_explained.md) |
 | `pes_a2c`   | [`pes_a2c_theory.md`](h1/ml/pes_a2c/doc/pes_a2c_theory.md) | [`pes_a2c_explained.md`](h1/ml/pes_a2c/doc/pes_a2c_explained.md) |
 | `pes_trf`   | [`pes_trf_theory.md`](h1/ml/pes_trf/doc/pes_trf_theory.md) | [`pes_trf_explained.md`](h1/ml/pes_trf/doc/pes_trf_explained.md) |
+| `pes_ens_sprb` | Source-only | [`ext/evaluate_ens.py`](h1/ens/pes_ens_sprb/ext/evaluate_ens.py) |
+| `pes_ens_accq` | Source-only | [`ext/evaluate_ens.py`](h1/ens/pes_ens_accq/ext/evaluate_ens.py) |
+| `pes_ens_trf_guard` | Source-only | [`ext/evaluate_ens.py`](h1/ens/pes_ens_trf_guard/ext/evaluate_ens.py) |
+| `pes_ens_consensus` | Source-only | [`ext/evaluate_ens.py`](h1/ens/pes_ens_consensus/ext/evaluate_ens.py) |
 
 ---
 
@@ -238,9 +269,9 @@ joint, structural families) and aggregates the results into nine
 (6 models × 22 scenarios).
 
 > **Pending regeneration.** `benchmark_report.md`, the heatmaps, and the raw
-> per-model JSON cells were produced together with `pes_ens` and have been
-> removed along with its data. Re-run the sweep below to regenerate them for
-> the current 6-model catalogue.
+> per-model JSON cells belong to the six-model catalogue and are independent
+> of the current ensemble packages. Re-run the sweep below to regenerate them
+> for the current 6-model catalogue.
 
 ### Run the sweep
 
@@ -267,54 +298,6 @@ in-cell (`≤-10` in the Welch heatmap).
 | Stress degradation (Δ vs baseline) | `general/results/heatmap_stress_degradation.png` | `RdBu_r` (diverging) | symmetric around 0 |
 | Welch test, log₁₀(p) | `general/results/heatmap_welch_logp.png` | `magma_r` | clipped to `[-10, 0]` |
 | Action-distribution KL | `general/results/heatmap_action_kl.png` | `cividis` | `LogNorm` |
-
-### Historical benchmark conclusions (archived)
-
-The conclusions below were written from a prior benchmark run that included
-`pes_ens`. Both `pes_ens` and its raw results have since been removed from the
-project, so these numbers are kept only as narrative context for the thesis
-and are **not** reproducible from the current repository state. Re-run the
-h1 sweep to obtain current, ensemble-free numbers.
-
-1. **Overall ranking** (mean performance across 22 scenarios):
-   `pes_ens` (0.937) > `pes_trf` (0.927) > `pes_rdqn` (0.899) ≈
-   `pes_dqn` (0.894) ≈ `pes_dql` (0.893) > `pes_a2c` (0.887) ≈
-   `pes_ql` (0.887). The ensemble is the **only** model that stays
-   ≥ 0.90 in every scenario.
-
-2. **Best single (non-ensemble) model**: `pes_trf` — the only standalone
-   model that *improves* under the toughest extrapolations
-   (`sev_extrapolate_high`, `joint_extrap_both`) with very-large
-   positive effect sizes (Cohen's d > +2).
-
-3. **Most fragile**: `pes_dql` and `pes_ql` — largest mean degradation,
-   only models with d < −1.5 on multiple scenarios; `pes_ql` collapses
-   to a worst-sequence performance of **0.168** on `joint_low_short`.
-
-4. **Three universal stressors** (p < 0.001 across all 7 models):
-   `sev_extrapolate_high`, `len_extrapolate_long`, `joint_extrap_both`.
-   Treat these as the headline benchmark cells.
-
-5. **Three control columns** (`struct_*`): degradation = 0, p = 1.0,
-   KL = 0 — they validate the harness rather than measure transfer.
-
-6. **Hidden caveat — `pes_a2c`**: action-distribution KL is *exactly
-   zero* on every severity scenario despite competitive scores. This
-   signals partial **policy collapse** onto a robust default action
-   sequence rather than genuine context-conditioning.
-
-7. **Tail-risk safety**: `pes_ens` keeps a worst-sequence floor ≥ 0.57
-   across the entire 22 × 64 grid; `pes_trf` ≥ 0.55. They are the
-   safest choices when worst-case behaviour matters more than average.
-
-8. **Family takeaways**:
-   - **Severity** — deep models > tabular by a wide margin on the
-     extrapolative tails; comparable on in-support reshapings.
-   - **Length** — hardest family for everyone (`len_extrapolate_long`
-     degrades all 7 models).
-   - **Joint** — bimodal: catastrophic for tabular, *beneficial* for
-     transformer / ensemble.
-   - **Structural** — control band (sanity check).
 
 ---
 
