@@ -3,8 +3,9 @@
 # 🧪 Comparación histórica de Modelos de Aprendizaje por Refuerzo en mPES
 
 > **Archivo histórico:** este documento resume la evaluación inicial de siete
-> arquitecturas individuales. Los paquetes ensemble actuales no forman parte
-> de esta comparación histórica.
+> arquitecturas individuales. Los ensembles actuales se documentan en una
+> sección separada y no se incorporan al ranking histórico sin una evaluación
+> reproducible.
 
 **Evaluación comparativa de siete arquitecturas de RL sobre el *Pandemic Scenario*.**
 
@@ -40,7 +41,8 @@
 10. [Evaluación de la hipótesis](#10-evaluación-de-la-hipótesis)
 11. [Discusión](#11-discusión)
 12. [Conclusiones](#12-conclusiones)
-13. [Referencias (APA 7)](#13-referencias-apa-7)
+13. [Ensembles actuales](#13-ensembles-actuales)
+14. [Referencias (APA 7)](#15-referencias-apa-7)
 
 > 💡 Los heatmaps de robustez bajo estrés (Under Stress Experiments) deben
 > regenerarse con
@@ -308,8 +310,8 @@ relevante.
 Tabular   ── 0,8012 ─── 0,8866 ─── 0,8963
                 base      ql         dql
 
-ML        ── 0,8872 ─── 0,8937 ─── 0,8987 ─── 0,9272 ─── 0,9373
-                a2c        dqn       rdqn       trf       ens
+ML        ── 0,8872 ─── 0,8937 ─── 0,8987 ─── 0,9272
+                a2c        dqn       rdqn       trf
 ```
 
 **Lecturas:**
@@ -431,7 +433,104 @@ eficientes en muestras.
 
 ---
 
-## 13. Referencias (APA 7)
+## 13. Ensembles actuales
+
+Los ensembles reutilizan los modelos entrenados de `pes_dqn`, `pes_rdqn` y
+`pes_trf`; no entrenan redes nuevas. Cada paquete lee sus copias locales de
+`initial_severity.csv`, `sequence_lengths.csv` y `best_params.json`.
+
+| Ensemble | Estrategia | Parámetros distintivos | Estado |
+|----------|------------|------------------------|--------|
+| `pes_ens_sprb` | Soft voting por probabilidades | Temperatura y potencia de confianza | Evaluado |
+| `pes_ens_accq` | Votación de acciones con desempate Q | Potencia de confianza y pesos | Evaluado |
+| `pes_ens_trf_guard` | Transformer principal con fallback condicionado | Umbral y pendiente de compuerta | Pendiente de optimización |
+| `pes_ens_consensus` | Consenso ponderado por confianza | Bonus de acuerdo y penalización de desacuerdo | Pendiente de optimización |
+
+Para optimizar y evaluar las dos nuevas propuestas, desde `h1/`:
+
+```bash
+python -m ens.pes_ens_trf_guard.ext.optimize_ens 50
+python -m ens.pes_ens_consensus.ext.optimize_ens 50
+python -m ens.pes_ens_trf_guard
+python -m ens.pes_ens_consensus
+```
+
+Sus reportes se guardan en `h1/ens/<paquete>/outputs/` con la misma estructura
+estadística JSON/PNG que los modelos ML. No se añaden métricas nuevas al
+ranking hasta completar las ejecuciones con el mismo conjunto de CSV.
+
+## 14. Propuesta: `pes_ens_consensus_prior`
+
+La mejor base para un nuevo ensemble es `pes_ens_consensus`: combina las
+predicciones de `pes_dqn`, `pes_rdqn` y `pes_trf`, premia el acuerdo y penaliza
+el desacuerdo. El prior debe reflejar la evidencia disponible, sin permitir que
+los modelos de menor rendimiento desplacen al Transformer cuando la señal no
+sea concluyente.
+
+### 14.1 Prior inicial recomendado
+
+Usar estos pesos antes de aplicar la confianza observada en cada estado:
+
+| Modelo | Prior | Motivo |
+|---|---:|---|
+| `pes_trf` | 0,60 | Mayor `mean_perf` y menor $\sigma$ entre los modelos individuales |
+| `pes_rdqn` | 0,25 | Segunda media y segunda menor dispersión |
+| `pes_dqn` | 0,15 | Diversidad de arquitectura, aunque con mayor $\sigma$ |
+
+Para cada modelo $m$ y acción $a$, la puntuación previa puede combinarse con
+la confianza normalizada $c_m$ como:
+
+$$
+w_m = \frac{p_m c_m}{\sum_j p_j c_j},
+\qquad
+S(a) = \sum_m w_m q_m(a) + \lambda A(a) - \gamma D(a)
+$$
+
+donde $p_m$ es el prior, $q_m(a)$ es la probabilidad o puntuación Q
+normalizada, $A(a)$ mide el acuerdo entre modelos y $D(a)$ la dispersión de
+sus recomendaciones. El prior no debe reemplazar la confianza: debe actuar
+como regularizador cuando las evidencias son débiles o están empatadas.
+
+### 14.2 Objetivo de optimización
+
+El objetivo principal debe ser conservar la media del mejor modelo individual
+y reducir su variabilidad:
+
+$$
+\max\ \operatorname{mean\_perf} - \beta\sigma
+\quad\text{sujeto a}\quad
+\operatorname{mean\_perf} \geq 0{,}927180
+$$
+
+El valor de referencia es `mean_perf = 0,927180` y $\sigma = 0,045469$ para
+`pes_trf` en $n=64$ secuencias. La configuración solo debe considerarse una
+mejora si cumple simultáneamente:
+
+| Criterio | Umbral de aceptación |
+|---|---:|
+| `mean_perf` | $\geq 0,927180$ |
+| $\sigma$ | $< 0,045469$ |
+| Evaluación | Mismas 64 secuencias y mismo protocolo |
+
+Para evitar que una reducción de $\sigma$ oculte una pérdida de media, el
+ranking de Optuna debe ser lexicográfico: primero descartar cualquier ensayo
+que no alcance el umbral de media; después minimizar $\sigma$ y, como tercer
+criterio, maximizar `mean_perf`.
+
+### 14.3 Validación necesaria
+
+La propuesta debe evaluarse contra `pes_trf` y el consensus actual en las
+mismas 64 secuencias. Además de la media y la desviación estándar, el reporte
+debe incluir el mínimo, el máximo, el intervalo de confianza de la media y el
+porcentaje de acciones en desacuerdo. No se debe afirmar una reducción de
+desvío hasta repetir la evaluación con el mismo protocolo y comparar las
+distribuciones por secuencia, no solo sus promedios.
+
+Esta propuesta es un diseño documentado; requiere una implementación y una
+ejecución de optimización en el agente Python antes de incorporarse al ranking
+oficial.
+
+## 15. Referencias (APA 7)
 
 Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019).
 *Optuna: A next-generation hyperparameter optimization framework*. En

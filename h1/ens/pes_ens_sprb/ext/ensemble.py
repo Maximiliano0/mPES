@@ -4,7 +4,8 @@ from typing import Any
 import os
 import numpy
 import tensorflow as tf
-from ..config.CONFIG import ACTION_COUNT, DEFAULT_CONFIDENCE_POWER, DEFAULT_TEMPERATURE, DEFAULT_WEIGHTS, MODEL_PATHS
+from ..config.CONFIG import (ACTION_COUNT, DEFAULT_CONFIDENCE_POWER, DEFAULT_TEMPERATURE,
+                             DEFAULT_WEIGHTS, MODEL_PATHS, MODEL_ROLES)
 
 
 def _softmax(values: numpy.ndarray, temperature: float) -> numpy.ndarray:
@@ -23,6 +24,13 @@ def _confidence(values: numpy.ndarray, temperature: float) -> float:
     return float(numpy.clip(1.0 - entropy / max(maximum, 1e-12), 0.0, 1.0))
 
 
+def _policy_confidence(values: numpy.ndarray) -> float:
+    """Calculate normalized inverse entropy confidence from policy probabilities."""
+    probabilities = numpy.clip(values, 1e-12, 1.0)
+    entropy = -numpy.sum(probabilities * numpy.log(probabilities))
+    return float(numpy.clip(1.0 - entropy / max(numpy.log(len(values)), 1e-12), 0.0, 1.0))
+
+
 class SoftVotingEnsemble:
     """Combine the three trained models using confidence-weighted probabilities."""
 
@@ -33,7 +41,7 @@ class SoftVotingEnsemble:
         self._weights = weights or dict(DEFAULT_WEIGHTS)
         self._temperature = float(temperature)
         self._confidence_power = float(confidence_power)
-        self._histories: dict[tuple[int, int], list[numpy.ndarray]] = defaultdict(list)
+        self._histories: dict[tuple[str, tuple[int, int]], list[numpy.ndarray]] = defaultdict(list)
 
     @staticmethod
     def _load_model(path: str) -> tf.keras.Model:
@@ -52,7 +60,7 @@ class SoftVotingEnsemble:
         normalized = numpy.asarray(state, dtype=numpy.float32)
         if len(model.input_shape) == 2:
             return normalized.reshape(1, -1)
-        history = self._histories[key]
+        history = self._histories[(name, key)]
         history.append(normalized)
         history_len = int(model.input_shape[1])
         window = numpy.zeros((history_len, normalized.size), dtype=numpy.float32)
@@ -77,14 +85,21 @@ class SoftVotingEnsemble:
         diagnostics: dict[str, Any] = {}
         for name in self._models:
             model_input = self._model_input(name, numpy.asarray(state), sequence_key)
-            q_values = numpy.asarray(self._models[name](model_input, training=False))[0].astype(numpy.float64)
-            masked = q_values[:feasible + 1].copy()
-            confidence = _confidence(masked, self._temperature)
+            values = numpy.asarray(self._models[name](model_input, training=False))[0].astype(numpy.float64)
+            masked = values[:feasible + 1].copy()
+            if MODEL_ROLES[name] == 'policy':
+                masked = numpy.clip(masked, 0.0, None)
+                masked /= max(float(numpy.sum(masked)), 1e-12)
+                confidence = _policy_confidence(masked)
+                distribution_values = masked
+            else:
+                confidence = _confidence(masked, self._temperature)
+                distribution_values = _softmax(masked, self._temperature)
             weight = max(float(self._weights.get(name, 1.0)), 0.0) * confidence ** self._confidence_power
             distribution = numpy.zeros(ACTION_COUNT)
-            distribution[:feasible + 1] = _softmax(masked, self._temperature)
+            distribution[:feasible + 1] = distribution_values
             distributions.append(weight * distribution)
-            diagnostics[name] = {'action': int(numpy.argmax(masked)), 'confidence': confidence, 'q_values': q_values}
+            diagnostics[name] = {'action': int(numpy.argmax(masked)), 'confidence': confidence, 'values': values}
         combined = numpy.sum(distributions, axis=0)
         action = int(numpy.argmax(combined[:feasible + 1]))
         confidence = float(numpy.clip(numpy.sum(combined) / max(sum(
@@ -93,4 +108,5 @@ class SoftVotingEnsemble:
 
     def reset(self, sequence_key: tuple[int, int]) -> None:
         """Reset recurrent history for a sequence."""
-        self._histories.pop(sequence_key, None)
+        for name in self._models:
+            self._histories.pop((name, sequence_key), None)

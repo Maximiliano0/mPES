@@ -4,7 +4,8 @@ from typing import Any
 import os
 import numpy
 import tensorflow as tf
-from ..config.CONFIG import ACTION_COUNT, DEFAULT_CONFIDENCE_POWER, DEFAULT_WEIGHTS, MODEL_PATHS
+from ..config.CONFIG import (ACTION_COUNT, DEFAULT_CONFIDENCE_POWER, DEFAULT_WEIGHTS, MODEL_PATHS,
+                             MODEL_ROLES)
 
 
 def _softmax(values: numpy.ndarray) -> numpy.ndarray:
@@ -21,6 +22,13 @@ def _confidence(values: numpy.ndarray) -> float:
     return float(numpy.clip(1.0 - entropy / max(numpy.log(len(values)), 1e-12), 0.0, 1.0))
 
 
+def _policy_confidence(values: numpy.ndarray) -> float:
+    """Calculate normalized inverse entropy confidence from policy probabilities."""
+    probabilities = numpy.clip(values, 1e-12, 1.0)
+    entropy = -numpy.sum(probabilities * numpy.log(probabilities))
+    return float(numpy.clip(1.0 - entropy / max(numpy.log(len(values)), 1e-12), 0.0, 1.0))
+
+
 def _normalize(values: numpy.ndarray) -> numpy.ndarray:
     """Normalize Q-values for fair cross-model tie-breaking."""
     return (values - numpy.mean(values)) / max(float(numpy.std(values)), 1e-8)
@@ -34,7 +42,7 @@ class ActionVotingEnsemble:
         self._models = {name: self._load_model(path) for name, path in MODEL_PATHS.items()}
         self._weights = weights or dict(DEFAULT_WEIGHTS)
         self._confidence_power = float(confidence_power)
-        self._histories: dict[tuple[int, int], list[numpy.ndarray]] = defaultdict(list)
+        self._histories: dict[tuple[str, tuple[int, int]], list[numpy.ndarray]] = defaultdict(list)
 
     @staticmethod
     def _load_model(path: str) -> tf.keras.Model:
@@ -51,7 +59,7 @@ class ActionVotingEnsemble:
         model = self._models[name]
         if len(model.input_shape) == 2:
             return state.reshape(1, -1)
-        history = self._histories[key]
+        history = self._histories[(name, key)]
         history.append(state)
         history_len = int(model.input_shape[1])
         window = numpy.zeros((history_len, state.size), dtype=numpy.float32)
@@ -68,14 +76,19 @@ class ActionVotingEnsemble:
         for name in self._models:
             normalized_state = numpy.asarray(state, dtype=numpy.float32)
             model_input = self._model_input(name, normalized_state, sequence_key)
-            q_values = numpy.asarray(self._models[name](model_input, training=False))[0].astype(numpy.float64)
-            masked = q_values[:feasible + 1].copy()
-            confidence = _confidence(masked)
+            values = numpy.asarray(self._models[name](model_input, training=False))[0].astype(numpy.float64)
+            masked = values[:feasible + 1].copy()
+            if MODEL_ROLES[name] == 'policy':
+                masked = numpy.clip(masked, 0.0, None)
+                masked /= max(float(numpy.sum(masked)), 1e-12)
+                confidence = _policy_confidence(masked)
+            else:
+                confidence = _confidence(masked)
             vote_weight = max(float(self._weights.get(name, 1.0)), 0.0) * confidence ** self._confidence_power
             selected = int(numpy.argmax(masked))
             scores[selected] += vote_weight
             q_tie[:feasible + 1] += _normalize(masked)
-            diagnostics[name] = {'action': selected, 'confidence': confidence, 'q_values': q_values}
+            diagnostics[name] = {'action': selected, 'confidence': confidence, 'values': values}
         feasible_scores = scores[:feasible + 1]
         candidates = numpy.flatnonzero(feasible_scores == numpy.max(feasible_scores))
         action = int(candidates[numpy.argmax(q_tie[candidates])])
@@ -85,4 +98,5 @@ class ActionVotingEnsemble:
 
     def reset(self, sequence_key: tuple[int, int]) -> None:
         """Reset recurrent history for a sequence."""
-        self._histories.pop(sequence_key, None)
+        for name in self._models:
+            self._histories.pop((name, sequence_key), None)

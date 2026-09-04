@@ -37,9 +37,13 @@ salto en desempeño desde valores tabulares (~0.83–0.86) a
 Activa primero el entorno virtual:
 
 **Windows (PowerShell):**
-
 ```powershell
 win_mpes_env\Scripts\Activate.ps1
+```
+
+**Linux:**
+```bash
+source linux_mpes_env/bin/activate
 ```
 
 Luego ejecuta cualquiera de los tres modos:
@@ -173,7 +177,7 @@ secuencias y devuelve **`mean_perf`** directamente; el estudio se crea con
   `inputs/<fecha>_BAYESIAN_OPT/best_params_<fecha>.json` (original).
 - Mejor modelo: `inputs/<fecha>_BAYESIAN_OPT/dqn_best_<fecha>.keras` y
   `inputs/dqn_model.keras` (espejo).
-- *Dashboard* en vivo: `utils/win/optuna_dashboard.ps1`.
+- *Dashboard* en vivo: `utils/win/optuna_dashboard.ps1` (o `.sh` en Linux).
 
 ### 4.4 Mejores hiperparámetros encontrados (snapshot CONFIG.py)
 
