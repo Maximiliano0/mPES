@@ -63,17 +63,21 @@ case "$PKG_ALIAS" in
     *)                     echo "Unknown alias: $PKG_ALIAS"; exit 1 ;;
 esac
 
-#  Resolve run date and Drive paths
+#  Resolve run date and package-local paths for ensembles
 RUN_DATE="${RESUME_DATE:-$(date +%Y-%m-%d)}"
-PKG_DRIVE_DIR="${DRIVE_DIR}/${PKG}/${RUN_DATE}_BAYESIAN_OPT"
-mkdir -p "$PKG_DRIVE_DIR"
+if [[ "$PKG_ALIAS" == ens_* || "$PKG_ALIAS" == sprb || "$PKG_ALIAS" == accq ]]; then
+    PKG_RUN_DIR="${H_DIR}/ens/${PKG}/inputs/${RUN_DATE}_BAYESIAN_OPT"
+else
+    PKG_RUN_DIR="${DRIVE_DIR}/${PKG}/${RUN_DATE}_BAYESIAN_OPT"
+fi
+mkdir -p "$PKG_RUN_DIR"
 
-DB_FILE="${PKG_DRIVE_DIR}/optuna_study_${RUN_DATE}.db"
+DB_FILE="${PKG_RUN_DIR}/optuna_study_${RUN_DATE}.db"
 STORAGE_URL="sqlite:///${DB_FILE}"
-LOG_FILE="${PKG_DRIVE_DIR}/bayesian_opt.log"
-ERR_FILE="${PKG_DRIVE_DIR}/bayesian_opt_err.log"
-PID_FILE="${PKG_DRIVE_DIR}/optimize.pid"
-META_FILE="${PKG_DRIVE_DIR}/run_meta.json"
+LOG_FILE="${PKG_RUN_DIR}/bayesian_opt.log"
+ERR_FILE="${PKG_RUN_DIR}/bayesian_opt_err.log"
+PID_FILE="${PKG_RUN_DIR}/optimize.pid"
+META_FILE="${PKG_RUN_DIR}/run_meta.json"
 
 #  Collect launch metadata
 LAUNCH_TS="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -89,7 +93,7 @@ echo "  Package         : $PKG"
 echo "  Module          : $OPT_MODULE"
 echo "  Trials          : $N_TRIALS"
 echo "  Run date        : $RUN_DATE"
-echo "  Output dir      : $PKG_DRIVE_DIR"
+echo "  Output dir      : $PKG_RUN_DIR"
 echo "  Storage         : $STORAGE_URL"
 echo "  Git             : ${GIT_BRANCH_NAME}@${GIT_SHA}"
 echo "  Python          : $PY_VERSION"
@@ -100,7 +104,7 @@ echo ""
 #  Build optimise command
 OPT_ARGS=(
     "$N_TRIALS"
-    --out-dir "$PKG_DRIVE_DIR"
+    --out-dir "$PKG_RUN_DIR"
     --storage "$STORAGE_URL"
 )
 [[ -n "$RESUME_DATE" ]] && OPT_ARGS+=( --resume "$RESUME_DATE" )

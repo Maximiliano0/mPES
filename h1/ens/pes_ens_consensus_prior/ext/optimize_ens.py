@@ -1,21 +1,20 @@
 """Bayesian optimization for the consensus ensemble with severity prior."""
 import argparse
-import importlib
 import json
 import os
+from datetime import datetime
 from typing import Any
 import optuna
 import numpy
 from .ensemble import ConfidenceConsensusEnsemble
+from ..src.dqn_model import normalize_state as _normalize_state
+from ..src.pandemic_env import Pandemic, run_experiment as _run_experiment
+from ..src.tools_env import convert_globalseq_to_seqs as _convert_globalseq_to_seqs
 
 
 def _load_evaluation_helpers() -> tuple[Any, Any, Any, Any]:
-    """Load the shared Pandemic evaluation helpers from the DQN package."""
-    model_module = importlib.import_module('ml.pes_dqn.ext.dqn_model')
-    pandemic_module = importlib.import_module('ml.pes_dqn.ext.pandemic')
-    tools_module = importlib.import_module('ml.pes_dqn.ext.tools')
-    return (getattr(model_module, 'normalize_state'), getattr(pandemic_module, 'Pandemic'),
-            getattr(pandemic_module, 'run_experiment'), getattr(tools_module, 'convert_globalseq_to_seqs'))
+    """Load the local Pandemic evaluation helpers."""
+    return _normalize_state, Pandemic, _run_experiment, _convert_globalseq_to_seqs
 
 
 def _objective(trial: optuna.Trial, trials_per_sequence: numpy.ndarray,
@@ -72,10 +71,14 @@ def main() -> None:
     parser.add_argument('--storage', default=None, help='Optuna storage URL.')
     parser.add_argument('--resume', default='', help='Existing run date; retained for launcher compatibility.')
     arguments = parser.parse_args()
+    opt_date = arguments.resume or datetime.now().strftime('%Y-%m-%d')
+    opt_dir = arguments.out_dir or os.path.join(default_inputs, f'{opt_date}_BAYESIAN_OPT')
+    arguments.out_dir = opt_dir
     if arguments.out_dir:
         os.makedirs(arguments.out_dir, exist_ok=True)
         arguments.output = os.path.join(arguments.out_dir, 'best_params.json')
-    storage = arguments.storage
+    db_path = os.path.join(opt_dir, f'optuna_study_{opt_date}.db')
+    storage = arguments.storage or f'sqlite:///{db_path}'
     if storage and storage.startswith('sqlite:///'):
         storage_dir = os.path.dirname(os.path.abspath(storage.removeprefix('sqlite:///')))
         os.makedirs(storage_dir, exist_ok=True)
