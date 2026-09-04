@@ -1,0 +1,16 @@
+{
+  "hyperparameters": {
+    "agreement_bonus": 1.605238289656887,
+    "confidence_power": 0.32526117418582234,
+    "disagreement_penalty": 0.41145156616894685,
+    "prior_sigma": 1.4364145587490953,
+    "prior_weight": 0.11857067066638524,
+    "weight_a2c": 0.43227380316478103,
+    "weight_dqn": 2.558182581041743,
+    "weight_rdqn": 2.941942336081458,
+    "weight_trf": 2.995977021962555
+  },
+  "mean_perf": 0.9168634217847212,
+  "std_perf": 0.04109846724996789,
+  "value": 0.9168634217847212
+}
