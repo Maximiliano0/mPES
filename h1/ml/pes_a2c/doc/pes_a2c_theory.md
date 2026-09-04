@@ -168,7 +168,7 @@ Se incluye en la pérdida del actor con peso $\beta$ (`AC_ENTROPY_COEFF`)
 
 $$\mathcal{L}_\mathrm{actor} = -\mathbb{E}[\log \pi \cdot A] - \beta\, H(\pi)$$
 
-### Efecto
+### Efecto:
 
 - Si $\beta$ es **alto**, la política se mantiene cerca de la uniforme →
   exploración elevada, riesgo de no converger.
@@ -311,8 +311,8 @@ por debajo del cuartil inferior de los trials previos en la misma época
 | Complejidad computacional | 2 redes simultáneas | 1 red + target |
 
 A2C y DQN son **complementarios**: el primero es policy-gradient on-policy y
-el segundo value-based off-policy, ofreciendo perspectivas complementarias sobre
-la tarea de asignación de recursos.
+el segundo value-based off-policy. Su diversidad es la justificación principal
+de incluir ambos en el ensemble `pes_ens`.
 
 ---
 

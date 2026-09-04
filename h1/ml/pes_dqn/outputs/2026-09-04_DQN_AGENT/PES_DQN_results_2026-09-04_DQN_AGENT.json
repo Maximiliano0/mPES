@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "subject_id": "2026-04-30_DQN_AGENT",
-    "timestamp": "2026-04-30T16:45:58.941238",
+    "subject_id": "2026-09-04_DQN_AGENT",
+    "timestamp": "2026-09-04T14:39:26.869973",
     "report_type": "PES_Experiment_Results_v2",
     "model_type": "DQN_AGENT"
   },
@@ -106,7 +106,7 @@
     "total_trials": 64
   },
   "file_references": {
-    "results_file": "PES_DQN_results_2026-04-30_DQN_AGENT.png",
-    "this_file": "PES_DQN_results_2026-04-30_DQN_AGENT.json"
+    "results_file": "PES_DQN_results_2026-09-04_DQN_AGENT.png",
+    "this_file": "PES_DQN_results_2026-09-04_DQN_AGENT.json"
   }
 }

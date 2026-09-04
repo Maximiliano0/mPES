@@ -42,7 +42,7 @@ exploración penalizando políticas demasiado deterministas.
 A2C ofrece varias propiedades atractivas para el escenario *Pandemic*:
 
 1. **Política estocástica nativa**: emite probabilidades sobre acciones, lo que
-   permite interpretación directa de confianza del agente.
+   habilita ensembles por **votación blanda** con otros agentes (ver `pes_ens`).
 2. **Confianza interpretable**: $\max_a \pi(a\mid s)$ funciona como medida de
    certeza del agente sobre su decisión.
 3. **Generalización continua**: al ser una red neuronal sobre el estado
@@ -61,6 +61,14 @@ A2C ofrece varias propiedades atractivas para el escenario *Pandemic*:
 .\win_mpes_env\Scripts\Activate.ps1
 $env:PYTHONIOENCODING = "utf-8"
 $env:TF_ENABLE_ONEDNN_OPTS = "0"
+python -m ml.pes_a2c
+```
+
+```bash
+# Linux
+source linux_mpes_env/bin/activate
+export PYTHONIOENCODING=utf-8
+export TF_ENABLE_ONEDNN_OPTS=0
 python -m ml.pes_a2c
 ```
 
@@ -259,6 +267,9 @@ def select_action(actor, state, resources_left):
     return action, confidence, probs
 ```
 
+Esta probabilidad enmascarada es la que el módulo `pes_ens` consume para la
+**votación blanda** del ensemble.
+
 ---
 
 ## 7. Archivos de entrada/salida
@@ -311,7 +322,9 @@ del escenario completo:
 | `pes_trf` | Causal Transformer | $\approx 0.927$ |
 
 A2C iguala prácticamente al DQN como método sin memoria, demostrando el valor
-del paradigma policy-gradient en este escenario.
+del paradigma policy-gradient en este escenario. Su mayor utilidad práctica es
+como **componente del ensemble** (`pes_ens`), donde la diversidad respecto a
+los métodos basados en valor mejora la robustez global.
 
 ---
 

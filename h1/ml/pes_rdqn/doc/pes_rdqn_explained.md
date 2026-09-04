@@ -35,9 +35,13 @@ mejora pequeña pero consistente sobre `pes_dqn` (0.8937).
 Activación del entorno:
 
 **Windows (PowerShell):**
-
 ```powershell
 win_mpes_env\Scripts\Activate.ps1
+```
+
+**Linux:**
+```bash
+source linux_mpes_env/bin/activate
 ```
 
 | Modo | Comando |

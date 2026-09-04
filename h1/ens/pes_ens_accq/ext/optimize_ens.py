@@ -23,10 +23,10 @@ def _objective(trial: optuna.Trial, trials_per_sequence: numpy.ndarray,
     """Score one confidence-weighted action-voting configuration in the environment."""
     normalize_state, pandemic_class, run_experiment, _ = _load_evaluation_helpers()
     params = {f'weight_{name}': trial.suggest_float(f'weight_{name}', 0.0, 3.0)
-              for name in ('dqn', 'rdqn', 'trf')}
+              for name in ('dqn', 'a2c', 'rdqn', 'trf')}
     params['confidence_power'] = trial.suggest_float('confidence_power', 0.25, 3.0)
     ensemble = ActionVotingEnsemble(
-        {name: params[f'weight_{name}'] for name in ('dqn', 'rdqn', 'trf')},
+        {name: params[f'weight_{name}'] for name in ('dqn', 'a2c', 'rdqn', 'trf')},
         params['confidence_power'])
     environment = pandemic_class()
     environment.verbose = False

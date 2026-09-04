@@ -53,7 +53,7 @@ carpeta `models/` separada.
 Usa [`launch.ipynb`](launch.ipynb) para optimizar modelos individuales o los
 parametros de un ensemble. En la primera celda configura `PKG`, `N_TRIALS`,
 `RESUME_DATE` (opcional) y `USE_GPU`. Los valores admitidos son `ql`, `dql`, `dqn`, `rdqn`, `ac`, `tr`,
-`ens_sprb` y `ens_accq`.
+`ens_sprb`, `ens_accq`, `ens_trf_guard` y `ens_conf_consensus`.
 
 Ejecuta todas las celdas. La celda de lanzamiento ejecuta exactamente:
 
@@ -79,7 +79,7 @@ ejemplo `2026-09-03`.
 
 ### Ensembles
 
-`ens_sprb` y `ens_accq` no entrenan redes. Solo optimizan sus parametros de
+Los cuatro ensembles no entrenan redes. Solo optimizan sus parametros de
 votacion despues de disponer de estos tres modelos compatibles:
 
 ```text
@@ -99,6 +99,8 @@ cd /content/mPES
 source /content/mpes_env.sh
 bash h1/general/colab/run_colab.sh ens_sprb 50
 bash h1/general/colab/run_colab.sh ens_accq 50
+bash h1/general/colab/run_colab.sh ens_trf_guard 50
+bash h1/general/colab/run_colab.sh ens_conf_consensus 50
 ```
 
 ## Reentrenamiento GPU: `retrain_gpu.ipynb`

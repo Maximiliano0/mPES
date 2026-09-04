@@ -145,7 +145,7 @@ RESPONSE_MULTIPLIER = PANDEMIC_PARAMETER  # α (Alpha)
 SEVERITY_MULTIPLIER = 1 + PANDEMIC_PARAMETER  # β (Beta)
 
 # === BENCHMARK OVERRIDE HOOK (general/) ============================
-# When mPES is launched by the Under Stress Experiments harness in ``general/``,
+# When mPES is launched by the OOD benchmark harness in ``general/``,
 # these env vars redirect outputs and resize the experiment grid
 # without modifying CONFIG.py. Inputs (CSVs) are swapped in-place by
 # the harness so INPUTS_PATH stays untouched.

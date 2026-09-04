@@ -24,13 +24,14 @@ def _objective(trial: optuna.Trial, trials_per_sequence: numpy.ndarray,
     normalize_state, pandemic_class, run_experiment, _ = _load_evaluation_helpers()
     params = {
         'weight_dqn': trial.suggest_float('weight_dqn', 0.0, 3.0),
+        'weight_a2c': trial.suggest_float('weight_a2c', 0.0, 3.0),
         'weight_rdqn': trial.suggest_float('weight_rdqn', 0.0, 3.0),
         'weight_trf': trial.suggest_float('weight_trf', 0.0, 3.0),
         'temperature': trial.suggest_float('temperature', 0.1, 3.0),
         'confidence_power': trial.suggest_float('confidence_power', 0.25, 3.0),
     }
     ensemble = SoftVotingEnsemble(
-        {name: params[f'weight_{name}'] for name in ('dqn', 'rdqn', 'trf')},
+        {name: params[f'weight_{name}'] for name in ('dqn', 'a2c', 'rdqn', 'trf')},
         params['temperature'], params['confidence_power'])
     environment = pandemic_class()
     environment.verbose = False

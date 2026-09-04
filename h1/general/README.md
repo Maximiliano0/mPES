@@ -16,6 +16,10 @@
 > of severity / length / joint / structural perturbations to expose each
 > model's limitations and identify the most robust one.
 
+The benchmark currently covers the six individual agents only. The four
+ensembles under `h1/ens/` are optimized and evaluated by their own package
+commands and are not included in this six-model matrix.
+
 ---
 
 ## Scope

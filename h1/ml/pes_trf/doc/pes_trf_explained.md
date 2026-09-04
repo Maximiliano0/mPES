@@ -52,6 +52,14 @@ $env:TF_ENABLE_ONEDNN_OPTS = "0"
 python -m ml.pes_trf
 ```
 
+```bash
+# Linux
+source linux_mpes_env/bin/activate
+export PYTHONIOENCODING=utf-8
+export TF_ENABLE_ONEDNN_OPTS=0
+python -m ml.pes_trf
+```
+
 ### Entrenar el modelo
 
 ```powershell
@@ -308,6 +316,7 @@ Evaluación del 2 de mayo de 2026 sobre $n=64$ ejecuciones independientes:
 | `pes_dqn` | DQN | $\approx 0.89$ | 0.06 |
 | `pes_rdqn` | Recurrent DQN (LSTM) | $\approx 0.91$ | 0.05 |
 | **`pes_trf`** | **Causal Transformer** | **0.927** | **0.045** |
+| `pes_ens` | Ensemble (votación blanda) | $\approx 0.93$ | 0.04 |
 
 Observaciones clave:
 
@@ -316,8 +325,8 @@ Observaciones clave:
 - Su superioridad frente a RDQN se atribuye a la atención sobre **toda** la
   historia disponible (en lugar del cuello de botella del estado oculto del
   LSTM).
-- La cabeza Transformer captura la mayor parte de la información útil para esta
-  tarea, resultando en un rendimiento robusto y estable.
+- El ensemble (`pes_ens`) apenas mejora sobre `pes_trf`, lo que confirma que
+  la cabeza Transformer ya captura la mayor parte de la información útil.
 
 ---
 
@@ -353,14 +362,12 @@ los recursos restantes.
 
 - **Carga del modelo**: la capa `Lambda` para la máscara causal obliga a
   pasar `safe_mode=False`:
-
   ```python
   model = tf.keras.models.load_model(
       "ml/pes_trf/inputs/trf_model.keras",
       safe_mode=False
   )
   ```
-
 - **Reset de la historia**: indispensable al inicio de cada nueva secuencia
   (pasa de un escenario al siguiente).
 - **Variables de entorno**: `PYTHONIOENCODING=utf-8` y
