@@ -6,10 +6,10 @@
 
 **mPES** (Multiple Pandemic Experiment Suite) is a multi-package Python
 workspace for reinforcement-learning experiments on a resource-allocation task
-(the "Pandemic Scenario"). The workspace is split into two experiment lines,
-`h1/` (active, validated) and `h2/` (experimental, currently suspended), each
-implementing one or more algorithmic variants sharing the same experiment
-framework.
+(the "Pandemic Scenario"). The repository currently includes three experiment
+lines: `h1/` (active and validated), `h2/` (experimental and suspended), and
+`h3/` (prototype / research staging). Each line shares the same package
+scaffolding and implements one or more algorithmic variants.
 
 ### `h1/` — active line
 
@@ -34,12 +34,21 @@ framework.
 > confidence gate with fallback, and `pes_ens_consensus` rewards agreement
 > while penalizing disagreement. All expose tunable parameters through
 > `ext/optimize_ens.py` and evaluate through `ext/evaluate_ens.py`.
+>
+> Legacy folders `h1/ens/pes_ens/` and `h1/ens/pes_ens_consensus_prior/` are
+> retained in the repository but are not part of the active benchmark workflow.
 
 ### `h2/` — experimental line (suspended)
 
 | Package | Algorithm | Status |
 |---------|-----------|--------|
-| `tabular_uq/ql_uq` | Q-Learning + uncertainty quantification (protocol TBD) | Suspended — no active benchmark |
+| `tabular_conf/ql_conf` | Tabular Q-Learning + experimental configuration variants | Suspended — staging only |
+
+### `h3/` — prototype line
+
+| Package | Algorithm | Status |
+|---------|-----------|--------|
+| `tabular_uq/ql_uq` | Q-Learning + uncertainty quantification prototype | Experimental — not part of active benchmark |
 
 ### Shared
 
@@ -64,20 +73,28 @@ h1/                 # Active experiment line
 │   ├── pes_ens_accq/ #   Confidence-weighted action/Q-value ensemble
 │   ├── pes_ens_trf_guard/ # Transformer-first confidence-gated ensemble
 │   └── pes_ens_consensus/ # Confidence consensus ensemble
+├── ens/pes_ens/    #   Archived ensemble prototype
+├── ens/pes_ens_consensus_prior/ # Archived consensus variant
 └── general/        #   Cross-model Under Stress Experiments harness + comparison doc
 
 h2/                  # Experimental line (suspended)
+├── general/
+├── tabular_conf/
+│   └── ql_conf/    #   Experimental tabular Q-Learning variant
+└── README.md
+
+h3/                  # Prototype line
+├── general/
 ├── tabular_uq/
-│   └── ql_uq/       #   Q-Learning + UQ (experimental)
-└── general/         #   Reserved for a future h2 benchmark
+│   └── ql_uq/      #   Research Q-Learning + UQ prototype
+└── README.md
 
 utils/               # Shared scripts and config (Windows only)
 ```
 
-> **`h1/` and `h2/` are plain directories, not Python packages** — neither has
-> an `__init__.py` at its own level. Every `python -m ...` command below must
-> be run with `h1/` (or `h2/`) as the current working directory, e.g.
-> `cd h1; python -m tabular.pes_base`.
+> **`h1/`, `h2/` and `h3/` are plain directories, not Python packages** — none
+> has an `__init__.py` at its own level. Every `python -m ...` command below
+> must be run from the relevant experiment line, e.g. `cd h1; python -m tabular.pes_base`.
 
 ### Run commands (from within `h1/`)
 

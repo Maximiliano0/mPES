@@ -16,9 +16,11 @@
 > of severity / length / joint / structural perturbations to expose each
 > model's limitations and identify the most robust one.
 
-The benchmark currently covers the six individual agents only. The four
-ensembles under `h1/ens/` are optimized and evaluated by their own package
-commands and are not included in this six-model matrix.
+The benchmark currently covers the six individual agents only. The ensemble
+variants under `h1/ens/` are optimized and evaluated by their own package
+commands and are not included in this six-model matrix. The repository still
+retains legacy ensemble folders such as `pes_ens` and `pes_ens_consensus_prior`,
+but neither is part of the active six-model stress benchmark.
 
 ---
 
