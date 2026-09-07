@@ -47,6 +47,7 @@ Examples:
 ```
 
 Throughout this prompt:
+
 - `<NEW_PKG>` is the new package folder name (must start with `pes_`,
   lowercase, snake_case).
 - `<GROUP>` is `tabular`, `ml` or `ens`, inferred from the algorithm family.

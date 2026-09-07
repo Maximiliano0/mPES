@@ -197,10 +197,12 @@ acciones imposibles.
 Forzar $\pi(a\mid s) = 0$ para acciones infactibles **antes** del muestreo o
 del $\arg\max$:
 
-$$\tilde\pi(a\mid s) = \begin{cases}
+$$
+\tilde\pi(a\mid s) = \begin{cases}
 \dfrac{\pi(a\mid s)}{\sum_{a' \in \mathcal{F}(s)} \pi(a'\mid s)} & \text{si } a \in \mathcal{F}(s)\\
 0 & \text{en otro caso}
-\end{cases}$$
+\end{cases}
+$$
 
 donde $\mathcal{F}(s)$ es el conjunto de acciones factibles.
 
@@ -265,7 +267,7 @@ escenario.
   In *International Conference on Learning Representations*.
 - Williams, R. J. (1992). Simple statistical gradient-following algorithms
   for connectionist reinforcement learning. *Machine Learning, 8*, 229–256.
-  https://doi.org/10.1007/BF00992696
+  <https://doi.org/10.1007/BF00992696>
 
 ---
 

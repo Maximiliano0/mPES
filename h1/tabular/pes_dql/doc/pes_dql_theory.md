@@ -82,6 +82,7 @@ sobreasignan recursos a acciones con valor aparentemente alto pero
 ruidoso.
 
 Este problema se intensifica cuando:
+
 - Hay pocas visitas por par $(s, a)$ (Q-tables ruidosas).
 - El número de acciones es grande (más oportunidades de error positivo).
 - La recompensa tiene varianza alta.
@@ -205,10 +206,12 @@ inicializan con $\mathcal{U}(-1, 1)$). Esto causa:
 
 Con $N$ episodios totales, el cronograma es:
 
-$$\varepsilon_t = \begin{cases}
+$$
+\varepsilon_t = \begin{cases}
 \varepsilon_0, & t < wN \\
 \max\bigl(\varepsilon_{\min},\; \varepsilon_0\,\lambda^{t - wN}\bigr), & t \geq wN
-\end{cases}$$
+\end{cases}
+$$
 
 donde $\lambda$ se calcula automáticamente para que
 $\varepsilon$ alcance $\varepsilon_{\min}$ exactamente en $t = \tau N$:
@@ -413,12 +416,12 @@ historia con `optuna-dashboard` (ver
 Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna:
 A next-generation hyperparameter optimization framework. *Proceedings of
 the 25th ACM SIGKDD International Conference on Knowledge Discovery &
-Data Mining*, 2623–2631. https://doi.org/10.1145/3292500.3330701
+Data Mining*, 2623–2631. <https://doi.org/10.1145/3292500.3330701>
 
 Hasselt, H. van, Guez, A., & Silver, D. (2016). Deep reinforcement
 learning with double Q-learning. *Proceedings of the 30th AAAI
 Conference on Artificial Intelligence*, *30*(1), 2094–2100.
-https://doi.org/10.1609/aaai.v30i1.10295
+<https://doi.org/10.1609/aaai.v30i1.10295>
 
 Ng, A. Y., Harada, D., & Russell, S. J. (1999). Policy invariance under
 reward transformations: Theory and application to reward shaping.
@@ -432,4 +435,4 @@ Van Hasselt, H. (2010). Double Q-learning. *Advances in Neural
 Information Processing Systems*, *23*, 2613–2621.
 
 Watkins, C. J. C. H., & Dayan, P. (1992). Q-learning. *Machine
-Learning*, *8*(3–4), 279–292. https://doi.org/10.1007/BF00992698
+Learning*, *8*(3–4), 279–292. <https://doi.org/10.1007/BF00992698>

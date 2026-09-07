@@ -156,10 +156,22 @@ def write_report(suite: str = 'individual') -> str:
     reference, cells = summary['reference_scenario'], summary['cells']
 
     lines = ['# mPES Under Stress Experiments — ' + suite, '',
-             f'_Generated: {_dt.datetime.now(_dt.timezone.utc).isoformat()}_', '',
+             f'Generated: {_dt.datetime.now(_dt.timezone.utc).isoformat()}', '',
              f'**Reference condition:** `{reference}`', '',
              f'**Models:** {len(models)} — {", ".join(models)}',
              f'**Scenarios:** {len(scenarios)}', '',
+             '## 0. Baseline definition', '',
+             f'The **baseline** is the scenario `{reference}`: each package\'s own '
+             'empirical training distribution (unperturbed `initial_severity.csv` '
+             'and `sequence_lengths.csv`), i.e. "normal" conditions. Every stress '
+             'scenario is compared against it.',
+             '',
+             '**Mean degradation** is the signed mean drop in normalized '
+             'performance relative to that baseline, '
+             '`mean_s(baseline - perf_s)` over the non-reference scenarios. '
+             'Positive = loss under stress; negative = the model performs better '
+             'under stress than at baseline.',
+             '',
              '## 1. Per-model best / worst', '',
              '| Model | Reference | Best scenario | Best | Worst scenario | Worst | Mean degradation |',
              '|---|---:|---|---:|---|---:|---:|']

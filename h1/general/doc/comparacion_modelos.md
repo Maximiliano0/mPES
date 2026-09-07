@@ -14,6 +14,40 @@ registran los experimentos del harness de estrés. Para cada modelo se informa:
 - degradación media respecto al baseline, calculada como `baseline - media_bajo_estres`;
 - mayor degradación observada y escenario donde ocurre.
 
+### Baselines empleados
+
+El estudio usa **dos baselines distintos**, según el eje de comparación:
+
+1. **Baseline de escenario (condición de referencia): `sev_empirical`.**
+   Es la *distribución empírica de entrenamiento* de cada paquete: reutiliza
+   sin perturbar los `initial_severity.csv` y `sequence_lengths.csv` reales del
+   modelo (es el único escenario marcado `is_baseline=True`). Representa las
+   "condiciones normales", idénticas a las de entrenamiento, frente a las que
+   se mide la degradación bajo estrés. Es el escenario que fija
+   `REFERENCE_SCENARIO` en el harness.
+
+2. **Baseline de modelo (agente de referencia): `pes_base`.**
+   Q-Learning tabular. Solo se usa en los mapas $\Delta$ centrados en
+   `pes_base` (definidos en la sección de notación) para comparar cada modelo
+   frente al agente tabular base. Fija `REFERENCE_MODEL` en el harness.
+
+La **degradación media** de un modelo $m$ es el promedio con signo de la caída
+de rendimiento respecto a su propia condición de referencia `sev_empirical`:
+
+$$
+\overline{D}_m=\frac{1}{|S|}\sum_{s\in S}\bigl(\mu_{m,\mathrm{empirical}}-\mu_{m,s}\bigr),
+$$
+
+donde $S$ son los 21 escenarios distintos de la referencia. Un valor
+**positivo** indica pérdida de rendimiento bajo estrés; uno **negativo**
+indica que el modelo rinde mejor bajo estrés que en el baseline. Al ser un
+promedio con signo (no valor absoluto), mejoras y pérdidas se compensan. La
+mayor caída individual (`worst_degradation`) es:
+
+$$
+\max_{s\in S}\bigl(\mu_{m,\mathrm{empirical}}-\mu_{m,s}\bigr).
+$$
+
 ### Notación y rendimiento normalizado
 
 Para una secuencia $i$, el rendimiento normalizado registrado por el harness
@@ -26,9 +60,15 @@ $$
 \qquad 0 \leq P_i \leq 1.
 $$
 
-Aquí $S_{\mathrm{final},i}$ es la severidad final observada, mientras que
-$S_{\mathrm{worst},i}$ y $S_{\mathrm{best},i}$ son los límites de referencia
-de esa secuencia. El desempeño medio de un modelo $m$ en un escenario $s$ es:
+Aquí $S_{\mathrm{final},i}$ es la severidad final observada, y los límites de
+referencia de la secuencia son:
+
+$$
+S_{\mathrm{worst},i} \;=\; \text{peor severidad alcanzable}, \qquad
+S_{\mathrm{best},i} \;=\; \text{mejor severidad alcanzable}.
+$$
+
+El desempeño medio de un modelo $m$ en un escenario $s$ es:
 
 $$
 \mu_{m,s}=\frac{1}{n_s}\sum_{i=1}^{n_s}P_{m,s,i},
@@ -39,16 +79,27 @@ Los valores cercanos a $1$ indican mayor reducción relativa de severidad; los
 valores cercanos a $0$ indican menor desempeño normalizado. La comparación no
 debe interpretar $\bar r_i$ como una probabilidad.
 
-Para evitar ambigüedad, los mapas centrados en `pes_base` usan:
+Para evitar ambigüedad, los mapas centrados en `pes_base` usan la diferencia
+$\Delta^{\mathrm{base}}$ entre el rendimiento del modelo base y el del modelo
+$m$ en cada escenario $s$:
 
 $$
 \Delta^{\mathrm{base}}_{m,s}=\mu_{\mathrm{base},s}-\mu_{m,s}.
 $$
 
-Así, $\Delta^{\mathrm{base}}_{m,s}>0$ significa que el modelo $m$ pierde
-desempeño frente a `pes_base`; $\Delta^{\mathrm{base}}_{m,s}<0$ significa que
-lo supera. Los mapas históricos de degradación respecto al propio baseline de
-cada modelo usan, en cambio, $\mu_{m,\mathrm{empirical}}-\mu_{m,s}$.
+La interpretación del signo es:
+
+$$
+\Delta^{\mathrm{base}}_{m,s} > 0 \;\Rightarrow\; m \text{ pierde frente a la base}, \qquad
+\Delta^{\mathrm{base}}_{m,s} < 0 \;\Rightarrow\; m \text{ la supera}.
+$$
+
+Los mapas históricos de degradación respecto al propio baseline de cada modelo
+usan, en cambio, la diferencia frente a la condición empírica:
+
+$$
+\Delta^{\mathrm{emp}}_{m,s}=\mu_{m,\mathrm{empirical}}-\mu_{m,s}.
+$$
 
 Los resultados individuales proceden de `pes_ql`, `pes_dql`, `pes_dqn`,
 `pes_rdqn`, `pes_a2c` y `pes_trf`. Los ensembles incluyen `pes_ens`,
@@ -147,13 +198,25 @@ observar cómo cambia cada métrica en los escenarios de severidad, longitud,
 conjuntos y estructura. Cada fila representa un modelo y cada columna un
 escenario; `sev_empirical` es el baseline de referencia.
 
-- [Welch por escenario, individuales](../results/individual/figures/03_welch_logp_por_escenario.png)
-- [Cohen por escenario, individuales](../results/individual/figures/07_cohen_d_por_escenario.png)
-- [KL de acciones por escenario, individuales](../results/individual/figures/04_kl_acciones_por_escenario.png)
+### Heatmaps individuales
+
+![p de Welch (log10) por escenario — individuales](../results/individual/figures/03_welch_logp_por_escenario.png)
+
+![d de Cohen por escenario — individuales](../results/individual/figures/07_cohen_d_por_escenario.png)
+
+![KL de acciones por escenario — individuales](../results/individual/figures/04_kl_acciones_por_escenario.png)
+
+### Heatmaps de ensembles
+
+![p de Welch (log10) por escenario — ensembles](../results/ensemble/figures/03_welch_logp_por_escenario.png)
+
+![d de Cohen por escenario — ensembles](../results/ensemble/figures/07_cohen_d_por_escenario.png)
+
+![KL de acciones por escenario — ensembles](../results/ensemble/figures/04_kl_acciones_por_escenario.png)
+
+Los mapas de degradación por escenario complementan lo anterior:
+
 - [Degradación por escenario, individuales](../results/individual/figures/02_degradacion_por_escenario.png)
-- [Welch por escenario, ensembles](../results/ensemble/figures/03_welch_logp_por_escenario.png)
-- [Cohen por escenario, ensembles](../results/ensemble/figures/07_cohen_d_por_escenario.png)
-- [KL de acciones por escenario, ensembles](../results/ensemble/figures/04_kl_acciones_por_escenario.png)
 - [Degradación por escenario, ensembles](../results/ensemble/figures/02_degradacion_por_escenario.png)
 
 En estos mapas, un $p$ de Welch menor indica evidencia más fuerte de una

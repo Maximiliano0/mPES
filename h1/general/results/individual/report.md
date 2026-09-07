@@ -1,11 +1,17 @@
 # mPES Under Stress Experiments — individual
 
-_Generated: 2026-09-07T18:39:02.241435+00:00_
+Generated: 2026-09-07T18:39:02.241435+00:00
 
 **Reference condition:** `sev_empirical`
 
 **Models:** 7 — pes_base, pes_ql, pes_dql, pes_dqn, pes_rdqn, pes_a2c, pes_trf
 **Scenarios:** 22
+
+## 0. Baseline definition
+
+The **baseline** is the scenario `sev_empirical`: each package's own empirical training distribution (unperturbed `initial_severity.csv` and `sequence_lengths.csv`), i.e. "normal" conditions. Every stress scenario is compared against it.
+
+**Mean degradation** is the signed mean drop in normalized performance relative to that baseline, `mean_s(baseline - perf_s)` over the non-reference scenarios. Positive = loss under stress; negative = the model performs better under stress than at baseline.
 
 ## 1. Per-model best / worst
 

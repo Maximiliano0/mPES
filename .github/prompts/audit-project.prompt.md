@@ -211,7 +211,7 @@ For `<TARGET>` = single package:
 
 For `<TARGET>` = `all`, additionally:
 
-5. Quick import smoke-test for each `h1` package (run from within `h1/`):
+1. Quick import smoke-test for each `h1` package (run from within `h1/`):
 
    ```powershell
    cd h1
@@ -224,7 +224,7 @@ For `<TARGET>` = `all`, additionally:
    }
    ```
 
-6. Cleanup any scratch files left in the workspace root (e.g. `_pr.txt`,
+2. Cleanup any scratch files left in the workspace root (e.g. `_pr.txt`,
    `_md.txt`, `_plog.txt`, `pyright_full.txt`, `_freeze.txt`).
 
 ## Step 7 — Report

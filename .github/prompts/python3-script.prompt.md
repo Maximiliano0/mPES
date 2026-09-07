@@ -49,27 +49,23 @@ The generated script MUST follow this structure, in order:
 - PascalCase variables are acceptable (project convention for scientific code).
 - 120-character max line length, 4-space indentation.
 - Suppress non-critical warnings at the top:
+
   ```python
   warnings.filterwarnings('ignore', category=UserWarning, message='.*Box bound precision.*')
   ```
+
 - Force CPU for TensorFlow if imported:
+
   ```python
   os.environ.setdefault("CUDA_VISIBLE_DEVICES", "-1")
   ```
 
 ## Quality gates
 
-After generating the script, activate the correct virtual environment for the
-current OS and run:
-
-**Linux / macOS:**
-```bash
-source linux_mpes_env/bin/activate
-pyright <PACKAGE_DIR>/
-pylint --rcfile=utils/config/.pylintrc <PACKAGE_DIR>/
-```
+After generating the script, activate the virtual environment and run:
 
 **Windows (PowerShell):**
+
 ```powershell
 win_mpes_env\Scripts\Activate.ps1
 pyright <PACKAGE_DIR>/

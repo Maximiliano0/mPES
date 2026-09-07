@@ -163,11 +163,13 @@ Activate from the repository root, then move into `h1/` (or `h2/`) before
 running any `python -m ...` command:
 
 **Windows (PowerShell):**
+
 ```powershell
 win_mpes_env\Scripts\Activate.ps1
 ```
 
 **Windows (cmd):**
+
 ```cmd
 win_mpes_env\Scripts\activate.bat
 ```
@@ -220,11 +222,14 @@ Full list in `utils/config/requirements.txt`.
 
 - **`__init__.py`** may use `from .config.CONFIG import *` (wildcard re-export).
 - **All other modules** must use explicit imports:
+
   ```python
   from .. import ANSI, INPUTS_PATH, VERBOSE   # ✅
   from .. import *                              # ❌ (except __init__.py)
   ```
+
 - Section comments above import blocks:
+
   ```python
   ##########################
   ##  Imports externos    ##
