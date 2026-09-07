@@ -4,23 +4,23 @@
 
 **Cross-model under-stress evaluation under 22 perturbation scenarios.**
 
-[![Models](https://img.shields.io/badge/models-6-blue.svg)](#scope)
+[![Models](https://img.shields.io/badge/models-12-blue.svg)](#scope)
 [![Scenarios](https://img.shields.io/badge/scenarios-22-blueviolet.svg)](#scenario-catalogue)
-[![Cells](https://img.shields.io/badge/cells-132-success.svg)](#scope)
+[![Cells](https://img.shields.io/badge/cells-264-success.svg)](#scope)
 [![Output](https://img.shields.io/badge/figures-PNG%20%2B%20PDF-orange.svg)](#heatmaps-publication-quality)
 
 </div>
 
-> **Purpose** — Generalise and benchmark six selected mPES agents
-> (`pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`, `pes_a2c`, `pes_trf`) under a 22-scenario matrix
-> of severity / length / joint / structural perturbations to expose each
-> model's limitations and identify the most robust one.
+> **Purpose** — Generalise and benchmark six individual mPES agents and six
+> ensemble variants under a 22-scenario matrix of severity / length / joint /
+> structural perturbations to expose each model's limitations and identify
+> the most robust one within each suite.
 
-The benchmark currently covers the six individual agents only. The ensemble
-variants under `h1/ens/` are optimized and evaluated by their own package
-commands and are not included in this six-model matrix. The repository still
-retains legacy ensemble folders such as `pes_ens` and `pes_ens_consensus_prior`,
-but neither is part of the active six-model stress benchmark.
+The benchmark stores two comparable suites: `individual` contains the six
+individual agents and `ensemble` contains the six ensemble variants. Both
+suites use the same scenario catalogue and seed. The archived packages
+`pes_ens` and `pes_ens_consensus_prior` remain included as reference ensemble
+results, while they are not part of the active package documentation.
 
 ---
 
@@ -28,9 +28,9 @@ but neither is part of the active six-model stress benchmark.
 
 | Aspect | Value |
 |---|---|
-| Models evaluated | 6 (`pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`, `pes_a2c`, `pes_trf`) |
+| Models evaluated | 12: 6 individual + 6 ensemble models |
 | Scenarios | 22 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural) |
-| Cells | 6 × 22 = **132** |
+| Cells | 12 × 22 = **264** |
 | `n` per cell | 64 sequences (single seed = 42) |
 | Retraining | **None** — pure inference on existing artefacts |
 
@@ -54,28 +54,26 @@ cd h1
 #    harness reads ``<pkg>/inputs/*.keras`` (or ``q.npy`` for tabular)
 #    and the empirical CSV baselines from each package.
 
-# 2. Run the full sweep (resumable; cells whose JSON exists are skipped).
-python -m general.scripts.orchestrate
+# 2. Run the full sweep for individual and ensemble suites
+#    (resumable; cells whose JSON exists are skipped).
+python -m general.scripts.benchmark run --suite both
 
-# 3. Aggregate raw cells into matrices + statistics.
-python -m general.scripts.aggregate
+# 3. Aggregate each suite into matrices, summary and Markdown report.
+python -m general.scripts.analysis
 
-# 4. Produce heatmaps + per-scenario histograms.
-python -m general.scripts.plot_matrix
-
-# 5. Compose the executive Markdown report.
-python -m general.scripts.report
+# 4. Render every figure of both suites.
+python -m general.scripts.figures
 
 # (anytime) live progress snapshot during a sweep:
-python -m general.scripts.progress             # one-shot
-python -m general.scripts.progress --watch     # refresh every 30 s
+python -m general.scripts.benchmark progress --suite individual
+python -m general.scripts.benchmark progress --suite individual --watch
 ```
 
 ### Single-cell debug runs
 
 ```powershell
-python -m general.scripts.runner --pkg pes_dqn --scenario sev_empirical
-python -m general.scripts.runner --pkg pes_dqn --scenario all --force
+python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_empirical
+python -m general.scripts.benchmark run --pkg pes_dqn --force
 ```
 
 ## Output layout
@@ -84,37 +82,27 @@ python -m general.scripts.runner --pkg pes_dqn --scenario all --force
 general/
 ├── README.md                        # this file
 ├── __init__.py
-├── scripts/                         # all executable harness modules
+├── scripts/                         # six harness modules
 │   ├── __init__.py
-│   ├── scenarios.py                 # taxonomy + CSV synthesisers
-│   ├── runner.py                    # one (model, scenario) cell
-│   ├── orchestrate.py               # full Cartesian product
-│   ├── progress.py                  # live progress bars + ETA
-│   ├── aggregate.py                 # raw -> matrices + Welch / Cohen / KL
-│   ├── plot_matrix.py               # heatmaps + per-scenario histograms
-│   └── report.py                    # benchmark_report.md
+│   ├── scenarios.py                 # perturbation catalogue + CSV synthesis
+│   ├── benchmark.py                 # cell execution + sweep + progress
+│   ├── analysis.py                  # matrices + statistics + Markdown report
+│   ├── plotting.py                  # shared figure primitives + statistics
+│   └── figures.py                   # every benchmark figure
 ├── work/                            # runtime intermediates (per cell)
 │   └── <pkg>/
 │       ├── scenarios/<sid>/         # synthesised input CSVs
 │       └── outputs/<sid>/           # subprocess outputs + log
 └── results/
-    ├── raw/<pkg>__<sid>.json        # one cell payload
-    ├── matrix_global_mean.csv
-    ├── matrix_std.csv
-    ├── matrix_min.csv
-    ├── matrix_max.csv
-    ├── matrix_stress_degradation.csv   # baseline_mean - cell_mean
-    ├── matrix_welch_p.csv           # Welch t two-sided p (raw)
-    ├── matrix_welch_logp.csv        # log10(p) via t.logsf (no underflow)
-    ├── matrix_cohen_d.csv           # Cohen's d effect size
-    ├── matrix_action_kl.csv         # KL(action_dist || baseline policy)
-    ├── matrix_summary.json          # machine-readable consolidation
-    ├── heatmap_global_mean.{png,pdf}
-    ├── heatmap_stress_degradation.{png,pdf}
-    ├── heatmap_welch_logp.{png,pdf}     # log10(p) clipped to [-10, 0]
-    ├── heatmap_action_kl.{png,pdf}      # log-scale KL
-    ├── per_sequence_histograms/<sid>.{png,pdf}
-    └── benchmark_report.md
+    └── <suite>/                     # individual | ensemble
+        ├── cells/<model>__<sid>.json    # one payload per benchmark cell
+        ├── matrices/<metric>.csv        # model x scenario matrices
+        ├── figures/                     # 01..14 PNG + PDF
+        │   ├── histogramas/<sid>.*      # per-scenario distributions
+        │   └── recompensa/<sid>.*       # cumulative + running-mean reward
+        ├── summary.json                 # machine-readable consolidation
+        ├── comparison_metrics.json      # pairwise Welch / Cohen / KL
+        └── report.md                    # executive summary
 ```
 
 ## Scenario catalogue
@@ -146,10 +134,10 @@ general/
 
 ## Heatmaps (publication quality)
 
-> **Note**: The heatmaps, matrices, per-scenario histograms, and `benchmark_report.md`
-> are generated by the workflow for the current 6-model catalogue (pes_ql, pes_dql, pes_dqn,
-> pes_rdqn, pes_a2c, pes_trf). Re-run the workflow above to regenerate results
-> for any configuration changes.
+> **Note**: The heatmaps, matrices, pairwise comparisons, generalisation
+> profiles and reports are generated separately for the individual and
+> ensemble suites. Re-run the workflow above to regenerate results after any
+> configuration change.
 
 All four heatmaps are written as both **`.png`** (raster, 300 dpi) and
 **`.pdf`** (vector, TrueType-embedded) for direct inclusion in papers.
@@ -157,25 +145,36 @@ Cells are normalised to fixed colour-scale limits so figures from
 different sweeps are directly comparable; clipped values are flagged
 in-cell (e.g. `≤-10` in the Welch heatmap).
 
-| Metric | Heatmap | Colour map | Scale |
-|---|---|---|---|
-| Global mean performance | `results/heatmap_global_mean.png` | `viridis` | auto-bounded |
-| Stress degradation (Δ vs baseline) | `results/heatmap_stress_degradation.png` | `RdBu_r` (diverging) | symmetric around 0 |
-| Welch t-test, log₁₀(p) | `results/heatmap_welch_logp.png` | `magma_r` | `[-10, 0]`, α-tick marks |
-| Action-distribution KL | `results/heatmap_action_kl.png` | `cividis` | `LogNorm` |
+| Figure | Output | Interpretation |
+|---|---|---|
+| Mean performance | `figures/01_desempeno_por_escenario` | Normalised performance per model and scenario |
+| Degradation | `figures/02_degradacion_por_escenario` | `baseline_mean - cell_mean`; positive = loss |
+| Welch | `figures/03_welch_logp_por_escenario` | `log10(p)`; lower = stronger evidence |
+| Action KL | `figures/04_kl_acciones_por_escenario` | Policy drift vs the reference condition |
+| Family curves | `figures/05_curvas_por_familia` | Sorted per-sequence performance by stress family |
+| Universal stressors | `figures/06_curvas_estresores_universales` | Behaviour under extrapolated severity and length |
+| Effect size | `figures/07_cohen_d_por_escenario` | Standardised change vs the reference condition |
+| Ranking | `figures/08_ranking_desempeno` | Reference vs stress mean per model |
+| Family sensitivity | `figures/09_degradacion_por_familia` | Mean degradation per perturbation family |
+| Stability | `figures/10_desempeno_vs_estabilidad` | Mean performance vs dispersion |
+| Generalisation | `figures/11_perfiles_generalizacion` | Response profile across each family |
+| Pairwise contrasts | `figures/12_pares_welch_logp`, `13_pares_cohen_d`, `14_pares_kl` | Model-versus-model comparison |
 
 ## Metrics per cell
 
 For each `(model, scenario)`:
 
 * `per_sequence_perf` — vector of length `n_sequences` parsed from the
-  package's `Sequence X: Performance = Y.YYYY` stdout lines.
+  package's `Sequence X: Performance = Y.YYYY` stdout lines, or from the
+  `*performances*.npy` artefact written by the ensemble evaluators.
 * `global_mean_perf`, `std_perf`, `min_perf`, `max_perf`.
-* `stress_degradation` = `baseline_mean - cell_mean` (per model).
-* `welch_t`, `welch_p` — Welch two-sample t vs the model's own `sev_empirical` baseline.
-* `cohen_d` — pooled-SD effect size vs baseline.
-* `action_distribution` — empirical pmf over actions {0, …, 10} from the package's `responses_*.txt`.
-* `kl_action_drift` — `KL(cell_action_dist || baseline_action_dist)`.
+* `action_distribution` — empirical PMF over the 11 allocation actions.
+* Matrices in `matrices/` add `stress_degradation`, `welch_p`, `welch_logp`,
+  `cohen_d` and `action_kl`, always against the model's own `sev_empirical`
+  reference condition.
+* Pairwise `Welch`, `Cohen d` and symmetric `KL` are calculated by
+  `figures.py` over scenarios common to all models in a suite; KL uses
+  common 20-bin performance histograms in `[0, 1]`.
 
 ## Compute notes
 
@@ -183,7 +182,7 @@ For each `(model, scenario)`:
 
 ## Reproducibility
 
-* Single seed (`42`) for all CSV synthesis ensures all 6 models see the
+* Single seed (`42`) for all CSV synthesis ensures all 12 models see the
   exact same severity / length sequences within a scenario.
 * Each cell's JSON records the workspace-relative paths to the
   subprocess log, the package's results JSON, and the responses file.

@@ -36,7 +36,8 @@ El flujo principal es:
 1. inferencia del Transformer,
 2. cálculo de confianza,
 3. validación del umbral de seguridad,
-4. fallback a otros miembros si la confianza no alcanza el valor mínimo.
+4. fallback a la combinación ponderada de todos los miembros (incluido el
+   Transformer) si la confianza no alcanza el valor mínimo.
 
 Esto reduce los errores catastróficos cuando el Transformer se vuelve poco confiable en escenarios adversos.
 
@@ -55,7 +56,11 @@ Los miembros activos usados por el ensemble son los modelos principales del proy
 
 ## 5. Salidas esperadas
 
-El paquete escribe resultados de evaluación y métricas de desempeño en sus respectivos `inputs/` y `outputs/`.
+El paquete escribe resultados de evaluación y métricas de desempeño en sus
+respectivos `inputs/` y `outputs/`. La evaluación (`ext/evaluate_ens.py`)
+escribe en `outputs/` el JSON/PNG de resultados, el vector
+`PES_ENS_TRF_GUARD_performances_<id>.npy` y el registro de acciones por trial
+`PES_ENS_TRF_GUARD_responses_<id>.csv`.
 
 ---
 

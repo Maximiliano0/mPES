@@ -20,7 +20,7 @@
 
 - 🧠 **Active benchmark line:** `h1/` with tabular, neural and ensemble training packages.
 - 🧪 **Experimental staging lines:** `h2/` (`tabular_conf/ql_conf`) and `h3/` (`tabular_uq/ql_uq`) remain out of the validated benchmark path.
-- 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over six active benchmark models.
+- 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over six individual models and six ensemble variants.
 - 🔬 **Bayesian optimisation:** Optuna for the trainable variants.
 - 🌍 **Windows-first workflow:** Python 3.12 and the `win_mpes_env` environment.
 - 📚 **Package-level docs:** focused on the active models and their executable workflows, while legacy variants remain documented as archive material.
@@ -116,7 +116,7 @@ python -m ens.pes_ens_consensus.ext.optimize_ens 50
 
 ## 📚 Documentation
 
-The active repository documentation is centred on the executable packages in `h1/`. The general benchmark harness is the authoritative comparison point for the current six-model stress catalogue; historical thesis-style write-ups are retained only as archive material and are not part of the active workflow.
+The active repository documentation is centred on the executable packages in `h1/`. The general benchmark harness compares individual and ensemble suites under the same stress catalogue; historical thesis-style write-ups are retained only as archive material and are not part of the active workflow.
 
 | Package | Guide |
 |---------|-------|
@@ -137,16 +137,27 @@ The active repository documentation is centred on the executable packages in `h1
 
 ## 📈 Current stress benchmark
 
-The active benchmark in [`h1/general/`](h1/general/) evaluates six models:
-`pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`, `pes_a2c` and `pes_trf`.
+The active benchmark in [`h1/general/`](h1/general/) evaluates two suites:
+
+- Individual models: `pes_base`, `pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`,
+  `pes_a2c` and `pes_trf`.
+- Ensembles: `pes_ens`, `pes_ens_sprb`, `pes_ens_accq`,
+  `pes_ens_consensus`, `pes_ens_consensus_prior` and `pes_ens_trf_guard`.
+
+The scenario catalogue contains 22 perturbations, including severity,
+sequence-length, joint and structural changes. The comparison report defines
+the normalized performance, Welch $p$, Cohen $d$, degradation and KL metrics,
+and links the generated heatmaps and sequence curves.
 
 ```bash
 cd h1
-python -m general.scripts.orchestrate
-python -m general.scripts.aggregate
-python -m general.scripts.plot_matrix
-python -m general.scripts.report
+python -m general.scripts.benchmark run --suite both
+python -m general.scripts.analysis
+python -m general.scripts.figures
 ```
+
+The full comparison is documented in
+[`h1/general/doc/comparacion_modelos.md`](h1/general/doc/comparacion_modelos.md).
 
 ---
 

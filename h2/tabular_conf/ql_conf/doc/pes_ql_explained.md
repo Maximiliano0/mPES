@@ -1,8 +1,8 @@
 # ql_conf — Guía de Uso e Implementación
 
-> Q-Learning tabular con optimización Bayesiana de hiperparámetros (Optuna/TPE)
-`h2/tabular_conf/ql_conf` es una variante experimental de **Q-Learning tabular con búsqueda Bayesiana de
-> aplicado al **Pandemic Experiment Scenario**.
+> Variante experimental suspendida de Q-Learning tabular con búsqueda
+> Bayesiana de hiperparámetros (Optuna/TPE), aplicada al Pandemic Experiment
+> Scenario.
 
 ---
 
@@ -93,7 +93,7 @@ Todos los comandos asumen el directorio raíz del workspace
 ### 3.1. Optimización Bayesiana
 
 ```powershell
-python -m tabular.pes_ql.ext.optimize_rl 100
+python -m tabular_conf.ql_conf.ext.optimize_rl 100
 # Reanudar un estudio existente:
 python -m tabular.pes_ql.ext.optimize_rl 200 --resume 2026-04-22
 # Directorio de salida personalizado (útil en Colab / runs paralelos):
@@ -106,15 +106,15 @@ python -m tabular.pes_ql.ext.optimize_rl 100 --storage sqlite:////custom/study.d
 
 ```powershell
 # Auto-carga los hiperparámetros del último BAYESIAN_OPT:
-python -m tabular.pes_ql.ext.train_rl
+python -m tabular_conf.ql_conf.ext.train_rl
 # Sobre-escribe num_episodes:
-python -m tabular.pes_ql.ext.train_rl 1000000
+python -m tabular_conf.ql_conf.ext.train_rl 1000000
 ```
 
 ### 3.3. Ejecución del experimento
 
 ```powershell
-python -m tabular.pes_ql
+python -m tabular_conf.ql_conf
 ```
 
 ---

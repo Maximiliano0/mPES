@@ -18,7 +18,7 @@ Key differences from pes_base/ext/train_rl.py
 ----------------------------------------
 - Uses Bayesian-optimised hyperparameters (lr ≈ 0.360, γ ≈ 0.865, ε₀ ≈ 0.679,
   ε_min ≈ 0.085) instead of pes_base defaults
-- Default episodes: 900 000 (pes_base uses 20 000)
+- Default episodes: 900 000 (pes_base uses 1 000 000)
 - Uses SEED from CONFIG.py for reproducible training
 - Q-table shape: (31, 11, 10, 11) since MAX_SEVERITY = 9
 

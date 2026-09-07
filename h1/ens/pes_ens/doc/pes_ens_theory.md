@@ -20,3 +20,8 @@ Para la ejecución y análisis actual, usar:
 - [`../../general/doc/comparacion_modelos.md`](../../general/doc/comparacion_modelos.md) como archivo de referencia histórica
 
 Este documento no debe emplearse como base de diseño ni de evaluación del benchmark vigente.
+
+## Referencias
+
+- Dietterich, T. G. (2000). Ensemble methods in machine learning. In *Multiple Classifier Systems* (pp. 1–15). Springer.
+- Kuncheva, L. I. (2004). *Combining Pattern Classifiers: Methods and Algorithms*. Wiley.

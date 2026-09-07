@@ -57,7 +57,11 @@ Esto hace que la salida sea más robusta que la simple regla de mayoría, pero s
 
 ## 5. Salidas esperadas
 
-El paquete genera resultados en `inputs/` y `outputs/` y participa en las evaluaciones del benchmark general del proyecto.
+El paquete genera resultados en `inputs/` y `outputs/` y participa en las
+evaluaciones del benchmark general del proyecto. La evaluación
+(`ext/evaluate_ens.py`) escribe en `outputs/` el JSON/PNG de resultados, el
+vector `PES_ENS_ACCQ_performances_<id>.npy` y el registro de acciones por
+trial `PES_ENS_ACCQ_responses_<id>.csv`.
 
 ---
 

@@ -16,7 +16,7 @@ Experiment Structure::
 Key Differences vs pes_base (baseline):
     - MAX_SEVERITY = 9 (same as pes_base)
     - SEED = 42 (fixed for reproducible Q-Learning training)
-    - AVAILABLE_RESOURCES_PER_SEQUENCE = 39 (pes_base uses 49)
+    - AVAILABLE_RESOURCES_PER_SEQUENCE = 39 (same as pes_base)
 
 Sections:
     - Resource Allocation Settings  (budget, initial cities)

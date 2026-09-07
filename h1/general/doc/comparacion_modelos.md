@@ -1,41 +1,273 @@
-# Archivo de referencia histórica
+# Comparación de modelos mPES
 
-> Este documento queda archivado y no forma parte del flujo operativo actual del proyecto.
->
-> La comparación del benchmark vigente se realiza en [`../README.md`](../README.md) y en la ejecución del harness de estrés bajo [`../`](../).
+> Informe generado a partir de los resultados disponibles en `h1/general/results/`.
+> La comparación usa 22 escenarios, 64 secuencias por celda y
+> `sev_empirical` como baseline.
 
-## Alcance
+## Metodología
 
-La línea activa del proyecto es `h1/`. Los paquetes y modelos mencionados en esta página se han retirado del flujo de decisión actual y no se consideran una fuente operativa ni de conclusiones.
+La métrica comparada es `global_mean_perf`, el rendimiento normalizado que
+registran los experimentos del harness de estrés. Para cada modelo se informa:
 
-- `tabular/pes_base`
-- `tabular/pes_ql`
-- `tabular/pes_dql`
-- `ml/pes_dqn`
-- `ml/pes_rdqn`
-- `ml/pes_a2c`
-- `ml/pes_trf`
-- `ens/pes_ens_sprb`
-- `ens/pes_ens_accq`
-- `ens/pes_ens_trf_guard`
-- `ens/pes_ens_consensus`
+- rendimiento en el escenario empírico;
+- media de rendimiento en los 21 escenarios restantes;
+- degradación media respecto al baseline, calculada como `baseline - media_bajo_estres`;
+- mayor degradación observada y escenario donde ocurre.
 
-Se eliminan aquí las referencias a resultados históricos, conclusiones comparativas, modelos obsoletos y propuestas no activas. La documentación vigente debe limitarse a la línea activa y a los experimentos reproducibles del benchmark actual.
+### Notación y rendimiento normalizado
 
-## Recomendación
+Para una secuencia $i$, el rendimiento normalizado registrado por el harness
+es:
 
-Para cualquier trabajo operativo, usar la documentación del benchmark activo y el código de cada paquete en `h1/`. Este archivo solo sirve como aviso de archivo histórico y no como base para decisiones de diseño o benchmarking.
+$$
+\bar r_i = P_i =
+\frac{S_{\mathrm{worst},i}-S_{\mathrm{final},i}}
+{S_{\mathrm{worst},i}-S_{\mathrm{best},i}},
+\qquad 0 \leq P_i \leq 1.
+$$
 
-A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention is all you need.
-En *Advances in Neural Information Processing Systems* (Vol. 30, pp.
-5998–6008). Curran Associates.
+Aquí $S_{\mathrm{final},i}$ es la severidad final observada, mientras que
+$S_{\mathrm{worst},i}$ y $S_{\mathrm{best},i}$ son los límites de referencia
+de esa secuencia. El desempeño medio de un modelo $m$ en un escenario $s$ es:
 
-Williams, R. J. (1992). Simple statistical gradient-following
-algorithms for connectionist reinforcement learning. *Machine
-Learning*, *8*(3-4), 229–256. <https://doi.org/10.1007/BF00992696>
+$$
+\mu_{m,s}=\frac{1}{n_s}\sum_{i=1}^{n_s}P_{m,s,i},
+\qquad n_s=64
+$$
 
----
+Los valores cercanos a $1$ indican mayor reducción relativa de severidad; los
+valores cercanos a $0$ indican menor desempeño normalizado. La comparación no
+debe interpretar $\bar r_i$ como una probabilidad.
 
-*Documento generado para la tesis del proyecto mPES (multiple Pandemic
-Experiment Scenario). Todos los datos provienen de los experimentos
-registrados en los directorios `outputs/` de cada paquete.*
+Para evitar ambigüedad, los mapas centrados en `pes_base` usan:
+
+$$
+\Delta^{\mathrm{base}}_{m,s}=\mu_{\mathrm{base},s}-\mu_{m,s}.
+$$
+
+Así, $\Delta^{\mathrm{base}}_{m,s}>0$ significa que el modelo $m$ pierde
+desempeño frente a `pes_base`; $\Delta^{\mathrm{base}}_{m,s}<0$ significa que
+lo supera. Los mapas históricos de degradación respecto al propio baseline de
+cada modelo usan, en cambio, $\mu_{m,\mathrm{empirical}}-\mu_{m,s}$.
+
+Los resultados individuales proceden de `pes_ql`, `pes_dql`, `pes_dqn`,
+`pes_rdqn`, `pes_a2c` y `pes_trf`. Los ensembles incluyen `pes_ens`,
+`pes_ens_sprb`, `pes_ens_accq`, `pes_ens_consensus`,
+`pes_ens_consensus_prior` y `pes_ens_trf_guard`.
+
+La ejecución reproducible del análisis es:
+
+```powershell
+cd h1
+..\win_mpes_env\Scripts\python.exe -m general.scripts.analysis
+..\win_mpes_env\Scripts\python.exe -m general.scripts.figures
+```
+
+El análisis no reentrena modelos: consume los JSON y matrices ya generados.
+
+## Métricas estadísticas
+
+Las comparaciones pareadas se calculan sobre las observaciones de rendimiento
+de las 64 secuencias de cada escenario de estrés común a todos los modelos de
+una suite. Se excluye `sev_empirical` para que el contraste mida el
+comportamiento bajo estrés y no una diferencia debida únicamente al baseline.
+
+### $p$ de Welch
+
+La prueba t de Welch contrasta si las medias de dos modelos pueden considerarse
+iguales sin asumir varianzas iguales. Para muestras $x$ e $y$ usa:
+
+$$
+t = \frac{\bar{x}-\bar{y}}
+{\sqrt{s_x^2/n_x+s_y^2/n_y}}
+$$
+
+Los grados de libertad aproximados son:
+
+$$
+\nu=\frac{(s_x^2/n_x+s_y^2/n_y)^2}
+{\frac{(s_x^2/n_x)^2}{n_x-1}+\frac{(s_y^2/n_y)^2}{n_y-1}}.
+$$
+
+El valor $p$ bilateral es $p=2\Pr(T_\nu\geq |t|)$. En los heatmaps se
+representa $\log_{10}(p)$: valores más negativos indican evidencia más fuerte
+contra la igualdad de medias. El mapa no demuestra causalidad ni garantiza
+que el efecto sea importante en términos operativos.
+
+El grado de libertad se estima con la aproximación de Welch-Satterthwaite.
+El informe usa la prueba bilateral. Un valor $p$ pequeño indica evidencia de
+una diferencia de medias, pero no mide por sí mismo la importancia práctica.
+No se aplica una corrección por comparaciones múltiples; por ello los valores
+$p$ se presentan como evidencia exploratoria, no como confirmación causal.
+
+### $d$ de Cohen
+
+El tamaño de efecto estandarizado se calcula como:
+
+$$
+d = \frac{\bar{x}-\bar{y}}{s_{pooled}}
+$$
+
+con
+
+$$
+s_{pooled}=\sqrt{\frac{(n_x-1)s_x^2+(n_y-1)s_y^2}
+{n_x+n_y-2}}.
+$$
+
+Su signo indica qué modelo tiene la media mayor y su magnitud expresa la
+diferencia en desviaciones estándar. Como referencia descriptiva, valores
+cercanos a $0.2$, $0.5$ y $0.8$ suelen interpretarse como efectos pequeño,
+medio y grande, respectivamente. En este informe se priorizan conjuntamente
+$p$ y $d$, porque una muestra grande puede producir un $p$ pequeño para una
+diferencia poco relevante.
+
+### Divergencia de Kullback-Leibler
+
+La expresión solicitada como “distancia de Lieber” se interpreta aquí como la
+divergencia de Kullback-Leibler (KL), una medida estándar de diferencia entre
+distribuciones. Para evitar depender del orden de los modelos se informa la
+versión simétrica:
+
+$$
+D_{KL}^{sym}(P,Q) = \frac{1}{2}\left(D_{KL}(P\Vert Q)+D_{KL}(Q\Vert P)\right)
+$$
+
+En los mapas de acciones, $P$ y $Q$ son las distribuciones empíricas sobre las
+11 acciones $\{0,\ldots,10\}$; en las comparaciones de rendimiento son
+histogramas con 20 bins comunes en $[0,1]$. Se añade $\varepsilon=10^{-9}$ y
+se renormaliza para evitar $\log(0)$. KL cercana a cero indica perfiles
+similares; valores mayores indican decisiones o rendimientos distribuidos de
+forma distinta. KL no tiene unidades y no es un $p$-valor.
+
+## Heatmaps estadísticos por escenario
+
+Además de los contrastes pareados entre modelos, se generan heatmaps para
+observar cómo cambia cada métrica en los escenarios de severidad, longitud,
+conjuntos y estructura. Cada fila representa un modelo y cada columna un
+escenario; `sev_empirical` es el baseline de referencia.
+
+- [Welch por escenario, individuales](../results/individual/figures/03_welch_logp_por_escenario.png)
+- [Cohen por escenario, individuales](../results/individual/figures/07_cohen_d_por_escenario.png)
+- [KL de acciones por escenario, individuales](../results/individual/figures/04_kl_acciones_por_escenario.png)
+- [Degradación por escenario, individuales](../results/individual/figures/02_degradacion_por_escenario.png)
+- [Welch por escenario, ensembles](../results/ensemble/figures/03_welch_logp_por_escenario.png)
+- [Cohen por escenario, ensembles](../results/ensemble/figures/07_cohen_d_por_escenario.png)
+- [KL de acciones por escenario, ensembles](../results/ensemble/figures/04_kl_acciones_por_escenario.png)
+- [Degradación por escenario, ensembles](../results/ensemble/figures/02_degradacion_por_escenario.png)
+
+En estos mapas, un $p$ de Welch menor indica evidencia más fuerte de una
+diferencia frente al baseline. El valor de Cohen conserva el signo de la
+diferencia de rendimiento respecto al baseline; un signo positivo indica
+mejor rendimiento en el escenario y uno negativo indica pérdida. La KL por
+escenario compara la **distribución de acciones** del escenario con la de la
+condición de referencia del mismo modelo, es decir mide el desplazamiento de
+la política y no del rendimiento.
+
+### Cómo leer las figuras
+
+- **Mapa de desempeño**: comparar colores dentro de una columna permite ordenar modelos en un escenario; comparar una fila muestra sensibilidad del mismo modelo al estrés.
+- **Mapa de degradación**: colores positivos señalan pérdida frente a la referencia y negativos mejora. La escala divergente debe leerse alrededor de cero, no por el color más intenso de forma aislada.
+- **Mapa de Welch**: valores más bajos de $\log_{10}(p)$ indican mayor evidencia estadística, pero deben acompañarse con $d$ de Cohen.
+- **Mapa de Cohen**: el signo indica dirección y la magnitud el tamaño del cambio en desviaciones estándar; un efecto grande no implica por sí mismo generalización uniforme.
+- **Mapa de KL**: valores altos indican mayor cambio en la distribución de acciones o rendimientos; no indican qué modelo tiene mejor media.
+- **Curvas por secuencia**: cada panel ordena de menor a mayor desempeño; una curva más alta domina en esa condición. Las líneas de media permiten separar rendimiento global de variabilidad entre secuencias.
+
+## Modelos individuales
+
+| Modelo | Baseline | Media bajo estrés | Degradación media | Mayor degradación | Escenario crítico |
+|---|---:|---:|---:|---:|---|
+| `pes_trf` | 0.927 | **0.930** | **-0.002** | 0.068 | `len_extrapolate_long` |
+| `pes_dqn` | 0.894 | 0.899 | -0.005 | 0.053 | `len_extrapolate_long` |
+| `pes_a2c` | 0.887 | 0.896 | -0.009 | 0.062 | `len_extrapolate_long` |
+| `pes_rdqn` | 0.899 | 0.889 | 0.010 | 0.068 | `sev_extrapolate_high` |
+| `pes_dql` | 0.896 | 0.877 | 0.019 | 0.111 | `sev_extrapolate_high` |
+| `pes_ql` | 0.887 | 0.871 | 0.015 | 0.124 | `sev_extrapolate_high` |
+
+`pes_trf` obtiene el mejor rendimiento individual tanto en el baseline como
+en la media bajo estrés. `pes_dqn` y `pes_a2c` también presentan una media
+bajo estrés superior a su baseline. Los modelos tabulares son los más
+afectados por `sev_extrapolate_high`, especialmente `pes_ql`.
+
+![Ranking de modelos individuales](../results/individual/figures/08_ranking_desempeno.png)
+
+![Rendimiento individual por escenario](../results/individual/figures/01_desempeno_por_escenario.png)
+
+![Degradación individual por familia](../results/individual/figures/09_degradacion_por_familia.png)
+
+![Rendimiento y estabilidad individual](../results/individual/figures/10_desempeno_vs_estabilidad.png)
+
+![Perfiles de generalización individuales](../results/individual/figures/11_perfiles_generalizacion.png)
+
+![Curvas individuales por familia](../results/individual/figures/05_curvas_por_familia.png)
+
+![Curvas individuales ante estresores universales](../results/individual/figures/06_curvas_estresores_universales.png)
+
+### Contrastes pareados individuales
+
+![p de Welch entre modelos individuales](../results/individual/figures/12_pares_welch_logp.png)
+
+![d de Cohen entre modelos individuales](../results/individual/figures/13_pares_cohen_d.png)
+
+![KL entre distribuciones de rendimiento individuales](../results/individual/figures/14_pares_kl.png)
+
+## Ensembles
+
+| Ensemble | Baseline | Media bajo estrés | Degradación media | Mayor degradación | Escenario crítico |
+|---|---:|---:|---:|---:|---|
+| `pes_ens` | **0.937** | **0.939** | **-0.002** | **0.037** | `len_extrapolate_long` |
+| `pes_ens_trf_guard` | 0.928 | 0.931 | -0.003 | 0.067 | `len_extrapolate_long` |
+| `pes_ens_consensus_prior` | 0.918 | 0.923 | -0.005 | 0.042 | `len_extrapolate_long` |
+| `pes_ens_consensus` | 0.893 | 0.904 | -0.010 | 0.063 | `len_extrapolate_long` |
+| `pes_ens_sprb` | 0.914 | 0.902 | 0.012 | 0.054 | `sev_extrapolate_high` |
+| `pes_ens_accq` | 0.914 | 0.901 | 0.013 | 0.055 | `sev_extrapolate_high` |
+
+`pes_ens` presenta la mejor media bajo estrés y la menor degradación máxima.
+`pes_ens_trf_guard` queda segundo en media bajo estrés y mantiene un desempeño
+cercano al de `pes_trf`. `pes_ens_sprb` y `pes_ens_accq` son los ensembles que
+más retroceden frente a su baseline, ambos ante `sev_extrapolate_high`.
+
+![Ranking de ensembles](../results/ensemble/figures/08_ranking_desempeno.png)
+
+![Rendimiento de ensembles por escenario](../results/ensemble/figures/01_desempeno_por_escenario.png)
+
+![Degradación de ensembles por familia](../results/ensemble/figures/09_degradacion_por_familia.png)
+
+![Rendimiento y estabilidad de ensembles](../results/ensemble/figures/10_desempeno_vs_estabilidad.png)
+
+![Perfiles de generalización de ensembles](../results/ensemble/figures/11_perfiles_generalizacion.png)
+
+![Curvas de ensembles por familia](../results/ensemble/figures/05_curvas_por_familia.png)
+
+![Curvas de ensembles ante estresores universales](../results/ensemble/figures/06_curvas_estresores_universales.png)
+
+### Contrastes pareados de ensembles
+
+![p de Welch entre ensembles](../results/ensemble/figures/12_pares_welch_logp.png)
+
+![d de Cohen entre ensembles](../results/ensemble/figures/13_pares_cohen_d.png)
+
+![KL entre distribuciones de rendimiento de ensembles](../results/ensemble/figures/14_pares_kl.png)
+
+## Lectura comparativa
+
+- El mejor resultado individual es `pes_trf`, con media bajo estrés de 0.930.
+- El mejor resultado entre ensembles es `pes_ens`, con media bajo estrés de 0.939 y degradación máxima de 0.037.
+- `pes_ens_trf_guard` es el ensemble activo más próximo al Transformer individual en rendimiento bajo estrés.
+- La extrapolación alta de severidad es el principal punto débil de `pes_ql`, `pes_dql`, `pes_rdqn`, `pes_ens_sprb` y `pes_ens_accq`.
+- La extrapolación de longitud es el escenario crítico de `pes_dqn`, `pes_a2c`, `pes_trf` y de los ensembles con degradación media negativa.
+- En los contrastes pareados, `pes_trf` frente a `pes_ql` presenta $p \approx 1.63\times10^{-88}$ y $d \approx 0.78$.
+- Entre ensembles, `pes_ens` frente a `pes_ens_consensus` presenta $p \approx 2.77\times10^{-56}$ y $d \approx 0.62$.
+- Los perfiles de generalización permiten distinguir si el rendimiento se conserva cuando cambian por separado la severidad inicial, la longitud de secuencia, sus combinaciones y la estructura del experimento.
+
+Las versiones vectoriales de las figuras (`.pdf`) y las métricas completas en
+JSON se encuentran junto a cada suite:
+
+- [`results/individual/figures`](../results/individual/figures)
+- [`results/ensemble/figures`](../results/ensemble/figures)
+
+## Referencias
+
+- Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences* (2nd ed.). Lawrence Erlbaum Associates.
+- Kullback, S., & Leibler, R. A. (1951). On information and sufficiency. *The Annals of Mathematical Statistics, 22*(1), 79–86. [https://doi.org/10.1214/aoms/1177729694](https://doi.org/10.1214/aoms/1177729694)
+- Welch, B. L. (1947). The generalization of “Student's” problem when several different population variances are involved. *Biometrika, 34*(1–2), 28–35. [https://doi.org/10.1093/biomet/34.1-2.28](https://doi.org/10.1093/biomet/34.1-2.28)

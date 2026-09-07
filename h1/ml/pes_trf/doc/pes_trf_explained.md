@@ -45,18 +45,9 @@ y al resto de agentes individuales.
 ### Ejecutar el experimento completo
 
 ```powershell
-# Windows
 .\win_mpes_env\Scripts\Activate.ps1
 $env:PYTHONIOENCODING = "utf-8"
 $env:TF_ENABLE_ONEDNN_OPTS = "0"
-python -m ml.pes_trf
-```
-
-```bash
-# Linux
-source linux_mpes_env/bin/activate
-export PYTHONIOENCODING=utf-8
-export TF_ENABLE_ONEDNN_OPTS=0
 python -m ml.pes_trf
 ```
 
@@ -135,7 +126,7 @@ El espacio de búsqueda Optuna admite $H \in \{2, 4, 8\}$.
      3. Step en el entorno: $(s', r, d)$.
      4. Almacena la transición en el buffer.
      5. Muestrea minibatch del buffer y ejecuta `train_step_trf()`.
-   - Cada `TRF_TARGET_UPDATE_FREQ` episodios: sincroniza el target network.
+   - Cada `TRF_TARGET_SYNC_FREQ` pasos: sincroniza el target network.
    - Guarda checkpoint cada N episodios.
 7. **Logging dual-stream**: consola + `outputs/PES_TRF_log_<fecha>.txt`.
 
@@ -173,28 +164,29 @@ def train_step_trf(model, target_model, optimizer, batch, gamma):
 
 `ext/optimize_tr.py` usa **Optuna** con muestreador TPE para buscar:
 
-| Hiperparámetro | Rango | Óptimo (2026-05-02) |
+| Hiperparámetro (Optuna) | Rango | Óptimo (2026-05-02) |
 |---|---|---|
-| `history_len` (Optuna) | $[3, 10]$ entero | **6** (`TRF_HISTORY_LEN`) |
-| `d_model` (Optuna) | $\{16, 32, 64, 128\}$ | **32** (`TRF_D_MODEL`) |
-| `num_heads` (Optuna) | $\{2, 4, 8\}$ | **4** (`TRF_NUM_HEADS`) |
-| `TRF_N_HEADS` | $\{1, 2, 4\}$ | **2** |
-| `TRF_N_LAYERS` | $\{1, 2, 3\}$ | **2** |
-| `TRF_FF_DIM` | $\{32, 64, 128\}$ | **64** |
-| `TRF_LEARNING_RATE` | $[10^{-5}, 10^{-3}]$ log | $\approx 5\times10^{-4}$ |
-| `TRF_DISCOUNT` ($\gamma$) | $[0.90, 0.99]$ | $\approx 0.97$ |
+| `history_len` | $[3, 10]$ entero | **6** (`TRF_HISTORY_LEN`) |
+| `d_model` | $\{16, 32, 64, 128\}$ | **32** (`TRF_D_MODEL`) |
+| `num_heads` | $\{2, 4, 8\}$ | **4** (`TRF_NUM_HEADS`) |
+| `key_dim` | $\{8, 16, 32\}$ | **16** (`TRF_KEY_DIM`) |
+| `ff_dim` | $\{32, 64, 128, 256\}$ | **64** |
+| `num_layers` | $[1, 4]$ entero | **2** |
+| `dropout` | $[0.0, 0.3]$ | — |
+| `learning_rate` | $[10^{-4}, 5\times10^{-3}]$ log | $\approx 5\times10^{-4}$ |
+| `discount_factor` ($\gamma$) | $[0.92, 0.995]$ | $\approx 0.97$ |
 
 Cada trial entrena una versión reducida y devuelve el rendimiento medio sobre
 64 evaluaciones independientes.
 
 ### Almacenamiento
 
-- **Estudio Optuna**: `inputs/<fecha>_BAYESIAN_OPT/study.db`.
+- **Estudio Optuna**: `inputs/<fecha>_BAYESIAN_OPT/optuna_study_<fecha>.db`.
 - **Mejores parámetros**: `inputs/best_params.json`.
 - **Logs**: `outputs/PES_TRF_log_<fecha>_BAYESIAN_OPT.txt`.
 
 ```powershell
-.\utils\win\optuna_dashboard.ps1 ml\pes_trf\inputs\<fecha>_BAYESIAN_OPT\study.db
+.\utils\win\optuna_dashboard.ps1 ml\pes_trf\inputs\<fecha>_BAYESIAN_OPT\optuna_study_<fecha>.db
 ```
 
 ---
@@ -205,18 +197,22 @@ Cada trial entrena una versión reducida y devuelve el rendimiento medio sobre
 
 Contiene:
 
-- **`causal_mask(seq_len)`**: genera la máscara triangular como `tf.constant`.
-- **`PositionalEncoding`**: capa Keras con embedding posicional aprendido (o
-  Solo la variante **aprendida** está implementada (`Embedding`); la
-  sinusoidal se menciona en el documento teórico pero no en el código.
-- **`TransformerEncoderLayer`**: bloque Pre-LN con MHA + FFN + residual.
+- **Enmascarado causal**: se aplica con `use_causal_mask=True` sobre la capa
+  `MultiHeadAttention` de cada bloque; no existe una función `causal_mask`.
+- **Embedding posicional aprendido**: capa `tf.keras.layers.Embedding`
+  (`name="pos_embed"`) sumada a cada token. Solo la variante **aprendida**
+  está implementada; la sinusoidal se menciona en el documento teórico pero
+  no en el código.
+- **Bloques encoder inline**: cada bloque Pre-LN aplica MHA causal + FFN con
+  conexiones residuales, ensamblado dentro de `build_q_network`.
 - **`build_q_network(state_dim, action_dim, history_len, d_model,
-  num_heads, num_layers, ...)`**: ensambla
-  `Input → Dense(d_model) → + LearnedPosEmbed → N × EncoderLayer (causal)
-   → Lambda(last token) → Dense(11)` (last-token pooling, no global avg).
+  num_heads, key_dim, ff_dim, num_layers, ...)`**: ensambla
+  `Input → Dense(d_model) → + pos_embed → N × bloque encoder (causal)
+   → Lambda(last_token) → Dense(11)` (last-token pooling, no global avg).
 - **`train_step_trf(...)`**: paso Double DQN con Huber loss.
-- **`Lambda` causal**: la máscara se inyecta vía una `tf.keras.layers.Lambda`,
-  por lo que al cargar el modelo se requiere `safe_mode=False`:
+- **`Lambda` de pooling**: el pooling de último token usa una
+  `tf.keras.layers.Lambda` (`name="last_token"`), por lo que al cargar el
+  modelo se requiere `safe_mode=False`:
 
 ```python
 model = tf.keras.models.load_model("trf_model.keras", safe_mode=False)
@@ -248,26 +244,30 @@ Es una cola circular FIFO de longitud fija `TRF_HISTORY_LEN`:
 
 ```python
 class HistoryDeque:
-    def __init__(self, history_len: int, state_dim: int = 3):
+    def __init__(self, history_len: int, state_dim: int):
         self.history_len = history_len
         self.state_dim   = state_dim
-        self.buffer = numpy.zeros((history_len, state_dim), dtype=numpy.float32)
+        self._buffer     = collections.deque(maxlen=history_len)
 
     def reset(self):
-        self.buffer.fill(0.0)
+        self._buffer.clear()
 
-    def push(self, state):
-        self.buffer = numpy.roll(self.buffer, -1, axis=0)
-        self.buffer[-1] = state
+    def append_step(self, state):
+        self._buffer.append(numpy.asarray(state, dtype=numpy.float32))
 
-    def get(self):
-        # Forma: (history_len, 3)
-        return self.buffer.copy()
+    def current_window(self):
+        # Forma: (history_len, 3), con padding de ceros a la izquierda
+        window = numpy.zeros((self.history_len, self.state_dim), dtype=numpy.float32)
+        items = list(self._buffer)[-self.history_len:]
+        if items:
+            window[-len(items):] = numpy.asarray(items, dtype=numpy.float32)
+        return window
 ```
 
 - Al iniciar una **nueva secuencia** se llama a `reset()`: la historia
-  se rellena con ceros (estado neutro).
-- En cada trial se hace `push(state_normalizado)` y se pasa `get()` a la red.
+  se vacía y `current_window()` devuelve ceros (estado neutro).
+- En cada trial se hace `append_step(state_normalizado)` y se pasa
+  `current_window()` a la red.
 - Forma del input al modelo: `(batch, history_len, 3)`.
 
 ---
@@ -360,14 +360,16 @@ los recursos restantes.
 
 ## 11. Notas operativas importantes
 
-- **Carga del modelo**: la capa `Lambda` para la máscara causal obliga a
+- **Carga del modelo**: la capa `Lambda` de pooling (`last_token`) obliga a
   pasar `safe_mode=False`:
+
   ```python
   model = tf.keras.models.load_model(
       "ml/pes_trf/inputs/trf_model.keras",
       safe_mode=False
   )
   ```
+
 - **Reset de la historia**: indispensable al inicio de cada nueva secuencia
   (pasa de un escenario al siguiente).
 - **Variables de entorno**: `PYTHONIOENCODING=utf-8` y

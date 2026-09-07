@@ -58,8 +58,10 @@ corto plazo (último trial) y otra a largo plazo (primeros trials de la
 secuencia).
 
 En `pes_trf` por defecto: $H = 4$ (el espacio de búsqueda admite
-$\{2, 4, 8\}$), $d_\mathrm{model} = 32$, por tanto
-$d_k = d_\mathrm{model}/H = 16$.
+$\{2, 4, 8\}$) y $d_\mathrm{model} = 32$. La dimensión por cabeza
+$d_k$ es un hiperparámetro independiente (`TRF_KEY_DIM`, por defecto $16$,
+espacio $\{8, 16, 32\}$), no se deriva de $d_\mathrm{model}/H$: la capa
+`MultiHeadAttention` de Keras acepta `key_dim` por separado.
 
 ---
 
@@ -277,27 +279,28 @@ sobre el espacio:
 trial.suggest_int        ('history_len',      3, 10)
 trial.suggest_categorical('d_model',          [16, 32, 64, 128])
 trial.suggest_categorical('num_heads',        [2, 4, 8])
-# (la restricción d_model %% num_heads == 0 NO está validada en código;
-#  combinaciones inválidas pueden disparar errores en MultiHeadAttention)
-trial.suggest_categorical("TRF_N_HEADS",     [1, 2, 4])
-trial.suggest_categorical("TRF_N_LAYERS",    [1, 2, 3])
-trial.suggest_categorical("TRF_FF_DIM",      [32, 64, 128])
-trial.suggest_float      ("TRF_LEARNING_RATE", 1e-5, 1e-3, log=True)
-trial.suggest_float      ("TRF_DISCOUNT",      0.90, 0.99)
+# La restricción d_model %% num_heads == 0 NO se valida: key_dim es
+# independiente en MultiHeadAttention, por lo que no hace falta.
+trial.suggest_categorical('key_dim',          [8, 16, 32])
+trial.suggest_categorical('ff_dim',           [32, 64, 128, 256])
+trial.suggest_int        ('num_layers',       1, 4)
+trial.suggest_float      ('dropout',          0.0, 0.3)
+trial.suggest_float      ('learning_rate',    1e-4, 5e-3, log=True)
+trial.suggest_float      ('discount_factor',  0.92, 0.995)
 ```
 
 ### Restricciones de coherencia
 
-- Debe cumplirse $d_\mathrm{model} \mod n_\mathrm{heads} = 0$ (cada cabeza
-  necesita una dimensión entera $d_k = d_\mathrm{model}/n_\mathrm{heads}$).
-  Optuna lo valida con `trial.set_user_attr("valid", ...)` y descarta
-  combinaciones inválidas con `optuna.TrialPruned`.
+- En Keras, `key_dim` es un hiperparámetro independiente de la capa
+  `MultiHeadAttention`, así que **no** se exige $d_\mathrm{model} \bmod
+  n_\mathrm{heads} = 0$ y el estudio no realiza ninguna validación ni
+  poda por esta causa.
 
 ### Pruning anticipado
 
-`MedianPruner(n_startup_trials=5, n_warmup_steps=10)` aborta trials cuyo
-rendimiento intermedio quede bajo la mediana de los previos. Reduce el coste
-total de la búsqueda en $\sim 50\%$.
+`MedianPruner(n_startup_trials=5, n_warmup_steps=1, interval_steps=1)` aborta
+trials cuyo rendimiento intermedio quede bajo la mediana de los previos.
+Reduce el coste total de la búsqueda en $\sim 50\%$.
 
 ---
 
@@ -335,6 +338,19 @@ Decision Transformer condicionada al rendimiento objetivo.
 4. **Estabilidad**: como todo método off-policy con aproximadores no
    lineales, puede divergir si el target network se actualiza demasiado
    rápido o el LR es muy alto.
+
+## Referencias
+
+- Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez,
+   A. N., Kaiser, Ł., & Polosukhin, I. (2017). Attention is all you need. In
+   *Advances in Neural Information Processing Systems, 30*.
+- Hasselt, H. van, Guez, A., & Silver, D. (2016). Deep reinforcement learning
+   with double Q-learning. In *Proceedings of the Thirtieth AAAI Conference on
+   Artificial Intelligence* (pp. 2094–2100). AAAI Press.
+- Chen, L., Lu, K., Rajeswaran, A., Lee, K., Grover, A., Laskin, M.,
+   Abbeel, P., Srinivas, A., & Mordatch, I. (2021). Decision Transformer:
+   Reinforcement learning via sequence modeling. In *Advances in Neural
+   Information Processing Systems, 34*.
 
 ---
 

@@ -39,8 +39,9 @@ Examples:
 ```
 
 When invoked with `all`, run Steps 1–4 once per existing package
-(discover them by listing `tabular/pes_*/` and `ml/pes_*/`), then run
-Step 5 (HTML export) and Step 6 (README refresh) once at the end.
+(discover them by listing the package directories), then run Step 5
+(README refresh) once at the end. Markdown is the canonical documentation
+format; do not create or refresh HTML exports.
 
 ## Scope
 
@@ -54,7 +55,7 @@ Discover the package layout dynamically:
 | Experiment entry | `<GROUP>/<PKG>/__main__.py` |
 | Core algorithms | `<GROUP>/<PKG>/ext/*.py` |
 | Support modules | `<GROUP>/<PKG>/src/*.py` |
-| Documentation | `<GROUP>/<PKG>/doc/*.md` → `<GROUP>/<PKG>/doc/*.html` |
+| Documentation | `<GROUP>/<PKG>/doc/*.md` |
 
 ## Step 1 — Read the project
 
@@ -179,36 +180,7 @@ def function_name(param_a: int, param_b: str = "default") -> bool:
 - Reference `CONFIG.py` constants by name when describing default values
   sourced from configuration.
 
-## Step 5 — Export each `.md` to `.html`
-
-Run the shared export script to convert every `.md` inside
-`<GROUP>/<PKG>/doc/` to a matching `.html` in the same directory:
-
-```bash
-python utils/scripts/_export_html.py <PKG>
-```
-
-The script accepts the **short** package name (e.g. `pes_dqn`) and
-resolves it to its group automatically. It also accepts the explicit
-grouped form (`ml/pes_dqn`) and the special token `doc`, which exports
-the workspace-level `doc/` folder (`comparacion_modelos.md`).
-
-The script uses the project's standard HTML template (KaTeX math
-rendering, dark-mode CSS, responsive layout). It automatically extracts
-the `# H1` heading as the `<title>`.
-
-To convert **all** packages plus the workspace-level `doc/` at once (no
-arguments):
-
-```bash
-python utils/scripts/_export_html.py
-```
-
-> **Note:** Do **not** generate HTML inline or with ad-hoc scripts. Always
-> use `utils/scripts/_export_html.py` so that every package produces identical
-> styling.
-
-## Step 6 — Refresh the workspace `README.md`
+## Step 5 — Refresh the workspace `README.md`
 
 After per-package documentation is up to date, review the top-level
 `README.md` and update any project-wide facts that may have drifted from
@@ -238,8 +210,7 @@ each package's `doc/`.
 - **Experiment structure**: block/sequence/trial counts must match
   `CONFIG.py` constants (`NUM_BLOCKS`, `NUM_SEQUENCES`, `NUM_MAX_TRIALS`).
 - **Documentation pointer**: include a brief note that per-package docs
-  live in `<group>/<pkg>/doc/` and are regenerated with
-  `python utils/scripts/_export_html.py`.
+  live in `<group>/<pkg>/doc/` and are maintained as Markdown.
 - Bump the implicit "last updated" cue if present (date headers, etc.).
 
 ### Style rules for `README.md`
@@ -257,8 +228,7 @@ Before finishing, verify:
 - [ ] Every `.md` in `<GROUP>/<PKG>/doc/` has been read and compared against the source code.
 - [ ] Hyperparameters, formulas, code snippets, and descriptions match the code.
 - [ ] No dead references to functions/classes/variables that no longer exist.
-- [ ] Every `.md` has a corresponding up-to-date `.html` in `<GROUP>/<PKG>/doc/`.
-- [ ] HTML files render math correctly (KaTeX delimiters, no broken `$`).
+- [ ] Every package document is Markdown and contains valid KaTeX delimiters.
 - [ ] No English leaking into Spanish-language documentation (except code/names).
 - [ ] Every public function and class in `<GROUP>/<PKG>/` has a NumPy-style docstring.
 - [ ] Docstring parameter lists, return types, and descriptions match the code.

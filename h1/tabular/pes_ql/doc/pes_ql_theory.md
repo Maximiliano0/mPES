@@ -399,7 +399,7 @@ modelo TPE con valores fuera de rango.
 Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna: A
 next-generation hyperparameter optimization framework. *Proceedings of the
 25th ACM SIGKDD International Conference on Knowledge Discovery & Data
-Mining*, 2623–2631. https://doi.org/10.1145/3292500.3330701
+Mining*, 2623–2631. [https://doi.org/10.1145/3292500.3330701](https://doi.org/10.1145/3292500.3330701)
 
 Bellman, R. (1957). *Dynamic programming*. Princeton University Press.
 
@@ -411,4 +411,4 @@ Sutton, R. S., & Barto, A. G. (2018). *Reinforcement learning: An
 introduction* (2nd ed.). MIT Press.
 
 Watkins, C. J. C. H., & Dayan, P. (1992). Q-learning. *Machine Learning*,
-8(3–4), 279–292. https://doi.org/10.1007/BF00992698
+8(3–4), 279–292. [https://doi.org/10.1007/BF00992698](https://doi.org/10.1007/BF00992698)

@@ -57,7 +57,11 @@ Esto produce una decisión final que incorpora la incertidumbre de cada modelo y
 
 ## 5. Salidas esperadas
 
-El paquete escribe artefactos en sus carpetas `inputs/` y `outputs/`, junto con los resultados del ensemble y los informes de evaluación asociados.
+El paquete escribe artefactos en sus carpetas `inputs/` y `outputs/`, junto con
+los resultados del ensemble y los informes de evaluación asociados. La
+evaluación (`ext/evaluate_ens.py`) escribe en `outputs/` el JSON/PNG de
+resultados, el vector de desempeño `PES_ENS_SPRB_performances_<id>.npy` y el
+registro de acciones por trial `PES_ENS_SPRB_responses_<id>.csv`.
 
 ---
 

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pes_base — Guía de uso e implementación</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="pes_base-guia-de-uso-e-implementacion">pes_base — Guía de uso e implementación</h1>
+<blockquote>
+<p>Paquete: <code>tabular.pes_base</code><br />
+Algoritmo: <strong>Q-Learning tabular</strong><br />
+Estado: <strong>activo</strong>, base del benchmark mPES</p>
+</blockquote>
+<hr />
+<h2 id="1-que-es-este-paquete">1. ¿Qué es este paquete?</h2>
+<p><code>pes_base</code> es la línea base del proyecto. Implementa un agente de Q-Learning tabular sobre el entorno <code>Pandemic</code> para aprender la política más económica de asignación de recursos frente a la severidad emergente.</p>
+<p>Es el punto de referencia principal para comparar con variantes más avanzadas:</p>
+<ul>
+<li><code>pes_ql</code> añade optimización bayesiana con Optuna,</li>
+<li><code>pes_dql</code> añade doble Q-Learning y decay de epsilon,</li>
+<li><code>pes_dqn</code>, <code>pes_rdqn</code>, <code>pes_a2c</code> y <code>pes_trf</code> reemplazan la tabla por redes neuronales.</li>
+</ul>
+<hr />
+<h2 id="2-comandos-de-ejecucion">2. Comandos de ejecución</h2>
+<p>Desde la raíz del repositorio:</p>
+<pre><code class="language-powershell">win_mpes_env\Scripts\Activate.ps1
+cd h1
+python -m tabular.pes_base
+</code></pre>
+<p>También puede entrenarse directamente con el módulo de entrenamiento de la línea base:</p>
+<pre><code class="language-powershell">cd h1
+python -m tabular.pes_base.ext.train_rl 20000
+</code></pre>
+<hr />
+<h2 id="3-estructura-principal">3. Estructura principal</h2>
+<pre><code class="language-text">h1/tabular/pes_base/
+├── __init__.py
+├── __main__.py
+├── config/CONFIG.py
+├── doc/
+├── ext/
+├── inputs/
+├── outputs/
+├── src/
+└── README.md
+</code></pre>
+<p>Los archivos más relevantes son:</p>
+<ul>
+<li><code>ext/pandemic.py</code>: entorno de simulación y lógica de transición.</li>
+<li><code>ext/train_rl.py</code>: entrenamiento del agente tabular.</li>
+<li><code>config/CONFIG.py</code>: hiperparámetros del problema.</li>
+<li><code>src/exp_utils.py</code>: cálculo de severidades y secuencias.</li>
+</ul>
+<hr />
+<h2 id="4-pipeline-de-trabajo">4. Pipeline de trabajo</h2>
+<ol>
+<li>Se prepara la simulación del escenario Pandémico.</li>
+<li>El agente explora el entorno y actualiza una tabla <code>Q[s, a]</code>.</li>
+<li>La política se ejecuta sobre secuencias de bloques / trials.</li>
+<li>Se registran métricas de rendimiento, recompensas y respuestas.</li>
+</ol>
+<p>La política resultante se consume luego por el experimento general bajo <code>h1/general</code>.</p>
+<hr />
+<h2 id="5-salidas-esperadas">5. Salidas esperadas</h2>
+<p>El paquete genera artefactos en <code>inputs/</code> y <code>outputs/</code> con:</p>
+<ul>
+<li><code>q.npy</code> y <code>rewards.npy</code> para el agente entrenado,</li>
+<li>logs de sesión,</li>
+<li>resultados del experimento y métricas de rendimiento.</li>
+</ul>
+<hr />
+<h2 id="6-referencia-rapida">6. Referencia rápida</h2>
+<ul>
+<li>Teoría: <code>pes_base_theory.md</code></li>
+<li>Benchmark general: <code>h1/general/README.md</code></li>
+</ul>
+<blockquote>
+<p>Este documento es el archivo canónico del paquete. Los documentos antiguos con nombres alternativos quedan como referencias legacy y no deben usarse como documentación activa.</p>
+</blockquote>
+</body>
+</html>

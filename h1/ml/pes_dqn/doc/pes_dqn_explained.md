@@ -37,13 +37,9 @@ salto en desempeño desde valores tabulares (~0.83–0.86) a
 Activa primero el entorno virtual:
 
 **Windows (PowerShell):**
+
 ```powershell
 win_mpes_env\Scripts\Activate.ps1
-```
-
-**Linux:**
-```bash
-source linux_mpes_env/bin/activate
 ```
 
 Luego ejecuta cualquiera de los tres modos:
@@ -147,17 +143,17 @@ líneas ≈268-285 para la lista completa:
 | `hidden_layer_size` | categórico | 32, 64, 96, 128 |
 | `num_hidden_layers` | int | 1 … 3 |
 | `batch_size` | categórico | 32, 64, 128, 256 |
-| `buffer_size` | categórico | 10 000, 20 000, 50 000 |
-| `target_sync_freq` | int (step=500) | 500 … 5 000 |
-| `epsilon_initial` | float | 0.5 … 1.0 |
-| `epsilon_min` | log-float | 0.01 … 0.10 |
-| `warmup_ratio` | float | 0.02 … 0.20 |
-| `target_ratio` | float | 0.40 … 0.80 |
-| `num_episodes` | int (step=25 000) | 50 000 … 200 000 |
-| `max_grad_norm` | log-float | 0.5 … 10.0 |
+| `buffer_size` | int (step=10 000) | 20 000 … 100 000 |
+| `target_sync_freq` | int (step=500) | 500 … 5 000 |
+| `epsilon_initial` | float | 0.80 … 1.0 |
+| `epsilon_min` | float | 0.01 … 0.20 |
+| `warmup_ratio` | float | 0.05 … 0.30 |
+| `target_ratio` | float | 0.50 … 0.95 |
+| `num_episodes` | int (step=20 000) | 40 000 … 100 000 |
+| `max_grad_norm` | float | 0.5 … 5.0 |
 | `use_pbrs` | categórico | True / False |
-| `penalty_coeff` | log-float | 1e-4 … 0.30 |
-| `learning_starts_frac` | float | 0.05 … 0.30 |
+| `penalty_coeff` | log-float | 1e-4 … 0.10 |
+| `learning_starts_frac` | float | 0.05 … 0.25 |
 
 Nota: la velocidad de decaimiento $\lambda$ **no** se muestrea
 directamente; se deriva en tiempo de entrenamiento a partir de
@@ -177,7 +173,7 @@ secuencias y devuelve **`mean_perf`** directamente; el estudio se crea con
   `inputs/<fecha>_BAYESIAN_OPT/best_params_<fecha>.json` (original).
 - Mejor modelo: `inputs/<fecha>_BAYESIAN_OPT/dqn_best_<fecha>.keras` y
   `inputs/dqn_model.keras` (espejo).
-- *Dashboard* en vivo: `utils/win/optuna_dashboard.ps1` (o `.sh` en Linux).
+- *Dashboard* en vivo: `utils/win/optuna_dashboard.ps1`.
 
 ### 4.4 Mejores hiperparámetros encontrados (snapshot CONFIG.py)
 
@@ -206,8 +202,8 @@ ml/pes_dqn/
 ├── config/CONFIG.py       # Constantes DQN_*
 ├── ext/
 │   ├── pandemic.py        # PandemicEnv (gymnasium)
-│   ├── dqn_model.py       # build_q_network, ReplayBuffer, sync_target_network
-│   ├── train_dqn.py       # Bucle de entrenamiento, train_step_dqn
+│   ├── dqn_model.py       # build_q_network, ReplayBuffer, sync_target_network, normalize_state, train_step_dqn
+│   ├── train_dqn.py       # Bucle de entrenamiento DQNTraining
 │   └── optimize_dqn.py    # Estudio Optuna
 ├── inputs/
 │   ├── dqn_model.keras    # Pesos finales
@@ -222,11 +218,11 @@ ml/pes_dqn/
 
 | Función / Clase | Archivo | Rol |
 |---|---|---|
-| `build_q_network(input_dim, output_dim, hidden_layers)` | `dqn_model.py` | Construye la red Q como Keras `Sequential`. |
-| `ReplayBuffer(max_size)` | `dqn_model.py` | Cola circular de tuplas `(s, a, r, s', d)` con muestreo uniforme. |
+| `build_q_network(state_dim, action_dim, hidden_units, seed=None)` | `dqn_model.py` | Construye la red Q como Keras `Sequential`. |
+| `ReplayBuffer(capacity, seed=None)` | `dqn_model.py` | Cola circular de tuplas `(s, a, r, s', d)` con muestreo uniforme. |
 | `sync_target_network(q_online, q_target)` | `dqn_model.py` | Copia `q_online.get_weights()` a `q_target`. |
-| `train_step_dqn(batch, q_online, q_target, optimizer, gamma)` | `train_dqn.py` | Un paso de gradiente con pérdida Huber sobre el objetivo Double DQN. |
-| `normalize_state(state, max_resources, max_trials, max_severity)` | `pandemic.py` | Devuelve $s/[\max_r, \max_t, \max_\sigma]$. |
+| `train_step_dqn(online_net, target_net, optimizer, states, actions, rewards, next_states, dones, discount, max_grad_norm, max_resources)` | `dqn_model.py` | Un paso de gradiente con pérdida Huber sobre el objetivo Double DQN. |
+| `normalize_state(state, max_resources, max_trials, max_severity)` | `dqn_model.py` | Devuelve $s/[\max_r, \max_t, \max_\sigma]$. |
 
 ---
 

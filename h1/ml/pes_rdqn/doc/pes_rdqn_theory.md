@@ -202,7 +202,7 @@ ligeramente superior** a partir de los 30 k.
 | Sincronización de target | `sync_target_network()` cada `RDQN_TARGET_SYNC_FREQ` |
 | Objetivo Double DQN recurrente | `train_step_rdqn()` con `tf.GradientTape` |
 | Pérdida Huber | `tf.keras.losses.Huber()` |
-| ε-greedy con warm-up | `select_action(...)` en `train_rdqn.py` |
+| ε-greedy con warm-up | selección inline en `RDQNTraining` (`pandemic.py`) |
 | TPE bayesiano sobre `history_len` | `optimize_rdqn.py` con `optuna.create_study` |
 
 ---

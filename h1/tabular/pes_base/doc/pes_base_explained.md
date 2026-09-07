@@ -48,8 +48,7 @@ h1/tabular/pes_base/
 ├── ext/
 ├── inputs/
 ├── outputs/
-├── src/
-└── README.md
+└── src/
 ```
 
 Los archivos más relevantes son:

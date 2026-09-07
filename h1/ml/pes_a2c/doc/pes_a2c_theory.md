@@ -124,7 +124,7 @@ implementaciones típicas de A2C).
 
 ## 4. Estimación de la ventaja: detalle
 
-La estimación TD(0) usada en `train_step_a2c()`:
+La estimación TD(0) usada en `train_step_actor_critic()`:
 
 $$\hat A_t = r_t + \gamma V_\phi(s_{t+1}) (1 - d_t) - V_\phi(s_t)$$
 
@@ -168,7 +168,7 @@ Se incluye en la pérdida del actor con peso $\beta$ (`AC_ENTROPY_COEFF`)
 
 $$\mathcal{L}_\mathrm{actor} = -\mathbb{E}[\log \pi \cdot A] - \beta\, H(\pi)$$
 
-### Efecto:
+### Efecto
 
 - Si $\beta$ es **alto**, la política se mantiene cerca de la uniforme →
   exploración elevada, riesgo de no converger.
@@ -253,6 +253,19 @@ de Mnih et al., 2016).
 PPO sería una mejora natural; se descartó en `pes_a2c` porque A2C ya alcanza
 $\approx 0.887$ y la complejidad adicional no se justifica para el tamaño del
 escenario.
+
+## Referencias
+
+- Mnih, V., Badia, A. P., Mirza, M., Graves, A., Lillicrap, T. P.,
+  Harley, T., Silver, D., & Kavukcuoglu, K. (2016). Asynchronous methods for
+  deep reinforcement learning. In *Proceedings of the 33rd International
+  Conference on Machine Learning* (pp. 1928–1937). PMLR.
+- Schulman, J., Moritz, P., Levine, S., Jordan, M., & Abbeel, P. (2016).
+  High-dimensional continuous control using generalized advantage estimation.
+  In *International Conference on Learning Representations*.
+- Williams, R. J. (1992). Simple statistical gradient-following algorithms
+  for connectionist reinforcement learning. *Machine Learning, 8*, 229–256.
+  https://doi.org/10.1007/BF00992696
 
 ---
 

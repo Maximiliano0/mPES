@@ -48,3 +48,8 @@ La variante `pes_ens_sprb` está pensada para ser comparada con otros ensembles 
 ## 5. Referencia práctica
 
 Para la guía de operación, consulte `pes_ens_sprb_explained.md`.
+
+## Referencias
+
+- Dietterich, T. G. (2000). Ensemble methods in machine learning. In *Multiple Classifier Systems* (pp. 1–15). Springer.
+- Lakshminarayanan, B., Pritzel, A., & Blundell, C. (2017). Simple and scalable predictive uncertainty estimation using deep ensembles. In *Advances in Neural Information Processing Systems*, 30.

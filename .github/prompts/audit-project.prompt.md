@@ -86,9 +86,9 @@ points there).  Never edit a sibling package as a side-effect.
 - **Style.**  Max 120 chars per line, PEP 8 indentation, NumPy alias is
   `numpy` (never `np`), `snake_case` and `PascalCase` both accepted.
   Public functions / classes need NumPy-style English docstrings.
-- **Docs.**  `.md` content stays in Spanish, KaTeX-compatible LaTeX
-  (`$...$`, `$$...$$`).  Never hand-edit `.html`; always re-export with
-  `python utils/scripts/_export_html.py <PKG>`.
+- **Docs.**  `.md` content stays in Spanish and uses KaTeX-compatible LaTeX
+  (`$...$`, `$$...$$`). Markdown is the canonical documentation format;
+  do not create, edit or export HTML files.
 
 ## Step 1 — Discover the target
 
@@ -197,38 +197,7 @@ inspect the surrounding lines before acting.
   win_mpes_env\Scripts\pymarkdown.exe scan -r h1\<GROUP>\<PKG>\doc
   ```
 
-## Step 5 — Re-export documentation
-
-For every package whose `doc/*.md` was modified, run the canonical
-export script with the **short** package name (the script resolves the
-`tabular/` or `ml/` prefix automatically) from within `h1/`:
-
-```powershell
-win_mpes_env\Scripts\Activate.ps1
-cd h1
-python utils\..\utils\scripts\_export_html.py <PKG>
-```
-
-For `.md` files outside a `<PKG>/doc/` directory call `convert_md_to_html`
-directly:
-
-```powershell
-python -c "import sys; sys.path.insert(0,'utils/scripts'); `
-  from _export_html import convert_md_to_html; `
-  convert_md_to_html('<path>.md','<path>.html')"
-```
-
-The cross-package comparison document
-(`h1/general/doc/comparacion_modelos.md`) is exported via the special
-token `doc`:
-
-```powershell
-python utils\scripts\_export_html.py doc
-```
-
-Do **not** hand-edit `.html` outputs.
-
-## Step 6 — Verification
+## Step 5 — Verification
 
 For `<TARGET>` = single package:
 
@@ -237,7 +206,8 @@ For `<TARGET>` = single package:
    empty (or each remaining match explicitly justified in §7).
 3. Result of the `lint-and-typecheck.prompt.md` loop —
    `0 errors / 0 warnings / 0 informations` (pyright) and `10.00/10` (pylint).
-4. Confirm every modified `.md` has a refreshed `.html` sibling.
+4. Confirm every modified Markdown file has no stale paths, commands or
+  claims about HTML generation.
 
 For `<TARGET>` = `all`, additionally:
 
@@ -268,8 +238,7 @@ Produce a concise summary with:
 - **Findings rejected as false positives** — one-line justification each.
 - **Surfaced for user review** — deferred / destructive items requiring
   user confirmation, with proposed action.
-- **Verification** — pyright counts, pytest count, smoke-import results,
-  HTML re-export status.
+- **Verification** — pyright counts, pytest count and smoke-import results.
 
 Keep the report short — bullets, not prose.  Do **not** create a
 separate markdown document for the report unless the user asks for one.

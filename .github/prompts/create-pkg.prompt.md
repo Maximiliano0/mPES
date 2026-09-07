@@ -210,9 +210,8 @@ In `<GROUP>/<NEW_PKG>/doc/`:
 Write both documents in **Spanish**, using KaTeX-compatible math
 (`$...$`, `$$...$$`).
 
-Do **not** generate `.html` exports here — the existing
-`@update-pkg-docs` prompt and `utils/scripts/_export_html.py` handle
-that.
+Do **not** generate `.html` exports here. Markdown is the canonical
+documentation format for the project.
 
 ## Step 6 — Project-level updates
 
@@ -226,10 +225,7 @@ After scaffolding, update the following workspace-level files:
    `.github/prompts/audit-project.prompt.md`, and
    `.github/prompts/update-pkg-docs.prompt.md` — add `<NEW_PKG>` to
    their "Available Packages" / usage examples.
-4. `utils/scripts/_export_html.py` — add an entry
-   `"<NEW_PKG>": "<GROUP>"` to the `PACKAGE_GROUPS` dictionary so the
-   exporter discovers the new package.
-5. `utils/config/requirements.txt` — append any new third-party
+4. `utils/config/requirements.txt` — append any new third-party
    dependency the algorithm needs (and call it out to the user).
 
 ## Step 7 — Validate

@@ -50,6 +50,16 @@ def _normalize_state(state: Any, max_resources: int, max_trials: int,
     ], dtype=numpy.float32)
 
 
+def _save_responses(output_path: str, filename: str, actions: list[int]) -> str:
+    """Persist the per-trial action vector for downstream action-KL analysis."""
+    responses_path = os.path.join(output_path, filename)
+    with open(responses_path, 'w', encoding='utf-8') as handle:
+        handle.write('# trial_index,allocated_resources\n')
+        for trial_index, allocated in enumerate(actions):
+            handle.write(f'{trial_index},{allocated}\n')
+    return responses_path
+
+
 def main() -> None:
     """Evaluate the ensemble on the fixed sequences used by model evaluation."""
     parser = argparse.ArgumentParser(description='Evaluate the Transformer-Guard ensemble.')
@@ -74,6 +84,7 @@ def main() -> None:
     environment = Pandemic()
     environment.verbose = False
     current_sequence = [-1]
+    recorded_actions: list[int] = []
 
     def action_function(_environment: Any, state: Any, sequence_id: int) -> int:
         """Select an action from the ensemble for one environment state."""
@@ -85,6 +96,7 @@ def main() -> None:
             state, environment.max_resources, environment.max_seq_length, environment.max_severity)
         action, _confidence, _diagnostics = ensemble.predict(
             normalized_state, int(state[0]), (0, sequence_id))
+        recorded_actions.append(int(action))
         return action
 
     _, performances, _ = run_experiment(
@@ -105,6 +117,7 @@ def main() -> None:
     json_path, png_path = generate_results_report(
         subject_id, output_path, performances, performances_by_block, resource_data, 'PES_ENS_TRF_GUARD_')
     numpy.save(os.path.join(output_path, f'PES_ENS_TRF_GUARD_performances_{subject_id}.npy'), numpy.asarray(performances))
+    _save_responses(output_path, f'PES_ENS_TRF_GUARD_responses_{subject_id}.csv', recorded_actions)
     print(json.dumps({'results_json': json_path, 'results_png': png_path}, indent=2))
 
 

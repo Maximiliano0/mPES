@@ -57,18 +57,9 @@ A2C ofrece varias propiedades atractivas para el escenario *Pandemic*:
 ### Ejecutar el experimento completo
 
 ```powershell
-# Windows
 .\win_mpes_env\Scripts\Activate.ps1
 $env:PYTHONIOENCODING = "utf-8"
 $env:TF_ENABLE_ONEDNN_OPTS = "0"
-python -m ml.pes_a2c
-```
-
-```bash
-# Linux
-source linux_mpes_env/bin/activate
-export PYTHONIOENCODING=utf-8
-export TF_ENABLE_ONEDNN_OPTS=0
 python -m ml.pes_a2c
 ```
 
@@ -109,19 +100,19 @@ El script `ext/train_a2c.py` ejecuta las siguientes etapas:
 4. **Bucle de episodios**: por cada episodio
    - Se ejecuta una secuencia completa (resources=39, severity inicial dada).
    - Se acumulan trayectorias $(s_t, a_t, r_t, s_{t+1})$.
-   - Al terminar el episodio se llama a `train_step_a2c()` con el batch
+   - Al terminar el episodio se llama a `train_step_actor_critic()` con el batch
      completo de la trayectoria (Monte Carlo + bootstrap del crítico).
 5. **Logging**: dual-stream a consola y a archivo
    `outputs/PES_A2C_log_<fecha>.txt` mediante `src/log_utils.py`.
 6. **Guardado periódico**: el actor se persiste como `inputs/ac_actor.keras`
    cada N episodios y al final.
 
-### Función `train_step_a2c()`
+### Función `train_step_actor_critic()`
 
 Pseudo-código:
 
 ```python
-def train_step_a2c(states, actions, rewards, next_states, dones):
+def train_step_actor_critic(states, actions, rewards, next_states, dones):
     # 1. Crítico predice V(s) y V(s')
     V_s    = critic(states)
     V_s_next = critic(next_states)
@@ -176,14 +167,14 @@ Cada trial entrena un agente reducido (menos episodios) y devuelve el
 
 ### Almacenamiento
 
-- **Estudio Optuna**: SQLite en `inputs/<fecha>_BAYESIAN_OPT/study.db`.
+- **Estudio Optuna**: SQLite en `inputs/<fecha>_BAYESIAN_OPT/optuna_study_<fecha>.db`.
 - **Mejores parámetros**: `inputs/best_params.json`.
 - **Logs**: `outputs/PES_A2C_log_<fecha>_BAYESIAN_OPT.txt`.
 
 Para visualizar el progreso del estudio:
 
 ```powershell
-.\utils\win\optuna_dashboard.ps1 ml\pes_a2c\inputs\<fecha>_BAYESIAN_OPT\study.db
+.\utils\win\optuna_dashboard.ps1 ml\pes_a2c\inputs\<fecha>_BAYESIAN_OPT\optuna_study_<fecha>.db
 ```
 
 ---
@@ -195,24 +186,18 @@ Para visualizar el progreso del estudio:
 Contiene la arquitectura y el paso de entrenamiento.
 
 ```python
-class Actor(tf.keras.Model):
-    """Red densa con softmax sobre 11 acciones."""
-    def __init__(self, hidden_units=[128], n_actions=11):   # AC_ACTOR_HIDDEN_UNITS
-        ...
-    def call(self, state):
-        # state: (batch, 3)
-        # return: (batch, 11) probabilidades
+def build_actor(hidden_units=[128], n_actions=11):   # AC_ACTOR_HIDDEN_UNITS
+    """Red densa con softmax sobre 11 acciones; entrada (batch, 3)."""
+    ...
 
-class Critic(tf.keras.Model):
-    """Red densa que estima V(s) escalar."""
-    def __init__(self, hidden_units=[128]):                 # AC_CRITIC_HIDDEN_UNITS
-        ...
-    def call(self, state):
-        # state: (batch, 3)
-        # return: (batch, 1)
+def build_critic(hidden_units=[128]):                # AC_CRITIC_HIDDEN_UNITS
+    """Red densa que estima V(s) escalar; entrada (batch, 3)."""
+    ...
 
-def train_step_a2c(actor, critic, optimizer_a, optimizer_c, batch,
-                   gamma, entropy_coeff):
+def train_step_actor_critic(actor, critic, actor_optimizer, critic_optimizer,
+                            states, actions, rewards, next_states, dones,
+                            discount, entropy_coeff, max_grad_norm,
+                            gae_lambda, masks=None):
     """Un paso de gradiente actor-crítico (dos optimizadores Adam)."""
     ...
 ```
@@ -256,8 +241,11 @@ En `__main__.py`, para cada trial:
 6. La **confianza** se reporta como $\max_a \pi(a\mid s)$ después del
    enmascaramiento.
 
+La lógica de inferencia (enmascaramiento + argmax + confianza) está implementada
+en `ac_agent_meta_cognitive` de `ext/pandemic.py`. De forma ilustrativa equivale a:
+
 ```python
-def select_action(actor, state, resources_left):
+def _masked_policy(actor, state, resources_left):
     probs = actor(state[None, :]).numpy()[0]   # (11,)
     mask = numpy.arange(11) <= resources_left
     probs = probs * mask

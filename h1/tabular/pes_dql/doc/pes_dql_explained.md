@@ -317,8 +317,6 @@ tabular/pes_dql/
 ├── config/
 │   └── CONFIG.py          # Todos los parámetros tuneables
 ├── doc/
-│   ├── how_to_train_and_test.md     # Guía operativa
-│   ├── mejoras_qlearning.md         # Teoría de las 3 mejoras
 │   ├── pes_dql_explained.md         # Este documento
 │   └── pes_dql_theory.md            # Documento teórico complementario
 ├── ext/
@@ -336,7 +334,7 @@ tabular/pes_dql/
 │   ├── <date>_RL_TRAIN/   # Salidas datadas de train_rl.py
 │   └── <date>_BAYESIAN_OPT/  # Salidas datadas de optimize_rl.py
 ├── outputs/
-│   └── <date>_DQL_AGENT/  # Logs y resultados del experimento
+│   └── <date>_RL_AGENT/  # Logs y resultados del experimento
 └── src/
     ├── exp_utils.py
     ├── log_utils.py
@@ -385,9 +383,9 @@ tabular/pes_dql/
 
 `python -m tabular.pes_dql` produce:
 
-- `outputs/<date>_DQL_AGENT/` con resultados por secuencia (JSON/TXT)
+- `outputs/<date>_RL_AGENT/` con resultados por secuencia (JSON/TXT)
   y plots agregados.
-- `outputs/PES_DQL_log_<date>_DQL_AGENT.txt` con el log completo.
+- `outputs/<date>_RL_AGENT/PES_DQL_log_<date>_RL_AGENT.txt` con el log completo.
 
 ---
 
@@ -456,5 +454,4 @@ $$\text{perf}(\text{seq}) = 1 - \frac{\text{severidad\_final}}{\text{severidad\_
    estados con menor severidad acumulada.
 
 Para el detalle teórico completo, véase
-[`pes_dql_theory.md`](./pes_dql_theory.md) y la documentación previa
-[`mejoras_qlearning.md`](./mejoras_qlearning.md).
+[`pes_dql_theory.md`](./pes_dql_theory.md).

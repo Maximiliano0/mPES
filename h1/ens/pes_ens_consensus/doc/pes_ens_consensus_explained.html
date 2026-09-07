@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pes_ens_consensus — Guía de uso</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="pes_ens_consensus-guia-de-uso">pes_ens_consensus — Guía de uso</h1>
+<blockquote>
+<p>Paquete: <code>ens.pes_ens_consensus</code><br />
+Algoritmo: <strong>consenso con recompensa por acuerdo y penalización por desacuerdo</strong></p>
+</blockquote>
+<hr />
+<h2 id="1-que-es-este-paquete">1. ¿Qué es este paquete?</h2>
+<p><code>pes_ens_consensus</code> agrega las decisiones de varios modelos activos del proyecto con un criterio de consenso que favorece la agreement entre miembros y penaliza las decisiones que divergen demasiado entre sí.</p>
+<p>Este enfoque resulta útil cuando se busca una acción final más estable y menos impulsada por un único miembro con alta confianza pero poca concordancia con el resto del ensemble.</p>
+<hr />
+<h2 id="2-comandos-principales">2. Comandos principales</h2>
+<p>Desde <code>h1/</code>:</p>
+<pre><code class="language-powershell">python -m ens.pes_ens_consensus
+</code></pre>
+<p>Optimización:</p>
+<pre><code class="language-powershell">python -m ens.pes_ens_consensus.ext.optimize_ens 50
+</code></pre>
+<hr />
+<h2 id="3-logica-de-agregacion">3. Lógica de agregación</h2>
+<p>La política del ensemble combina:</p>
+<ul>
+<li>apoyos de cada miembro,</li>
+<li>acuerdo global sobre acciones candidatas,</li>
+<li>penalización por desacuerdo,</li>
+<li>ponderación de confianza.</li>
+</ul>
+<p>La salida final favorece decisiones en las que la mayoría o los miembros más confiables coinciden, pero evita que una sola voz domine sin respaldo colectivo.</p>
+<hr />
+<h2 id="4-miembros-integrados">4. Miembros integrados</h2>
+<p>El paquete trabaja con los modelos activos del benchmark:</p>
+<ul>
+<li><code>pes_dqn</code></li>
+<li><code>pes_rdqn</code></li>
+<li><code>pes_a2c</code></li>
+<li><code>pes_trf</code></li>
+</ul>
+<hr />
+<h2 id="5-salidas-esperadas">5. Salidas esperadas</h2>
+<p>Genera resultados de evaluación y métricas de desempeño en los directorios <code>inputs/</code> y <code>outputs/</code> del paquete, además de participar en la comparación del benchmark general.</p>
+<hr />
+<h2 id="6-referencia">6. Referencia</h2>
+<ul>
+<li>Teoría: <code>pes_ens_consensus_theory.md</code></li>
+<li>Benchmark general: <code>h1/general/README.md</code></li>
+</ul>
+</body>
+</html>

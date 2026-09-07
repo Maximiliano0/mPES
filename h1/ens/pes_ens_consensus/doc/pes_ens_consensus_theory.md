@@ -16,17 +16,25 @@ Cuando varios modelos del proyecto aportan información distinta, la decisión d
 
 ## 2. Agregación de consenso
 
-La función de decisión puede entenderse como una combinación de apoyo positivo y penalización negativa:
+La función de decisión combina el voto ponderado, un bono por acuerdo, una
+penalización por desacuerdo y un término de Q normalizado ponderado por
+confianza:
 
 $$
-S(a) = \sum_m w_m \cdot \mathbf{1}[a = a_m] - \lambda \sum_{m \neq n} \mathbf{1}[a_m \neq a_n]
+S(a) = \sum_m w_m\, C_m^{\,p}\, \mathbf{1}[a = a_m]
++ \beta_a \!\!\sum_{m:\, a_m = a} \!\! C_m
+- \beta_d \!\!\sum_{m:\, a_m \neq a} \!\! C_m
++ \sum_m \tilde{Q}_m(a)\, C_m
 $$
 
 Donde:
 
-- $a_m$ es la acción propuesta por el miembro $m$,
-- $w_m$ es su peso de confianza,
-- $\lambda$ penaliza la discordancia entre miembros.
+- $a_m$ es la acción propuesta por el miembro $m$ y $w_m$ su peso,
+- $C_m$ es la confianza del miembro (con exponente `confidence_power`),
+- $\beta_a$ es el bono por acuerdo (`agreement_bonus`, por defecto $0.5$),
+- $\beta_d$ es la penalización por desacuerdo (`disagreement_penalty`, por
+  defecto $0.1$); ambos ponderan **confianza**, no un conteo de pares,
+- $\tilde{Q}_m(a)$ es el Q normalizado del miembro $m$.
 
 ---
 
@@ -45,3 +53,8 @@ Este enfoque favorece decisiones que son coherentes con la mayoría o con los mi
 ## 5. Referencia práctica
 
 Para la guía de uso, consulte `pes_ens_consensus_explained.md`.
+
+## Referencias
+
+- Dietterich, T. G. (2000). Ensemble methods in machine learning. In *Multiple Classifier Systems* (pp. 1–15). Springer.
+- Kuncheva, L. I. (2004). *Combining Pattern Classifiers: Methods and Algorithms*. Wiley.

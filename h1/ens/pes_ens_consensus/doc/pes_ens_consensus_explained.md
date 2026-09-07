@@ -55,7 +55,12 @@ El paquete trabaja con los modelos activos del benchmark:
 
 ## 5. Salidas esperadas
 
-Genera resultados de evaluación y métricas de desempeño en los directorios `inputs/` y `outputs/` del paquete, además de participar en la comparación del benchmark general.
+Genera resultados de evaluación y métricas de desempeño en los directorios
+`inputs/` y `outputs/` del paquete, además de participar en la comparación del
+benchmark general. La evaluación (`ext/evaluate_ens.py`) escribe en `outputs/`
+el JSON/PNG de resultados, el vector
+`PES_ENS_CONF_CONSENSUS_performances_<id>.npy` y el registro de acciones por
+trial `PES_ENS_CONF_CONSENSUS_responses_<id>.csv`.
 
 ---
 

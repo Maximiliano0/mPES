@@ -81,3 +81,9 @@ La línea base es útil como control para medir el valor añadido de cada mejora
 ## 6. Notas de documentación
 
 Esta teoría es la base formal del paquete. Para la descripción práctica del entrenamiento y la ejecución, consulte `pes_base_explained.md`.
+
+## Referencias
+
+- Bellman, R. (1957). *Dynamic Programming*. Princeton University Press.
+- Watkins, C. J. C. H., & Dayan, P. (1992). Q-learning. *Machine Learning, 8*, 279–292. [https://doi.org/10.1007/BF00992698](https://doi.org/10.1007/BF00992698)
+- Sutton, R. S., & Barto, A. G. (2018). *Reinforcement Learning: An Introduction* (2nd ed.). MIT Press.

@@ -72,7 +72,7 @@ tabular/pes_ql/
 │   ├── <fecha>_BAYESIAN_OPT/        # Salida completa de optimize_rl
 │   └── <fecha>_RL_TRAIN/            # Salida completa de train_rl
 ├── outputs/
-│   └── <fecha>_QL_AGENT/            # Resultados del experimento
+│   └── <fecha>_RL_AGENT/            # Resultados del experimento
 └── src/
     ├── exp_utils.py                 # Cálculo de severidades y métricas
     ├── log_utils.py                 # Logging dual (consola + archivo)
@@ -334,11 +334,11 @@ python -m tabular.pes_ql
 `__main__.py` orquesta:
 
 - Validación de archivos de entrenamiento.
-- Creación de sesión con logging dual (consola + `outputs/PES_QL_log_<fecha>.txt`).
+- Creación de sesión con logging dual (consola + `outputs/<fecha>_RL_AGENT/PES_QL_log_<fecha>_RL_AGENT.txt`).
 - Asignación de bloques/secuencias/trials con la estructura de §5.
 - Recogida de decisiones del agente RL vía `pygameMediator`.
 - Cálculo de severidades actualizadas y métricas normalizadas.
-- Generación de reportes JSON/PNG en `outputs/<fecha>_QL_AGENT/`.
+- Generación de reportes JSON/PNG en `outputs/<fecha>_RL_AGENT/`.
 
 ---
 
@@ -354,10 +354,10 @@ python -m tabular.pes_ql
 | `rewards.npy` | Recompensa promedio cada 10 000 episodios | `train_rl.py` / `optimize_rl.py` |
 | `best_params.json` | Hiperparámetros óptimos + métricas | `optimize_rl.py` |
 
-### 10.2. Salidas (`outputs/<fecha>_QL_AGENT/`)
+### 10.2. Salidas (`outputs/<fecha>_RL_AGENT/`)
 
-- `PES_QL_log_<fecha>.txt` — log completo de la sesión.
-- `PES_QL_results_<fecha>.json` — métricas por bloque/secuencia/trial.
+- `PES_QL_log_<fecha>_RL_AGENT.txt` — log completo de la sesión.
+- `PES_QL_results_<fecha>_RL_AGENT.json` — métricas por bloque/secuencia/trial.
 - Plots de severidad final, performance normalizada y confianza
   (generados por `src/result_formatter.py`).
 

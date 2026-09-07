@@ -16,15 +16,24 @@ La idea principal es combinar la evidencia de varios modelos sin depender exclus
 La decisión del ensemble puede describirse como:
 
 $$
-\hat{a} = \arg\max_a \left( \sum_m w_m \cdot \mathbf{1}[a = a_m] + \lambda \cdot Q_m(a) \right)
+\text{score}(a) = \sum_m w_m\, C_m^{\,p}\, \mathbf{1}[a = a_m],
+\qquad
+\hat{a} = \arg\max_{a \in \mathcal{C}} \sum_m \tilde{Q}_m(a)
 $$
 
 donde:
 
-- $a_m$ es la acción propuesta por el miembro $m$,
-- $w_m$ es el peso asociado a la confianza del miembro,
-- $Q_m(a)$ representa el valor estimado para esa acción,
-- $\lambda$ ajusta la importancia del valor relativo en el desempate.
+- $a_m = \arg\max_a Q_m(a)$ es la acción propuesta por el miembro $m$ sobre
+  las acciones factibles,
+- $w_m$ es el peso del miembro y $C_m$ su confianza (entropía inversa
+  normalizada), con exponente $p$ (`confidence_power`),
+- $\mathcal{C} = \arg\max_a \text{score}(a)$ es el conjunto de acciones más
+  votadas,
+- $\tilde{Q}_m(a)$ es el Q normalizado del miembro $m$, usado **solo para
+  desempatar** dentro de $\mathcal{C}$.
+
+No existe un coeficiente $\lambda$: el Q normalizado no se suma al puntaje de
+votos, solo resuelve empates entre las acciones más votadas.
 
 ---
 
@@ -43,3 +52,8 @@ Esta estrategia conserva una decisión discreta y clara, pero evita que una vota
 ## 5. Referencia práctica
 
 Para la guía de uso, consulte `pes_ens_accq_explained.md`.
+
+## Referencias
+
+- Dietterich, T. G. (2000). Ensemble methods in machine learning. In *Multiple Classifier Systems* (pp. 1–15). Springer.
+- Van Hasselt, H. (2010). Double Q-learning. In *Advances in Neural Information Processing Systems*, 23.

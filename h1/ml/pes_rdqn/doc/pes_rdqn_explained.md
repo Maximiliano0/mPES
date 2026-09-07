@@ -35,13 +35,9 @@ mejora pequeña pero consistente sobre `pes_dqn` (0.8937).
 Activación del entorno:
 
 **Windows (PowerShell):**
+
 ```powershell
 win_mpes_env\Scripts\Activate.ps1
-```
-
-**Linux:**
-```bash
-source linux_mpes_env/bin/activate
 ```
 
 | Modo | Comando |
@@ -174,8 +170,8 @@ con TPE.
 | Hiperparámetro (Optuna) | Tipo | Rango |
 |---|---|---|
 | `history_len` | int | 3 … 10 |
-| `lstm_units` | categórico | 32, 64, 128 |
-| `hidden_units` | categórico | 32, 64, 128 |
+| `lstm_units` | categórico | 32, 64, 96, 128 |
+| `hidden_layer_size` | categórico | 32, 64, 96, 128 |
 | `learning_rate` | log-float | 1e-4 … 5e-3 |
 | `discount_factor` | float | 0.92 … 0.995 |
 | `batch_size` | categórico | 32, 64, 128, 256 |
@@ -218,8 +214,8 @@ ml/pes_rdqn/
 ├── config/CONFIG.py        # Constantes RDQN_*
 ├── ext/
 │   ├── pandemic.py         # PandemicEnv compartido
-│   ├── rdqn_model.py       # build_rdqn_model, HistoryDeque, ReplayBuffer
-│   ├── train_rdqn.py       # Bucle de entrenamiento, train_step_rdqn
+│   ├── rdqn_model.py       # build_q_network, HistoryDeque, ReplayBuffer, train_step_rdqn
+│   ├── train_rdqn.py       # Bucle de entrenamiento RDQNTraining
 │   └── optimize_rdqn.py    # Estudio Optuna
 ├── inputs/
 │   ├── rdqn_model.keras
@@ -236,7 +232,7 @@ ml/pes_rdqn/
 | `build_q_network(state_dim, action_dim, hidden_units, history_len, lstm_units)` | `rdqn_model.py` | Modelo Keras `Input → LSTM → Dense → Dense`. |
 | `HistoryDeque` | `rdqn_model.py` | Ventana deslizante (§3). |
 | `ReplayBuffer` | `rdqn_model.py` | Cola circular de tuplas con secuencias. |
-| `train_step_rdqn(batch, ...)` | `train_rdqn.py` | Paso Double DQN sobre secuencias. |
+| `train_step_rdqn(batch, ...)` | `rdqn_model.py` | Paso Double DQN sobre secuencias. |
 | `sync_target_network(...)` | `rdqn_model.py` | Copia de pesos cada $C$ pasos. |
 
 ---

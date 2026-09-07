@@ -7,12 +7,11 @@ scenarios (severity / length / structural perturbations).
 Entry points (all under :mod:`general.scripts`)
 -----------------------------------------------
 * :mod:`general.scripts.scenarios`   -- scenario taxonomy and CSV synthesisers.
-* :mod:`general.scripts.runner`      -- executes ONE (model, scenario) cell.
-* :mod:`general.scripts.orchestrate` -- iterates the full Cartesian product.
-* :mod:`general.scripts.aggregate`   -- raw JSONs -> matrices + statistics.
-* :mod:`general.scripts.plot_matrix` -- heatmaps and per-sequence histograms.
-* :mod:`general.scripts.report`      -- writes ``benchmark_report.md``.
-* :mod:`general.scripts.progress`    -- live progress bars + ETA.
+* :mod:`general.scripts.scenarios` -- perturbation catalogue and CSV synthesis.
+* :mod:`general.scripts.benchmark` -- cell execution, sweep driver and progress.
+* :mod:`general.scripts.analysis`  -- matrices, statistics and Markdown report.
+* :mod:`general.scripts.plotting`  -- shared figure primitives and statistics.
+* :mod:`general.scripts.figures`   -- every benchmark figure.
 
 See ``general/README.md`` for the full workflow.
 """

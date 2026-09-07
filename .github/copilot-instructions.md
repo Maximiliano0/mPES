@@ -134,7 +134,7 @@ utils/               # Shared scripts and config (Windows only)
 ├── __init__.py          # Config re-exports, ANSI codes, numpy/TF setup
 ├── __main__.py          # Experiment entry point (blocks/sequences/trials)
 ├── config/CONFIG.py     # All tuneable constants
-├── doc/                 # Markdown documentation (+ HTML exports)
+├── doc/                 # Markdown documentation
 ├── ext/                 # Core algorithms (Gym env, training, optimisation)
 ├── inputs/              # Generated data (date-stamped subdirs)
 ├── outputs/             # Logs and results (date-stamped subdirs)
@@ -250,9 +250,9 @@ functionality. Write unit tests where appropriate.
 - Maintain clear and concise documentation for any new features or changes.
 - Update existing documentation if necessary to reflect changes.
 - Every `doc/` directory contains `<pkg>_explained.md` (usage guide) and
-  `<pkg>_theory.md` (theoretical foundations) exported to `.html`.
+  `<pkg>_theory.md` (theoretical foundations). Markdown is the canonical
+  documentation format; do not create or maintain HTML exports.
 - The cross-package comparison document is at `h1/general/doc/comparacion_modelos.md`.
-- Use `utils/scripts/_export_docs_html.py` to re-export `.md` → `.html`.
 - When editing `.md` files, ensure relative links and image paths resolve
   from the file's own location, and that any in-file table of contents
   matches the actual headings (GitHub auto-generates anchors from headings).

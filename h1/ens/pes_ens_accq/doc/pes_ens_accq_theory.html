@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pes_ens_accq — Fundamentos teóricos</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="pes_ens_accq-fundamentos-teoricos">pes_ens_accq — Fundamentos teóricos</h1>
+<blockquote>
+<p>Paquete: <code>ens.pes_ens_accq</code><br />
+Enfoque: <strong>votación de acciones con desempate por Q-value</strong></p>
+</blockquote>
+<hr />
+<h2 id="1-objetivo">1. Objetivo</h2>
+<p>La idea principal es combinar la evidencia de varios modelos sin depender exclusivamente de una suma de probabilidades. Cuando varios miembros proponen acciones distintas, se prioriza la acción que reúne mayor apoyo y, en caso de empate, la que tenga mayor valor estimado de la Q-function.</p>
+<hr />
+<h2 id="2-agregacion">2. Agregación</h2>
+<p>La decisión del ensemble puede describirse como:</p>
+<p>$$
+\hat{a} = \arg\max_a \left( \sum_m w_m \cdot \mathbf{1}[a = a_m] + \lambda \cdot Q_m(a) \right)
+$$</p>
+<p>donde:</p>
+<ul>
+<li>$a_m$ es la acción propuesta por el miembro $m$,</li>
+<li>$w_m$ es el peso asociado a la confianza del miembro,</li>
+<li>$Q_m(a)$ representa el valor estimado para esa acción,</li>
+<li>$\lambda$ ajusta la importancia del valor relativo en el desempate.</li>
+</ul>
+<hr />
+<h2 id="3-ventaja-del-enfoque">3. Ventaja del enfoque</h2>
+<p>Esta estrategia conserva una decisión discreta y clara, pero evita que una votación simple se vuelva frágil ante empates o distribuciones muy similares. El desempate basado en Q-value incorpora más información de utilidad que la mera cuenta de votos.</p>
+<hr />
+<h2 id="4-relacion-con-los-otros-ensembles">4. Relación con los otros ensembles</h2>
+<p><code>pes_ens_accq</code> es una variante distinta de <code>pes_ens_sprb</code>: el primero enfatiza la acción y el valor, mientras que el segundo prioriza la agregación probabilística suave.</p>
+<hr />
+<h2 id="5-referencia-practica">5. Referencia práctica</h2>
+<p>Para la guía de uso, consulte <code>pes_ens_accq_explained.md</code>.</p>
+<h2 id="referencias">Referencias</h2>
+<ul>
+<li>Dietterich, T. G. (2000). Ensemble methods in machine learning. In <em>Multiple Classifier Systems</em> (pp. 1–15). Springer.</li>
+<li>Van Hasselt, H. (2010). Double Q-learning. In <em>Advances in Neural Information Processing Systems</em>, 23.</li>
+</ul>
+</body>
+</html>

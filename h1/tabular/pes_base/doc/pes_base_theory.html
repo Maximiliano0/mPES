@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pes_base — Fundamentos teóricos</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+  <script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters:[
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]})"></script>
+  <style>
+    :root { --bg:#ffffff; --fg:#1a1a2e; --accent:#0f3460; --code-bg:#f4f4f8;
+             --border:#ddd; --link:#1565c0; --table-stripe:#f9f9fc; }
+    @media (prefers-color-scheme:dark) {
+      :root { --bg:#1a1a2e; --fg:#e0e0e0; --accent:#64b5f6; --code-bg:#16213e;
+               --border:#333; --link:#90caf9; --table-stripe:#1e2a45; }
+    }
+    *,*::before,*::after { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+           line-height:1.7; color:var(--fg); background:var(--bg);
+           max-width:52em; margin:2em auto; padding:0 1.5em; }
+    h1 { border-bottom:3px solid var(--accent); padding-bottom:.3em; }
+    h2 { border-bottom:1px solid var(--border); padding-bottom:.2em; margin-top:2em; }
+    h3,h4 { margin-top:1.6em; }
+    a { color:var(--link); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    code { font-family:"JetBrains Mono","Fira Code",Consolas,monospace;
+           font-size:.92em; background:var(--code-bg); padding:.15em .35em;
+           border-radius:4px; }
+    pre { background:var(--code-bg); padding:1em 1.2em; border-radius:8px;
+          overflow-x:auto; border:1px solid var(--border); }
+    pre code { background:none; padding:0; font-size:.88em; }
+    table { border-collapse:collapse; width:100%; margin:1em 0; }
+    th,td { border:1px solid var(--border); padding:.55em .9em; text-align:left; }
+    th { background:var(--accent); color:#fff; }
+    tr:nth-child(even) { background:var(--table-stripe); }
+    blockquote { border-left:4px solid var(--accent); margin-left:0;
+                 padding:.4em 1em; color:#666; background:var(--code-bg);
+                 border-radius:0 6px 6px 0; }
+    .katex-display { overflow-x:auto; overflow-y:hidden; padding:.5em 0; }
+  </style>
+</head>
+<body>
+  <h1 id="pes_base-fundamentos-teoricos">pes_base — Fundamentos teóricos</h1>
+<blockquote>
+<p>Paquete: <code>tabular.pes_base</code><br />
+Base teórica: <strong>Q-Learning tabular</strong></p>
+</blockquote>
+<hr />
+<h2 id="1-marco-del-problema">1. Marco del problema</h2>
+<p>El escenario se modela como un MDP:</p>
+<p>$$
+(S, A, P, R, \gamma)
+$$</p>
+<p>donde:</p>
+<ul>
+<li>$S$: estado del sistema, formado por recursos disponibles, número de trial y severidad.</li>
+<li>$A$: acciones discretas de asignación de recursos, entre <code>0</code> y <code>10</code>.</li>
+<li>$P$: transiciones deterministas del entorno.</li>
+<li>$R$: recompensa asociada a la severidad acumulada.</li>
+<li>$\gamma$: factor de descuento.</li>
+</ul>
+<hr />
+<h2 id="2-regla-de-actualizacion-de-q-learning">2. Regla de actualización de Q-Learning</h2>
+<p>El algoritmo aprende una tabla $Q(s, a)$ por la regla:</p>
+<p>$$
+Q(s, a) \leftarrow Q(s, a) + \alpha \left[r + \gamma \max_{a'} Q(s', a') - Q(s, a)\right]
+$$</p>
+<p>con:</p>
+<ul>
+<li>$\alpha$: tasa de aprendizaje,</li>
+<li>$\gamma$: descuento de recompensas futuras,</li>
+<li>$r$: recompensa instantánea,</li>
+<li>$s'$: siguiente estado.</li>
+</ul>
+<p>Esto permite que el agente aprenda a asignar recursos minimizando la severidad total acumulada.</p>
+<hr />
+<h2 id="3-politica">3. Política</h2>
+<p>La política implícita del agente es:</p>
+<p>$$
+\pi(s) = \arg\max_{a} Q(s, a)
+$$</p>
+<p>y el objetivo es maximizar la recompensa esperada acumulada a lo largo de la secuencia.</p>
+<hr />
+<h2 id="4-especializacion-del-escenario-mpes">4. Especialización del escenario mPES</h2>
+<p>En <code>Pandemic</code> el estado se representa mediante una tripleta:</p>
+<p>$$
+(s_t) = [\text{resources_left}, \text{trial_no}, \text{severity}]
+$$</p>
+<p>y cada decisión establece cuántos recursos se asignan a la ciudad activa. La recompensa se deriva de la severidad acumulada tras la transición del entorno.</p>
+<hr />
+<h2 id="5-relacion-con-otras-lineas">5. Relación con otras líneas</h2>
+<p><code>pes_base</code> es la referencia mínima, mientras que:</p>
+<ul>
+<li><code>pes_ql</code> incorpora optimización Bayesiana de hiperparámetros,</li>
+<li><code>pes_dql</code> usa doble estimación y warm-up por epsilon decay,</li>
+<li><code>pes_dqn</code>, <code>pes_rdqn</code>, <code>pes_a2c</code> y <code>pes_trf</code> usan aproximadores neuronales.</li>
+</ul>
+<p>La línea base es útil como control para medir el valor añadido de cada mejora algorítmica.</p>
+<hr />
+<h2 id="6-notas-de-documentacion">6. Notas de documentación</h2>
+<p>Esta teoría es la base formal del paquete. Para la descripción práctica del entrenamiento y la ejecución, consulte <code>pes_base_explained.md</code>.</p>
+</body>
+</html>
