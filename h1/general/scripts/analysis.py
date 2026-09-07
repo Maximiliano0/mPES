@@ -221,7 +221,7 @@ def write_report(suite: str = 'individual') -> str:
 
     lines += ['', '## 4. Artefacts', '',
               '* Matrices: `matrices/*.csv`',
-              '* Figures: `figures/*.png` and `figures/*.pdf`',
+              '* Figures: `figures/*.png`',
               '* Cells: `cells/<model>__<scenario>.json`', '']
     with open(report_path(suite), 'w', encoding='utf-8') as handle:
         handle.write('\n'.join(lines))

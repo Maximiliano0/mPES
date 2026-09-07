@@ -7,7 +7,7 @@
 [![Models](https://img.shields.io/badge/models-12-blue.svg)](#scope)
 [![Scenarios](https://img.shields.io/badge/scenarios-22-blueviolet.svg)](#scenario-catalogue)
 [![Cells](https://img.shields.io/badge/cells-264-success.svg)](#scope)
-[![Output](https://img.shields.io/badge/figures-PNG%20%2B%20PDF-orange.svg)](#heatmaps-publication-quality)
+[![Output](https://img.shields.io/badge/figures-PNG-orange.svg)](#heatmaps-publication-quality)
 
 </div>
 
@@ -18,9 +18,9 @@
 
 The benchmark stores two comparable suites: `individual` contains the six
 individual agents and `ensemble` contains the six ensemble variants. Both
-suites use the same scenario catalogue and seed. The archived packages
-`pes_ens` and `pes_ens_consensus_prior` remain included as reference ensemble
-results, while they are not part of the active package documentation.
+suites use the same scenario catalogue and seed. All six ensemble variants —
+including `pes_ens` and `pes_ens_consensus_prior` — are part of the active
+benchmark; `pes_ens` is the best-performing ensemble in the current results.
 
 ---
 
@@ -97,7 +97,7 @@ general/
     └── <suite>/                     # individual | ensemble
         ├── cells/<model>__<sid>.json    # one payload per benchmark cell
         ├── matrices/<metric>.csv        # model x scenario matrices
-        ├── figures/                     # 01..14 PNG + PDF
+        ├── figures/                     # 01..14 PNG
         │   ├── histogramas/<sid>.*      # per-scenario distributions
         │   └── recompensa/<sid>.*       # cumulative + running-mean reward
         ├── summary.json                 # machine-readable consolidation
@@ -139,8 +139,8 @@ general/
 > ensemble suites. Re-run the workflow above to regenerate results after any
 > configuration change.
 
-All four heatmaps are written as both **`.png`** (raster, 300 dpi) and
-**`.pdf`** (vector, TrueType-embedded) for direct inclusion in papers.
+All four heatmaps are written as **`.png`** (raster, 300 dpi) for direct
+inclusion in papers.
 Cells are normalised to fixed colour-scale limits so figures from
 different sweeps are directly comparable; clipped values are flagged
 in-cell (e.g. `≤-10` in the Welch heatmap).

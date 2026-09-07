@@ -40,5 +40,5 @@ _Generated: 2026-09-07T18:36:17.455854+00:00_
 ## 4. Artefacts
 
 * Matrices: `matrices/*.csv`
-* Figures: `figures/*.png` and `figures/*.pdf`
+* Figures: `figures/*.png`
 * Cells: `cells/<model>__<scenario>.json`

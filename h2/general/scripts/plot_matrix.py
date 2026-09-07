@@ -2,11 +2,11 @@
 
 Generates, under ``general/results/``:
 
-* ``heatmap_global_mean.[png|pdf]``     -- model x scenario performance.
-* ``heatmap_stress_degradation.[png|pdf]`` -- baseline_mean - cell_mean.
-* ``heatmap_welch_logp.[png|pdf]``      -- log10(p) clipped to [-10, 0].
-* ``heatmap_action_kl.[png|pdf]``       -- KL action drift (log scale).
-* ``per_sequence_histograms/<scenario>.[png|pdf]`` -- one panel per scenario
+* ``heatmap_global_mean.png``     -- model x scenario performance.
+* ``heatmap_stress_degradation.png`` -- baseline_mean - cell_mean.
+* ``heatmap_welch_logp.png``      -- log10(p) clipped to [-10, 0].
+* ``heatmap_action_kl.png``       -- KL action drift (log scale).
+* ``per_sequence_histograms/<scenario>.png`` -- one panel per scenario
   with overlaid model histograms.
 
 Design choices for publication readability:
@@ -18,8 +18,7 @@ Design choices for publication readability:
   contrast is correct everywhere (the old "global max" heuristic failed
   on non-zero-centred data).
 * NaN cells are rendered as a neutral grey with no annotation.
-* Both ``.png`` (raster) and ``.pdf`` (vector) outputs are written; the
-  PDF is the format intended for inclusion in publications.
+* ``.png`` (raster, 300 dpi) outputs are written.
 
 Run after :mod:`general.scripts.aggregate`.
 """
@@ -139,9 +138,8 @@ def _read_matrix_csv(path: str) -> "tuple[list, list, numpy.ndarray]":
 ##  Heatmap primitive   ##
 ##########################
 def _save(fig, base_path: str) -> None:
-    """Save ``fig`` as both ``.png`` and ``.pdf``."""
+    """Save ``fig`` as ``.png``."""
     fig.savefig(base_path + '.png')
-    fig.savefig(base_path + '.pdf')
     plt.close(fig)
 
 
@@ -170,8 +168,7 @@ def _heatmap(matrix: numpy.ndarray,
     title : str
         Figure title.
     out_base : str
-        Output path *without* extension; both ``.png`` and ``.pdf`` are
-        written.
+        Output path *without* extension; ``.png`` is written.
     cmap : str
         Matplotlib colormap name.
     vmin, vmax : float, optional

@@ -62,8 +62,10 @@
 | `pes_ens_accq` | Confidence-weighted action/Q-value ensemble | [`__main__.py`](h1/ens/pes_ens_accq/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_accq/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_accq/ext/optimize_ens.py) |
 | `pes_ens_trf_guard` | Transformer-first confidence-gated ensemble | [`__main__.py`](h1/ens/pes_ens_trf_guard/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_trf_guard/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_trf_guard/ext/optimize_ens.py) |
 | `pes_ens_consensus` | Agreement/disagreement confidence consensus | [`__main__.py`](h1/ens/pes_ens_consensus/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_consensus/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_consensus/ext/optimize_ens.py) |
+| `pes_ens` | Weighted soft-voting ensemble (DQN + A2C + RDQN + TRF), inference-only | [`__main__.py`](h1/ens/pes_ens/__main__.py), [`ext/ensemble_model.py`](h1/ens/pes_ens/ext/ensemble_model.py), [`ext/tools.py`](h1/ens/pes_ens/ext/tools.py) |
+| `pes_ens_consensus_prior` | Confidence consensus with severity-informed prior | [`__main__.py`](h1/ens/pes_ens_consensus_prior/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_consensus_prior/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_consensus_prior/ext/optimize_ens.py) |
 
-> Legacy archive variants also remain in the repository: `h1/ens/pes_ens/` and `h1/ens/pes_ens_consensus_prior/`. They are retained for reference and do not form part of the active benchmark workflow.
+> All six ensemble variants (`pes_ens`, `pes_ens_sprb`, `pes_ens_accq`, `pes_ens_consensus`, `pes_ens_consensus_prior` and `pes_ens_trf_guard`) are part of the active benchmark workflow. `pes_ens` is the best-performing ensemble in the current results.
 
 ### Support directories
 

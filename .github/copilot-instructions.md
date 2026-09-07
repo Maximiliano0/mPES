@@ -26,6 +26,8 @@ scaffolding and implements one or more algorithmic variants.
 | `ens/pes_ens_accq` | Confidence-weighted action voting with Q-value tie-breaking (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `ens/pes_ens_trf_guard` | Transformer-first confidence-gated fallback ensemble | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `ens/pes_ens_consensus` | Confidence consensus with agreement and disagreement terms | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens` | Weighted soft-voting ensemble (DQN + A2C + RDQN + TRF), inference-only | `ext/ensemble_model.py`, `ext/tools.py` |
+| `ens/pes_ens_consensus_prior` | Confidence consensus with severity-informed prior | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `general/` | Cross-model Under Stress Experiments harness (22 scenarios × 6 models) | `scripts/orchestrate.py`, `scripts/aggregate.py`, `scripts/report.py` |
 
 > The ensemble implementations combine `pes_dqn`, `pes_rdqn`, and `pes_trf`.
@@ -35,8 +37,11 @@ scaffolding and implements one or more algorithmic variants.
 > while penalizing disagreement. All expose tunable parameters through
 > `ext/optimize_ens.py` and evaluate through `ext/evaluate_ens.py`.
 >
-> Legacy folders `h1/ens/pes_ens/` and `h1/ens/pes_ens_consensus_prior/` are
-> retained in the repository but are not part of the active benchmark workflow.
+> `pes_ens` is a weighted soft-voting ensemble over `pes_dqn`, `pes_a2c`,
+> `pes_rdqn` and `pes_trf` (inference-only), and `pes_ens_consensus_prior`
+> extends the consensus ensemble with a severity-informed prior. Both are
+> part of the active benchmark workflow; `pes_ens` is the best-performing
+> ensemble in the current results.
 
 ### `h2/` — experimental line (suspended)
 
@@ -73,8 +78,8 @@ h1/                 # Active experiment line
 │   ├── pes_ens_accq/ #   Confidence-weighted action/Q-value ensemble
 │   ├── pes_ens_trf_guard/ # Transformer-first confidence-gated ensemble
 │   └── pes_ens_consensus/ # Confidence consensus ensemble
-├── ens/pes_ens/    #   Archived ensemble prototype
-├── ens/pes_ens_consensus_prior/ # Archived consensus variant
+├── ens/pes_ens/    #   Weighted soft-voting ensemble (best-performing, inference-only)
+├── ens/pes_ens_consensus_prior/ # Confidence consensus with severity-informed prior
 └── general/        #   Cross-model Under Stress Experiments harness + comparison doc
 
 h2/                  # Experimental line (suspended)

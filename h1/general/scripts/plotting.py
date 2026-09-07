@@ -73,10 +73,9 @@ _register_palettes()
 ##  IO helpers
 ###############
 def save_figure(figure, base_path: str) -> None:
-    """Save ``figure`` as both a raster PNG and a vector PDF."""
+    """Save ``figure`` as a raster PNG."""
     os.makedirs(os.path.dirname(base_path), exist_ok=True)
     figure.savefig(base_path + '.png')
-    figure.savefig(base_path + '.pdf')
     pyplot.close(figure)
 
 

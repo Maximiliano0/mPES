@@ -105,7 +105,7 @@ def matrices_dir(suite: str) -> str:
 
 
 def figures_dir(suite: str) -> str:
-    """Directory with the rendered PNG/PDF figures."""
+    """Directory with the rendered PNG figures."""
     return os.path.join(suite_dir(suite), 'figures')
 
 

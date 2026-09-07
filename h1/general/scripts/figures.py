@@ -175,7 +175,7 @@ def render_curve_figures(suite: str, cells: dict) -> None:
     """Render the per-sequence curves by family and under universal stressors."""
     output = figures_dir(suite)
     models = suite_models(suite)
-    curve_models = models + ([] if ENSEMBLE_REFERENCE in models else [ENSEMBLE_REFERENCE])
+    curve_models = models
 
     figure, axes = pyplot.subplots(2, 3, figsize=(16.5, 8.5), sharey=True)
     for axis, scenario in zip(axes.flat, CURVE_SCENARIOS):

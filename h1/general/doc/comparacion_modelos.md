@@ -260,7 +260,7 @@ más retroceden frente a su baseline, ambos ante `sev_extrapolate_high`.
 - Entre ensembles, `pes_ens` frente a `pes_ens_consensus` presenta $p \approx 2.77\times10^{-56}$ y $d \approx 0.62$.
 - Los perfiles de generalización permiten distinguir si el rendimiento se conserva cuando cambian por separado la severidad inicial, la longitud de secuencia, sus combinaciones y la estructura del experimento.
 
-Las versiones vectoriales de las figuras (`.pdf`) y las métricas completas en
+Las figuras en formato `.png` y las métricas completas en
 JSON se encuentran junto a cada suite:
 
 - [`results/individual/figures`](../results/individual/figures)

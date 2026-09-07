@@ -73,27 +73,6 @@ portpicker==1.5.2
 
 # ── Documentation export ──────────────────────────────────────────────────
 Markdown==3.4.1
-# ── PDF / document generation ──────────────────────────────────────
-xhtml2pdf==0.2.17
-reportlab==4.4.10
-pypdf==6.10.2
-svglib==1.6.0
-rlPyCairo==0.4.0
-pycairo==1.29.0
-freetype-py==2.5.1
-lxml==6.0.4
-html5lib==1.1
-webencodings==0.5.1
-cssselect2==0.9.0
-tinycss2==1.5.1
-arabic-reshaper==3.0.0
-python-bidi==0.6.7
-pyHanko==0.34.1
-pyhanko-certvalidator==0.30.2
-cryptography==46.0.7
-oscrypto==1.3.0
-asn1crypto==1.5.1
-uritools==6.0.1
 # ── Code quality tools ────────────────────────────────────────────────────
 pylint==4.0.5
 pyright==1.1.411
