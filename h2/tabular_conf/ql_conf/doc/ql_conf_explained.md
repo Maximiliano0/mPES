@@ -55,12 +55,12 @@ h2/tabular_conf/ql_conf/
 ├── config/
 │   └── CONFIG.py            # Todos los parámetros tunables
 ├── doc/
-│   ├── pes_ql_explained.md  # Este documento
-│   └── pes_ql_theory.md     # Fundamentos teóricos
+│   ├── ql_conf_explained.md  # Este documento
+│   └── ql_conf_theory.md     # Fundamentos teóricos
 ├── ext/
 │   ├── pandemic.py          # Entorno Gymnasium + QLearning() + run_experiment()
 │   ├── train_rl.py          # Pipeline de entrenamiento
-│   ├── optimize_rl.py       # Estudio Optuna (TPE + MedianPruner)
+│   ├── optimize_rl.py       # Estudio Optuna (TPE + HyperbandPruner)
 │   ├── repro.py             # Carga/validación de fingerprint reproducibilidad
 │   ├── tools.py             # Helpers (entropía, conversión de secuencias, plots)
 │   └── recover_optimization.py  # Re-genera reports desde la BD SQLite
@@ -95,11 +95,11 @@ Todos los comandos asumen el directorio raíz del workspace
 ```powershell
 python -m tabular_conf.ql_conf.ext.optimize_rl 100
 # Reanudar un estudio existente:
-python -m tabular.pes_ql.ext.optimize_rl 200 --resume 2026-04-22
+python -m tabular_conf.ql_conf.ext.optimize_rl 200 --resume 2026-09-02
 # Directorio de salida personalizado (útil en Colab / runs paralelos):
-python -m tabular.pes_ql.ext.optimize_rl 100 --out-dir /custom/path
+python -m tabular_conf.ql_conf.ext.optimize_rl 100 --out-dir /custom/path
 # Backend de almacenamiento Optuna personalizado:
-python -m tabular.pes_ql.ext.optimize_rl 100 --storage sqlite:////custom/study.db
+python -m tabular_conf.ql_conf.ext.optimize_rl 100 --storage sqlite:////custom/study.db
 ```
 
 ### 3.2. Entrenamiento del agente
@@ -199,14 +199,21 @@ $$
 
 1. **Inicialización aleatoria**: `Q = numpy.random.uniform(-1, 1, shape)`.
    Romper simetría evita que `argmax` sea determinista al comienzo.
-2. **Política ε-greedy**:
+2. **Política ε-greedy con exploración sensible a confianza**:
 
    ```python
-   if numpy.random.random() < 1 - epsilon:
-       action = numpy.argmax(Q[s])
+      confidence = confidence_from_q_values(q_values, resources_left)
+      uncertainty = 1.0 - confidence ** confidence_exploration_exponent
+      epsilon_state = epsilon + strength * uncertainty * (1.0 - epsilon)
+      if numpy.random.random() < epsilon_state:
+         action = numpy.random.choice(feasible_actions)
    else:
-       action = numpy.random.randint(0, env.action_space.n)
+         action = feasible_actions[numpy.argmax(q_values[feasible_actions])]
    ```
+
+      Solo se consideran acciones factibles, es decir, asignaciones entre `0` y
+      `resources_left`. La incertidumbre aumenta `epsilon` localmente cuando la
+      confianza en el estado es baja.
 
 3. **Decaimiento lineal de ε**:
    $\epsilon \leftarrow \epsilon - \frac{\epsilon_0 - \epsilon_{\min}}{\text{episodes}}$
@@ -217,13 +224,21 @@ $$
 6. **Reproducibilidad**: si `seed` no es `None`, se siembran `numpy.random`,
    `random` y `env.action_space`.
 
-### Métrica de meta-cognición
+### Confianza y exploración meta-cognitiva
 
-`rl_agent_meta_cognitive` calcula una **confianza basada en entropía** de los
-Q-valores (no afecta a la selección ni a la actualización). Se utiliza solo
-para reportes humano-vs-agente en `__main__.py`. Durante optimización y
-entrenamiento se desactiva con `track_confidence=False` para reproducir
-exactamente los trials de Optuna y ahorrar tiempo de cómputo.
+`confidence_from_q_values()` calcula una **confianza basada en entropía** de
+los Q-valores factibles. La confianza sí afecta a la exploración durante
+`QLearning`, pero no modifica la actualización de Q-Learning:
+
+```python
+uncertainty = 1.0 - confidence ** confidence_exploration_exponent
+epsilon_state = epsilon + confidence_exploration_strength * uncertainty * (1.0 - epsilon)
+```
+
+Con confianza alta, `epsilon_state` se aproxima al `epsilon` global. Con
+confianza baja, el agente explora más, limitado por
+`confidence_exploration_strength`. `track_confidence=False` solo evita guardar
+la lista `conf_list`; no desactiva esta modulación de la exploración.
 
 ---
 
@@ -236,7 +251,9 @@ learning_rate    = trial.suggest_float('learning_rate', 0.05, 0.40, log=True)
 discount_factor  = trial.suggest_float('discount_factor', 0.85, 0.999)
 epsilon_initial  = trial.suggest_float('epsilon_initial', 0.50, 1.00)
 epsilon_min      = trial.suggest_float('epsilon_min', 0.01, 0.15)
-num_episodes     = trial.suggest_int('num_episodes', 500_000, 1_200_000, step=50_000)
+num_episodes     = trial.suggest_int('num_episodes', 400_000, 800_000, step=50_000)
+confidence_exploration_strength = trial.suggest_float('confidence_exploration_strength', 0.0, 0.60)
+confidence_exploration_exponent = trial.suggest_float('confidence_exploration_exponent', 0.50, 3.0)
 ```
 
 ### 7.2. Configuración del estudio
@@ -245,15 +262,17 @@ num_episodes     = trial.suggest_int('num_episodes', 500_000, 1_200_000, step=50
 study = optuna.create_study(
     direction='maximize',
     sampler=optuna.samplers.TPESampler(seed=SEED),
-    pruner=optuna.pruners.MedianPruner(n_startup_trials=5, n_warmup_steps=4),
+   pruner=optuna.pruners.HyperbandPruner(
+      min_resource=10_000, max_resource=800_000, reduction_factor=3,
+   ),
     storage=f'sqlite:///{db_path}',
     load_if_exists=True,
 )
 ```
 
 - **Sampler**: TPE (Tree-structured Parzen Estimator) sembrado con `SEED = 42`.
-- **Pruner**: `MedianPruner` aborta trials cuya recompensa media intermedia
-  está por debajo de la mediana histórica tras 4 reportes (40 000 episodios).
+- **Pruner**: `HyperbandPruner` detiene trials poco prometedores usando
+   recursos entre 10 000 y 800 000 episodios.
 - **Storage**: SQLite (`optuna_study_<fecha>.db`) → permite **reanudar** con
   `--resume YYYY-MM-DD`.
 
@@ -266,7 +285,7 @@ Cada trial:
 3. Llama a `QLearning(..., seed=SEED + trial.number + 1, track_confidence=False)`.
 4. Evalúa la política voraz (con **enmascaramiento de acciones inviables** —
    acciones `> resources_left` reciben sentinela `-1e9` antes de `argmax`)
-   sobre las **64 secuencias fijas**.
+   sobre las primeras **32 secuencias fijas** (`_OPTIMIZATION_EVAL_SEQUENCES`).
 5. Retorna `mean_perf` clipeado a $[0, 1]$.
 
 > Las semillas por trial son distintas (`SEED + trial.number + 1`) para que
@@ -310,8 +329,9 @@ pipeline:
 5. **Fallback**: si no hay artefactos, usa `_FALLBACK_PARAMS` (trial #40
    histórico).
 6. **Entrenamiento**: invoca `QLearning(..., seed=trial_seed,
-   track_confidence=False)` con la misma semilla del trial Optuna ⇒ Q-table
-   bit-a-bit idéntica.
+   track_confidence=False)` con la misma semilla del trial Optuna. La confianza
+   sigue modulando la exploración, pero no se acumula en `conf_list`, por lo
+   que el consumo aleatorio coincide con el trial optimizado.
 7. **Evaluación**: política voraz con enmascaramiento sobre las 64 secuencias.
    Compara `local_mean_perf` contra `expected_perf` (de `best_params.json`).
 8. **Persistencia**: escribe `q_<fecha>.npy`, `rewards_<fecha>.npy`,
@@ -329,13 +349,13 @@ pipeline:
 Una vez generados `q.npy`, `rewards.npy` y `best_params.json`:
 
 ```powershell
-python -m tabular.pes_ql
+python -m tabular_conf.ql_conf
 ```
 
 `__main__.py` orquesta:
 
 - Validación de archivos de entrenamiento.
-- Creación de sesión con logging dual (consola + `outputs/PES_QL_log_<fecha>.txt`).
+- Creación de sesión con logging dual y archivos de sesión bajo `outputs/`.
 - Asignación de bloques/secuencias/trials con la estructura de §5.
 - Recogida de decisiones del agente RL vía `pygameMediator`.
 - Cálculo de severidades actualizadas y métricas normalizadas.
@@ -357,8 +377,8 @@ python -m tabular.pes_ql
 
 ### 10.2. Salidas (`outputs/<fecha>_QL_AGENT/`)
 
-- `PES_QL_log_<fecha>.txt` — log completo de la sesión.
-- `PES_QL_results_<fecha>.json` — métricas por bloque/secuencia/trial.
+- `PES_QL_<fecha>.txt` — configuración de la sesión.
+- `PES_QL_responses_<fecha>.txt` — respuestas registradas.
 - Plots de severidad final, performance normalizada y confianza
   (generados por `src/result_formatter.py`).
 
@@ -447,4 +467,4 @@ de `mean_perf` requiere:
 - [src/exp_utils.py](../src/exp_utils.py) — métricas y dinámica de severidad.
 
 Para los fundamentos teóricos, ver
-[pes_ql_theory.md](pes_ql_theory.md).
+[ql_conf_theory.md](ql_conf_theory.md).

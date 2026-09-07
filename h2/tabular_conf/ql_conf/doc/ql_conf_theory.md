@@ -1,4 +1,4 @@
-# pes_ql — Fundamentos Teóricos
+# ql_conf — Fundamentos Teóricos
 
 > Bases matemáticas del Q-Learning tabular y de la optimización Bayesiana
 > con TPE, relacionadas explícitamente con la implementación de
@@ -34,20 +34,20 @@ $$
 
 donde:
 
-- $\mathcal{S}$ es el conjunto de estados. En `pes_ql`,
+- $\mathcal{S}$ es el conjunto de estados. En `ql_conf`,
   $\mathcal{S} \subseteq \mathbb{Z}^3$ con cada estado
   $s = (r,\, t,\, \sigma)$, donde $r \in \{0, \ldots, 30\}$ son los recursos
   disponibles, $t \in \{0, \ldots, 10\}$ el número de trial dentro de la
   secuencia, y $\sigma \in \{0, \ldots, 9\}$ la severidad observada.
 - $\mathcal{A} = \{0, 1, \ldots, 10\}$ es el conjunto de acciones (recursos
   asignados al trial actual).
-- $\mathcal{P}(s' \mid s, a)$ es la distribución de transición. En `pes_ql`
+- $\mathcal{P}(s' \mid s, a)$ es la distribución de transición. En `ql_conf`
   es **determinista** dada la nueva severidad inicial muestreada al inicio
   del trial; condicional a esa muestra, $s'$ es función determinista de $s$
   y $a$.
 - $\mathcal{R}(s, a) = -\sum_i \sigma_i$ es la recompensa inmediata
   (negativa de la suma de severidades de todas las ciudades).
-- $\gamma \in [0, 1)$ es el factor de descuento. En `pes_ql` se optimiza
+- $\gamma \in [0, 1)$ es el factor de descuento. En `ql_conf` se optimiza
   $\gamma \in [0.85,\, 0.999]$.
 
 ### Propiedad de Markov
@@ -132,7 +132,7 @@ $$
 
 donde $\alpha \in (0, 1]$ es la **tasa de aprendizaje**.
 
-### Implementación en `pes_ql`
+### Implementación en `ql_conf`
 
 En [ext/pandemic.py](../ext/pandemic.py), líneas 731–741:
 
@@ -180,15 +180,15 @@ $$
 
 junto con la **visita infinita** de cada par $(s, a)$.
 
-### Limitaciones prácticas en `pes_ql`
+### Limitaciones prácticas en `ql_conf`
 
 - La implementación usa $\alpha$ **constante** (no decreciente), por lo que
   estrictamente las hipótesis de Robbins–Monro no se satisfacen. En la
-  práctica, con $\alpha \in [0.05, 0.4]$ y $5 \times 10^5$–$1.2 \times 10^6$
+  práctica, con $\alpha \in [0.05, 0.4]$ y $4 \times 10^5$–$8 \times 10^5$
   episodios, $Q$ converge a una vecindad de $Q^*$ suficientemente pequeña
   para producir políticas casi-óptimas (Sutton & Barto, 2018, §6.5).
 - La visita infinita se aproxima vía exploración ε-greedy con
-  $\epsilon_{\min} > 0$ (en `pes_ql`, $\epsilon_{\min} \in [0.01, 0.15]$).
+  $\epsilon_{\min} > 0$ (en `ql_conf`, $\epsilon_{\min} \in [0.01, 0.15]$).
 
 ---
 
@@ -204,7 +204,7 @@ $$
 \end{cases}
 $$
 
-### Decaimiento lineal en `pes_ql`
+### Decaimiento lineal en `ql_conf`
 
 ```python
 reduction = (epsilon - min_eps) / episodes
@@ -237,11 +237,12 @@ entornos no estacionarios o con estados raramente visitados.
 El espacio de hiperparámetros de Q-Learning es:
 
 $$
-\boldsymbol{\theta} = (\alpha,\, \gamma,\, \epsilon_0,\, \epsilon_{\min},\, M) \in \Theta \subset \mathbb{R}^5.
+\boldsymbol{\theta} = (\alpha,\, \gamma,\, \epsilon_0,\, \epsilon_{\min},\, M,\, \lambda,\, p) \in \Theta \subset \mathbb{R}^7.
 $$
 
 La función objetivo $f: \Theta \to [0, 1]$ es la **performance media
-normalizada** sobre las 64 secuencias fijas de evaluación. Su evaluación
+normalizada** sobre las primeras 32 secuencias fijas de evaluación durante la
+optimización. Su evaluación
 es:
 
 - **Cara**: cada trial cuesta minutos (millones de pasos de Q-Learning).
@@ -270,7 +271,7 @@ donde $y^* = \max_{i \le n} y_i$.
 
 ## 7. Tree-structured Parzen Estimator (TPE)
 
-`pes_ql` utiliza el sampler `optuna.samplers.TPESampler` (Akiba et al.,
+`ql_conf` utiliza el sampler `optuna.samplers.TPESampler` (Akiba et al.,
 2019), que implementa el algoritmo TPE de Bergstra et al. (2011).
 
 ### Idea central
@@ -294,13 +295,15 @@ $\gamma = 0.15$ en Optuna). Bergstra et al. (2011) demuestran que la EI es
 g(\boldsymbol{\theta})$, lo que reduce la maximización de la adquisición a
 muestrear de $\ell$ y elegir el punto con mayor cociente.
 
-### Configuración en `pes_ql`
+### Configuración en `ql_conf`
 
 ```python
 study = optuna.create_study(
     direction='maximize',
     sampler=optuna.samplers.TPESampler(seed=SEED),
-    pruner=optuna.pruners.MedianPruner(n_startup_trials=5, n_warmup_steps=4),
+    pruner=optuna.pruners.HyperbandPruner(
+      min_resource=10_000, max_resource=800_000, reduction_factor=3,
+    ),
     storage=f'sqlite:///{db_path}',
     load_if_exists=True,
 )
@@ -308,9 +311,9 @@ study = optuna.create_study(
 
 - `seed=SEED` (= 42) garantiza secuencias de muestreo reproducibles entre
   ejecuciones independientes del estudio.
-- `MedianPruner(n_startup_trials=5, n_warmup_steps=4)` aborta cualquier
-  trial cuya recompensa media tras 4 reportes (40 000 episodios) caiga por
-  debajo de la mediana histórica de los trials previos en el mismo paso.
+- `HyperbandPruner(min_resource=10_000, max_resource=800_000,
+  reduction_factor=3)` asigna recursos progresivamente y detiene trials poco
+  prometedores según su rendimiento intermedio.
 - `storage=sqlite://...` persiste el estudio permitiendo `--resume`.
 
 ### Espacio de búsqueda
@@ -321,7 +324,9 @@ study = optuna.create_study(
 | $\gamma$ | uniforme | $[0.85,\, 0.999]$ | Horizontes ≤ 10 trials |
 | $\epsilon_0$ | uniforme | $[0.50,\, 1.00]$ | Exploración inicial alta |
 | $\epsilon_{\min}$ | uniforme | $[0.01,\, 0.15]$ | Mínima exploración persistente |
-| $M$ | entero, paso 50 000 | $[5\!\times\!10^5,\, 1.2\!\times\!10^6]$ | Convergencia empírica |
+| $M$ | entero, paso 50 000 | $[4\!\times\!10^5,\, 8\!\times\!10^5]$ | Convergencia empírica |
+| $\lambda$ | uniforme | $[0,\, 0.60]$ | Intensidad de exploración por incertidumbre |
+| $p$ | uniforme | $[0.50,\, 3.0]$ | Curvatura de la incertidumbre |
 
 La elección **log** para $\alpha$ refleja que el efecto de variar $\alpha$
 de 0.05 a 0.10 es comparable al de variar de 0.20 a 0.40 (Bergstra et al.,
@@ -331,16 +336,17 @@ de 0.05 a 0.10 es comparable al de variar de 0.20 a 0.40 (Bergstra et al.,
 
 ## 8. Confianza meta-cognitiva basada en entropía
 
-`rl_agent_meta_cognitive` (en [ext/pandemic.py](../ext/pandemic.py))
-calcula una **medida de confianza** del agente derivada de la entropía de
-los Q-valores en el estado actual:
+`confidence_from_q_values()` (en [ext/tools.py](../ext/tools.py)) calcula una
+**medida de confianza** derivada de la entropía de los Q-valores factibles en
+el estado actual. No usa softmax: `entropy_from_pdf()` desplaza los Q-valores
+para hacerlos no negativos y los normaliza como una distribución:
 
 $$
 H(s) = -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s),
 $$
 
-con $p(a \mid s)$ obtenido vía softmax sobre las opciones factibles
-(acciones $a > r$ se enmascaran con $-10^9$).
+considerando únicamente acciones $a \le r$, donde $r$ son los recursos
+restantes.
 
 ### Normalización
 
@@ -357,16 +363,27 @@ donde:
 
 Así $\text{confidence} \in [0, 1]$, con 1 = certeza total.
 
-### Uso
+### Uso durante la exploración
 
-La confianza **no afecta** la actualización de $Q$ ni la selección de
-acciones (siempre se usa $\arg\max$). Se utiliza únicamente para:
+La confianza no afecta la actualización de $Q$, pero sí modifica la
+probabilidad de exploración en cada estado. El código calcula:
 
-1. Generar tiempos de respuesta sintéticos (estilo humano) vía mapeo lineal.
-2. Producir plots comparativos humano-vs-agente en `__main__.py`.
+$$
+u(s) = 1 - \operatorname{confidence}(s)^p
+$$
 
-Por eficiencia, durante optimización y entrenamiento se desactiva con
-`track_confidence=False`.
+$$
+\epsilon_s = \epsilon + \lambda\,u(s)\,(1 - \epsilon).
+$$
+
+Después, con probabilidad $\epsilon_s$ selecciona una acción factible al azar;
+en caso contrario, selecciona el máximo Q entre las acciones factibles. Por
+tanto, una confianza baja produce más exploración y una confianza alta produce
+más explotación.
+
+`track_confidence=False` no desactiva este mecanismo: solo evita acumular los
+valores en `conf_list`. El mismo mecanismo se mantiene activo para que el
+entrenamiento sea idéntico al trial de Optuna.
 
 ---
 

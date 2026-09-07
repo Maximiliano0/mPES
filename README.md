@@ -12,14 +12,14 @@
 
 </div>
 
-> This repository contains three experiment lines. The active benchmark workflow is in `h1/`; `h2/` and `h3/` remain experimental staging areas and are not part of the current benchmark report.
+> This repository contains three experiment lines. The active benchmark workflow is in `h1/`; `h2/` remain experimental staging areas and are not part of the current benchmark report.
 
 ---
 
 ## ✨ Current scope
 
 - 🧠 **Active benchmark line:** `h1/` with tabular, neural and ensemble training packages.
-- 🧪 **Experimental staging lines:** `h2/` (`tabular_conf/ql_conf`) and `h3/` (`tabular_uq/ql_uq`) remain out of the validated benchmark path.
+- 🧪 **Experimental staging lines:** `h2/` (`tabular_conf/ql_conf`) remain out of the validated benchmark path.
 - 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over six individual models and six ensemble variants.
 - 🔬 **Bayesian optimisation:** Optuna for the trainable variants.
 - 🌍 **Windows-first workflow:** Python 3.12 and the `win_mpes_env` environment.
@@ -31,7 +31,6 @@
 |------|--------|--------------------|
 | [`h1/`](h1/) | Active and validated | `tabular/`, `ml/`, `ens/`, `general/` |
 | [`h2/`](h2/) | Suspended / staging | `tabular_conf/ql_conf` |
-| [`h3/`](h3/) | Experimental prototype | `tabular_uq/ql_uq` |
 
 ---
 
