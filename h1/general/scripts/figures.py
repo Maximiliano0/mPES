@@ -222,7 +222,7 @@ def _render_universal(suite: str, cells: dict, models: "list[str]", output: str)
         best = 'pes_trf'
         partners = {'sev_extrapolate_high': ('pes_dql', 'contrast'),
                     'joint_extrap_both': ('pes_a2c', 'joint'),
-                    'len_extrapolate_long': (ENSEMBLE_REFERENCE, 'ens')}
+                    'len_extrapolate_long': ('pes_dqn', 'contrast')}
     else:
         candidates = [m for m in models if m not in (REFERENCE_MODEL, ENSEMBLE_REFERENCE)]
         best = max(candidates, key=lambda model: _stress_mean(cells, model, scenarios))

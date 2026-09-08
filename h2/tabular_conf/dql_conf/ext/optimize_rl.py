@@ -64,6 +64,7 @@ Note:
 ##  External imports    ##
 ##########################
 import os
+from glob import glob
 # Force matplotlib to use a non-interactive backend BEFORE the library
 # is imported anywhere (this env var is honoured by matplotlib at first
 # import, even when something else imported it first via IPython).
@@ -537,6 +538,19 @@ def _save_report(study, opt_dir, opt_date, best_Q, best_rewards):
 ###################################
 ##             Main              ##
 ###################################
+def _latest_opt_date() -> str | None:
+    """Return the date of the most recently updated default Optuna study."""
+    pattern = os.path.join(INPUTS_PATH, '*_BAYESIAN_OPT', 'optuna_study_*.db')
+    database_paths = glob(pattern)
+    if not database_paths:
+        return None
+
+    latest_database = max(database_paths, key=os.path.getmtime)
+    directory_name = os.path.basename(os.path.dirname(latest_database))
+    suffix = '_BAYESIAN_OPT'
+    return directory_name.removesuffix(suffix)
+
+
 def main():
     """Run Bayesian optimisation of Q-Learning hyperparameters via Optuna."""
 
@@ -547,12 +561,14 @@ def main():
     opt_date = datetime.now().strftime("%Y-%m-%d")
     out_dir_override: str | None = None
     storage_override: str | None = None
+    resume_requested = False
 
     args = sys.argv[1:]
     i = 0
     while i < len(args):
         if args[i] == '--resume' and i + 1 < len(args):
             opt_date = args[i + 1]
+            resume_requested = True
             i += 2
         elif args[i] == '--out-dir' and i + 1 < len(args):
             out_dir_override = args[i + 1]
@@ -567,6 +583,11 @@ def main():
                 pass
             i += 1
 
+    if not resume_requested and out_dir_override is None and storage_override is None:
+        latest_opt_date = _latest_opt_date()
+        if latest_opt_date is not None:
+            opt_date = latest_opt_date
+
     opt_dir  = out_dir_override or os.path.join(INPUTS_PATH, f'{opt_date}_BAYESIAN_OPT')
     os.makedirs(opt_dir, exist_ok=True)
 
@@ -575,6 +596,8 @@ def main():
 
     info(f"Output directory: {opt_dir}")
     info(f"Target number of trials: {n_trials}")
+    if not resume_requested and out_dir_override is None and storage_override is None:
+        info(f"Using latest Optuna study date: {opt_date}")
     print()
 
     # --- Load data ---
@@ -676,6 +699,14 @@ def main():
         _prev_err = numpy.seterr(under='ignore')
         try:
             study.optimize(objective, n_trials=remaining, callbacks=[_progress_callback])
+        except KeyboardInterrupt:
+            print()
+            info(f"Optimisation interrupted. Study is saved in: {db_path}")
+            info(
+                "Resume with: python -m tabular_conf.dql_conf.ext.optimize_rl "
+                f"{n_trials}"
+            )
+            raise
         finally:
             numpy.seterr(**_prev_err)
     else:

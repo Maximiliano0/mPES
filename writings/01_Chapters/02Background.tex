@@ -1,0 +1,349 @@
+﻿% !TEX root = ../00_Main/Main.tex
+\documentclass[../00_Main/Main.tex]{subfiles}
+\begin{document}
+
+\label{sec:background}
+
+Este cap\'itulo introduce el marco formal utilizado a lo largo de
+la tesis: procesos de decisi\'on de Markov (MDP), aprendizaje por
+refuerzo basado en valor y en gradiente de pol\'itica, aproximaci\'on
+de funciones con redes neuronales, codificadores recurrentes y basados
+en atenci\'on, optimizaci\'on bayesiana de hiperpar\'ametros y la
+entrop\'ia de Shannon como medida de incertidumbre de la decisi\'on. El
+tratamiento es compacto; la referencia general es el texto de Sutton y
+Barto~\citep{SuttonBarto2018}.
+
+\subsection{Procesos de Decisi\'on de Markov}
+
+Un MDP finito es una tupla
+$\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, R, \gamma)$ donde
+$\mathcal{S}$ es un espacio de estados finito, $\mathcal{A}$ un
+espacio de acciones finito, $P(s' \mid s, a)$ un n\'ucleo de
+transici\'on, $R(s, a, s')$ una funci\'on de recompensa acotada y
+$\gamma \in [0, 1)$ el factor de descuento. Bajo una pol\'itica
+$\pi(a \mid s)$ el agente genera una trayectoria
+$\tau = (s_0, a_0, r_1, s_1, a_1, \ldots)$ cuyo \emph{retorno
+descontado} desde el tiempo $t$ es
+
+\begin{equation}
+G_t \;=\; \sum_{k = 0}^{\infty} \gamma^{k}\, r_{t + k + 1},
+\label{eq:return}
+\end{equation}
+
+donde $r_{t+k+1}$ es la recompensa recibida $k+1$ pasos despu\'es de $t$.
+La funci\'on de valor de estado--acci\'on de la pol\'itica es
+$Q^{\pi}(s, a) = \mathbb{E}_{\pi}[G_t \mid s_t = s,\, a_t = a]$ y la
+pol\'itica \'optima satisface la ecuaci\'on de Bellman,
+
+\begin{equation}
+Q^{*}(s, a) \;=\; \mathbb{E}\!\left[r + \gamma \max_{a'} Q^{*}(s', a')
+\,\middle|\, s, a\right],
+\label{eq:bellman-opt}
+\end{equation}
+
+donde la esperanza se toma sobre el estado siguiente $s' \sim P(\cdot \mid s, a)$
+y la recompensa $r = R(s, a, s')$.
+
+\subsection{Q-Learning tabular y aprendizaje basado en valores}
+
+Cuando $\mathcal{S}$ y $\mathcal{A}$ son enumerables, $Q$ se almacena
+como una tabla y se aplica la actualizaci\'on cl\'asica de
+Watkins~\citep{Watkins1992}:
+
+\begin{equation}
+Q(s, a) \;\leftarrow\; Q(s, a) \;+\; \alpha\,
+\bigl[r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr],
+\label{eq:qlearning}
+\end{equation}
+
+con tasa de aprendizaje $\alpha \in (0, 1]$ y selecci\'on de acciones
+$\varepsilon$-\emph{greedy}: con probabilidad $\varepsilon$ se elige una
+acci\'on uniforme al azar y, en caso contrario, $\arg\max_a Q(s,a)$.
+
+\subsubsection{Double Q-Learning}
+
+El operador $\max$ en la Ecuaci\'on~\eqref{eq:qlearning} introduce un
+sesgo positivo en la estimaci\'on del valor. \emph{Double
+Q-Learning}~\citep{Hasselt2010} mantiene dos tablas $Q^{A}$ y $Q^{B}$
+actualizadas alternativamente, desacoplando la selecci\'on y la
+evaluaci\'on de la acci\'on:
+
+\begin{equation}
+Q^{A}(s, a) \leftarrow Q^{A}(s, a) + \alpha\bigl[r + \gamma\,
+Q^{B}\!\bigl(s', \arg\max_{a'} Q^{A}(s', a')\bigr) - Q^{A}(s, a)\bigr],
+\label{eq:double-q}
+\end{equation}
+
+y de forma sim\'etrica para $Q^{B}$, eligiendo en cada paso con
+probabilidad $1/2$ cu\'al de las dos tablas se actualiza.
+
+\subsubsection{Modelado de recompensa mediante potencial (PBRS)}
+
+El \emph{Potential-Based Reward Shaping} (PBRS)~\citep{Ng1999} a\~nade
+a la recompensa un t\'ermino $F(s, s') = \gamma\Phi(s') - \Phi(s)$,
+donde $\Phi : \mathcal{S} \to \mathbb{R}$ es una funci\'on de potencial
+sobre los estados. Ng \emph{et al.} demostraron que esta forma de
+\emph{shaping} preserva el conjunto de pol\'iticas \'optimas del MDP
+original. En mPES se utiliza con $\Phi(s) = -S$ (severidad actual con
+signo negativo) y un coeficiente multiplicativo $\kappa$, de modo que
+la recompensa efectiva es $\tilde r = r + \kappa F(s, s')$.
+
+\subsection{Deep Q-Networks (DQN)}
+
+Cuando el espacio de estados es grande, $Q(s, a; \theta)$ se aproxima
+con una red neuronal de par\'ametros $\theta$. El \emph{Deep
+Q-Network}~\citep{Mnih2015} estabiliza el entrenamiento con dos
+ingredientes: (i) un \emph{buffer} de repetici\'on de experiencia
+(\emph{experience replay})~\citep{Lin1992} del cual se muestrean
+minilotes de transiciones de forma uniforme, rompiendo la correlaci\'on
+temporal entre muestras consecutivas, y (ii) una \emph{red objetivo}
+(\emph{target network}) $Q(\cdot;\theta^{-})$ cuyos par\'ametros se
+copian desde $\theta$ cada $C$ pasos. La funci\'on de costo es
+
+\begin{equation}
+\mathcal{L}(\theta) \;=\;
+\mathbb{E}_{(s,a,r,s') \sim \mathcal{D}}
+\!\left[\bigl(r + \gamma \max_{a'} Q(s', a'; \theta^{-})
+- Q(s, a; \theta)\bigr)^{2}\right],
+\label{eq:dqn-loss}
+\end{equation}
+
+donde $\mathcal{D}$ es el \emph{buffer} de transiciones almacenadas.
+La red objetivo desacopla el blanco de la regresi\'on del par\'ametro
+que se optimiza y se actualiza por copia cada $C$ pasos. En mPES la
+p\'erdida se optimiza con Adam~\citep{Kingma2015} y se aplica recorte
+de la norma global del gradiente para limitar actualizaciones
+excesivas.
+
+\subsection{Redes recurrentes y LSTM}
+
+Cuando el estado observado no es markoviano --- por ejemplo, cuando
+la din\'amica de severidad acumula informaci\'on hist\'orica no
+representada en $s_t$ --- es habitual recurrir a codificadores
+recurrentes. La \emph{Long Short-Term Memory}
+(LSTM)~\citep{Hochreiter1997} introduce compuertas de entrada $i_t$,
+olvido $f_t$ y salida $o_t$, cada una con valores en $(0,1)$ obtenidos
+por una sigmoide sobre la entrada actual y el estado oculto previo, que
+controlan c\'omo el estado de celda $c_t$ acumula informaci\'on a largo
+plazo:
+
+\begin{equation}
+c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t,
+\qquad h_t \;=\; o_t \odot \tanh(c_t),
+\label{eq:lstm}
+\end{equation}
+
+donde $\tilde{c}_t$ es el candidato de celda calculado con una
+tangente hiperb\'olica, $h_t$ el estado oculto y $\odot$ el producto
+elemento a elemento.
+Hausknecht y Stone~\citep{Hausknecht2015} mostraron que incorporar
+una capa LSTM dentro de un DQN (\emph{Deep Recurrent Q-Network},
+DRQN) mejora el desempe\~no en entornos parcialmente observables. El
+paquete \texttt{pes\_rdqn} adopta esta estrategia.
+
+\subsection{Pol\'iticas, Gradientes y Actor--Critic}
+
+Los m\'etodos de \emph{gradiente de pol\'itica}~\citep{Williams1992}
+parametrizan la pol\'itica $\pi_\theta(a \mid s)$ y actualizan
+$\theta$ a lo largo del gradiente del retorno esperado
+$J(\theta) = \mathbb{E}_{\pi_\theta}[G_0]$:
+
+\begin{equation}
+\nabla_{\theta} J(\theta) \;=\;
+\mathbb{E}_{\pi_{\theta}}\!\bigl[\nabla_{\theta} \log
+\pi_{\theta}(a \mid s)\, A^{\pi_{\theta}}(s, a)\bigr],
+\label{eq:pg}
+\end{equation}
+
+con la funci\'on de \emph{ventaja}
+$A^{\pi}(s, a) = Q^{\pi}(s, a) - V^{\pi}(s)$, donde
+$V^{\pi}(s) = \mathbb{E}_{\pi}[G_t \mid s_t = s]$. El
+\emph{Advantage Actor--Critic} (A2C)~\citep{Mnih2016} entrena
+simult\'aneamente un actor que produce $\pi_\theta$ y un cr\'itico que
+estima $V_{\phi}$. La ventaja se estima con
+\emph{Generalized Advantage Estimation} (GAE),
+
+\begin{equation}
+\hat{A}_t^{\mathrm{GAE}(\gamma,\lambda)} \;=\;
+\sum_{k=0}^{\infty}(\gamma\lambda)^{k}\,\delta_{t+k},
+\qquad \delta_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t),
+\label{eq:gae}
+\end{equation}
+
+donde $\delta_t$ es el error de diferencia temporal de un paso y
+$\lambda \in [0,1]$ interpola entre la estimaci\'on de un paso
+($\lambda = 0$, menor varianza y mayor sesgo) y la de Monte~Carlo
+($\lambda = 1$). El actor se regulariza con un t\'ermino de entrop\'ia
+$-\beta_H H(\pi_\theta(\cdot \mid s))$, con $\beta_H > 0$, que
+desincentiva la concentraci\'on prematura de la pol\'itica. El estudio
+emp\'irico de Andrychowicz \emph{et al.}~\citep{Andrychowicz2021}
+resume las decisiones de dise\~no que m\'as inciden en este tipo de
+m\'etodos.
+
+\subsection{Atenci\'on y el Transformer}
+
+El \emph{Transformer}~\citep{Vaswani2017} reemplaza la
+recurrencia por \emph{atenci\'on de producto escalar escalado}. Dadas
+las matrices de consultas $Q$, claves $K$ y valores $V$, obtenidas por
+proyecciones lineales de la secuencia de entrada, y siendo $d_k$ la
+dimensi\'on de las claves,
+
+\begin{equation}
+\mathrm{Atenci\acute{o}n}(Q, K, V) \;=\;
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}}\right) V.
+\label{eq:attention}
+\end{equation}
+
+En un entorno secuencial, una m\'ascara triangular $M$ con
+$M_{ij} = -\infty$ para $j > i$ y $M_{ij} = 0$ en otro caso impide que
+la posici\'on $i$ atienda a posiciones futuras:
+
+\begin{equation}
+\mathrm{Atenci\acute{o}n}_{\mathrm{causal}}(Q, K, V) =
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}} + M\right) V.
+\label{eq:causal-attention}
+\end{equation}
+
+En RL, Parisotto \emph{et al.}~\citep{Parisotto2020} y Chen
+\emph{et al.}~\citep{Chen2021} muestran que los codificadores
+Transformer pueden reemplazar a las redes recurrentes en tareas que
+requieren memoria, con capacidad para capturar dependencias entre
+posiciones distantes de la secuencia. En esta tesis cada bloque
+Transformer incluye conexiones residuales y normalizaci\'on de capa,
+como en la formulaci\'on original.
+
+\subsection{Cuantificaci\'on de Incertidumbre y Entrop\'ia de Shannon}
+
+Dada una distribuci\'on de probabilidad discreta $p(a \mid s)$ sobre
+$|\mathcal{A}|$ acciones, la \emph{entrop\'ia de Shannon} es
+
+\begin{equation}
+H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s),
+\label{eq:shannon}
+\end{equation}
+
+con la convenci\'on $0 \log 0 = 0$. Su valor m\'aximo, $\log |\mathcal{A}|$,
+se alcanza con la distribuci\'on uniforme. La versi\'on normalizada
+
+\begin{equation}
+H_{\mathrm{norm}}(p) \;=\; \frac{H(p)}{\log |\mathcal{A}|} \in [0, 1]
+\label{eq:shannon-norm}
+\end{equation}
+
+es independiente de la base del logaritmo y se interpreta como una
+medida de dispersi\'on de la decisi\'on: $H_{\mathrm{norm}} \to 0$
+indica que la masa de probabilidad se concentra en una acci\'on;
+$H_{\mathrm{norm}} \to 1$ indica indiferencia entre acciones. En esta
+tesis se utiliza $1 - H_{\mathrm{norm}}$ como indicador de confianza
+del agente, por analog\'ia con los marcadores de confianza estudiados
+en decisi\'on humana por Boldt y Yeung~\citep{Boldt2015} y revisados
+por Fleming~\citep{Fleming2024}. Cuando la salida del modelo son
+valores $Q$ y no probabilidades, la implementaci\'on de mPES los
+desplaza a valores no negativos y los normaliza antes de aplicar la
+Ecuaci\'on~\eqref{eq:shannon}; el resultado es, por tanto, un
+indicador heur\'istico y no una probabilidad calibrada.
+
+\subsection{Optimizaci\'on Bayesiana de Hiperpar\'ametros}
+
+Un agente de RL tiene varios hiperpar\'ametros no diferenciables
+($\alpha$, $\gamma$, tama\~no del \emph{buffer} de repetici\'on,
+esquema de decaimiento de $\varepsilon$, anchura de red, entre otros)
+cuyas interacciones no son lineales. La \emph{optimizaci\'on
+bayesiana} trata el puntaje de validaci\'on $y = f(x)$ de una
+configuraci\'on $x$ como una funci\'on de caja negra ruidosa y la
+explora con un modelo probabil\'istico auxiliar. Se utiliza el
+estimador estructurado en \'arbol de Parzen (TPE)~\citep{Bergstra2011}
+implementado en Optuna~\citep{Akiba2019}. Dado un umbral $y^{*}$,
+fijado como un cuantil de los puntajes observados, TPE modela por
+separado las densidades $\ell(x) = p(x \mid y < y^{*})$ y
+$g(x) = p(x \mid y \geq y^{*})$ mediante estimadores de densidad por
+n\'ucleos (KDE). Para una muestra unidimensional
+$x_1,\ldots,x_n$, la estimaci\'on es
+
+\begin{equation}
+\hat{p}_h(x) \;=\; \frac{1}{n h}
+\sum_{i=1}^{n} K\!\left(\frac{x-x_i}{h}\right),
+\label{eq:kde}
+\end{equation}
+
+donde $K$ es la funci\'on n\'ucleo y $h>0$ el ancho de banda, que
+controla el grado de suavizado. Como el objetivo es maximizar el
+puntaje, TPE propone nuevas configuraciones donde el cociente
+$g(x)/\ell(x)$ es alto, es decir, donde la densidad de configuraciones
+buenas supera a la de configuraciones malas.
+
+\subsection{Distribuci\'on de entrenamiento y evaluaci\'on de la generalizaci\'on}
+
+Sea $P_{\mathrm{train}}(s,a,r,s')$ la distribuci\'on de transiciones
+observadas durante el entrenamiento y sea
+$P_{\mathrm{test}}(s,a,r,s')$ la distribuci\'on utilizada para evaluar
+la pol\'itica aprendida. La condici\'on de referencia conserva las
+mismas leyes de generaci\'on que el entrenamiento, de modo que
+
+\begin{equation}
+P_{\mathrm{test}} = P_{\mathrm{train}}.
+\label{eq:reference-condition}
+\end{equation}
+
+Una evaluaci\'on bajo perturbaci\'on modifica una o m\'as
+propiedades de esa distribuci\'on, por lo que
+$P_{\mathrm{test}} \neq P_{\mathrm{train}}$. En mPES el cambio se
+introduce en la distribuci\'on de severidades iniciales, en la de
+longitudes de secuencia o en ambas; la regla de transici\'on
+(Ecuaci\'on~\eqref{eq:transicion}) y la funci\'on de recompensa
+permanecen fijas. El rendimiento medido bajo estas perturbaciones
+permite examinar la capacidad de la pol\'itica para mantener su
+desempe\~no cuando cambian las condiciones de entrada, y no solamente
+su ajuste a las condiciones conocidas durante el entrenamiento.
+
+\subsection{Contraste estad\'istico entre agentes}
+
+Para comparar dos muestras de rendimiento $A$ y $B$, cada una con
+$n_A$ y $n_B$ observaciones (en mPES, los valores por secuencia de
+$\bar r$), se reportan tres cantidades:
+
+\begin{description}
+    \item[Tama\~no del efecto:] la $d$ de Cohen~\citep{Cohen1988},
+    \begin{equation}
+    d \;=\; \frac{\bar{x}_A - \bar{x}_B}{s_p},
+    \qquad
+    s_p = \sqrt{\frac{(n_A-1)\,s_A^{2} + (n_B-1)\,s_B^{2}}{n_A+n_B-2}},
+    \label{eq:cohen}
+    \end{equation}
+    donde $\bar{x}$ y $s^{2}$ son la media y la varianza muestral de
+    cada grupo y $s_p$ la desviaci\'on est\'andar combinada. Como
+    referencia descriptiva, $|d| \approx 0{,}2$, $0{,}5$ y $0{,}8$
+    suelen interpretarse como efectos peque\~no, medio y grande.
+    \item[Significancia:] la prueba $t$ de Welch~\citep{Welch1947}
+    contrasta la igualdad de medias sin asumir varianzas iguales,
+    \begin{equation}
+    t \;=\; \frac{\bar{x}_A - \bar{x}_B}
+    {\sqrt{s_A^{2}/n_A + s_B^{2}/n_B}},
+    \label{eq:welch}
+    \end{equation}
+    con grados de libertad estimados mediante la aproximaci\'on de
+    Welch--Satterthwaite. El valor $p$ bilateral es la probabilidad,
+    bajo la hip\'otesis de medias iguales, de observar un estad\'istico
+    al menos tan extremo como el obtenido. Un $p$ peque\~no indica
+    evidencia contra esa hip\'otesis, pero no mide relevancia
+    pr\'actica; en las figuras se representa $\log_{10} p$.
+    \item[Cambio de distribuci\'on:] la divergencia de
+    Kullback--Leibler entre dos distribuciones discretas $p$ y $q$,
+    \begin{equation}
+    D_{\mathrm{KL}}(p \,\|\, q) \;=\;
+    \sum_{a} p(a)\log\frac{p(a)}{q(a)},
+    \label{eq:kl}
+    \end{equation}
+    vale $0$ cuando ambas coinciden y crece con la discrepancia; no es
+    sim\'etrica. En mPES se aplica de dos formas: entre la
+    distribuci\'on emp\'irica de acciones de un escenario y la de la
+    condici\'on de referencia del mismo modelo, y, en forma
+    simetrizada $\tfrac{1}{2}[D_{\mathrm{KL}}(p\,\|\,q) +
+    D_{\mathrm{KL}}(q\,\|\,p)]$, entre los histogramas de rendimiento
+    de dos modelos. En ambos casos se suma una constante
+    $\varepsilon = 10^{-9}$ y se renormaliza para evitar $\log 0$.
+\end{description}
+
+\biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
+\end{document}
+

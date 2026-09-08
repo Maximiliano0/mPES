@@ -1,0 +1,154 @@
+﻿% !TEX root = ../00_Main/Main.tex
+\documentclass[../00_Main/Main.tex]{subfiles}
+\begin{document}
+
+\label{sec:soa}
+
+La presente investigaci\'on se sit\'ua en la intersecci\'on de la
+epidemiolog\'ia computacional~\citep{Kuhl2021}, la
+neurociencia cognitiva de la confianza y el aprendizaje profundo
+secuencial. La literatura reciente muestra inter\'es en sistemas de
+soporte de decisiones que, adem\'as de optimizar una m\'etrica de
+rendimiento, informen sobre la \emph{confianza} de sus decisiones.
+
+\subsection{Fundamentos neurocognitivos de la confianza algor\'itmica}
+
+El punto de partida conceptual de este trabajo es el conjunto de datos
+p\'ublico \texttt{ds004477}~\citep{ds004477}, publicado en OpenNeuro, y
+el entorno \emph{Pandemic Experiment Scenario} (PES)~\citep{BCINE2022}
+liberado por el BCI-NE Lab de la Universidad de Essex.
+Esta l\'inea de investigaci\'on examin\'o las correlaciones neuronales
+de la confianza humana en decisiones bajo presi\'on temporal. Boldt y
+Yeung~\citep{Boldt2015} identificaron se\~nales de EEG asociadas al
+monitoreo de errores y al ajuste de la certeza sobre una acci\'on;
+Fleming~\citep{Fleming2024} revisa la relaci\'on entre confianza,
+an\'alisis secuencial y teor\'ia de detecci\'on de se\~nales en tareas
+de alta carga cognitiva.
+
+La perspectiva de los equipos humano--m\'aquina ampl\'ia este planteo
+al considerar que la toma de decisiones puede distribuirse entre
+personas y sistemas artificiales, de modo que la confianza y la
+adaptaci\'on constituyen propiedades relevantes del equipo
+completo~\citep{Nijjar2025}.
+
+La contribuci\'on de mPES en este punto consiste en trasladar esa
+pregunta al plano algor\'itmico: en lugar de una medida fisiol\'ogica,
+se utiliza la entrop\'ia de Shannon (Ecuaci\'on~\ref{eq:shannon}) de la
+distribuci\'on de acciones como indicador de incertidumbre del agente.
+Se trata de una analog\'ia funcional; el trabajo no mide se\~nales
+fisiol\'ogicas ni establece una equivalencia entre ambas magnitudes.
+
+\subsection{Aprendizaje por Refuerzo en la Gesti\'on de Crisis}
+
+La literatura en RL ha evolucionado desde m\'etodos tabulares como
+el Q-Learning~\citep{Watkins1992} hacia aproximaciones
+capaces de manejar la alta dimensionalidad de los problemas del
+mundo real~\citep{SuttonBarto2018}.
+
+\begin{itemize}
+    \item \textbf{Deep Q-Networks (DQN).} La introducci\'on de la
+    repetici\'on de experiencia y de la red objetivo por Mnih
+    \emph{et al.}~\citep{Mnih2015} permiti\'o estabilizar el
+    aprendizaje con aproximadores no lineales. El operador $\max$ del
+    blanco de Q-Learning introduce un sesgo de sobreestimaci\'on que
+    Double Q-Learning~\citep{Hasselt2010} mitiga al desacoplar la
+    selecci\'on y la evaluaci\'on de la acci\'on.
+    \item \textbf{Estabilizaci\'on del entrenamiento.} En los agentes
+    profundos de mPES se emplean el optimizador Adam~\citep{Kingma2015},
+    recorte de la norma del gradiente y un esquema de exploraci\'on
+    $\varepsilon$-\emph{greedy} con fase inicial constante y decaimiento
+    exponencial, cuyos par\'ametros se fijan por optimizaci\'on
+    bayesiana.
+    \item \textbf{Actor--Critic (A2C).} Los m\'etodos
+    actor--cr\'itico~\citep{Mnih2016} reducen la varianza del gradiente
+    de pol\'itica mediante una l\'inea de base aprendida (el cr\'itico)
+    y permiten trabajar directamente con una distribuci\'on de
+    probabilidad sobre acciones, lo que facilita el c\'alculo de su
+    entrop\'ia.
+\end{itemize}
+
+\subsection{Modelado secuencial mediante arquitecturas Transformer}
+
+En el entorno estudiado, una asignaci\'on insuficiente en un paso se
+amplifica en los pasos siguientes por el factor $\beta > 1$ de la
+regla de transici\'on. Una pol\'itica que observa \'unicamente el
+estado instant\'aneo $(R, t, S)$ puede representar esta din\'amica
+solo de forma indirecta; los codificadores que reciben una ventana de
+estados pasados disponen de informaci\'on adicional sobre la
+tendencia de la severidad.
+
+La arquitectura Transformer~\citep{Vaswani2017} y su adaptaci\'on al
+RL como problema de modelado de secuencias en el \emph{Decision
+Transformer}~\citep{Chen2021} proporcionan un mecanismo para explotar
+esa informaci\'on: la auto-atenci\'on causal
+(Ecuaci\'on~\ref{eq:causal-attention}) pondera todas las posiciones
+previas de la ventana al construir la representaci\'on del paso
+actual. Parisotto \emph{et al.}~\citep{Parisotto2020} mostraron que,
+con una disposici\'on adecuada de la normalizaci\'on y compuertas en
+los bloques, los Transformers igualan o superan a las LSTM en tareas
+de RL que requieren memoria.
+
+\subsection{Explicabilidad y cuantificaci\'on de incertidumbre}
+
+La adopci\'on de sistemas de decisi\'on autom\'atica en salud p\'ublica
+est\'a condicionada por la posibilidad de interpretar sus salidas. Una
+medida de incertidumbre asociada a cada decisi\'on permite se\~nalar
+los casos en los que el modelo distribuye su preferencia entre varias
+acciones, lo que resulta \'util para priorizar la supervisi\'on
+humana. En esta tesis esa medida se obtiene de la entrop\'ia de la
+salida del Transformer causal; su relaci\'on con la incertidumbre
+humana se plantea como analog\'ia y no como equivalencia.
+
+\subsection{Generalizaci\'on bajo perturbaciones controladas}
+
+Diversos trabajos en RL profundo han se\~nalado que las m\'etricas
+obtenidas en las mismas condiciones del entrenamiento sobreestiman la
+calidad de las pol\'iticas aprendidas. Henderson
+\emph{et al.}~\citep{Henderson2018} mostraron que los algoritmos
+habituales son sensibles a la semilla aleatoria, a los
+hiperpar\'ametros y a los detalles de implementaci\'on; Cobbe
+\emph{et al.}~\citep{Cobbe2020} documentaron, sobre la suite ProcGen,
+que agentes con buen rendimiento en los niveles de entrenamiento
+fracasaban en niveles generados con la misma regla pero no vistos;
+Packer \emph{et al.}~\citep{Packer2018} distinguieron entre
+interpolaci\'on y extrapolaci\'on de los par\'ametros del entorno como
+formas de evaluar la generalizaci\'on; y Kirk
+\emph{et al.}~\citep{Kirk2023} sistematizaron estas nociones en una
+revisi\'on que recomienda evaluar sobre familias de variaciones
+controladas del entorno.
+
+El dise\~no del benchmark de mPES (Sec.~\ref{sec:methods}) sigue esa
+l\'inea: dos suites de seis modelos evaluados sobre $22$ escenarios
+cada una, cuatro familias de perturbaci\'on, contrastes de Welch
+reportados como $\log_{10} p$, columnas estructurales como
+comprobaci\'on del protocolo de agregaci\'on y degradaci\'on frente a
+la condici\'on de referencia. En lugar de declarar un modelo ganador en
+la condici\'on de referencia, el barrido completo muestra c\'omo cambia
+el rendimiento de cada arquitectura bajo perturbaciones controladas
+(Sec.~\ref{sec:a2c-collapse}).
+
+\subsection{Posici\'on de este trabajo}
+
+Comparado con la literatura precedente, la contribuci\'on de esta
+tesis es:
+
+\begin{itemize}
+    \item \textbf{Dos suites, un mismo esquema experimental.}
+    Una comparaci\'on que abarca m\'etodos tabulares (Q-Learning,
+    Double Q-Learning), profundos densos (DQN), recurrentes (DQN con
+    LSTM), actor--cr\'itico (A2C), Transformer causal y seis variantes
+    de ensamble, evaluados sobre el mismo entorno y $n = 64$ secuencias
+    por escenario en $22$ condiciones.
+    \item \textbf{Indicador de confianza basado en entrop\'ia.} El uso
+    de $1 - H_{\mathrm{norm}}$ como indicador de confianza del agente,
+    planteado por analog\'ia con el estudio de la confianza humana.
+    \item \textbf{Protocolo estad\'istico uniforme.} Cada diferencia
+    reportada se acompa\~na de un tama\~no de efecto ($d$ de Cohen),
+    un valor $p$ de Welch y una divergencia de Kullback--Leibler que
+    permite inspeccionar cambios en la distribuci\'on de acciones
+    (Sec.~\ref{sec:a2c-collapse}).
+\end{itemize}
+
+\biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
+\end{document}
+

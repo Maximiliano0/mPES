@@ -1,0 +1,109 @@
+﻿% !TEX root = ../00_Main/Main.tex
+\documentclass[../00_Main/Main.tex]{subfiles}
+\begin{document}
+
+\label{sec:discussion}
+
+Los resultados del Cap.~\ref{sec:results} respaldan la hip\'otesis H1a:
+\texttt{pes\_trf} es el mejor modelo individual y conserva su
+rendimiento bajo el conjunto de perturbaciones evaluado. La hip\'otesis
+H1b, que propone $1-H_{\mathrm{norm}}$ como indicador de confianza,
+queda respaldada s\'olo en el plano algor\'itmico y descriptivo; no se
+dispone de una validaci\'on con participantes humanos ni de medidas
+fisiol\'ogicas. El detalle cuantitativo se present\'o en la
+Sec.~\ref{sec:results}; esta secci\'on discute sus implicaciones y sus
+l\'imites.
+
+\subsection{Interpretaci\'on del rendimiento del Transformer}
+
+La din\'amica de severidad (Ecuaci\'on~\ref{eq:transicion}) es
+acumulativa: un d\'eficit de recursos en un paso no produce un costo
+inmediato proporcional, sino una amplificaci\'on geom\'etrica sobre los
+pasos siguientes por el factor $\beta = 1{,}4$. Una pol\'itica que
+s\'olo observa el estado instant\'aneo $(R, t, S)$ dispone de menos
+informaci\'on sobre la evoluci\'on reciente que una que recibe una
+ventana de estados pasados.
+
+El codificador Transformer, al procesar la ventana de $W = 6$ estados
+normalizados con atenci\'on causal (Ecuaci\'on~\ref{eq:causal-attention}),
+puede construir una representaci\'on sensible a la tendencia de la
+severidad. Esta interpretaci\'on es compatible con el mejor desempe\~no
+observado, pero el dise\~no experimental no la demuestra: el modelo
+recurrente recibe la misma ventana y obtiene un resultado inferior, y no
+se realiz\'o un estudio de ablaci\'on que elimine o permute la
+informaci\'on hist\'orica. Tampoco puede descartarse que parte de la
+diferencia provenga de los hiperpar\'ametros, que se optimizaron para
+\texttt{pes\_dqn} y se reutilizaron en las variantes recurrente y
+Transformer.
+
+\subsection{Entrop\'ia como indicador de confianza algor\'itmica}
+
+La medida de confianza basada en entrop\'ia que acompa\~na a las
+decisiones de \texttt{pes\_trf} es reproducible e interpretable: toma
+valores cercanos a $1$ cuando la distribuci\'on derivada de los valores
+$Q$ se concentra en una acci\'on y cercanos a $0$ cuando se reparte
+entre varias. No demuestra, sin embargo, que el agente posea una
+noci\'on de confianza comparable a la humana ni que la medida sea
+predictiva del acierto: esa relaci\'on no se evalu\'o en este trabajo.
+
+La relaci\'on con Boldt y Yeung~\citep{Boldt2015} y
+Fleming~\citep{Fleming2024} es, por tanto, una analog\'ia conceptual
+con la confianza humana estudiada mediante EEG. La contribuci\'on
+metodol\'ogica consiste en trasladar esa pregunta al comportamiento de
+un agente mediante una medida de entrop\'ia, no en sustituir la
+medici\'on fisiol\'ogica.
+
+\subsection{An\'alisis comparativo de los ensambles}\label{sec:ens-best}
+
+La Tabla~\ref{tab:ensemble-stress} muestra que \texttt{pes\_ens}
+obtiene la mejor media bajo perturbaci\'on de la suite de ensambles y
+la menor degradaci\'on m\'axima. El resultado es descriptivo del
+benchmark y admite dos precauciones:
+
+\begin{enumerate}
+    \item La regla de combinaci\'on de \texttt{pes\_ens} incluye,
+    adem\'as del promedio ponderado, una mezcla con una gaussiana
+    centrada en la severidad actual y una ponderaci\'on por confianza
+    (Sec.~\ref{sec:methods}). No es posible atribuir la ganancia al
+    promedio de modelos por s\'i solo sin un estudio de ablaci\'on de
+    esas heur\'isticas.
+    \item Cada modelo se compara con su propia condici\'on de
+    referencia y el benchmark utiliza una \'unica semilla; por ello no se
+    afirma una robustez general ni se extrapolan los resultados a un
+    despliegue operativo.
+\end{enumerate}
+
+En s\'intesis, el Transformer es el mejor modelo individual y
+\texttt{pes\_ens} el mejor ensamble. Esta distinci\'on evita convertir
+la ventaja del Transformer individual en una afirmaci\'on sobre todos
+los sistemas evaluados.
+
+\subsection{Escenarios de extrapolaci\'on}\label{sec:universal-stressors}
+
+Las tres condiciones de extrapolaci\'on mostradas en la
+Sec.~\ref{sec:extrapolation-curves} permiten inspeccionar por separado
+cambios de severidad, de longitud y de ambos factores a la vez. Los
+modelos tabulares son los m\'as afectados por la extrapolaci\'on de
+severidad, ya que sus entradas caen fuera de la tabla aprendida; los
+modelos profundos y los ensambles se ven m\'as afectados por la
+extrapolaci\'on de longitud. Las condiciones estructurales modifican el
+n\'umero de bloques o secuencias sin cambiar la regla de generaci\'on y
+reproducen exactamente el valor de referencia; deben interpretarse como
+una comprobaci\'on del protocolo de agregaci\'on, no como una prueba de
+robustez.
+
+\subsection{Lectura de los resultados de \texttt{pes\_a2c}}\label{sec:a2c-collapse}
+
+\texttt{pes\_a2c} presenta la menor media individual en la referencia
+($0{,}887$) pero una media bajo perturbaci\'on superior ($0{,}896$), con
+resultados altos en los escenarios conjuntos. Su lectura debe hacerse
+junto con las matrices de degradaci\'on y de divergencia de acciones,
+que permiten estudiar si el cambio de escenario altera la pol\'itica.
+Esas matrices no autorizan, por s\'i solas, a diagnosticar una
+insensibilidad del actor al contexto; ese diagn\'ostico requerir\'ia
+inspeccionar las distribuciones de acciones por escenario y una prueba
+espec\'ifica.
+
+\biblio
+\end{document}
+

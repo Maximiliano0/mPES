@@ -1,0 +1,51 @@
+﻿% !TEX root = ../00_Main/Main.tex
+\documentclass[../00_Main/Main.tex]{subfiles}
+\begin{document}
+
+Esta tesis presenta el entorno de experimentaci\'on \textbf{mPES} (\emph{Multiple
+Pandemic Experiment Suite}), un entorno multi-paquete para estudiar
+aprendizaje por refuerzo en la asignaci\'on secuencial de recursos bajo
+incertidumbre. El escenario de pandemia funciona como banco de pruebas
+controlado: cada agente debe administrar un presupuesto limitado mientras
+la severidad evoluciona a lo largo de la secuencia.
+
+El estado actual del estudio compara doce modelos en dos suites: seis
+agentes individuales optimizados (\texttt{pes\_ql}, \texttt{pes\_dql},
+\texttt{pes\_dqn}, \texttt{pes\_rdqn}, \texttt{pes\_a2c} y
+\texttt{pes\_trf}) y seis variantes de ensamble, incluyendo
+\texttt{pes\_ens}, \texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq},
+\texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} y
+\texttt{pes\_ens\_trf\_guard}. El paquete hist\'orico
+\texttt{pes\_base} aparece en los artefactos individuales como referencia,
+pero no se incluye en este ranking comparativo. El an\'alisis cubre $22$ escenarios,
+una condici\'on emp\'irica y $21$ perturbaciones, con $64$ secuencias por
+celda y una semilla fija ($42$). La m\'etrica principal es el rendimiento
+normalizado registrado como \texttt{global\_mean\_perf}.
+
+Los resultados sit\'uan a \texttt{pes\_trf} como el mejor modelo
+individual: alcanza $\bar r = 0{,}927$ en la condici\'on de referencia y
+$0{,}930$ como media en los $21$ escenarios de perturbaci\'on, con una
+degradaci\'on media de $-0{,}002$ y la menor dispersi\'on entre
+secuencias. Entre los ensambles, \texttt{pes\_ens} obtiene la mejor
+media bajo perturbaci\'on ($0{,}939$) y la menor degradaci\'on m\'axima
+($0{,}037$). La evidencia respalda la hip\'otesis de que el Transformer
+es el modelo individual que mejor generaliza en este entorno, pero no
+una superioridad del Transformer frente a todos los ensambles. Como
+estudio de caso, la confianza del agente se cuantifica mediante
+$1-H_{\mathrm{norm}}$, con $H_{\mathrm{norm}}$ la entrop\'ia normalizada
+de la distribuci\'on derivada de los valores de acci\'on del
+Transformer; esta medida constituye un indicador algor\'itmico y no una
+validaci\'on fisiol\'ogica.
+La sintonizaci\'on de hiperpar\'ametros emplea Optuna/TPE, mientras que el
+benchmark final se ejecuta en inferencia sobre artefactos ya entrenados.
+
+\par\vspace{0.5\baselineskip}
+\noindent\textbf{Palabras clave:} mPES, Aprendizaje por Refuerzo,
+Inteligencia Artificial, Transformer Causal, \emph{Deep Ensembles},
+Cuantificaci\'on de Incertidumbre, Entrop\'ia de Shannon,
+Optimizaci\'on Bayesiana, Asignaci\'on de Recursos, Secuencias
+Temporales, Evaluaci\'on bajo cambios de condiciones.
+
+\biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
+\end{document}
+

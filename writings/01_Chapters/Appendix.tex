@@ -1,0 +1,94 @@
+﻿% !TEX root = ../00_Main/Main.tex
+\documentclass[../00_Main/Main.tex]{subfiles}
+\begin{document}
+
+\section{Comandos de reproducci\'on}\label{ap:repro}
+
+La Tabla~\ref{tab:repro-commands} resume los comandos can\'onicos
+que regeneran cada uno de los artefactos reportados en esta tesis.
+Todos se ejecutan desde la ra\'iz del \emph{workspace} \texttt{mPES}
+con el entorno virtual activado (\texttt{win\_mpes\_env} en Windows),
+Python 3.12 y las dependencias
+fijadas en \texttt{utils/config/requirements.txt}.
+
+\begin{table}[!ht]
+\centering
+\caption[Comandos de reproducci\'on]{Comandos para reentrenar los modelos,
+optimizar hiperpar\'ametros y ejecutar la evaluaci\'on del benchmark en
+cada paquete del repositorio \texttt{mPES}.}
+\label{tab:repro-commands}
+\small
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Paquete} & \textbf{Entrenamiento} & \textbf{Optimizaci\'on bayesiana} \\
+\midrule
+\texttt{pes\_base} & \texttt{python -m tabular.pes\_base} & --- \\
+\texttt{pes\_ql}   & \texttt{python -m tabular.pes\_ql}   & \texttt{python -m tabular.pes\_ql.ext.optimize\_rl} \\
+\texttt{pes\_dql}  & \texttt{python -m tabular.pes\_dql}  & \texttt{python -m tabular.pes\_dql.ext.optimize\_rl} \\
+\texttt{pes\_dqn}  & \texttt{python -m ml.pes\_dqn}       & \texttt{python -m ml.pes\_dqn.ext.optimize\_dqn} \\
+\texttt{pes\_rdqn} & \texttt{python -m ml.pes\_rdqn}      & \texttt{python -m ml.pes\_rdqn.ext.optimize\_rdqn} \\
+\texttt{pes\_a2c}  & \texttt{python -m ml.pes\_a2c}       & \texttt{python -m ml.pes\_a2c.ext.optimize\_a2c} \\
+\texttt{pes\_trf}  & \texttt{python -m ml.pes\_trf}       & \texttt{python -m ml.pes\_trf.ext.optimize\_tr} \\
+\texttt{pes\_ens}  & \texttt{python -m ens.pes\_ens}       & --- (sin par\'ametros entrenables) \\
+\texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq} & inferencia en \texttt{h1/ens} & --- \\
+\texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} & inferencia en \texttt{h1/ens} & --- \\
+\texttt{pes\_ens\_trf\_guard} & inferencia en \texttt{h1/ens} & --- \\
+\bottomrule
+\end{tabular}
+}%
+\end{table}
+
+\section{Procedimiento de ejecuci\'on del benchmark}\label{ap:orchestrator}
+
+El benchmark se ejecuta por suite con el comando reanudable:
+
+\begin{verbatim}
+python -m general.scripts.benchmark run --suite both
+python -m general.scripts.analysis
+python -m general.scripts.figures
+\end{verbatim}
+
+El procedimiento:
+
+\begin{sloppypar}
+\begin{enumerate}
+  \item ejecuta cada combinaci\'on (modelo, escenario) de las suites
+  \texttt{individual} y \texttt{ensemble}, reutilizando los artefactos
+  entrenados de cada paquete y sustituyendo temporalmente sus archivos
+  de entrada por los del escenario;
+  \item agrega el rendimiento por secuencia con
+  \texttt{general/scripts/analysis.py} para producir las matrices
+  \texttt{global\_mean}, \texttt{std}, \texttt{min}, \texttt{max},
+  \texttt{stress\_degradation}, \texttt{welch\_p}, \texttt{welch\_logp},
+  \texttt{cohen\_d} y \texttt{action\_kl} en
+  \texttt{general/results/<suite>/matrices/};
+  \item genera las figuras y los contrastes pareados con
+  \texttt{general/scripts/figures.py};
+  \item emite el resumen \texttt{general/results/<suite>/report.md}.
+\end{enumerate}
+\end{sloppypar}
+
+\section{Escenarios de extrapolaci\'on}\label{ap:stressors}
+
+Los tres escenarios de extrapolaci\'on utilizados en las curvas de la
+Sec.~\ref{sec:universal-stressors} son:
+
+\begin{itemize}
+  \item \texttt{sev\_extrapolate\_high}: severidades por encima del
+  rango de la condici\'on de referencia.
+  \item \texttt{len\_extrapolate\_long}: secuencias m\'as largas que
+  las observadas durante entrenamiento.
+  \item \texttt{joint\_extrap\_both}: combinaci\'on simult\'anea de
+  las dos anteriores.
+\end{itemize}
+
+Las tres columnas estructurales (\texttt{struct\_more\_total},
+\texttt{struct\_many\_short\_blocks},
+\texttt{struct\_few\_long\_blocks}) reproducen el valor de la
+condici\'on de referencia, con degradaci\'on nula, y sirven como
+comprobaci\'on de que la agregaci\'on no depende de la partici\'on en
+bloques.
+
+\biblio
+\end{document}
