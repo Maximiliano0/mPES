@@ -15,6 +15,39 @@ de ensamble. La suite individual incluye \texttt{pes\_ql},
 \texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} y
 \texttt{pes\_ens\_trf\_guard}.
 
+\subsection{Contraste de las hip\'otesis}
+
+\begin{description}
+    \item[H1a (arquitect\'onica): respaldada.] \texttt{pes\_trf} obtiene
+    la mayor media de la suite individual en la condici\'on de referencia
+    ($0{,}927$) y en los $21$ escenarios de perturbaci\'on ($0{,}930$),
+    con degradaci\'on media negativa ($-0{,}002$) y la menor dispersi\'on
+    entre secuencias. La diferencia frente a \texttt{pes\_ql} tiene
+    $d = 0{,}78$ y frente a \texttt{pes\_rdqn} $d = 0{,}57$
+    (Tabla~\ref{tab:pairwise-stats}). Su peor escenario es
+    \texttt{len\_extrapolate\_long} ($0{,}860$), de modo que la
+    conservaci\'on del rendimiento es clara en severidad y m\'as limitada
+    en longitud. El respaldo se circunscribe a una semilla y a los
+    hiperpar\'ametros reutilizados de \texttt{pes\_dqn}.
+    \item[H1b (confianza y decisi\'on conjunta): respaldada
+    parcialmente.] La medida $1 - H_{\mathrm{norm}}$ se calcula de forma
+    reproducible para cada agente y se comporta como indicador operativo:
+    crece cuando la distribuci\'on derivada de los valores de acci\'on se
+    concentra en una opci\'on. Como criterio de ponderaci\'on en la
+    decisi\'on conjunta, los seis ensambles la utilizan y el sistema con
+    mejor rendimiento del benchmark, \texttt{pes\_ens}, modula sus pesos
+    con ella; sin embargo, \texttt{pes\_ens\_sprb} y
+    \texttt{pes\_ens\_accq}, que aplican la misma ponderaci\'on con una
+    regla de combinaci\'on distinta, quedan por debajo del Transformer
+    individual. La ponderaci\'on por confianza es, por tanto, un
+    componente utilizable pero no suficiente por s\'i solo, y su
+    contribuci\'on aislada no se midi\'o mediante ablaci\'on. No se
+    realiz\'o una calibraci\'on frente al acierto ni un estudio con
+    participantes; la analog\'ia con la decisi\'on conjunta
+    humano--m\'aquina queda como motivaci\'on y l\'inea de trabajo
+    futuro.
+\end{description}
+
 \subsection{Conclusiones principales}
 
 \begin{enumerate}
@@ -32,11 +65,12 @@ de ensamble. La suite individual incluye \texttt{pes\_ql},
     s\'olo al promedio de modelos, dado que su regla de combinaci\'on
     incluye heur\'isticas adicionales.
     \item \textbf{La entrop\'ia proporciona un indicador de confianza
-    interpretable.} En el estudio de caso del Transformer, la medida
-    $1 - H_{\mathrm{norm}}$ acompa\~na a cada acci\'on y permite
-    inspeccionar la pol\'itica. Su relaci\'on con la confianza humana es
-    una analog\'ia motivada por la literatura; no se realiz\'o una
-    validaci\'on fisiol\'ogica ni una calibraci\'on probabil\'istica.
+    interpretable y utilizable en la decisi\'on conjunta.} La medida
+    $1 - H_{\mathrm{norm}}$ acompa\~na a cada acci\'on del Transformer y
+    pondera a los miembros de los seis ensambles. Su relaci\'on con la
+    confianza humana es una analog\'ia motivada por la literatura; no se
+    realiz\'o una validaci\'on fisiol\'ogica ni una calibraci\'on
+    probabil\'istica.
     \item \textbf{El benchmark es reproducible.} El m\'odulo
     \texttt{general/scripts/benchmark.py}, seguido por el an\'alisis y
     la generaci\'on de figuras, organiza dos suites de $132$ celdas
@@ -85,9 +119,11 @@ requiere nuevos escenarios y estudios con participaci\'on humana.
     estabilidad de los resultados en los escenarios de extrapolaci\'on
     (Sec.~\ref{sec:universal-stressors}).
     \item \textbf{Estudios de ablaci\'on.} Permutar o eliminar la
-    ventana de estados del Transformer y del modelo recurrente, y
-    desactivar las heur\'isticas de \texttt{pes\_ens}, para aislar la
-    contribuci\'on de cada componente al rendimiento observado.
+    ventana de estados del Transformer y del modelo recurrente,
+    desactivar las heur\'isticas de \texttt{pes\_ens} y fijar $\rho = 0$
+    en las variantes de ensamble, para aislar la contribuci\'on de cada
+    componente --- incluida la ponderaci\'on por confianza --- al
+    rendimiento observado.
     \item \textbf{Validaci\'on de la medida de confianza.} Relacionar
     $1 - H_{\mathrm{norm}}$ con el desempe\~no por secuencia mediante
     curvas de calibraci\'on, y extender el c\'alculo a los dem\'as

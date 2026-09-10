@@ -33,7 +33,7 @@ Normalisation (1)
 -----------------
 ``perf_i = (S_worst_i - S_final_i) / (S_worst_i - S_best_i) âˆˆ [0, 1]``.
 Already stored as ``per_sequence_perf`` in
-``general/results/raw/<pkg>__sev_empirical.json``.
+``general/results/raw/<pkg>__sev_base.json``.
 
 CLI
 ---
@@ -266,8 +266,8 @@ def _latest_output_dir(pkg_path: str) -> Optional[str]:
 
 
 def _load_per_sequence_perf(pkg: str) -> Optional[numpy.ndarray]:
-    """Load benchmark ``sev_empirical`` per-sequence perf if available."""
-    path = os.path.join(RAW_DIR, f'{pkg}__sev_empirical.json')
+    """Load benchmark ``sev_base`` per-sequence perf if available."""
+    path = os.path.join(RAW_DIR, f'{pkg}__sev_base.json')
     if not os.path.isfile(path):
         return None
     try:
@@ -294,7 +294,7 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
       step.
     * **perf**:math:`_i = (S_{\\text{worst}, i} - S_{\\text{final}, i})
       / (S_{\\text{worst}, i} - S_{\\text{best}, i})`, the value already
-      stored in ``general/results/raw/<pkg>__sev_empirical.json``.
+      stored in ``general/results/raw/<pkg>__sev_base.json``.
       Reflects *only the final summed severity*.
 
     The figure has two stacked panels (shared x-axis):

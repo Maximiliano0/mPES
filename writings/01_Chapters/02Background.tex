@@ -26,7 +26,7 @@ $\tau = (s_0, a_0, r_1, s_1, a_1, \ldots)$ cuyo \emph{retorno
 descontado} desde el tiempo $t$ es
 
 \begin{equation}
-G_t \;=\; \sum_{k = 0}^{\infty} \gamma^{k}\, r_{t + k + 1},
+G_t \;=\; \sum_{k = 0}^{\infty} \gamma^{k}\, r_{t + k + 1}
 \label{eq:return}
 \end{equation}
 
@@ -37,7 +37,7 @@ pol\'itica \'optima satisface la ecuaci\'on de Bellman,
 
 \begin{equation}
 Q^{*}(s, a) \;=\; \mathbb{E}\!\left[r + \gamma \max_{a'} Q^{*}(s', a')
-\,\middle|\, s, a\right],
+\,\middle|\, s, a\right]
 \label{eq:bellman-opt}
 \end{equation}
 
@@ -52,7 +52,7 @@ Watkins~\citep{Watkins1992}:
 
 \begin{equation}
 Q(s, a) \;\leftarrow\; Q(s, a) \;+\; \alpha\,
-\bigl[r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr],
+\bigl[r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr]
 \label{eq:qlearning}
 \end{equation}
 
@@ -70,7 +70,7 @@ evaluaci\'on de la acci\'on:
 
 \begin{equation}
 Q^{A}(s, a) \leftarrow Q^{A}(s, a) + \alpha\bigl[r + \gamma\,
-Q^{B}\!\bigl(s', \arg\max_{a'} Q^{A}(s', a')\bigr) - Q^{A}(s, a)\bigr],
+Q^{B}\!\bigl(s', \arg\max_{a'} Q^{A}(s', a')\bigr) - Q^{A}(s, a)\bigr]
 \label{eq:double-q}
 \end{equation}
 
@@ -104,7 +104,7 @@ copian desde $\theta$ cada $C$ pasos. La funci\'on de costo es
 \mathcal{L}(\theta) \;=\;
 \mathbb{E}_{(s,a,r,s') \sim \mathcal{D}}
 \!\left[\bigl(r + \gamma \max_{a'} Q(s', a'; \theta^{-})
-- Q(s, a; \theta)\bigr)^{2}\right],
+- Q(s, a; \theta)\bigr)^{2}\right]
 \label{eq:dqn-loss}
 \end{equation}
 
@@ -128,8 +128,8 @@ controlan c\'omo el estado de celda $c_t$ acumula informaci\'on a largo
 plazo:
 
 \begin{equation}
-c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t,
-\qquad h_t \;=\; o_t \odot \tanh(c_t),
+c_t \;=\; f_t \odot c_{t-1} \;+\; i_t \odot \tilde{c}_t
+\qquad h_t \;=\; o_t \odot \tanh(c_t)
 \label{eq:lstm}
 \end{equation}
 
@@ -151,7 +151,7 @@ $J(\theta) = \mathbb{E}_{\pi_\theta}[G_0]$:
 \begin{equation}
 \nabla_{\theta} J(\theta) \;=\;
 \mathbb{E}_{\pi_{\theta}}\!\bigl[\nabla_{\theta} \log
-\pi_{\theta}(a \mid s)\, A^{\pi_{\theta}}(s, a)\bigr],
+\pi_{\theta}(a \mid s)\, A^{\pi_{\theta}}(s, a)\bigr]
 \label{eq:pg}
 \end{equation}
 
@@ -166,7 +166,7 @@ estima $V_{\phi}$. La ventaja se estima con
 \begin{equation}
 \hat{A}_t^{\mathrm{GAE}(\gamma,\lambda)} \;=\;
 \sum_{k=0}^{\infty}(\gamma\lambda)^{k}\,\delta_{t+k},
-\qquad \delta_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t),
+\qquad \delta_t = r_{t+1} + \gamma V_\phi(s_{t+1}) - V_\phi(s_t)
 \label{eq:gae}
 \end{equation}
 
@@ -190,7 +190,7 @@ dimensi\'on de las claves,
 
 \begin{equation}
 \mathrm{Atenci\acute{o}n}(Q, K, V) \;=\;
-\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}}\right) V.
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}}\right) V
 \label{eq:attention}
 \end{equation}
 
@@ -200,7 +200,7 @@ la posici\'on $i$ atienda a posiciones futuras:
 
 \begin{equation}
 \mathrm{Atenci\acute{o}n}_{\mathrm{causal}}(Q, K, V) =
-\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}} + M\right) V.
+\mathrm{softmax}\!\left(\frac{Q K^{\top}}{\sqrt{d_k}} + M\right) V
 \label{eq:causal-attention}
 \end{equation}
 
@@ -212,13 +212,68 @@ posiciones distantes de la secuencia. En esta tesis cada bloque
 Transformer incluye conexiones residuales y normalizaci\'on de capa,
 como en la formulaci\'on original.
 
+\subsection{Ensambles de modelos}\label{sec:ensembles-bg}
+
+Un \emph{ensamble} combina las salidas de $K$ modelos ya entrenados
+para producir una \'unica decisi\'on, con el objetivo de obtener un
+comportamiento m\'as estable que el de sus miembros por separado. Sea
+$m_k$ el $k$-\'esimo miembro y $p_k(a \mid s)$ la distribuci\'on de
+probabilidad sobre las acciones que se deriva de su salida; cuando el
+miembro produce valores $Q_k(s,\cdot)$ en lugar de probabilidades, la
+distribuci\'on se obtiene con una \emph{softmax} de temperatura $\tau$,
+
+\begin{equation}
+p_k(a \mid s) \;=\;
+\frac{\exp\!\bigl(Q_k(s,a)/\tau\bigr)}
+     {\sum_{a'} \exp\!\bigl(Q_k(s,a')/\tau\bigr)}.
+\label{eq:ens-softmax}
+\end{equation}
+
+La regla de combinaci\'on m\'as habitual es el \emph{voto suave}
+(\emph{soft voting}): un promedio ponderado de las distribuciones,
+
+\begin{equation}
+p_{\mathrm{ens}}(a \mid s) \;=\;
+\frac{\sum_{k=1}^{K} w_k \, p_k(a \mid s)}{\sum_{k=1}^{K} w_k},
+\qquad w_k \geq 0,
+\label{eq:soft-voting}
+\end{equation}
+
+del que la acci\'on final es $\arg\max_a p_{\mathrm{ens}}(a \mid s)$.
+La alternativa es el \emph{voto duro} (\emph{hard voting}), en el que
+cada miembro emite un \'unico voto por su acci\'on preferida
+$a_k = \arg\max_a p_k(a \mid s)$ y se elige la m\'as votada,
+
+\begin{equation}
+a_{\mathrm{ens}} \;=\;
+\arg\max_{a} \sum_{k=1}^{K} w_k \, \mathbb{1}[a_k = a],
+\label{eq:hard-voting}
+\end{equation}
+
+donde $\mathbb{1}[\cdot]$ es la funci\'on indicadora. El voto suave
+conserva la incertidumbre de cada miembro y el voto duro s\'olo su
+decisi\'on. Los pesos $w_k$ pueden ser fijos o depender de una medida
+de confianza $c_k \in [0,1]$ del miembro; en esta tesis la confianza se
+define como $c_k = 1 - H_{\mathrm{norm}}(p_k)$
+(Ecuaci\'on~\eqref{eq:shannon-norm}), de modo que un miembro con una
+distribuci\'on m\'as concentrada pesa m\'as en la combinaci\'on. La
+formulaci\'on de \emph{deep ensembles} de Lakshminarayanan
+\emph{et al.}~\citep{Lakshminarayanan2017} muestra que promediar varias
+redes es un procedimiento simple para estimar la incertidumbre
+predictiva sin modificar el entrenamiento de los miembros. Los
+ensambles de esta tesis son de \emph{sola inferencia}: reutilizan
+artefactos ya entrenados y no introducen par\'ametros nuevos, por lo
+que las diferencias entre variantes se deben \'unicamente a la regla de
+combinaci\'on. Las seis reglas concretas se detallan en la
+Sec.~\ref{sec:methods}.
+
 \subsection{Cuantificaci\'on de Incertidumbre y Entrop\'ia de Shannon}
 
 Dada una distribuci\'on de probabilidad discreta $p(a \mid s)$ sobre
 $|\mathcal{A}|$ acciones, la \emph{entrop\'ia de Shannon} es
 
 \begin{equation}
-H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s),
+H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a \mid s)\, \log p(a \mid s)
 \label{eq:shannon}
 \end{equation}
 
@@ -262,7 +317,7 @@ $x_1,\ldots,x_n$, la estimaci\'on es
 
 \begin{equation}
 \hat{p}_h(x) \;=\; \frac{1}{n h}
-\sum_{i=1}^{n} K\!\left(\frac{x-x_i}{h}\right),
+\sum_{i=1}^{n} K\!\left(\frac{x-x_i}{h}\right)
 \label{eq:kde}
 \end{equation}
 
@@ -281,7 +336,7 @@ la pol\'itica aprendida. La condici\'on de referencia conserva las
 mismas leyes de generaci\'on que el entrenamiento, de modo que
 
 \begin{equation}
-P_{\mathrm{test}} = P_{\mathrm{train}}.
+P_{\mathrm{test}} = P_{\mathrm{train}}
 \label{eq:reference-condition}
 \end{equation}
 
@@ -307,7 +362,7 @@ $\bar r$), se reportan tres cantidades:
     \begin{equation}
     d \;=\; \frac{\bar{x}_A - \bar{x}_B}{s_p},
     \qquad
-    s_p = \sqrt{\frac{(n_A-1)\,s_A^{2} + (n_B-1)\,s_B^{2}}{n_A+n_B-2}},
+    s_p = \sqrt{\frac{(n_A-1)\,s_A^{2} + (n_B-1)\,s_B^{2}}{n_A+n_B-2}}
     \label{eq:cohen}
     \end{equation}
     donde $\bar{x}$ y $s^{2}$ son la media y la varianza muestral de
@@ -318,7 +373,7 @@ $\bar r$), se reportan tres cantidades:
     contrasta la igualdad de medias sin asumir varianzas iguales,
     \begin{equation}
     t \;=\; \frac{\bar{x}_A - \bar{x}_B}
-    {\sqrt{s_A^{2}/n_A + s_B^{2}/n_B}},
+    {\sqrt{s_A^{2}/n_A + s_B^{2}/n_B}}
     \label{eq:welch}
     \end{equation}
     con grados de libertad estimados mediante la aproximaci\'on de
@@ -331,7 +386,7 @@ $\bar r$), se reportan tres cantidades:
     Kullback--Leibler entre dos distribuciones discretas $p$ y $q$,
     \begin{equation}
     D_{\mathrm{KL}}(p \,\|\, q) \;=\;
-    \sum_{a} p(a)\log\frac{p(a)}{q(a)},
+    \sum_{a} p(a)\log\frac{p(a)}{q(a)}
     \label{eq:kl}
     \end{equation}
     vale $0$ cuando ambas coinciden y crece con la discrepancia; no es

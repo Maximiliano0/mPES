@@ -7,14 +7,51 @@
 Los resultados del Cap.~\ref{sec:results} respaldan la hip\'otesis H1a:
 \texttt{pes\_trf} es el mejor modelo individual y conserva su
 rendimiento bajo el conjunto de perturbaciones evaluado. La hip\'otesis
-H1b, que propone $1-H_{\mathrm{norm}}$ como indicador de confianza,
-queda respaldada s\'olo en el plano algor\'itmico y descriptivo; no se
-dispone de una validaci\'on con participantes humanos ni de medidas
-fisiol\'ogicas. El detalle cuantitativo se present\'o en la
-Sec.~\ref{sec:results}; esta secci\'on discute sus implicaciones y sus
-l\'imites.
+H1b, que propone $1-H_{\mathrm{norm}}$ como indicador de confianza de
+cada agente y como criterio de ponderaci\'on en la decisi\'on conjunta
+de los ensambles, queda respaldada en el plano algor\'itmico: la medida
+es reproducible y los seis ensambles la utilizan, pero el dise\~no no
+a\'isla su contribuci\'on y no se dispone de una validaci\'on con
+participantes humanos ni de medidas fisiol\'ogicas. Esta secci\'on
+discute primero los modelos individuales, luego los ensambles y el papel
+de la confianza en la decisi\'on conjunta, y finalmente los escenarios
+de extrapolaci\'on y el caso de \texttt{pes\_a2c}.
 
-\subsection{Interpretaci\'on del rendimiento del Transformer}
+\subsection{Modelos individuales}\label{sec:disc-individual}
+
+Las dos familias individuales se separan por el tipo de perturbaci\'on
+que m\'as las afecta. Los agentes tabulares optimizados
+(\texttt{pes\_ql}, \texttt{pes\_dql}) tienen su peor celda en
+\texttt{sev\_extrapolate\_high} ($0{,}762$ y $0{,}785$) y degradaci\'on
+media positiva ($+0{,}015$ y $+0{,}019$): la tabla $Q$ tiene $10$
+niveles de severidad ($0$--$9$) y la inferencia recorta el \'indice de
+estado al \'ultimo nivel, de modo que el agente responde a
+$S \in \{10, 11, 12\}$ con la pol\'itica aprendida para $S = 9$.
+Los agentes profundos densos y actor--cr\'itico
+(\texttt{pes\_dqn}, \texttt{pes\_a2c}, \texttt{pes\_trf}) tienen su peor
+celda en \texttt{len\_extrapolate\_long} ($0{,}841$, $0{,}826$ y
+$0{,}860$) y degradaci\'on media negativa ($-0{,}005$, $-0{,}009$ y
+$-0{,}002$): reciben $S/9 > 1$ como entrada continua y mantienen su
+rendimiento en severidad, pero las
+secuencias m\'as largas que las de entrenamiento exigen administrar el
+presupuesto durante m\'as pasos de los que la pol\'itica aprendi\'o a
+anticipar. \texttt{pes\_rdqn} es el caso intermedio: su peor celda est\'a
+en severidad ($0{,}831$) y su degradaci\'on media es positiva
+($+0{,}010$), a pesar de recibir la misma ventana de $W=6$ estados que
+el Transformer.
+
+En la condici\'on de referencia las medias de las seis arquitecturas se
+sit\'uan entre $0{,}887$ y $0{,}899$, con la excepci\'on de
+\texttt{pes\_trf} ($0{,}927$). La diferencia del Transformer frente a
+\texttt{pes\_ql} ($d=0{,}78$), \texttt{pes\_rdqn} ($d=0{,}57$) y
+\texttt{pes\_dqn} ($d=0{,}51$) es de tama\~no medio en los tres
+contrastes reportados (Tabla~\ref{tab:pairwise-stats}). El ordenamiento
+cambia poco bajo
+perturbaci\'on: \texttt{pes\_trf} conserva la mayor media y la menor
+dispersi\'on, y las familias mantienen sus puntos d\'ebiles
+respectivos.
+
+\subsubsection{Interpretaci\'on del rendimiento del Transformer}
 
 La din\'amica de severidad (Ecuaci\'on~\ref{eq:transicion}) es
 acumulativa: un d\'eficit de recursos en un paso no produce un costo
@@ -36,47 +73,107 @@ diferencia provenga de los hiperpar\'ametros, que se optimizaron para
 \texttt{pes\_dqn} y se reutilizaron en las variantes recurrente y
 Transformer.
 
-\subsection{Entrop\'ia como indicador de confianza algor\'itmica}
+\subsection{Ensambles y confianza en la decisi\'on conjunta}\label{sec:ens-best}
 
-La medida de confianza basada en entrop\'ia que acompa\~na a las
-decisiones de \texttt{pes\_trf} es reproducible e interpretable: toma
-valores cercanos a $1$ cuando la distribuci\'on derivada de los valores
-$Q$ se concentra en una acci\'on y cercanos a $0$ cuando se reparte
-entre varias. No demuestra, sin embargo, que el agente posea una
-noci\'on de confianza comparable a la humana ni que la medida sea
-predictiva del acierto: esa relaci\'on no se evalu\'o en este trabajo.
-
-La relaci\'on con Boldt y Yeung~\citep{Boldt2015} y
-Fleming~\citep{Fleming2024} es, por tanto, una analog\'ia conceptual
-con la confianza humana estudiada mediante EEG. La contribuci\'on
-metodol\'ogica consiste en trasladar esa pregunta al comportamiento de
-un agente mediante una medida de entrop\'ia, no en sustituir la
-medici\'on fisiol\'ogica.
-
-\subsection{An\'alisis comparativo de los ensambles}\label{sec:ens-best}
+Los seis ensambles combinan los mismos tres miembros
+(\texttt{pes\_dqn}, \texttt{pes\_rdqn}, \texttt{pes\_trf}) y todos
+ponderan a cada miembro por su confianza $c_k = 1-H_{\mathrm{norm}}(p_k)$
+(Sec.~\ref{sec:methods}). Lo que cambia entre ellos es la regla que
+convierte esas cantidades en una acci\'on. Esto permite leer la suite de
+ensambles como una comparaci\'on entre reglas de decisi\'on conjunta
+sobre un mismo conjunto de opiniones ponderadas por confianza.
 
 La Tabla~\ref{tab:ensemble-stress} muestra que \texttt{pes\_ens}
-obtiene la mejor media bajo perturbaci\'on de la suite de ensambles y
-la menor degradaci\'on m\'axima. El resultado es descriptivo del
-benchmark y admite dos precauciones:
+obtiene la mejor media bajo perturbaci\'on de la suite y la menor
+degradaci\'on m\'axima. Su referencia ($0{,}937$) supera a la del
+Transformer individual ($0{,}927$), alcanza el valor normalizado
+m\'aximo ($1{,}000$) en \texttt{sev\_extrapolate\_high} y
+\texttt{joint\_extrap\_both}, y su peor celda
+(\texttt{len\_extrapolate\_long}, $0{,}900$) queda $0{,}040$ por encima
+de la del Transformer en el mismo escenario ($0{,}860$). El resultado
+es descriptivo del benchmark y admite dos precauciones:
 
 \begin{enumerate}
     \item La regla de combinaci\'on de \texttt{pes\_ens} incluye,
-    adem\'as del promedio ponderado, una mezcla con una gaussiana
-    centrada en la severidad actual y una ponderaci\'on por confianza
-    (Sec.~\ref{sec:methods}). No es posible atribuir la ganancia al
-    promedio de modelos por s\'i solo sin un estudio de ablaci\'on de
-    esas heur\'isticas.
+    adem\'as del promedio ponderado por confianza, una mezcla con una
+    gaussiana centrada en la severidad actual y una cota de seguridad
+    para severidades altas (Sec.~\ref{sec:methods}). No es posible
+    atribuir la ganancia a la ponderaci\'on por confianza ni al promedio
+    de modelos por s\'i solos sin un estudio de ablaci\'on de esas
+    heur\'isticas.
     \item Cada modelo se compara con su propia condici\'on de
     referencia y el benchmark utiliza una \'unica semilla; por ello no se
     afirma una robustez general ni se extrapolan los resultados a un
     despliegue operativo.
 \end{enumerate}
 
+Las cinco variantes restantes matizan el papel de la confianza en la
+decisi\'on conjunta. \texttt{pes\_ens\_trf\_guard} reproduce casi
+exactamente al Transformer individual: referencia $0{,}928$ frente a
+$0{,}927$, y celdas id\'enticas hasta la tercera cifra en
+\texttt{sev\_extrapolate\_high} ($0{,}996$) y
+\texttt{joint\_extrap\_both} ($0{,}997$). Esto indica que la compuerta
+log\'istica sobre $c_{\mathrm{trf}}$ (Ecuaci\'on~\eqref{eq:ens-guard})
+se abre en la gran mayor\'ia de las decisiones, de modo que el respaldo
+ponderado rara vez interviene; el contraste \texttt{pes\_ens} frente a
+\texttt{pes\_ens\_trf\_guard} tiene $d=0{,}17$, mientras que frente a
+\texttt{pes\_ens\_consensus} alcanza $d=0{,}62$
+(Tabla~\ref{tab:pairwise-ens}). \texttt{pes\_ens\_sprb} y
+\texttt{pes\_ens\_accq}, que aplican la misma ponderaci\'on
+$\tilde w_k = w_k c_k$ pero promedian o votan sin priorizar a ning\'un
+miembro, obtienen referencias iguales ($0{,}914$) e inferiores al
+Transformer solo, y su peor celda est\'a en
+\texttt{sev\_extrapolate\_high} ($0{,}860$ y $0{,}859$), precisamente
+donde el Transformer alcanza $0{,}996$ y los otros dos miembros
+$0{,}890$ y $0{,}831$. En ese escenario la ponderaci\'on por confianza
+con $\rho=1$ no basta para que el miembro m\'as acertado domine la
+decisi\'on conjunta. \texttt{pes\_ens\_consensus} parte de la referencia
+m\'as baja de la suite ($0{,}893$) y presenta la mayor mejora media bajo
+perturbaci\'on ($-0{,}010$), con su peor celda en la extrapolaci\'on de
+longitud ($0{,}831$); \texttt{pes\_ens\_consensus\_prior} eleva la
+referencia a $0{,}918$ y el peor caso a $0{,}876$, lo que describe el
+efecto conjunto del consenso y del prior de severidad en este banco de
+pruebas. Ninguna de estas comparaciones a\'isla la ponderaci\'on por
+confianza: las variantes difieren en la regla completa, no s\'olo en
+$\rho$.
+
 En s\'intesis, el Transformer es el mejor modelo individual y
-\texttt{pes\_ens} el mejor ensamble. Esta distinci\'on evita convertir
-la ventaja del Transformer individual en una afirmaci\'on sobre todos
-los sistemas evaluados.
+\texttt{pes\_ens} el mejor ensamble y el mejor sistema del benchmark.
+La confianza por entrop\'ia es un componente operativo de las seis
+reglas de decisi\'on conjunta, pero los resultados muestran que su
+efecto depende de la regla en la que se inserta: mejora el peor caso
+cuando acompa\~na a una priorizaci\'on expl\'icita del miembro m\'as
+fiable o a un prior de severidad, y no evita la p\'erdida frente al
+mejor miembro cuando se usa como \'unico criterio de promediado. Esta
+distinci\'on evita convertir la ventaja del Transformer individual en
+una afirmaci\'on sobre todos los sistemas evaluados. Los heatmaps
+estad\'isticos de la suite de ensambles muestran estas diferencias como
+cambios de media, tama\~nos de efecto y desplazamientos de la
+pol\'itica; no constituyen una validaci\'on independiente de la regla
+de combinaci\'on.
+
+\subsection{Entrop\'ia como indicador de confianza algor\'itmica}
+
+La medida $1-H_{\mathrm{norm}}$ es reproducible e interpretable: toma
+valores cercanos a $1$ cuando la distribuci\'on derivada de las salidas
+de un agente se concentra en una acci\'on y cercanos a $0$ cuando se
+reparte entre varias. Registrada por secuencia para \texttt{pes\_trf} y
+calculada por paso para cada miembro de los ensambles, cumple la
+funci\'on de un indicador operativo. No demuestra, sin embargo, que el
+agente posea una noci\'on de confianza comparable a la humana ni que la
+medida sea predictiva del acierto: esa relaci\'on no se evalu\'o en
+este trabajo, y los artefactos del benchmark no almacenan los valores
+$c_k$ por paso que permitir\'ian estudiarla en los ensambles.
+
+La relaci\'on con Boldt y Yeung~\citep{Boldt2015} y
+Fleming~\citep{Fleming2024} es, por tanto, una analog\'ia conceptual
+con la confianza humana estudiada mediante EEG, y la ponderaci\'on por
+confianza de los ensambles es una analog\'ia algor\'itmica con la
+integraci\'on de opiniones en las decisiones grupales
+humano--m\'aquina. La contribuci\'on metodol\'ogica consiste en
+trasladar esas preguntas al comportamiento de agentes artificiales
+mediante una medida de entrop\'ia, no en sustituir la medici\'on
+fisiol\'ogica.
 
 \subsection{Escenarios de extrapolaci\'on}\label{sec:universal-stressors}
 
@@ -84,7 +181,8 @@ Las tres condiciones de extrapolaci\'on mostradas en la
 Sec.~\ref{sec:extrapolation-curves} permiten inspeccionar por separado
 cambios de severidad, de longitud y de ambos factores a la vez. Los
 modelos tabulares son los m\'as afectados por la extrapolaci\'on de
-severidad, ya que sus entradas caen fuera de la tabla aprendida; los
+severidad, ya que sus severidades se recortan al \'ultimo nivel de la
+tabla aprendida (Sec.~\ref{sec:disc-individual}); los
 modelos profundos y los ensambles se ven m\'as afectados por la
 extrapolaci\'on de longitud. Las condiciones estructurales modifican el
 n\'umero de bloques o secuencias sin cambiar la regla de generaci\'on y

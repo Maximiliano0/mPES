@@ -3,6 +3,13 @@
 Centralises the publication style, the colour palettes, the annotated heatmap
 renderer and the statistical helpers (Welch, Cohen's d, Kullback-Leibler) that
 were previously duplicated across several figure modules.
+
+Figure conventions exposed to :mod:`figures`:
+
+* ``MODEL_COLOURS`` / :func:`model_colour` — one fixed colour per model; the
+  best model of each suite (``pes_trf``, ``pes_ens``) uses the warm accent.
+* ``BEST_LINEWIDTH`` / ``BASE_LINEWIDTH`` — stroke widths that emphasise the
+  best model whenever several models are overlaid.
 """
 ##########################
 ##  Imports externos    ##
@@ -50,10 +57,45 @@ _PALETTE_ANCHORS = {
 }
 
 # Stable, colour-blind friendly line colours for per-model curves.
-MODEL_LINE_COLOURS = ('#8d99ae', '#457b9d', '#2a9d8f', '#e9c46a',
+MODEL_LINE_COLOURS = ('#8d99ae', '#457b9d', '#2a9d8f', '#c9a227',
                       '#f4a261', '#e76f51', '#6d597a', '#264653')
 
+# Fixed model -> colour mapping so a model keeps its hue across every figure.
+# The best model of each suite (pes_trf / pes_ens) gets the warm accent.
+MODEL_COLOURS = {
+    'pes_base': '#9aa5b1', 'pes_ql': '#5b8fb9', 'pes_dql': '#2f6690',
+    'pes_dqn': '#2a9d8f', 'pes_rdqn': '#7fb069', 'pes_a2c': '#e9a13b',
+    'pes_trf': '#c44e52',
+    'pes_ens': '#c44e52', 'pes_ens_sprb': '#5b8fb9', 'pes_ens_accq': '#2f6690',
+    'pes_ens_consensus': '#2a9d8f', 'pes_ens_consensus_prior': '#7fb069',
+    'pes_ens_trf_guard': '#e9a13b',
+}
+
+#: Line widths for the best model of a panel versus the remaining ones.
+BEST_LINEWIDTH = 3.0
+BASE_LINEWIDTH = 1.5
+
 ALPHA_LEVELS = (math.log10(0.05), math.log10(0.01), math.log10(0.001))
+
+
+def model_colour(model: str, index: int = 0) -> str:
+    """Return the colour assigned to one model.
+
+    Parameters
+    ----------
+    model : str
+        Package name (``pes_dqn``, ``pes_ens_sprb`` …).
+    index : int, optional
+        Position of the model in the plotted list; used to pick a fallback
+        colour from ``MODEL_LINE_COLOURS`` when ``model`` is not listed in
+        ``MODEL_COLOURS`` (default 0).
+
+    Returns
+    -------
+    str
+        Hex colour string.
+    """
+    return MODEL_COLOURS.get(model, MODEL_LINE_COLOURS[index % len(MODEL_LINE_COLOURS)])
 
 
 def _register_palettes() -> None:
@@ -73,14 +115,39 @@ _register_palettes()
 ##  IO helpers
 ###############
 def save_figure(figure, base_path: str) -> None:
-    """Save ``figure`` as a raster PNG."""
+    """Save ``figure`` as a raster PNG and close it.
+
+    Parameters
+    ----------
+    figure : matplotlib.figure.Figure
+        Figure to write.
+    base_path : str
+        Output path without extension; ``.png`` is appended and parent
+        directories are created on demand.
+    """
     os.makedirs(os.path.dirname(base_path), exist_ok=True)
     figure.savefig(base_path + '.png')
     pyplot.close(figure)
 
 
 def read_matrix_csv(path: str) -> "tuple[list[str], list[str], numpy.ndarray]":
-    """Read a ``model x scenario`` CSV, mapping empty cells to ``NaN``."""
+    """Read a ``model x scenario`` CSV, mapping empty cells to ``NaN``.
+
+    Parameters
+    ----------
+    path : str
+        CSV file whose first column holds model names and whose header row
+        holds scenario identifiers.
+
+    Returns
+    -------
+    models : list of str
+        Row labels in file order.
+    scenarios : list of str
+        Column labels in file order.
+    matrix : ndarray, shape ``(len(models), len(scenarios))``
+        Float values; empty or unparsable cells are ``NaN``.
+    """
     with open(path, 'r', encoding='utf-8', newline='') as handle:
         rows = list(csv.reader(handle))
     scenarios = rows[0][1:]
@@ -98,7 +165,13 @@ def read_matrix_csv(path: str) -> "tuple[list[str], list[str], numpy.ndarray]":
 
 
 def style_axes(axis) -> None:
-    """Apply the restrained axis style shared by the line figures."""
+    """Apply the restrained axis style shared by the line figures.
+
+    Parameters
+    ----------
+    axis : matplotlib.axes.Axes
+        Axes to style in place (light grid below the data, no top/right spines).
+    """
     axis.grid(alpha=0.22, linewidth=0.8)
     axis.set_axisbelow(True)
     axis.spines['top'].set_visible(False)
@@ -152,6 +225,19 @@ def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
 
     ``NaN`` cells are rendered as neutral grey and left unannotated so that
     missing measurements are never confused with a real value.
+
+    Parameters
+    ----------
+    matrix : ndarray, shape ``(len(models), len(scenarios))``
+        Values to colour and annotate.
+    models : list of str
+        Row labels.
+    scenarios : list of str
+        Column labels (scenario identifiers).
+    out_base : str
+        Output path without extension, forwarded to :func:`save_figure`.
+    spec : HeatmapSpec
+        Rendering options (title, colormap, limits, annotation format).
     """
     with pyplot.rc_context(PUB_RC):
         n_rows, n_cols = matrix.shape
@@ -250,7 +336,20 @@ def welch_test(first: numpy.ndarray, second: numpy.ndarray) -> "tuple[float, flo
 
 
 def cohen_d(first: numpy.ndarray, second: numpy.ndarray) -> float:
-    """Standardised mean difference using the pooled standard deviation."""
+    """Standardised mean difference using the pooled standard deviation.
+
+    Parameters
+    ----------
+    first, second : ndarray
+        Samples to compare; the sign is positive when ``first`` has the
+        larger mean.
+
+    Returns
+    -------
+    float
+        Cohen's ``d``; ``NaN`` when either sample has fewer than two values or
+        the pooled standard deviation is zero.
+    """
     if first.size < 2 or second.size < 2:
         return float('nan')
     pooled = math.sqrt(((first.size - 1) * numpy.var(first, ddof=1)
@@ -263,7 +362,22 @@ def cohen_d(first: numpy.ndarray, second: numpy.ndarray) -> float:
 
 def kl_divergence(first: numpy.ndarray, second: numpy.ndarray,
                   epsilon: float = 1e-9) -> float:
-    """Kullback-Leibler divergence ``KL(first || second)`` between two PMFs."""
+    """Kullback-Leibler divergence ``KL(first || second)`` between two PMFs.
+
+    Parameters
+    ----------
+    first, second : ndarray
+        Non-negative vectors of equal length; both are smoothed by ``epsilon``
+        and renormalised before the divergence is computed.
+    epsilon : float, optional
+        Additive smoothing that avoids ``log(0)`` (default ``1e-9``).
+
+    Returns
+    -------
+    float
+        Divergence in nats; ``NaN`` when the inputs are empty or of
+        different length.
+    """
     if first.size == 0 or second.size == 0 or first.size != second.size:
         return float('nan')
     left = numpy.asarray(first, dtype=float) + epsilon
@@ -274,7 +388,19 @@ def kl_divergence(first: numpy.ndarray, second: numpy.ndarray,
 
 
 def symmetric_kl(first: numpy.ndarray, second: numpy.ndarray) -> float:
-    """Order-independent Kullback-Leibler divergence between two PMFs."""
+    """Order-independent Kullback-Leibler divergence between two PMFs.
+
+    Parameters
+    ----------
+    first, second : ndarray
+        PMFs forwarded to :func:`kl_divergence` in both directions.
+
+    Returns
+    -------
+    float
+        ``0.5 * (KL(first || second) + KL(second || first))``; ``NaN`` if
+        either direction is undefined.
+    """
     forward = kl_divergence(first, second)
     reverse = kl_divergence(second, first)
     if math.isnan(forward) or math.isnan(reverse):
@@ -283,6 +409,19 @@ def symmetric_kl(first: numpy.ndarray, second: numpy.ndarray) -> float:
 
 
 def histogram_pmf(values: numpy.ndarray, bins: int = 20) -> numpy.ndarray:
-    """Bin performance values on the common ``[0, 1]`` scale."""
+    """Bin performance values on the common ``[0, 1]`` scale.
+
+    Parameters
+    ----------
+    values : ndarray
+        Per-sequence performance values.
+    bins : int, optional
+        Number of equal-width bins over ``[0, 1]`` (default 20).
+
+    Returns
+    -------
+    ndarray, shape ``(bins,)``
+        Unnormalised bin counts as floats, suitable for :func:`kl_divergence`.
+    """
     counts, _ = numpy.histogram(values, bins=numpy.linspace(0.0, 1.0, bins + 1))
     return counts.astype(float)

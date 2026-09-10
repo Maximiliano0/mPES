@@ -4,8 +4,8 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
-- ✅ Compilación exitosa — **60 páginas**.
-- 📄 PDF: `out/mPES-Esquemas-de-Toma-de-Decision-Artificial-para-Escenarios-de-Decision-Secuenciales.pdf`
+- ✅ Compilación exitosa — **68 páginas**.
+- 📄 PDF: `out/mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-de-Decision-Secuenciales.pdf`
 
 - ✅ Sin Overfull \hbox.
 
@@ -15,15 +15,15 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 2. Figuras, tablas y numeración
 
-- Figuras con label: **23**.
-- Tablas con label: **6**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **80**.
+- Figuras con label: **28**.
+- Tablas con label: **7**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **103**.
 
 - ✅ Sin referencias rotas.
 
 - ✅ Sin etiquetas duplicadas.
 
-- Imágenes referenciadas con `\includegraphics`: **26**.
+- Imágenes referenciadas con `\includegraphics`: **32**.
 - ✅ Todas las imágenes referenciadas existen.
 
 - ✅ Sin imágenes huérfanas.
@@ -50,22 +50,20 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 5. Idioma único (español)
 
-**Palabras en inglés detectadas:**
-
-`after`, `before`, `both`, `can`, `from`, `here`, `least`, `must`, `that`, `the`, `these`, `this`, `when`, `which`, `will`, `with`, `without`
+- ✅ No se detectaron palabras inglesas frecuentes.
 
 ## 6. Cobertura de los `doc/` del proyecto
 
 | Paquete | Mencionado | `doc/` presente |
 |---------|------------|-----------------|
-| `pes_base` | ✅ | 0 archivos |
-| `pes_ql` | ✅ | 0 archivos |
-| `pes_dql` | ✅ | 0 archivos |
-| `pes_dqn` | ✅ | 0 archivos |
-| `pes_rdqn` | ✅ | 0 archivos |
-| `pes_a2c` | ✅ | 0 archivos |
-| `pes_trf` | ✅ | 0 archivos |
-| `pes_ens` | ✅ | 0 archivos |
+| `pes_base` | ✅ | 4 archivos |
+| `pes_ql` | ✅ | 4 archivos |
+| `pes_dql` | ✅ | 4 archivos |
+| `pes_dqn` | ✅ | 4 archivos |
+| `pes_rdqn` | ✅ | 4 archivos |
+| `pes_a2c` | ✅ | 4 archivos |
+| `pes_trf` | ✅ | 4 archivos |
+| `pes_ens` | ✅ | 4 archivos |
 
 **Conceptos clave en `writings/`:**
 

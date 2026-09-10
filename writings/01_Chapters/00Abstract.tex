@@ -18,7 +18,7 @@ agentes individuales optimizados (\texttt{pes\_ql}, \texttt{pes\_dql},
 \texttt{pes\_ens\_trf\_guard}. El paquete hist\'orico
 \texttt{pes\_base} aparece en los artefactos individuales como referencia,
 pero no se incluye en este ranking comparativo. El an\'alisis cubre $22$ escenarios,
-una condici\'on emp\'irica y $21$ perturbaciones, con $64$ secuencias por
+una condici\'on base y $21$ perturbaciones, con $64$ secuencias por
 celda y una semilla fija ($42$). La m\'etrica principal es el rendimiento
 normalizado registrado como \texttt{global\_mean\_perf}.
 
@@ -30,18 +30,18 @@ secuencias. Entre los ensambles, \texttt{pes\_ens} obtiene la mejor
 media bajo perturbaci\'on ($0{,}939$) y la menor degradaci\'on m\'axima
 ($0{,}037$). La evidencia respalda la hip\'otesis de que el Transformer
 es el modelo individual que mejor generaliza en este entorno, pero no
-una superioridad del Transformer frente a todos los ensambles. Como
-estudio de caso, la confianza del agente se cuantifica mediante
-$1-H_{\mathrm{norm}}$, con $H_{\mathrm{norm}}$ la entrop\'ia normalizada
-de la distribuci\'on derivada de los valores de acci\'on del
-Transformer; esta medida constituye un indicador algor\'itmico y no una
-validaci\'on fisiol\'ogica.
+una superioridad del Transformer frente a todos los ensambles. La
+confianza de cada agente se cuantifica mediante $1-H_{\mathrm{norm}}$,
+con $H_{\mathrm{norm}}$ la entrop\'ia normalizada de la distribuci\'on
+derivada de sus valores de acci\'on; la medida se registra por secuencia
+para \texttt{pes\_trf} y act\'ua como factor de ponderaci\'on de los
+miembros en la decisi\'on conjunta de los seis ensambles. Constituye un
+indicador algor\'itmico y no una validaci\'on fisiol\'ogica.
 La sintonizaci\'on de hiperpar\'ametros emplea Optuna/TPE, mientras que el
 benchmark final se ejecuta en inferencia sobre artefactos ya entrenados.
 
 \par\vspace{0.5\baselineskip}
-\noindent\textbf{Palabras clave:} mPES, Aprendizaje por Refuerzo,
-Inteligencia Artificial, Transformer Causal, \emph{Deep Ensembles},
+\noindent\textbf{Palabras clave:} mPES, Aprendizaje por Refuerzo, Transformer Causal, \emph{Deep Ensembles},
 Cuantificaci\'on de Incertidumbre, Entrop\'ia de Shannon,
 Optimizaci\'on Bayesiana, Asignaci\'on de Recursos, Secuencias
 Temporales, Evaluaci\'on bajo cambios de condiciones.

@@ -106,7 +106,7 @@ hist\'orico y no forma parte del ranking comparativo. Un agente
 aleatorio (Sec.~\ref{sec:baseline-random}) fija adem\'as el piso de
 desempe\~no del banco de pruebas.
 
-\subsection{Los modelos algor\'itmicos}
+\subsection{Modelos algor\'itmicos}
 
 La Tabla~\ref{tab:packages} resume los seis modelos individuales y las
 seis variantes de ensamble evaluadas; \texttt{pes\_base} se muestra como
@@ -252,8 +252,7 @@ y cr\'itico independientes, cada una con una capa oculta de $128$
 unidades; emplea tasas de aprendizaje $0{,}000648$ (actor) y
 $0{,}004299$ (cr\'itico), $\gamma=0{,}8545$, coeficiente de entrop\'ia
 $\beta_H = 0{,}0053$, $\lambda = 0{,}913$ en GAE y PBRS con
-$\kappa = 0{,}153$. Los ensambles no se entrenan: cargan los modelos
-guardados y combinan sus salidas durante la inferencia.
+$\kappa = 0{,}153$.
 
 \paragraph{\texttt{pes\_dqn}.} Red densa con repetici\'on de
 experiencia~\citep{Lin1992} y red objetivo sincronizada cada $C = 1\,000$
@@ -299,10 +298,20 @@ residual y normalizaci\'on de capa. Sobre los valores $Q$ factibles se
 calcula la medida de confianza basada en entrop\'ia descrita en la
 Sec.~\ref{sec:background}.
 
+\subsubsection{Ensambles}
+
+Los ensambles no se entrenan: cargan los modelos guardados de la
+familia profunda y combinan sus salidas durante la inferencia. Los
+seis paquetes (\texttt{pes\_ens}, \texttt{pes\_ens\_sprb},
+\texttt{pes\_ens\_accq}, \texttt{pes\_ens\_consensus},
+\texttt{pes\_ens\_consensus\_prior} y \texttt{pes\_ens\_trf\_guard})
+combinan \texttt{pes\_dqn}, \texttt{pes\_rdqn} y \texttt{pes\_trf}; el
+adaptador para el actor de \texttt{pes\_a2c} existe en la
+configuraci\'on de todos ellos pero est\'a deshabilitado.
+
 \paragraph{\texttt{pes\_ens}.} Votaci\'on ponderada en inferencia
 sobre los modelos guardados de \texttt{pes\_dqn}, \texttt{pes\_rdqn} y
-\texttt{pes\_trf}; el adaptador para el actor de \texttt{pes\_a2c}
-existe en la configuraci\'on pero est\'a deshabilitado. Cada miembro
+\texttt{pes\_trf}. Cada miembro
 $k$ convierte sus valores $Q$ en una distribuci\'on mediante una
 \emph{softmax} con temperatura $\tau$,
 $p_k(a \mid s) = \mathrm{softmax}\bigl(Q_k(s, \cdot)/\tau\bigr)_a$, y el
@@ -317,10 +326,12 @@ con $K = 3$, $\tau = 15$ y pesos base $0{,}18$, $0{,}90$ y $5{,}0$
 (renormalizados) para DQN, RDQN y Transformer respectivamente. La
 implementaci\'on a\~nade heur\'isticas fijadas en la configuraci\'on:
 las acciones que exceden los recursos disponibles se enmascaran y la
-distribuci\'on se renormaliza; el peso de cada miembro se modula por
-su propia confianza $1 - H_{\mathrm{norm}}$; y la distribuci\'on
-resultante se mezcla, con peso $0{,}17$, con una gaussiana centrada en
-la severidad actual ($\sigma = 3$). El paquete no introduce
+distribuci\'on se renormaliza; el peso de cada miembro se multiplica
+por $0{,}1 + c_k$, con $c_k = 1 - H_{\mathrm{norm}}(p_k)$ su propia
+confianza; la distribuci\'on resultante se mezcla, con peso $0{,}17$,
+con una gaussiana centrada en la severidad actual ($\sigma = 3$); y una
+cota de seguridad fuerza $a = \lfloor S/2 \rfloor$ cuando $S \geq 6$ y
+la acci\'on elegida es menor que esa cota. El paquete no introduce
 par\'ametros entrenables, en l\'inea con la formulaci\'on de
 \emph{deep ensembles} de Lakshminarayanan
 \emph{et al.}~\citep{Lakshminarayanan2017}. Las cinco variantes
@@ -331,6 +342,98 @@ restantes (\texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq},
 consenso ponderado por confianza con t\'erminos de acuerdo y
 desacuerdo, o prioridad del Transformer con respaldo condicional) y
 exponen sus par\'ametros a un m\'odulo \texttt{optimize\_ens.py}.
+
+\paragraph{Variantes de combinaci\'on.} Las cinco variantes adicionales
+comparten la misma notaci\'on. Para cada miembro $k$ se obtiene, sobre
+las acciones factibles, la distribuci\'on $p_k(a\mid s)$
+(Ecuaci\'on~\eqref{eq:ens-softmax}), la acci\'on preferida
+$a_k=\arg\max_a p_k(a\mid s)$, la confianza
+$c_k = 1-H_{\mathrm{norm}}(p_k)$ y el peso efectivo
+$\tilde w_k = w_k\,c_k^{\rho}$, con $\rho$ el exponente de confianza.
+Adem\'as se define la versi\'on tipificada de los valores de cada
+miembro, $\hat Q_k(a) = \bigl(Q_k(a)-\overline{Q}_k\bigr)/\mathrm{sd}(Q_k)$,
+utilizada para comparar salidas de escalas distintas. Las cinco reglas
+se diferencian en c\'omo agregan estas cantidades.
+
+\begin{itemize}
+    \item \texttt{pes\_ens\_sprb} (voto suave probabil\'istico) promedia
+    las distribuciones ponderadas por el peso efectivo,
+    \begin{equation}
+      p_{\mathrm{sprb}}(a\mid s) =
+      \frac{\sum_{k} \tilde w_k\, p_k(a\mid s)}{\sum_{k} \tilde w_k},
+      \qquad
+      a_{\mathrm{sprb}} = \arg\max_a p_{\mathrm{sprb}}(a\mid s).
+      \label{eq:ens-sprb}
+    \end{equation}
+    \item \texttt{pes\_ens\_accq} (voto por acci\'on con desempate por
+    $Q$) acumula un voto ponderado por la acci\'on preferida de cada
+    miembro y resuelve empates con la suma de valores tipificados:
+    \begin{equation}
+      V(a) = \sum_{k} \tilde w_k\, \mathbb{1}[a_k=a],
+      \qquad
+      T(a) = \sum_{k} \hat Q_k(a),
+      \label{eq:ens-accq-vote}
+    \end{equation}
+    \begin{equation}
+      a_{\mathrm{accq}} =
+      \arg\max_{a \in \mathcal{V}} T(a),
+      \qquad
+      \mathcal{V} = \{a : V(a)=\textstyle\max_{a'} V(a')\}.
+      \label{eq:ens-accq-action}
+    \end{equation}
+    \item \texttt{pes\_ens\_consensus} (consenso por confianza) parte del
+    mismo voto ponderado y le suma un t\'ermino de acuerdo, uno de
+    desacuerdo y el consenso de valores tipificados:
+    \begin{equation}
+      \begin{aligned}
+      S(a) ={}& \sum_{k} \tilde w_k\, \mathbb{1}[a_k=a]
+      \;+\; \beta_a \!\!\sum_{k:\,a_k=a} c_k
+      \;-\; \beta_d \!\!\sum_{k:\,a_k\neq a} c_k \\
+      &+\; \sum_{k} \hat Q_k(a)\, c_k,
+      \qquad
+      a_{\mathrm{cons}} = \arg\max_a S(a),
+      \end{aligned}
+      \label{eq:ens-consensus}
+    \end{equation}
+    con bono de acuerdo $\beta_a$ y penalizaci\'on de desacuerdo
+    $\beta_d$. La regla favorece las acciones apoyadas por miembros
+    confiados y penaliza el desacuerdo.
+    \item \texttt{pes\_ens\_consensus\_prior} (consenso con prior de
+    severidad) usa una acumulaci\'on suave,
+    $\tilde S(a)=\sum_k \tilde w_k\, p_k(a\mid s)$, m\'as los mismos
+    t\'erminos de acuerdo y desacuerdo, atenu\'a la acci\'on nula
+    ($\tilde S(0)\!\leftarrow\!0{,}3\,\tilde S(0)$ cuando hay recursos)
+    y la normaliza. La distribuci\'on resultante se mezcla con un prior
+    gaussiano centrado en la severidad actual $S$,
+    \begin{equation}
+      \pi_{\mathrm{prior}}(a\mid s) \propto
+      \exp\!\left[-\frac{(a-S)^2}{2\sigma_S^2}\right],
+      \qquad
+      S(a) = (1-w_\pi)\,\tilde S(a) + w_\pi\,\pi_{\mathrm{prior}}(a\mid s),
+      \label{eq:ens-prior}
+    \end{equation}
+    con peso del prior $w_\pi=0{,}17$ y $\sigma_S=3$. Una cota de
+    seguridad fuerza $a=\lfloor S/2\rfloor$ cuando $S\geq 6$ y la acci\'on
+    elegida es menor que esa cota.
+    \item \texttt{pes\_ens\_trf\_guard} (compuerta del Transformer)
+    calcula una compuerta log\'istica sobre la confianza del Transformer,
+    \begin{equation}
+      g = \frac{1}{1+\exp\!\bigl[-\kappa\,(c_{\mathrm{trf}}-\tau_g)\bigr]},
+      \qquad
+      f(a) = \sum_{k} \tilde w_k\, p_k(a\mid s),
+      \label{eq:ens-guard}
+    \end{equation}
+    y selecciona la acci\'on del Transformer cuando $g\geq 0{,}5$ y la del
+    voto de respaldo $f$ en caso contrario:
+    $a_{\mathrm{guard}} = a_{\mathrm{trf}}$ si $g\geq 0{,}5$, y
+    $a_{\mathrm{guard}} = \arg\max_a f(a)$ si $g<0{,}5$. El umbral
+    $\tau_g$ y la pendiente $\kappa$ son hiperpar\'ametros del paquete.
+\end{itemize}
+
+Estas reglas no se entrenan conjuntamente con los miembros. Por tanto,
+las diferencias entre variantes miden el efecto de la regla de
+combinaci\'on y de sus hiperpar\'ametros sobre artefactos ya entrenados,
+no una comparaci\'on entre arquitecturas entrenadas de extremo a extremo.
 
 \subsection{Procedimiento de optimizaci\'on bayesiana}
 
@@ -481,7 +584,7 @@ El banco de pruebas \texttt{general/} (v\'ease
 \texttt{general/README.md}) define un \textbf{cat\'alogo de
 $22$ escenarios} que eval\'uan cada modelo entrenado a lo largo
 de cuatro ejes de variaci\'on con respecto a la distribuci\'on
-emp\'irica de entrenamiento (etiquetada \texttt{sev\_empirical}).
+emp\'irica de entrenamiento (etiquetada \texttt{sev\_base}).
 El armaz\'on de benchmark (\texttt{general/scripts/benchmark.py}) ejecuta
 el producto cartesiano de seis modelos por 22 escenarios en cada suite,
 es decir, $132$ celdas por suite y $264$ en total, evaluando
@@ -520,7 +623,7 @@ Las cuatro familias responden a preguntas distintas:
 \end{itemize}
 
 La Tabla~\ref{tab:scenarios} enumera el cat\'alogo completo. El
-escenario \texttt{sev\_empirical} act\'ua como condici\'on de
+escenario \texttt{sev\_base} act\'ua como condici\'on de
 referencia: conserva la ley de generaci\'on utilizada en el
 entrenamiento. Los restantes escenarios modifican una o m\'as
 propiedades de esa ley. Frente a la referencia se calculan, para cada
@@ -537,7 +640,7 @@ secuencia y el tama\~no del efecto con la $d$ de Cohen
 \centering
 \caption[Cat\'alogo de escenarios de perturbaci\'on]{Cat\'alogo de $22$
 escenarios del banco de pruebas \texttt{general/}. La fila
-\texttt{sev\_empirical} act\'ua como condici\'on de referencia. Los escenarios
+\texttt{sev\_base} act\'ua como condici\'on de referencia. Los escenarios
 con etiqueta \texttt{extrapolate} caen fuera del soporte de
 entrenamiento (severidad en $\{10, 11, 12\}$ o longitud en $\{11, \ldots, 20\}$).}
 \label{tab:scenarios}
@@ -546,7 +649,7 @@ entrenamiento (severidad en $\{10, 11, 12\}$ o longitud en $\{11, \ldots, 20\}$)
 \toprule
 \textbf{Familia} & \textbf{Identificador} & \textbf{Descripci\'on} \\
 \midrule
-baseline      & \texttt{sev\_empirical}        & Distribuci\'on emp\'irica de entrenamiento (referencia).\\
+baseline      & \texttt{sev\_base}             & Distribuci\'on emp\'irica de entrenamiento (referencia).\\
 \midrule
 severidad     & \texttt{sev\_uniform}          & $U\{0, \ldots, 9\}$, sin estructura modal.\\
 severidad     & \texttt{sev\_gauss\_low}       & $\mathcal{N}(2, 1{,}5)$ truncada, brotes leves.\\

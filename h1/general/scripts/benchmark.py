@@ -14,7 +14,7 @@ Usage
 .. code-block:: powershell
 
     python -m general.scripts.benchmark run --suite both
-    python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_empirical
+    python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_base
     python -m general.scripts.benchmark progress --suite individual --watch
 """
 ##########################
@@ -76,7 +76,7 @@ SUITE_PACKAGES = {suite: list(packages) for suite, packages in SUITE_PACKAGE_GRO
 ALL_PACKAGES = list(PACKAGE_GROUPS.keys())
 SUITES = tuple(SUITE_PACKAGES)
 REFERENCE_MODEL = 'pes_base'
-REFERENCE_SCENARIO = 'sev_empirical'
+REFERENCE_SCENARIO = 'sev_base'
 
 # Every package prints ``Sequence <idx>: Performance = <float>`` through
 # ``log_utils.tee``; the line is ANSI-coloured by ``terminal_utils``.

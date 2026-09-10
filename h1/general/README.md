@@ -72,7 +72,7 @@ python -m general.scripts.benchmark progress --suite individual --watch
 ### Single-cell debug runs
 
 ```powershell
-python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_empirical
+python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_base
 python -m general.scripts.benchmark run --pkg pes_dqn --force
 ```
 
@@ -109,7 +109,7 @@ general/
 
 | Family | Scenario ID | Description |
 |---|---|---|
-| baseline | `sev_empirical` | Empirical training distribution (baseline). |
+| baseline | `sev_base` | Empirical training distribution (baseline). |
 | severity | `sev_uniform` | Uniform U(0, 9). |
 | severity | `sev_gauss_low` | Truncated N(2, 1.5). |
 | severity | `sev_gauss_mid` | Truncated N(4.5, 2.0). |
@@ -145,19 +145,42 @@ Cells are normalised to fixed colour-scale limits so figures from
 different sweeps are directly comparable; clipped values are flagged
 in-cell (e.g. `≤-10` in the Welch heatmap).
 
+### Figure conventions
+
+All figures share the publication style defined in `plotting.py`
+(`PUB_RC`):
+
+* **Fixed colour per model** — `MODEL_COLOURS` assigns each package one hue
+  that is kept across every figure. The best model of each suite
+  (`pes_trf`, `pes_ens`) uses the warm accent `#c44e52`; the remaining
+  models share a blue–green–amber ramp consistent with the heatmap palettes.
+* **Best-model emphasis** — in any figure that overlays several models
+  (05, 06, 11, histograms, reward curves) the model with the highest mean
+  over the 21 perturbation scenarios is drawn with a thick stroke
+  (`BEST_LINEWIDTH = 3.0` vs `BASE_LINEWIDTH = 1.5`) and named in the
+  super-title ("trazo grueso = …"). In the ranking (08) the same model is
+  outlined in black and its label is bold.
+* **Legends** — a single shared legend row below the panels (05, 06 for the
+  ensemble suite, 11, reward curves) or below the axis (08, 09). In 06 for
+  the individual suite the model pair differs per panel, so each panel keeps
+  its own legend in the lower-right corner.
+* **Figure 06** — the individual suite contrasts `pes_trf` with one partner
+  per panel (`pes_dql`, `pes_a2c`, `pes_dqn`); the ensemble suite draws all
+  six variants. Dotted horizontal lines mark each model's mean.
+
 | Figure | Output | Interpretation |
 |---|---|---|
 | Mean performance | `figures/01_desempeno_por_escenario` | Normalised performance per model and scenario |
-| Degradation | `figures/02_degradacion_por_escenario` | `baseline_mean - cell_mean`; positive = loss |
+| Degradation | `figures/02_degradacion_por_escenario` | `mean(sev_base) - mean(cell)`; positive = loss |
 | Welch | `figures/03_welch_logp_por_escenario` | `log10(p)`; lower = stronger evidence |
 | Action KL | `figures/04_kl_acciones_por_escenario` | Policy drift vs the reference condition |
-| Family curves | `figures/05_curvas_por_familia` | Sorted per-sequence performance by stress family |
-| Universal stressors | `figures/06_curvas_estresores_universales` | Behaviour under extrapolated severity and length |
+| Family curves | `figures/05_curvas_por_familia` | Sorted per-sequence performance by perturbation family; best model in thick stroke |
+| Extrapolation curves | `figures/06_curvas_estresores_universales` | Behaviour under extrapolated severity and length; dotted line = mean |
 | Effect size | `figures/07_cohen_d_por_escenario` | Standardised change vs the reference condition |
-| Ranking | `figures/08_ranking_desempeno` | Reference vs stress mean per model |
+| Ranking | `figures/08_ranking_desempeno` | Reference vs perturbed mean per model; best model outlined |
 | Family sensitivity | `figures/09_degradacion_por_familia` | Mean degradation per perturbation family |
-| Stability | `figures/10_desempeno_vs_estabilidad` | Mean performance vs dispersion |
-| Generalisation | `figures/11_perfiles_generalizacion` | Response profile across each family |
+| Stability | `figures/10_desempeno_vs_estabilidad` | Mean performance vs dispersion, one colour per model |
+| Generalisation | `figures/11_perfiles_generalizacion` | Response profile across each family; best model in thick stroke |
 | Pairwise contrasts | `figures/12_pares_welch_logp`, `13_pares_cohen_d`, `14_pares_kl` | Model-versus-model comparison |
 
 ## Metrics per cell
@@ -170,7 +193,7 @@ For each `(model, scenario)`:
 * `global_mean_perf`, `std_perf`, `min_perf`, `max_perf`.
 * `action_distribution` — empirical PMF over the 11 allocation actions.
 * Matrices in `matrices/` add `stress_degradation`, `welch_p`, `welch_logp`,
-  `cohen_d` and `action_kl`, always against the model's own `sev_empirical`
+  `cohen_d` and `action_kl`, always against the model's own `sev_base`
   reference condition.
 * Pairwise `Welch`, `Cohen d` and symmetric `KL` are calculated by
   `figures.py` over scenarios common to all models in a suite; KL uses

@@ -2,7 +2,7 @@
 
 > Informe generado a partir de los resultados disponibles en `h1/general/results/`.
 > La comparación usa 22 escenarios, 64 secuencias por celda y
-> `sev_empirical` como baseline.
+> `sev_base` como baseline.
 
 ## Metodología
 
@@ -18,7 +18,7 @@ registran los experimentos del harness de estrés. Para cada modelo se informa:
 
 El estudio usa **dos baselines distintos**, según el eje de comparación:
 
-1. **Baseline de escenario (condición de referencia): `sev_empirical`.**
+1. **Baseline de escenario (condición de referencia): `sev_base`.**
    Es la *distribución empírica de entrenamiento* de cada paquete: reutiliza
    sin perturbar los `initial_severity.csv` y `sequence_lengths.csv` reales del
    modelo (es el único escenario marcado `is_baseline=True`). Representa las
@@ -32,10 +32,10 @@ El estudio usa **dos baselines distintos**, según el eje de comparación:
    frente al agente tabular base. Fija `REFERENCE_MODEL` en el harness.
 
 La **degradación media** de un modelo $m$ es el promedio con signo de la caída
-de rendimiento respecto a su propia condición de referencia `sev_empirical`:
+de rendimiento respecto a su propia condición de referencia `sev_base`:
 
 $$
-\overline{D}_m=\frac{1}{|S|}\sum_{s\in S}\bigl(\mu_{m,\mathrm{empirical}}-\mu_{m,s}\bigr),
+\overline{D}_m=\frac{1}{|S|}\sum_{s\in S}\bigl(\mu_{m,\mathrm{base}}-\mu_{m,s}\bigr),
 $$
 
 donde $S$ son los 21 escenarios distintos de la referencia. Un valor
@@ -120,7 +120,7 @@ El análisis no reentrena modelos: consume los JSON y matrices ya generados.
 
 Las comparaciones pareadas se calculan sobre las observaciones de rendimiento
 de las 64 secuencias de cada escenario de estrés común a todos los modelos de
-una suite. Se excluye `sev_empirical` para que el contraste mida el
+una suite. Se excluye `sev_base` para que el contraste mida el
 comportamiento bajo estrés y no una diferencia debida únicamente al baseline.
 
 ### $p$ de Welch
@@ -196,7 +196,7 @@ forma distinta. KL no tiene unidades y no es un $p$-valor.
 Además de los contrastes pareados entre modelos, se generan heatmaps para
 observar cómo cambia cada métrica en los escenarios de severidad, longitud,
 conjuntos y estructura. Cada fila representa un modelo y cada columna un
-escenario; `sev_empirical` es el baseline de referencia.
+escenario; `sev_base` es el baseline de referencia.
 
 ### Heatmaps individuales
 
@@ -229,12 +229,26 @@ la política y no del rendimiento.
 
 ### Cómo leer las figuras
 
+Todas las figuras comparten las convenciones definidas en `plotting.py`:
+
+- **Color por modelo**: cada paquete conserva el mismo color en todas las
+  figuras (`MODEL_COLOURS`). El mejor modelo de cada suite (`pes_trf`,
+  `pes_ens`) usa el acento cálido `#c44e52`; el resto una escala
+  azul–verde–ámbar.
+- **Trazo grueso**: en toda figura que superpone varios modelos (05, 06, 11,
+  histogramas y recompensas) el modelo con mayor media en los 21 escenarios
+  de perturbación se dibuja con trazo grueso y se nombra en el título
+  ("trazo grueso = …"). En el ranking (08) ese modelo se destaca con borde
+  negro y etiqueta en negrita.
+- **Leyendas**: una única fila compartida debajo de los paneles o del eje;
+  en la figura 06 de la suite individual, donde el par de modelos cambia por
+  panel, cada panel lleva su propia leyenda en la esquina inferior derecha.
 - **Mapa de desempeño**: comparar colores dentro de una columna permite ordenar modelos en un escenario; comparar una fila muestra sensibilidad del mismo modelo al estrés.
 - **Mapa de degradación**: colores positivos señalan pérdida frente a la referencia y negativos mejora. La escala divergente debe leerse alrededor de cero, no por el color más intenso de forma aislada.
 - **Mapa de Welch**: valores más bajos de $\log_{10}(p)$ indican mayor evidencia estadística, pero deben acompañarse con $d$ de Cohen.
 - **Mapa de Cohen**: el signo indica dirección y la magnitud el tamaño del cambio en desviaciones estándar; un efecto grande no implica por sí mismo generalización uniforme.
 - **Mapa de KL**: valores altos indican mayor cambio en la distribución de acciones o rendimientos; no indican qué modelo tiene mejor media.
-- **Curvas por secuencia**: cada panel ordena de menor a mayor desempeño; una curva más alta domina en esa condición. Las líneas de media permiten separar rendimiento global de variabilidad entre secuencias.
+- **Curvas por secuencia**: cada panel ordena de menor a mayor desempeño; una curva más alta domina en esa condición. En la figura 06 las líneas punteadas marcan la media de cada modelo y permiten separar rendimiento global de variabilidad entre secuencias. En la suite individual la figura 06 contrasta `pes_trf` con un modelo por panel (`pes_dql`, `pes_a2c`, `pes_dqn`); en la suite de ensembles dibuja las seis variantes.
 
 ## Modelos individuales
 
@@ -264,7 +278,7 @@ afectados por `sev_extrapolate_high`, especialmente `pes_ql`.
 
 ![Curvas individuales por familia](../results/individual/figures/05_curvas_por_familia.png)
 
-![Curvas individuales ante estresores universales](../results/individual/figures/06_curvas_estresores_universales.png)
+![Curvas individuales en escenarios de extrapolación](../results/individual/figures/06_curvas_estresores_universales.png)
 
 ### Contrastes pareados individuales
 
@@ -302,7 +316,7 @@ más retroceden frente a su baseline, ambos ante `sev_extrapolate_high`.
 
 ![Curvas de ensembles por familia](../results/ensemble/figures/05_curvas_por_familia.png)
 
-![Curvas de ensembles ante estresores universales](../results/ensemble/figures/06_curvas_estresores_universales.png)
+![Curvas de ensembles en escenarios de extrapolación](../results/ensemble/figures/06_curvas_estresores_universales.png)
 
 ### Contrastes pareados de ensembles
 

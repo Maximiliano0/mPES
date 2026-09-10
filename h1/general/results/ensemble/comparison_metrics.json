@@ -1,6 +1,6 @@
 {
   "suite": "ensemble",
-  "reference_scenario": "sev_empirical",
+  "reference_scenario": "sev_base",
   "models": {
     "pes_ens": {
       "reference_mean": 0.9373125,

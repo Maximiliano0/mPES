@@ -11,11 +11,11 @@ pol\'itica eficaz debe anticipar consecuencias acumulativas y asignar
 recursos limitados a lo largo del tiempo.
 El entorno de experimentaci\'on \textbf{mPES} surge como una plataforma para
 comparar sistem\'aticamente arquitecturas de Aprendizaje por Refuerzo
-en este tipo de escenarios de decisi\'on. La crisis pand\'emica se
+para este tipo de escenarios. La crisis pand\'emica se
 utiliza como banco de pruebas: un caso concreto, exigente y
 reproducible que permite estudiar la adaptabilidad de los agentes
 frente a din\'amicas no lineales, informaci\'on incierta y condiciones
-de evaluaci\'on distintas de las de entrenamiento. Para ello, mPES extiende
+de evaluaci\'on distintas a las del entrenamiento. Para ello, mPES extiende
 el entorno original \emph{Pandemic Experiment Scenario} (PES) del
 BCI-NE Lab de la Universidad de Essex~\citep{BCINE2022}.
 
@@ -23,15 +23,13 @@ BCI-NE Lab de la Universidad de Essex~\citep{BCINE2022}.
 
 La crisis sanitaria provocada por el COVID--19 ofrece un caso
 representativo de este tipo de decisiones. Gobiernos, hospitales y
-cadenas log\'isticas deben ponderar beneficios inmediatos contra
-costos a largo plazo, mientras que cada asignaci\'on altera la
+cadenas log\'isticas debieron ponderar beneficios inmediatos contra
+costos a largo plazo, mientras que cada asignaci\'on alteraría la
 evoluci\'on posterior del sistema. En este trabajo, la pandemia no se
 considera el l\'imite del problema, sino el escenario experimental que
 permite observar y medir esas propiedades. La investigaci\'on busca
 as\'i evaluar qu\'e modelos matem\'aticos y computacionales producen
-decisiones m\'as adaptativas en escenarios complejos y secuenciales,
-utilizando la distribuci\'on de recursos durante una crisis pand\'emica
-como banco de pruebas.
+decisiones m\'as adaptativas en escenarios complejos y secuenciales.
 
 El enfoque metodol\'ogico de esta tesis sigue la disciplina propia
 de la ingenier\'ia: trazabilidad de cada
@@ -41,8 +39,7 @@ requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
 como un experimento aislado sino como un \emph{sistema} ---
 doce modelos comparativos en dos suites, adem\'as del paquete hist\'orico
 \texttt{pes\_base} como referencia individual. El esquema de evaluaci\'on
-com\'un y el procedimiento de ejecuci\'on reproducible est\'an pensados para estudiar arquitecturas de
-decisi\'on secuencial en dominios de alta complejidad.
+com\'un y el procedimiento de ejecuci\'on reproducible est\'an pensados para estudiar arquitecturas en dominios de alta complejidad.
 
 \subsection{Definici\'on del Problema}\label{sec:problema}
 
@@ -54,11 +51,11 @@ cualitativos definen el escenario: la \emph{din\'amica acumulativa}
 (la severidad no atendida crece de forma exponencial en los pasos
 subsiguientes), la \emph{intervenci\'on temprana} (los recursos
 asignados generan un impacto sostenido que premia a los modelos
-capaces de anticipar) y una \emph{regla de evoluci\'on} lineal con
+capaces de anticiparla) y una \emph{regla de evoluci\'on} lineal con
 saturaci\'on en cero,
 \[
-    S_i' = \max\bigl(0,\; \beta\, S_i - \alpha\, a_i\bigr),
-    \qquad \alpha = 0{,}4, \quad \beta = 1 + \alpha = 1{,}4,
+    S_i' = \max\bigl(0,\; \beta\, S_i - \alpha\, a_i\bigr)
+    \qquad \alpha = 0{,}4 \quad \beta = 1 + \alpha = 1{,}4
 \]
 donde $S_i$ es la severidad de la ciudad $i$ antes de la decisi\'on,
 $a_i \in \{0,\ldots,10\}$ los recursos asignados, $\alpha$ la eficacia
@@ -78,12 +75,13 @@ evaluados, el Transformer causal alcanza el mayor desempe\~no medio y
 conserva el rendimiento bajo cambios de severidad y longitud, utilizando
 la asignaci\'on de recursos durante una pandemia como escenario de prueba.}
 
-\textbf{H1b (indicador de confianza).} \emph{La cantidad
+\textbf{H1b (confianza y decisi\'on conjunta).} \emph{La cantidad
 $1-H_{\mathrm{norm}}$, donde $H_{\mathrm{norm}}$ es la entrop\'ia
-normalizada de la distribuci\'on de acciones, proporciona un indicador
-operativo de confianza del agente Transformer y puede relacionarse, por
-analog\'ia, con la confianza estudiada en sistemas conjuntos
-humano--m\'aquina.}
+normalizada de la distribuci\'on de acciones de un agente, proporciona
+un indicador operativo de su confianza y puede emplearse como criterio
+de ponderaci\'on en la decisi\'on conjunta de un ensamble de modelos, de
+manera an\'aloga a la confianza estudiada en los sistemas de decisi\'on
+conjunta humano--m\'aquina.}
 \end{quote}
 
 
@@ -92,7 +90,7 @@ humano--m\'aquina.}
 Las principales contribuciones de esta tesis son:
 
 \begin{enumerate}
-    \item Un \emph{benchmark} de RL reutilizable ---
+    \item Un \emph{benchmark} reutilizable ---
     \emph{workspace} \textbf{mPES} --- donde seis modelos individuales y
     seis variantes de ensamble comparten el mismo entorno Gymnasium~\citep{Towers2024}, el mismo
     \emph{pipeline} de optimizaci\'on bayesiana con Optuna y el mismo
@@ -110,12 +108,13 @@ Las principales contribuciones de esta tesis son:
     celdas, con una condici\'on de referencia y $21$
     condiciones de perturbaci\'on, que someten cada agente a cambios
     sistem\'aticos de severidad, longitud, conjuntos y estructurales,
-    junto con un protocolo estad\'istico unificado ($d$ de Cohen,
+    junto con un protocolo de evaluaci\'on estad\'istica unificado ($d$ de Cohen,
     $t$ de Welch y divergencia KL entre pol\'iticas).
     \item La integraci\'on de la \textbf{entrop\'ia de Shannon} como
-    medida de incertidumbre de la decisi\'on para \texttt{pes\_trf},
-    planteada por analog\'ia con las teor\'ias neurocognitivas de la
-    confianza humana.
+    medida de confianza de la decisi\'on: registrada por secuencia para
+    \texttt{pes\_trf} como estudio de caso y empleada como factor de
+    ponderaci\'on de los miembros en los seis ensambles, planteada por
+    analog\'ia con las teor\'ias neurocognitivas de la confianza humana.
     \item Una implementaci\'on reproducible para Windows, con Python 3.12,
     TensorFlow 2.21 y artefactos de evaluaci\'on organizados por suite.
 \end{enumerate}
@@ -127,13 +126,13 @@ Secci\'on~\ref{sec:background} introduce el marco te\'orico
 (MDPs, Q-Learning, redes recurrentes, atenci\'on, ensembles,
 entrop\'ia de Shannon). La Secci\'on~\ref{sec:soa} presenta el
 estado de la cuesti\'on (antecedentes neurocognitivos de la confianza,
-RL en gesti\'on de crisis, Transformers en RL, explicabilidad y
+RL en gesti\'on de crisis, Transformers en RL y
 cuantificaci\'on de incertidumbre). La
 Secci\'on~\ref{sec:methods} describe la metodolog\'ia: el escenario
 pand\'emico, las doce variantes evaluadas y el procedimiento
 experimental. La Secci\'on~\ref{sec:results} reporta los resultados
 emp\'iricos. La Secci\'on~\ref{sec:discussion} interpreta esos
-resultados a la luz de la hip\'otesis y la
+resultados a la luz de las hip\'otesis y la
 Secci\'on~\ref{sec:conclusion} cierra el trabajo.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

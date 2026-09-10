@@ -16,6 +16,7 @@ Uso
 ##  Imports externos    ##
 ##########################
 import argparse
+import io
 import re
 import shutil
 import subprocess
@@ -28,6 +29,7 @@ from pathlib import Path
 ##  Configuración       ##
 ##########################
 WRITINGS_DIR  = Path(__file__).resolve().parent.parent
+H1_DIR        = WRITINGS_DIR.parent / "h1"
 MAIN_DIR      = WRITINGS_DIR / "00_Main"
 MAIN_TEX      = MAIN_DIR / "Main.tex"
 CHAPTERS_DIR  = WRITINGS_DIR / "01_Chapters"
@@ -158,8 +160,13 @@ def audit_language() -> list[str]:
         "agent", "policy", "episode", "trial", "batch", "entropy",
         "q-value", "action", "state", "model", "loss", "output",
     }
-    content = all_tex_content()
-    plain   = re.sub(r"\\[a-zA-Z]+\{[^}]*\}", " ", content)
+    content = strip_comments(all_tex_content())
+    # Bloques literales (comandos de shell, código) no son prosa.
+    plain   = re.sub(r"\\begin\{(verbatim|lstlisting)\}.*?\\end\{\1\}", " ", content, flags=re.S)
+    plain   = re.sub(r"\\verb(.)(.*?)\1", " ", plain)
+    # Acentos escapados (can\'onicos, a\~no) se funden con la letra base.
+    plain   = re.sub(r"\\[`'^\"~=.]\{?([a-zA-Z])\}?", r"\1", plain)
+    plain   = re.sub(r"\\[a-zA-Z]+\{[^}]*\}", " ", plain)
     plain   = re.sub(r"\\[a-zA-Z]+", " ", plain)
     plain   = re.sub(r"[^a-zA-Z\s]", " ", plain)
     words   = set(plain.lower().split())
@@ -177,14 +184,14 @@ def audit_packages() -> list[str]:
         "pes_rdqn":  ("ml",      "Recurrent DQN (LSTM)"),
         "pes_a2c":   ("ml",      "Advantage Actor-Critic"),
         "pes_trf":   ("ml",      "Causal Transformer DQN"),
-        "pes_ens":   ("ml",      "Ensemble (soft voting)"),
+        "pes_ens":   ("ens",     "Ensemble (soft voting)"),
     }
     content = all_tex_content().lower()
     rows: list[str] = []
     for pkg, (family, _algo) in PACKAGES.items():
         mentioned = pkg in content
-        doc_dir   = WRITINGS_DIR.parent / family / pkg / "doc"
-        doc_count = len(list(doc_dir.glob("*"))) if doc_dir.exists() else 0
+        doc_dir   = H1_DIR / family / pkg / "doc"
+        doc_count = len([f for f in doc_dir.iterdir() if f.is_file()]) if doc_dir.is_dir() else 0
         rows.append(f"| `{pkg}` | {'✅' if mentioned else '❌'} | {doc_count} archivos |")
     return rows
 
@@ -686,10 +693,8 @@ def main() -> int:
             print("No había artefactos que limpiar.")
         return 0
 
-    try:
+    if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:  # noqa: BLE001
-        pass
 
     tex_result: dict | None = None
     if not args.no_tex:

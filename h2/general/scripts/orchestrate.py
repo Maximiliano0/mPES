@@ -10,7 +10,7 @@ Usage
 
     python -m general.scripts.orchestrate                # full sweep
     python -m general.scripts.orchestrate --pkg pes_dqn  # single model
-    python -m general.scripts.orchestrate --scenario sev_empirical  # single scenario
+    python -m general.scripts.orchestrate --scenario sev_base  # single scenario
     python -m general.scripts.orchestrate --force        # rerun even if cell exists
 """
 ##########################

@@ -1,6 +1,6 @@
 {
   "suite": "individual",
-  "reference_scenario": "sev_empirical",
+  "reference_scenario": "sev_base",
   "models": {
     "pes_base": {
       "reference_mean": 0.8705640625,

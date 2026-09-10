@@ -8,7 +8,7 @@ produces, for each suite:
 * ``report.md``             -- executive Markdown summary.
 
 Every stress metric compares a cell against the same model's
-``sev_empirical`` reference condition.
+``sev_base`` reference condition.
 
 Usage
 -----

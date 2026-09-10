@@ -89,7 +89,7 @@ class Scenario:
 ###############
 ##  Severity generators
 ###############
-def _sev_empirical(empirical_path: str) -> Callable:
+def _sev_base(empirical_path: str) -> Callable:
     """Return a generator that re-uses an existing per-package
     ``initial_severity.csv`` file (the model's training distribution)."""
     def _gen(_rng: numpy.random.Generator, n_trials: int) -> numpy.ndarray:
@@ -222,14 +222,14 @@ def build_scenarios(empirical_severity_path: str,
     -------
     list[Scenario]
     """
-    sev_emp = _sev_empirical(empirical_severity_path)
+    sev_emp = _sev_base(empirical_severity_path)
     len_emp = _len_empirical(empirical_lengths_path)
 
     scenarios: "list[Scenario]" = []
 
     # ---- A. Severity sweep (length = empirical) ----
     scenarios.append(Scenario(
-        'sev_empirical', 'baseline',
+        'sev_base', 'baseline',
         'Empirical training distribution (baseline).',
         sev_emp, len_emp, is_baseline=True,
     ))
