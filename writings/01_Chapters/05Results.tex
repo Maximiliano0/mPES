@@ -25,9 +25,15 @@ secuencia de la Ecuaci\'on~\eqref{eq:normalised-severity-materials}:
 Donde, para la secuencia $i$, $S^{(i)}_{\text{agente}}$ es la
 severidad acumulada obtenida por el agente, $S^{(i)}_{\text{peor}}$ la
 que resulta de no asignar recursos y $S^{(i)}_{\text{mejor}}$ la
-m\'inima alcanzable bajo el presupuesto de la secuencia. Por
-construcci\'on cada t\'ermino est\'a en $[0, 1]$: $0$ equivale a no
-actuar y $1$ a alcanzar el \'optimo factible. A diferencia de la
+m\'inima alcanzable bajo el presupuesto de la secuencia. Estas dos cotas
+se calculan retrospectivamente sobre la secuencia completa, una vez
+obtenidas las acciones del agente, y no intervienen en sus decisiones ni
+en la evoluci\'on del entorno. En particular, $S^{(i)}_{\text{peor}}$ no
+es el resultado del agente aleatorio, y $S^{(i)}_{\text{mejor}}$ es una
+referencia contrafactual con informaci\'on completa, no una pol\'itica
+disponible para decidir en l\'inea. Por construcci\'on cada t\'ermino est\'a
+en $[0, 1]$: $0$ equivale a no actuar y $1$ a alcanzar el \'optimo
+factible. A diferencia de la
 recompensa del MDP (Ecuaci\'on~\eqref{eq:reward}), esta m\'etrica es
 adimensional y est\'a normalizada por las cotas de cada secuencia, por
 lo que resulta comparable entre escenarios de distinta severidad y
@@ -92,7 +98,7 @@ optimizaci\'on.}
 
 Tomando \texttt{pes\_ql} como l\'inea de base tabular y utilizando
 $1 - \bar{r}$ como medida de severidad residual normalizada, la
-reducci\'on relativa de un modelo $m$ en la condici\'on de referencia es
+reducci\'on relativa de un modelo $m$ en la condici\'on de referencia es:
 
 \begin{equation}
 \Delta_{\mathrm{rel}}(m) =

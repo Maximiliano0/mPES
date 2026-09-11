@@ -75,6 +75,14 @@ MODEL_COLOURS = {
 BEST_LINEWIDTH = 3.0
 BASE_LINEWIDTH = 1.5
 
+#: Colours of the non-model references drawn next to the model curves:
+#: the random decision maker and the per-sequence bounds S_peor / S_mejor.
+REFERENCE_COLOURS = {'random': '#7b8794', 'worst': '#9e3a26', 'best': '#1f6e83'}
+
+#: Style of the horizontal per-model mean line shared by every per-sequence figure.
+MEAN_LINESTYLE = ':'
+MEAN_LINEWIDTH = 1.1
+
 ALPHA_LEVELS = (math.log10(0.05), math.log10(0.01), math.log10(0.001))
 
 

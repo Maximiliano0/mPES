@@ -7,9 +7,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 - ✅ Compilación exitosa — **74 páginas**.
 - 📄 PDF: `out/mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-Secuenciales.pdf`
 
-**Overfull \hbox:**
-
-- `Overfull \hbox (47.43184pt too wide) detected at line 510`
+- ✅ Sin Overfull \hbox.
 
 - ✅ Sin Underfull \hbox.
 
@@ -17,15 +15,15 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 2. Figuras, tablas y numeración
 
-- Figuras con label: **28**.
+- Figuras con label: **29**.
 - Tablas con label: **7**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **113**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **119**.
 
 - ✅ Sin referencias rotas.
 
 - ✅ Sin etiquetas duplicadas.
 
-- Imágenes referenciadas con `\includegraphics`: **32**.
+- Imágenes referenciadas con `\includegraphics`: **33**.
 - ✅ Todas las imágenes referenciadas existen.
 
 - ✅ Sin imágenes huérfanas.

@@ -64,6 +64,17 @@ python -m general.scripts.analysis
 # 4. Render every figure of both suites.
 python -m general.scripts.figures
 
+# 5. Random-player baseline (raw + normalised performance per sequence),
+#    replayed over the 64 empirical validation sequences; writes
+#    results/baseline/random_player_{sequence,normalised}_performance.png.
+python -m general.scripts.random_baseline
+python -m general.scripts.random_baseline --pkg pes_dqn --seed 7
+
+# 6. Agent-internals panels of pes_trf (entropy confidence + per-sequence
+#    performance) in the shared figure style; writes results/agent_internals/.
+python -m general.scripts.agent_internals
+python -m general.scripts.agent_internals --train-date 2026-05-02
+
 # (anytime) live progress snapshot during a sweep:
 python -m general.scripts.benchmark progress --suite individual
 python -m general.scripts.benchmark progress --suite individual --watch
@@ -82,18 +93,22 @@ python -m general.scripts.benchmark run --pkg pes_dqn --force
 general/
 ├── README.md                        # this file
 ├── __init__.py
-├── scripts/                         # six harness modules
+├── scripts/                         # eight harness modules
 │   ├── __init__.py
 │   ├── scenarios.py                 # perturbation catalogue + CSV synthesis
 │   ├── benchmark.py                 # cell execution + sweep + progress
 │   ├── analysis.py                  # matrices + statistics + Markdown report
 │   ├── plotting.py                  # shared figure primitives + statistics
-│   └── figures.py                   # every benchmark figure
+│   ├── figures.py                   # every benchmark figure
+│   ├── random_baseline.py           # random-player baseline figures
+│   └── agent_internals.py           # pes_trf confidence / performance panels
 ├── work/                            # runtime intermediates (per cell)
 │   └── <pkg>/
 │       ├── scenarios/<sid>/         # synthesised input CSVs
 │       └── outputs/<sid>/           # subprocess outputs + log
 └── results/
+    ├── baseline/                    # random_player_*.png
+    ├── agent_internals/             # trf_agent_*.png
     └── <suite>/                     # individual | ensemble
         ├── cells/<model>__<sid>.json    # one payload per benchmark cell
         ├── matrices/<metric>.csv        # model x scenario matrices

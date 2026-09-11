@@ -51,9 +51,9 @@ import numpy
 from .benchmark import (REFERENCE_MODEL, REFERENCE_SCENARIO, SUITES,
                         SUITE_PACKAGES, comparison_metrics_path, figures_dir,
                         load_cells, matrices_dir, summary_path)
-from .plotting import (ALPHA_LEVELS, BASE_LINEWIDTH, BEST_LINEWIDTH, PUB_RC,
-                       HeatmapSpec, cohen_d, heatmap, histogram_pmf,
-                       model_colour, read_matrix_csv, save_figure,
+from .plotting import (ALPHA_LEVELS, BASE_LINEWIDTH, BEST_LINEWIDTH, MEAN_LINESTYLE,
+                       MEAN_LINEWIDTH, PUB_RC, HeatmapSpec, cohen_d, heatmap,
+                       histogram_pmf, model_colour, read_matrix_csv, save_figure,
                        style_axes, symmetric_kl, welch_test)
 
 
@@ -298,7 +298,8 @@ def _render_universal(suite: str, cells: dict, models: "list[str]",
             axis.plot(numpy.arange(1, values.size + 1), values, color=colour,
                       linewidth=_linewidth(model, best),
                       zorder=3 if model == best else 2, label=model)
-            axis.axhline(values.mean(), color=colour, linestyle=':', linewidth=1.1)
+            axis.axhline(values.mean(), color=colour, linestyle=MEAN_LINESTYLE,
+                         linewidth=MEAN_LINEWIDTH)
         axis.set_title(scenario, fontsize=11)
         axis.set_xlabel('Secuencia ordenada')
         axis.set_ylim(0, 1.02)

@@ -499,13 +499,13 @@ Las cinco reglas se diferencian en c\'omo agregan estas cantidades.
     mismo voto ponderado y le suma un t\'ermino de acuerdo, uno de
     desacuerdo y el consenso de valores tipificados:
     \begin{equation}
-      \begin{aligned}
-      S(a) ={}& \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a]
+      \begin{gathered}
+      S(a) ={} \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a]
       \;+\; \beta_a \!\!\sum_{k:\,a_k=a} c_k
-      &{}-\; \beta_d \!\!\sum_{k:\,a_k\neq a} c_k
-      \;+\; \sum_{k} \hat Q_k(a)\, c_k
-      a_{\mathrm{cons}} ={}& \arg\max_a S(a)
-      \end{aligned}
+      \;-\; \beta_d \!\!\sum_{k:\,a_k\neq a} c_k
+      \;+\; \sum_{k} \hat Q_k(a)\, c_k \\
+      a_{\mathrm{cons}} ={} \arg\max_a S(a)
+      \end{gathered}
       \label{eq:ens-consensus}
     \end{equation}
     Con bono de acuerdo $\beta_a$ y penalizaci\'on de desacuerdo
@@ -620,8 +620,15 @@ $S_{\mathrm{peor}}$, la severidad acumulada con asignaci\'on nula en
 todos los \emph{trials}, y $S_{\mathrm{mejor}}$, la m\'inima severidad
 acumulada alcanzable con asignaciones enteras en $\{0,\ldots,10\}$ que
 respeten el presupuesto de $30$ recursos, obtenida por programaci\'on
-din\'amica sobre las ciudades de la secuencia. Si $S_{\mathrm{agente}}$
-es la severidad cruda del agente, la m\'etrica es
+din\'amica sobre las ciudades de la secuencia. Ambas referencias son
+contrafactuales y se calculan una vez finalizada la secuencia:
+$S_{\mathrm{peor}}$ simula la misma secuencia con el vector de acciones
+nulo, mientras que $S_{\mathrm{mejor}}$ utiliza la secuencia completa
+para hallar retrospectivamente su cota \'optima. Por tanto, ninguna
+interviene en la selecci\'on de acciones ni modifica la evoluci\'on del
+entorno; el agente decide solamente a partir de la informaci\'on disponible
+en cada \emph{trial}. Si $S_{\mathrm{agente}}$ es la severidad cruda del
+agente, la m\'etrica es:
 
 \begin{equation}
 \bar{r} =
@@ -630,10 +637,14 @@ es la severidad cruda del agente, la m\'etrica es
 \label{eq:normalised-severity-materials}
 \end{equation}
 
-de modo que $\bar{r}=0$ corresponde a no asignar recursos y
+De modo que $\bar{r}=0$ corresponde a no asignar recursos y
 $\bar{r}=1$ a la mejor asignaci\'on factible. El agente aleatorio se
 ubica entre ambos extremos y sirve de referencia independiente de
-todo aprendizaje.
+todo aprendizaje; no define $S_{\mathrm{peor}}$. La cota
+$S_{\mathrm{mejor}}$ tampoco sustituye al agente: presupone conocer de
+antemano todas las severidades de la secuencia y se emplea exclusivamente
+para evaluar, con informaci\'on retrospectiva, la calidad de las decisiones
+tomadas en l\'inea.
 
 \begin{figure}[!htb]
   \centering
@@ -646,6 +657,30 @@ todo aprendizaje.
   \label{fig:baseline-random}
 \end{figure}
 
+La Figura~\ref{fig:baseline-random-normalised} aplica la
+Ecuaci\'on~\eqref{eq:normalised-severity-materials} a la misma corrida
+de la Figura~\ref{fig:baseline-random}. El decisor aleatorio obtiene
+$\bar{r} = 0{,}670$ en promedio (desviaci\'on est\'andar $0{,}186$,
+rango $[0{,}164;\,0{,}950]$): al gastar el presupuesto sin criterio
+reduce parte de la severidad respecto de la inacci\'on, pero queda lejos
+del \'optimo factible en la mayor\'ia de las secuencias. Ambas figuras se
+generan con \texttt{general/scripts/random\_baseline.py} a partir de las
+constantes y los CSV de validaci\'on de \texttt{pes\_trf}, con semilla
+$42$.
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{random_player_normalised_performance.png}
+  \caption[Desempe\~no normalizado del decisor aleatorio]{Desempe\~no
+  normalizado $\bar{r}$ del decisor aleatorio en las mismas $64$
+  secuencias de la Figura~\ref{fig:baseline-random}. Las l\'ineas
+  horizontales marcan las cotas por secuencia: $\bar{r}=0$ equivale a la
+  asignaci\'on nula ($S_{\mathrm{peor}}$) y $\bar{r}=1$ al \'optimo
+  factible bajo el presupuesto ($S_{\mathrm{mejor}}$); la l\'inea
+  discontinua indica la media ($0{,}670$).}
+  \label{fig:baseline-random-normalised}
+\end{figure}
+
 \subsection{Variables internas del agente Transformer}\label{sec:agent-internals}
 
 La Figura~\ref{fig:trf-internals} expone variables registradas por el
@@ -653,14 +688,19 @@ script de entrenamiento de \texttt{pes\_trf} al evaluar el modelo
 reci\'en entrenado sobre las $64$ secuencias: la confianza por
 decisi\'on derivada de la entrop\'ia de los valores $Q$ (unos $360$
 \emph{trials}), su reescalado lineal al intervalo $[0,1]$, el desempe\~no
-normalizado por secuencia y su media acumulada. Estas trazas se retoman
+normalizado por secuencia y su media acumulada. Los cuatro paneles se
+renderizan con \texttt{general/scripts/agent\_internals.py} a partir de
+las confianzas guardadas por el entrenamiento (\texttt{confsrl}) y del
+desempe\~no por secuencia de la celda \texttt{sev\_base} del benchmark,
+con la misma paleta que las Figuras~\ref{fig:baseline-random}
+y~\ref{fig:baseline-random-normalised}. Estas trazas se retoman
 en el Cap.~\ref{sec:discussion} al discutir la relaci\'on entre la
 entrop\'ia y la noci\'on de confianza estudiada en decisi\'on
 humana~\citep{Boldt2015,Fleming2024}.
 
 \begin{figure}[!htb]
   \centering
-  \begin{subfigure}[t]{0.65\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_confidences.png}
     \caption[Confianza por decisi\'on]{Confianza basada en entrop\'ia de
@@ -669,7 +709,7 @@ humana~\citep{Boldt2015,Fleming2024}.
     \label{fig:trf-conf}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.65\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_remapped_confidences.png}
     \caption[Confianza reescalada]{Misma serie reescalada de forma lineal
@@ -677,7 +717,7 @@ humana~\citep{Boldt2015,Fleming2024}.
     \label{fig:trf-conf-remap}
   \end{subfigure}
   \\[0.3em]
-  \begin{subfigure}[t]{0.65\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_cumulative_performance.png}
     \caption[Media acumulada del desempe\~no]{Media acumulada del
@@ -686,7 +726,7 @@ humana~\citep{Boldt2015,Fleming2024}.
     \label{fig:trf-cum}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.65\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_normalised_performance.png}
     \caption[Desempe\~no normalizado por secuencia]{Desempe\~no normalizado
@@ -696,8 +736,10 @@ humana~\citep{Boldt2015,Fleming2024}.
   \caption[Variables internas del Transformer]{Variables registradas al
   evaluar el agente \texttt{pes\_trf} tras su entrenamiento. Los paneles
   superiores muestran la confianza basada en entrop\'ia por decisi\'on
-  (cruda y reescalada a $[0,1]$); los paneles inferiores, la media
-  acumulada y el desempe\~no normalizado por secuencia.}
+  (cruda y reescalada a $[0,1]$) en las $258$ decisiones con recursos
+  disponibles; los paneles inferiores, la media acumulada y el desempe\~no
+  normalizado por secuencia. La l\'inea punteada indica la media de cada
+  serie y la l\'inea continua superior la cota $S_{\mathrm{mejor}}$.}
   \label{fig:trf-internals}
 \end{figure}
 
