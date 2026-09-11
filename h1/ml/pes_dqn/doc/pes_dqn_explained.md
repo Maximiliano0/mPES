@@ -173,7 +173,7 @@ secuencias y devuelve **`mean_perf`** directamente; el estudio se crea con
   `inputs/<fecha>_BAYESIAN_OPT/best_params_<fecha>.json` (original).
 - Mejor modelo: `inputs/<fecha>_BAYESIAN_OPT/dqn_best_<fecha>.keras` y
   `inputs/dqn_model.keras` (espejo).
-- *Dashboard* en vivo: `utils/win/optuna_dashboard.ps1`.
+- *Dashboard* en vivo: `optuna-dashboard sqlite:///inputs/<fecha>_BAYESIAN_OPT/optuna_study_<fecha>.db`.
 
 ### 4.4 Mejores hiperparámetros encontrados (snapshot CONFIG.py)
 

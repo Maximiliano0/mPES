@@ -1,23 +1,24 @@
 # Update Package Documentation
 
-> Last updated: 2026-05-04
+> Last updated: 2026-09-11
 
-Read a target package's source code, then update and export its Markdown
+Read a target package's source code, then update its Markdown
 documentation so that it faithfully explains the current implementation.
 Also refresh the workspace-level `README.md` whenever the changes affect
 project-wide facts (package list, layout, dependencies, usage examples).
 
 ## Workspace layout
 
-Packages are grouped by algorithm family:
+Packages are grouped by algorithm family inside `h1/` (run `cd h1` first):
 
 - `tabular/` — `pes_base`, `pes_ql`, `pes_dql`.
 - `ml/`      — `pes_dqn`, `pes_rdqn`, `pes_a2c`, `pes_trf`.
-- `ens/`     — `pes_ens_sprb`, `pes_ens_accq`.
+- `ens/`     — `pes_ens`, `pes_ens_sprb`, `pes_ens_accq`, `pes_ens_trf_guard`,
+  `pes_ens_consensus`, `pes_ens_consensus_prior` (the last one has no `doc/` yet).
 
-Throughout this prompt, `<GROUP>` is the parent directory (`tabular` or
-`ml`) and `<PKG>` is the package short name. The export script accepts
-either a short name (`pes_dqn`) or a grouped name (`ml/pes_dqn`).
+Throughout this prompt, `<GROUP>` is the parent directory (`tabular`, `ml`
+or `ens`) and `<PKG>` is the package short name. Accept either a short name
+(`pes_dqn`) or a grouped name (`ml/pes_dqn`).
 
 ## Usage
 
@@ -35,6 +36,9 @@ Examples:
 @update-pkg-docs pes_rdqn       # ml/pes_rdqn
 @update-pkg-docs pes_ens_sprb   # ens/pes_ens_sprb
 @update-pkg-docs pes_ens_accq   # ens/pes_ens_accq
+@update-pkg-docs pes_ens_trf_guard   # ens/pes_ens_trf_guard
+@update-pkg-docs pes_ens_consensus   # ens/pes_ens_consensus
+@update-pkg-docs pes_ens        # ens/pes_ens
 @update-pkg-docs all
 ```
 

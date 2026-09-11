@@ -12,25 +12,26 @@
 
 </div>
 
-> This repository contains three experiment lines. The active benchmark workflow is in `h1/`; `h2/` remain experimental staging areas and are not part of the current benchmark report.
+> This repository contains two experiment lines. The active benchmark workflow is in `h1/`; `h2/` remains an experimental staging area and is not part of the current benchmark report. The LaTeX thesis that reports the `h1/` results lives in `writings/`.
 
 ---
 
 ## ✨ Current scope
 
 - 🧠 **Active benchmark line:** `h1/` with tabular, neural and ensemble training packages.
-- 🧪 **Experimental staging lines:** `h2/` (`tabular_conf/ql_conf`) remain out of the validated benchmark path.
-- 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over six individual models and six ensemble variants.
+- 🧪 **Experimental staging line:** `h2/` (`tabular_conf/ql_conf`, `tabular_conf/dql_conf`) remains out of the validated benchmark path.
+- 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over seven individual models and six ensemble variants.
 - 🔬 **Bayesian optimisation:** Optuna for the trainable variants.
 - 🌍 **Windows-first workflow:** Python 3.12 and the `win_mpes_env` environment.
 - 📚 **Package-level docs:** focused on the active models and their executable workflows, while legacy variants remain documented as archive material.
+- 📝 **Thesis:** [`writings/`](writings/) holds the LaTeX manuscript (`00_Main/Main.tex`, chapters in `01_Chapters/`, figures in `02_Images/`) and its audit script (`audit/audit.py`).
 
 ### Repository lines
 
 | Line | Status | Current package(s) |
 |------|--------|--------------------|
 | [`h1/`](h1/) | Active and validated | `tabular/`, `ml/`, `ens/`, `general/` |
-| [`h2/`](h2/) | Suspended / staging | `tabular_conf/ql_conf` |
+| [`h2/`](h2/) | Suspended / staging | `tabular_conf/ql_conf`, `tabular_conf/dql_conf` |
 
 ---
 
@@ -71,7 +72,8 @@
 | Path | Purpose |
 |------|---------|
 | [`h1/general/`](h1/general/) | Under Stress Experiments harness |
-| [`utils/`](utils/) | Windows scripts, requirements, lint config |
+| [`utils/`](utils/) | Requirements, lint/type-check config (`config/`), helper scripts (`scripts/`) |
+| [`writings/`](writings/) | LaTeX thesis and audit tooling |
 
 ---
 
@@ -95,6 +97,8 @@ python -m ens.pes_ens_sprb
 python -m ens.pes_ens_accq
 python -m ens.pes_ens_trf_guard
 python -m ens.pes_ens_consensus
+python -m ens.pes_ens_consensus_prior
+python -m ens.pes_ens
 ```
 
 ### Bayesian optimisation
@@ -111,7 +115,10 @@ python -m ens.pes_ens_sprb.ext.optimize_ens 50
 python -m ens.pes_ens_accq.ext.optimize_ens 50
 python -m ens.pes_ens_trf_guard.ext.optimize_ens 50
 python -m ens.pes_ens_consensus.ext.optimize_ens 50
+python -m ens.pes_ens_consensus_prior.ext.optimize_ens 50
 ```
+
+> `pes_ens` is inference-only and has no optimisation entry point.
 
 ---
 
@@ -132,7 +139,10 @@ The active repository documentation is centred on the executable packages in `h1
 | `pes_ens_accq` | [`pes_ens_accq_explained.md`](h1/ens/pes_ens_accq/doc/pes_ens_accq_explained.md) · [`pes_ens_accq_theory.md`](h1/ens/pes_ens_accq/doc/pes_ens_accq_theory.md) |
 | `pes_ens_trf_guard` | [`pes_ens_trf_guard_explained.md`](h1/ens/pes_ens_trf_guard/doc/pes_ens_trf_guard_explained.md) · [`pes_ens_trf_guard_theory.md`](h1/ens/pes_ens_trf_guard/doc/pes_ens_trf_guard_theory.md) |
 | `pes_ens_consensus` | [`pes_ens_consensus_explained.md`](h1/ens/pes_ens_consensus/doc/pes_ens_consensus_explained.md) · [`pes_ens_consensus_theory.md`](h1/ens/pes_ens_consensus/doc/pes_ens_consensus_theory.md) |
+| `pes_ens` | [`pes_ens_explained.md`](h1/ens/pes_ens/doc/pes_ens_explained.md) · [`pes_ens_theory.md`](h1/ens/pes_ens/doc/pes_ens_theory.md) |
 | general benchmark | [`h1/general/README.md`](h1/general/README.md) |
+
+> `pes_ens_consensus_prior` has no `doc/` directory yet; its behaviour is described in the consensus guides above plus the severity-prior parameters in its `config/CONFIG.py`.
 
 ---
 
@@ -155,6 +165,8 @@ cd h1
 python -m general.scripts.benchmark run --suite both
 python -m general.scripts.analysis
 python -m general.scripts.figures
+python -m general.scripts.random_baseline
+python -m general.scripts.agent_internals
 ```
 
 The full comparison is documented in

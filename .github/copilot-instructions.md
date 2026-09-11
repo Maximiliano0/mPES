@@ -1,15 +1,16 @@
 # GitHub Copilot Instructions
 
-> Last updated: 2026-09-02
+> Last updated: 2026-09-11
 
 ## Project Overview
 
 **mPES** (Multiple Pandemic Experiment Suite) is a multi-package Python
 workspace for reinforcement-learning experiments on a resource-allocation task
-(the "Pandemic Scenario"). The repository currently includes three experiment
-lines: `h1/` (active and validated), `h2/` (experimental and suspended), and
-`h3/` (prototype / research staging). Each line shares the same package
-scaffolding and implements one or more algorithmic variants.
+(the "Pandemic Scenario"). The repository currently includes two experiment
+lines: `h1/` (active and validated) and `h2/` (experimental and suspended).
+Each line shares the same package scaffolding and implements one or more
+algorithmic variants. The LaTeX thesis reporting the `h1/` results lives in
+`writings/`.
 
 ### `h1/` — active line
 
@@ -28,7 +29,7 @@ scaffolding and implements one or more algorithmic variants.
 | `ens/pes_ens_consensus` | Confidence consensus with agreement and disagreement terms | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `ens/pes_ens` | Weighted soft-voting ensemble (DQN + A2C + RDQN + TRF), inference-only | `ext/ensemble_model.py`, `ext/tools.py` |
 | `ens/pes_ens_consensus_prior` | Confidence consensus with severity-informed prior | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
-| `general/` | Cross-model Under Stress Experiments harness (22 scenarios × 6 models) | `scripts/orchestrate.py`, `scripts/aggregate.py`, `scripts/report.py` |
+| `general/` | Cross-model Under Stress Experiments harness (22 scenarios × 7 individual + 6 ensemble models) | `scripts/benchmark.py`, `scripts/analysis.py`, `scripts/figures.py`, `scripts/random_baseline.py`, `scripts/agent_internals.py` |
 
 > The ensemble implementations combine `pes_dqn`, `pes_rdqn`, and `pes_trf`.
 > `pes_ens_sprb` uses soft voting, `pes_ens_accq` uses action voting with
@@ -48,18 +49,14 @@ scaffolding and implements one or more algorithmic variants.
 | Package | Algorithm | Status |
 |---------|-----------|--------|
 | `tabular_conf/ql_conf` | Tabular Q-Learning + experimental configuration variants | Suspended — staging only |
-
-### `h3/` — prototype line
-
-| Package | Algorithm | Status |
-|---------|-----------|--------|
-| `tabular_uq/ql_uq` | Q-Learning + uncertainty quantification prototype | Experimental — not part of active benchmark |
+| `tabular_conf/dql_conf` | Double Q-Learning + warm-up + PBRS + confidence-modulated exploration | Suspended — staging only |
 
 ### Shared
 
 | Path | Contents |
 |------|----------|
-| `utils/` | Windows shell scripts (`win/`), lint/type-check config (`config/`), helper scripts (`scripts/`) |
+| `utils/` | Lint/type-check config (`config/`: `.pylintrc`, `pyrightconfig.json`, `.markdownlint.json`, `requirements.txt`), helper scripts (`scripts/`) |
+| `writings/` | LaTeX thesis (`00_Main/Main.tex`, `01_Chapters/`, `02_Images/`), audit script (`audit/audit.py`), compiled output in `out/` |
 
 ### Workspace directory structure
 
@@ -73,31 +70,27 @@ h1/                 # Active experiment line
 │   ├── pes_dqn/    #     Deep Q-Network
 │   ├── pes_rdqn/   #     Recurrent DQN (LSTM)
 │   ├── pes_a2c/    #     Advantage Actor-Critic
-│   ├── pes_trf/    #     Causal Transformer DQN
+│   └── pes_trf/    #     Causal Transformer DQN
+├── ens/            #   Ensembles over the trained ml/ agents
+│   ├── pes_ens/    #     Weighted soft-voting ensemble (best-performing, inference-only)
 │   ├── pes_ens_sprb/ #   Confidence-weighted soft voting ensemble
 │   ├── pes_ens_accq/ #   Confidence-weighted action/Q-value ensemble
 │   ├── pes_ens_trf_guard/ # Transformer-first confidence-gated ensemble
-│   └── pes_ens_consensus/ # Confidence consensus ensemble
-├── ens/pes_ens/    #   Weighted soft-voting ensemble (best-performing, inference-only)
-├── ens/pes_ens_consensus_prior/ # Confidence consensus with severity-informed prior
+│   ├── pes_ens_consensus/ # Confidence consensus ensemble
+│   └── pes_ens_consensus_prior/ # Confidence consensus with severity-informed prior
 └── general/        #   Cross-model Under Stress Experiments harness + comparison doc
 
 h2/                  # Experimental line (suspended)
-├── general/
-├── tabular_conf/
-│   └── ql_conf/    #   Experimental tabular Q-Learning variant
-└── README.md
+├── general/         #   Legacy harness scaffolding (orchestrate/aggregate/report)
+└── tabular_conf/
+    ├── ql_conf/    #   Experimental tabular Q-Learning variant
+    └── dql_conf/   #   Experimental Double Q-Learning variant
 
-h3/                  # Prototype line
-├── general/
-├── tabular_uq/
-│   └── ql_uq/      #   Research Q-Learning + UQ prototype
-└── README.md
-
-utils/               # Shared scripts and config (Windows only)
+utils/               # Shared config and helper scripts
+writings/            # LaTeX thesis + audit script
 ```
 
-> **`h1/`, `h2/` and `h3/` are plain directories, not Python packages** — none
+> **`h1/` and `h2/` are plain directories, not Python packages** — neither
 > has an `__init__.py` at its own level. Every `python -m ...` command below
 > must be run from the relevant experiment line, e.g. `cd h1; python -m tabular.pes_base`.
 
@@ -116,6 +109,8 @@ utils/               # Shared scripts and config (Windows only)
 | `ens/pes_ens_accq` | `python -m ens.pes_ens_accq` |
 | `ens/pes_ens_trf_guard` | `python -m ens.pes_ens_trf_guard` |
 | `ens/pes_ens_consensus` | `python -m ens.pes_ens_consensus` |
+| `ens/pes_ens_consensus_prior` | `python -m ens.pes_ens_consensus_prior` |
+| `ens/pes_ens` | `python -m ens.pes_ens` |
 
 ### Bayesian optimisation commands (from within `h1/`)
 
@@ -131,6 +126,25 @@ utils/               # Shared scripts and config (Windows only)
 | `ens/pes_ens_accq` | `python -m ens.pes_ens_accq.ext.optimize_ens [n_trials]` |
 | `ens/pes_ens_trf_guard` | `python -m ens.pes_ens_trf_guard.ext.optimize_ens [n_trials]` |
 | `ens/pes_ens_consensus` | `python -m ens.pes_ens_consensus.ext.optimize_ens [n_trials]` |
+| `ens/pes_ens_consensus_prior` | `python -m ens.pes_ens_consensus_prior.ext.optimize_ens [n_trials]` |
+
+### Under Stress Experiments harness (from within `h1/`)
+
+| Step | Command |
+|------|---------|
+| Run both suites (resumable) | `python -m general.scripts.benchmark run --suite both` |
+| Aggregate matrices + `report.md` | `python -m general.scripts.analysis` |
+| Render all figures | `python -m general.scripts.figures` |
+| Random-player baseline figures | `python -m general.scripts.random_baseline` |
+| `pes_trf` agent-internals panels | `python -m general.scripts.agent_internals` |
+
+### Thesis (from the repository root)
+
+```powershell
+cd writings
+python audit\audit.py          # audit + pdflatex/bibtex → writings/out/
+python audit\audit.py --no-tex # audit only
+```
 
 ### Common package layout
 
@@ -187,8 +201,8 @@ These must be set **before** launching optimisation or training processes:
 ### Path conventions
 
 - Use `os.path.join()` in Python code — never hard-code `/` or `\`.
-- Shell scripts under `utils/` are Windows-only (`.ps1`); do not add `.sh`
-  variants unless the project explicitly adds Linux support again.
+- Any shell scripts added under `utils/` must be Windows-only (`.ps1`); do not
+  add `.sh` variants unless the project explicitly adds Linux support again.
 - All paths in scripts must be **relative** to the workspace root.
 
 ### Key dependencies
@@ -262,7 +276,12 @@ functionality. Write unit tests where appropriate.
 - Every `doc/` directory contains `<pkg>_explained.md` (usage guide) and
   `<pkg>_theory.md` (theoretical foundations). Markdown is the canonical
   documentation format; do not create or maintain HTML exports.
-- The cross-package comparison document is at `h1/general/doc/comparacion_modelos.md`.
+  (`ens/pes_ens_consensus_prior` currently has no `doc/`.)
+- The cross-package comparison document is at `h1/general/doc/comparacion_modelos.md`;
+  the per-suite executive summaries are regenerated by `analysis.py` at
+  `h1/general/results/{individual,ensemble}/report.md`.
+- The thesis manuscript is in `writings/` (Spanish, LaTeX, `subfiles`);
+  its audit workflow is described in `.github/prompts/thesis-audit.prompt.md`.
 - When editing `.md` files, ensure relative links and image paths resolve
   from the file's own location, and that any in-file table of contents
   matches the actual headings (GitHub auto-generates anchors from headings).

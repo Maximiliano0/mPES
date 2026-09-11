@@ -406,8 +406,7 @@ sqlite:///inputs/<date>_BAYESIAN_OPT/optuna_study_<date>.db
 ```
 
 Esto permite reanudar con `--resume YYYY-MM-DD` o inspeccionar la
-historia con `optuna-dashboard` (ver
-[`utils/win/optuna_dashboard.ps1`](../../../../utils/win/optuna_dashboard.ps1)).
+historia con `optuna-dashboard sqlite:///inputs/<date>_BAYESIAN_OPT/optuna_study_<date>.db`.
 
 ---
 

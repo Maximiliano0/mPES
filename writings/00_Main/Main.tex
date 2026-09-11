@@ -39,6 +39,11 @@
 \renewcommand{\textfraction}{0.1}     % at least 10 % text when floats present
 \setcounter{bottomnumber}{3}          % up to 3 floats at page bottom
 \renewcommand{\floatpagefraction}{0.55} % avoid mostly empty float-only pages
+% Float-only pages: anchor floats to the top instead of centring them vertically
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpbot}{0pt plus 1fil}
+\makeatother
 \setlength{\floatsep}{8pt plus 2pt minus 2pt}
 \setlength{\textfloatsep}{10pt plus 2pt minus 3pt}
 \setlength{\intextsep}{10pt plus 2pt minus 3pt}

@@ -104,7 +104,7 @@ reducci\'on relativa de un modelo $m$ en la condici\'on de referencia es:
 \Delta_{\mathrm{rel}}(m) =
 \frac{(1 - \bar{r}_{\mathrm{ql}}) - (1 - \bar{r}_{m})}
 {1 - \bar{r}_{\mathrm{ql}}}
-= \frac{\bar{r}_{m} - \bar{r}_{\mathrm{ql}}}{1 - \bar{r}_{\mathrm{ql}}}.
+= \frac{\bar{r}_{m} - \bar{r}_{\mathrm{ql}}}{1 - \bar{r}_{\mathrm{ql}}}
 \label{eq:severity-reduction}
 \end{equation}
 
@@ -229,7 +229,7 @@ en la Sec.~\ref{sec:res-ensembles}.
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=1.0\linewidth]{ind_01_desempeno_por_escenario.png}
+  \includegraphics[width=\linewidth]{ind_01_desempeno_por_escenario.png}
   \caption[Desempe\~no medio por modelo y escenario (individual)]{Suite
   individual: desempe\~no normalizado medio $\bar r$ por modelo y
   escenario. Cada celda promedia $64$ secuencias; la primera columna es
@@ -239,7 +239,7 @@ en la Sec.~\ref{sec:res-ensembles}.
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=1.0\linewidth]{ind_02_degradacion_por_escenario.png}
+  \includegraphics[width=\linewidth]{ind_02_degradacion_por_escenario.png}
   \caption[Degradaci\'on frente a la referencia (individual)]{Suite
   individual: degradaci\'on $\Delta\bar r = \bar r_{\text{ref}} -
   \bar r_{\text{celda}}$ respecto de \texttt{sev\_base}. Los valores
@@ -249,7 +249,7 @@ en la Sec.~\ref{sec:res-ensembles}.
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=1.0\linewidth]{ind_03_welch_logp_por_escenario.png}
+  \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
   \caption[Significancia de Welch por escenario (individual)]{Suite
   individual: $\log_{10} p$ de la prueba $t$ de Welch entre los $64$
   valores por secuencia de cada celda y los de la referencia del mismo
@@ -261,7 +261,7 @@ en la Sec.~\ref{sec:res-ensembles}.
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=1.0\linewidth]{ind_04_kl_acciones_por_escenario.png}
+  \includegraphics[width=\linewidth]{ind_04_kl_acciones_por_escenario.png}
   \caption[Divergencia KL de acciones por escenario (individual)]{Suite
   individual: divergencia $D_{\mathrm{KL}}$ (Ecuaci\'on~\eqref{eq:kl})
   entre la distribuci\'on emp\'irica de acciones de cada escenario y la
@@ -344,7 +344,6 @@ combina la mayor media con la menor dispersi\'on ($0{,}045$).
   \label{fig:c-trf}
 \end{figure}
 
-\FloatBarrier
 \subsection{Resultados por escenario}\label{sec:per-seq-extended}
 
 La Figura~\ref{fig:extra-sev-skew} presenta curvas de desempe\~no por
@@ -362,7 +361,7 @@ perturbaci\'on.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=1.0\linewidth]{ind_05_curvas_por_familia.png}
+  \includegraphics[width=\linewidth]{ind_05_curvas_por_familia.png}
   \caption[Curvas por secuencia y familia de perturbaci\'on]{Suite
   individual: desempe\~no por secuencia ordenado de menor a mayor $\bar r$
   (Ec.~\eqref{eq:mean-perf}) en seis escenarios. Fila superior:
@@ -503,7 +502,7 @@ degradaciones $0{,}067$ y $0{,}063$ respectivamente.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.8\linewidth]{ens_06_curvas_extrapolacion.png}
+  \includegraphics[width=\linewidth]{ens_06_curvas_extrapolacion.png}
   \caption[Curvas de los ensambles en escenarios de extrapolaci\'on]{Curvas
   por secuencia de las seis variantes de ensamble en los tres escenarios
   de extrapolaci\'on; el trazo grueso corresponde a \texttt{pes\_ens} y
@@ -548,8 +547,8 @@ en la Tabla~\ref{tab:pairwise-stats}.}
 
 \begin{figure}[!htbp] 
   \centering  
-  \includegraphics[width=1.0\linewidth]{ens_01_desempeno_por_escenario.png}\\[0.4em]
-  \includegraphics[width=1.0\linewidth]{ens_02_degradacion_por_escenario.png}
+  \includegraphics[width=0.85\linewidth]{ens_01_desempeno_por_escenario.png}\\[0.4em]
+  \includegraphics[width=0.85\linewidth]{ens_02_degradacion_por_escenario.png}
   \caption[Desempe\~no y degradaci\'on de los ensambles]{Suite de
   ensambles: desempe\~no normalizado medio por escenario (arriba) y
   degradaci\'on respecto de la referencia (abajo) para las seis variantes
@@ -559,9 +558,9 @@ en la Tabla~\ref{tab:pairwise-stats}.}
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=1.0\linewidth]{ens_03_welch_logp_por_escenario.png}\\[0.4em]
-  \includegraphics[width=1.0\linewidth]{ens_07_cohen_d_por_escenario.png}\\[0.4em]
-  \includegraphics[width=1.0\linewidth]{ens_04_kl_acciones_por_escenario.png}
+  \includegraphics[width=0.85\linewidth]{ens_03_welch_logp_por_escenario.png}\\[0.4em]
+  \includegraphics[width=0.85\linewidth]{ens_07_cohen_d_por_escenario.png}\\[0.4em]
+  \includegraphics[width=0.85\linewidth]{ens_04_kl_acciones_por_escenario.png}
   \caption[Mapas estad\'isticos de los ensambles]{Suite de ensambles:
   $\log_{10}p$ de Welch (arriba), $d$ de Cohen (centro) y divergencia KL
   de acciones (abajo) por modelo y escenario. Welch cuantifica evidencia
@@ -574,8 +573,8 @@ en la Tabla~\ref{tab:pairwise-stats}.}
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.9\linewidth]{ens_13_pares_cohen_d.png}\\[0.4em]
-  \includegraphics[width=0.9\linewidth]{ens_12_pares_welch_logp.png}
+  \includegraphics[width=0.7\linewidth]{ens_13_pares_cohen_d.png}\\[0.4em]
+  \includegraphics[width=0.7\linewidth]{ens_12_pares_welch_logp.png}
   \caption[Contrastes pareados de los ensambles]{Contrastes pareados
   entre las seis variantes de ensamble: $d$ de Cohen arriba y
   $\log_{10}p$ de Welch abajo, calculados sobre los $21$ escenarios de
@@ -593,8 +592,8 @@ entre secuencias ($\sigma = 0{,}035$).
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.90\linewidth]{PES_ENS_results.png}
-  \caption[Resultados del ensemble]{Desempe\~no por secuencia, distribuci\'on,
+  \includegraphics[width=0.9\linewidth]{PES_ENS_results.png}
+  \caption[Resultados del ensamble]{Desempe\~no por secuencia, distribuci\'on,
   estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ens}.}
   \label{fig:c-ens}
 \end{figure}

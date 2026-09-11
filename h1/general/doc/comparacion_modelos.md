@@ -260,11 +260,13 @@ Todas las figuras comparten las convenciones definidas en `plotting.py`:
 | `pes_rdqn` | 0.899 | 0.889 | 0.010 | 0.068 | `sev_extrapolate_high` |
 | `pes_dql` | 0.896 | 0.877 | 0.019 | 0.111 | `sev_extrapolate_high` |
 | `pes_ql` | 0.887 | 0.871 | 0.015 | 0.124 | `sev_extrapolate_high` |
+| `pes_base` | 0.871 | 0.851 | 0.020 | 0.244 | `sev_extrapolate_high` |
 
 `pes_trf` obtiene el mejor rendimiento individual tanto en el baseline como
 en la media bajo estrés. `pes_dqn` y `pes_a2c` también presentan una media
 bajo estrés superior a su baseline. Los modelos tabulares son los más
-afectados por `sev_extrapolate_high`, especialmente `pes_ql`.
+afectados por `sev_extrapolate_high`; `pes_base`, sin optimización
+bayesiana, registra la mayor caída de toda la suite (0.244).
 
 ![Ranking de modelos individuales](../results/individual/figures/08_ranking_desempeno.png)
 
@@ -331,7 +333,7 @@ más retroceden frente a su baseline, ambos ante `sev_extrapolate_high`.
 - El mejor resultado individual es `pes_trf`, con media bajo estrés de 0.930.
 - El mejor resultado entre ensembles es `pes_ens`, con media bajo estrés de 0.939 y degradación máxima de 0.037.
 - `pes_ens_trf_guard` es el ensemble activo más próximo al Transformer individual en rendimiento bajo estrés.
-- La extrapolación alta de severidad es el principal punto débil de `pes_ql`, `pes_dql`, `pes_rdqn`, `pes_ens_sprb` y `pes_ens_accq`.
+- La extrapolación alta de severidad es el principal punto débil de `pes_base`, `pes_ql`, `pes_dql`, `pes_rdqn`, `pes_ens_sprb` y `pes_ens_accq`.
 - La extrapolación de longitud es el escenario crítico de `pes_dqn`, `pes_a2c`, `pes_trf` y de los ensembles con degradación media negativa.
 - En los contrastes pareados, `pes_trf` frente a `pes_ql` presenta $p \approx 1.63\times10^{-88}$ y $d \approx 0.78$.
 - Entre ensembles, `pes_ens` frente a `pes_ens_consensus` presenta $p \approx 2.77\times10^{-56}$ y $d \approx 0.62$.

@@ -1,7 +1,8 @@
 # dql_conf - Fundamento teórico
 
-> Paquete: **`tabular_conf.ql_conf`**. Este documento describe el Double
+> Paquete: **`tabular_conf.dql_conf`**. Este documento describe el Double
 > Q-Learning implementado en `h2/tabular_conf/dql_conf`.
+> Línea `h2/` suspendida: documentación de referencia, sin resultados activos.
 
 ## Índice
 
@@ -9,11 +10,11 @@
 2. [Double Q-Learning](#2-double-q-learning)
 3. [Warm-up y decaimiento](#3-warm-up-y-decaimiento)
 4. [Confianza y exploración](#4-confianza-y-exploración)
-5. PBRS
-6. Máscara de acciones
-7. Optimización bayesiana
-8. Observaciones
-9. Referencias
+5. [PBRS](#5-pbrs)
+6. [Máscara de acciones](#6-máscara-de-acciones)
+7. [Optimización bayesiana](#7-optimización-bayesiana)
+8. [Observaciones](#8-observaciones)
+9. [Referencias](#9-referencias)
 
 ## 1. MDP y Bellman
 
@@ -74,8 +75,10 @@ Con la tabla de selección `Q_sel`, el entrenamiento calcula exactamente:
 
 $$\text{uncertainty} = 1 - \text{confidence}^{\text{confidence\_exploration\_exponent}}$$
 
-$$\varepsilon_{state} = \varepsilon + \text{confidence\_exploration\_strength}
-\cdot \text{uncertainty} \cdot (1 - \varepsilon)$$
+$$
+\varepsilon_{state} = \varepsilon + \text{confidence\_exploration\_strength}
+\cdot \text{uncertainty} \cdot (1 - \varepsilon)
+$$
 
 El valor se recorta a `[0, 1]`. La baja confianza incrementa la probabilidad
 de explorar y la alta confianza deja epsilon más cerca de su valor base.

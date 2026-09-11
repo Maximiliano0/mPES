@@ -10,24 +10,37 @@ workflow.
 
 **Currently suspended.** No `h2` benchmark is active in the current workspace.
 This line is kept as a staging area for experimental work such as the
-`tabular_conf/ql_conf` package and related documentation scaffolding.
+`tabular_conf/ql_conf` and `tabular_conf/dql_conf` packages and related
+documentation scaffolding.
 
 ## Current structure
 
 ```text
 h2/
-├── general/                 # reserved for a future h2 benchmark
-├── tabular_conf/
-│   └── ql_conf/            # experimental tabular Q-Learning variant
-│       ├── config/
-│       ├── doc/
-│       ├── ext/
-│       ├── inputs/
-│       ├── outputs/
-│       └── src/
-└── README.md               # this file
+├── general/                 # legacy harness scaffolding (inactive)
+│   ├── README.md            # this file
+│   ├── doc/
+│   ├── results/
+│   ├── scripts/             # orchestrate / runner / aggregate / report / plotting
+│   └── work/
+└── tabular_conf/
+    ├── ql_conf/             # experimental tabular Q-Learning variant
+    │   ├── config/
+    │   ├── doc/
+    │   ├── ext/
+    │   ├── inputs/
+    │   ├── outputs/
+    │   └── src/
+    └── dql_conf/            # experimental Double Q-Learning variant
+        ├── config/
+        ├── doc/
+        ├── ext/
+        ├── inputs/
+        ├── outputs/
+        └── src/
 ```
 
 The benchmark scripts and comparative reports in this line are retained as
 scaffolding only. They should not be used to report active h2 results until
-that experiment is reactivated and the package catalogue is approved.
+that experiment is reactivated and the package catalogue is approved. The
+active harness lives in `h1/general/`.

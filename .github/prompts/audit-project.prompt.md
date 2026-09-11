@@ -1,6 +1,6 @@
 # Audit mPES — Code, Config, and Docs
 
-> Last updated: 2026-09-01
+> Last updated: 2026-09-11
 
 Perform a systematic correctness, consistency, and documentation audit of
 the mPES workspace.  Detect drift between code and documentation, stale
@@ -11,7 +11,7 @@ which case, surface it for review.
 ## Workspace layout
 
 Packages live under `h1/` (active line) or `h2/` (experimental, suspended),
-grouped under two top-level family directories:
+grouped under top-level family directories:
 
 ```
 h1/
@@ -19,11 +19,15 @@ h1/
     pes_base, pes_ql, pes_dql
   ml/        # deep / neural RL
     pes_dqn, pes_rdqn, pes_a2c, pes_trf
+  ens/       # ensembles over the trained ml/ agents
+    pes_ens, pes_ens_sprb, pes_ens_accq, pes_ens_trf_guard,
+    pes_ens_consensus, pes_ens_consensus_prior
   general/   # cross-model Under Stress Experiments harness + comparison doc
 h2/
-  tabular_uq/
-    ql_uq    # experimental Q-Learning + UQ (suspended)
-utils/       # shared scripts and config (Windows only)
+  tabular_conf/
+    ql_conf, dql_conf   # experimental tabular variants (suspended)
+utils/       # shared config and helper scripts
+writings/    # LaTeX thesis (audited separately by thesis-audit.prompt.md)
 ```
 
 > `h1/` and `h2/` are plain directories, not Python packages (no
@@ -49,7 +53,10 @@ the keyword `all` to audit the entire project.  Examples:
 @audit-project pes_rdqn       # h1/ml/pes_rdqn
 @audit-project pes_a2c        # h1/ml/pes_a2c
 @audit-project pes_trf        # h1/ml/pes_trf
-@audit-project ql_uq          # h2/tabular_uq/ql_uq (suspended — confirm with user before editing)
+@audit-project pes_ens        # h1/ens/pes_ens
+@audit-project pes_ens_sprb   # h1/ens/pes_ens_sprb (likewise accq, trf_guard, consensus, consensus_prior)
+@audit-project ql_conf        # h2/tabular_conf/ql_conf (suspended — confirm with user before editing)
+@audit-project dql_conf       # h2/tabular_conf/dql_conf (suspended — confirm with user before editing)
 @audit-project utils
 @audit-project all
 ```
@@ -61,6 +68,8 @@ this canonical order (skip `h2` unless the user explicitly includes it):
 ```text
 h1/tabular/pes_base → h1/tabular/pes_ql → h1/tabular/pes_dql →
 h1/ml/pes_dqn → h1/ml/pes_rdqn → h1/ml/pes_a2c → h1/ml/pes_trf →
+h1/ens/pes_ens_sprb → h1/ens/pes_ens_accq → h1/ens/pes_ens_trf_guard →
+h1/ens/pes_ens_consensus → h1/ens/pes_ens_consensus_prior → h1/ens/pes_ens →
 h1/general → utils
 ```
 
@@ -103,11 +112,12 @@ For each package in scope, read:
 | Support | `<LINE>/<GROUP>/<PKG>/src/*.py` |
 | Docs | `<LINE>/<GROUP>/<PKG>/doc/*.md` |
 
-Where `<LINE>` is `h1` (or `h2` for the suspended `tabular_uq/ql_uq`), and
-`<GROUP>` is `tabular` for `pes_base`/`pes_ql`/`pes_dql` and `ml` for every
-other `pes_*` package.
+Where `<LINE>` is `h1` (or `h2` for the suspended `tabular_conf/*`), and
+`<GROUP>` is `tabular` for `pes_base`/`pes_ql`/`pes_dql`, `ml` for
+`pes_dqn`/`pes_rdqn`/`pes_a2c`/`pes_trf`, `ens` for every `pes_ens*` package
+and `tabular_conf` for the `h2` packages.
 
-For `utils`, read `utils/scripts/`, `utils/win/`, `utils/config/`.
+For `utils`, read `utils/scripts/` and `utils/config/`.
 
 Run independent reads in parallel.  Do not read the same file twice.
 

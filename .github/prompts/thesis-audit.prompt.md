@@ -4,7 +4,7 @@ description: "Audita y compila la tesis LaTeX de writings/: ejecuta writings/aud
 
 # Thesis Audit (Fix Loop)
 
-> Last updated: 2026-09-10
+> Last updated: 2026-09-11
 
 Ejecuta la auditoría programática de la tesis y **corrige iterativamente
 cada problema** hasta que el informe quede limpio y el documento compile
@@ -21,7 +21,7 @@ sin errores. Este prompt es la fuente canónica del flujo de auditoría de
 ## Restricciones
 
 - **Escritura solo dentro de `writings/`**: correcciones en `.tex`, `.bib`
-  e imágenes de `writings/02_Images/`. Nunca modificar `h1/`, `h2/`, `h3/`,
+  e imágenes de `writings/02_Images/`. Nunca modificar `h1/`, `h2/`,
   `utils/` ni `.github/` desde este flujo.
 - No cambiar el preámbulo de `writings/00_Main/Main.tex` (paquetes,
   geometría, estilo) salvo que un error de compilación lo exija y no haya

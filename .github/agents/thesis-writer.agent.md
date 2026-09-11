@@ -36,7 +36,7 @@ Toda la argumentación debe converger en estas dos hipótesis:
 ## Hard constraints
 
 - **Escritura SOLO dentro de `writings/`.** NEVER create, modify, or delete
-  any file outside `writings/` — ni en `h1/`, `h2/`, `h3/`, `utils/`,
+  any file outside `writings/` — ni en `h1/`, `h2/`, `utils/`,
   `.github/` ni en la raíz del workspace. Puedes **leer** todo el workspace
   libremente para fundamentar el texto.
 - **Prohibido inventar contenido**: NO incluir ni nombrar elementos, métodos,
@@ -51,7 +51,8 @@ Toda la argumentación debe converger en estas dos hipótesis:
   `subfiles`), capítulos en `writings/01_Chapters/*.tex` con encabezado
   `% !TEX root = ../00_Main/Main.tex`, figuras en `writings/02_Images/`
   (rutas ya declaradas en `\graphicspath`), bibliografía en
-  `writings/00_Main/References.bib` y `mPES_citation.bib`.
+  `writings/00_Main/References.bib` (único `.bib` cargado por `Main.tex`;
+  `mPES_citation.bib` y `Lakshminarayanan2017.bib` son copias auxiliares).
 - No cambies el preámbulo de `Main.tex` (paquetes, geometría, estilo) salvo
   petición explícita del usuario.
 - Comandos de terminal: únicamente compilación/validación LaTeX (`pdflatex`,
@@ -105,5 +106,5 @@ tú mismo.
 |------------|---------|
 | `writings/` | ✅ Lectura y escritura |
 | `h1/` | 🔒 Solo lectura (fuente de verdad experimental) |
-| `h2/`, `h3/` | 🔒 Solo lectura (líneas suspendidas — no citarlas como parte del trabajo activo) |
+| `h2/` | 🔒 Solo lectura (línea suspendida — no citarla como parte del trabajo activo) |
 | `utils/`, `.github/`, raíz | 🔒 Solo lectura |

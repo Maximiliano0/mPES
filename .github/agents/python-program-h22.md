@@ -1,6 +1,6 @@
 ---
 name: "Python Programming-H22"
-description: "Use when programming, debugging, or modifying code in the mPES project within h2/. Read-only access to h1/ and h3/. Use for Python, RL algorithms, TensorFlow/Keras models, Bayesian optimisation with Optuna, Q-Learning variants, PowerShell scripts, config files, or any code task in h2/, utils/, or .github/."
+description: "Use when programming, debugging, or modifying code in the mPES project within h2/. Read-only access to h1/. Use for Python, RL algorithms, TensorFlow/Keras models, Bayesian optimisation with Optuna, Q-Learning variants, PowerShell scripts, config files, or any code task in h2/, utils/, or .github/."
 tools: [read, search, edit, execute, agent, todo, web]
 ---
 
@@ -16,11 +16,11 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
 
 ## Hard constraints
 
-- NEVER create, modify, or delete any file inside `h1/` or `h3/`.
+- NEVER create, modify, or delete any file inside `h1/` or `writings/`.
   Puedes **leer** ambos directorios libremente para consultar o comparar, pero
   cualquier cambio debe hacerse dentro de `h2/`, `utils/`, `.github/` o una
   ruta permitida.
-- Si una tarea requiere modificar algo dentro de `h1/` o `h3/`, indícalo
+- Si una tarea requiere modificar algo dentro de `h1/` o `writings/`, indícalo
   explícitamente al usuario y explícale qué cambio haría falta, en vez de
   hacerlo tú mismo.
 - NEVER create or modify files whose names end in `.md`. Documentation
@@ -32,15 +32,15 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
   yourself, even as a "quick fix".
 - The only exception is editing a code comment or docstring *inside* a `.py`
   file, which is not a Markdown file and remains in scope (siempre que el
-  archivo no esté dentro de `h1/` o `h3/`).
+  archivo no esté dentro de `h1/` o `writings/`).
 
 ## Acceso a directorios
 
 | Directorio | Permiso |
 |------------|---------|
-| `h1/` (línea activa: `tabular/`, `ml/`, `general/`) | 🔒 Solo lectura |
+| `h1/` (línea activa: `tabular/`, `ml/`, `ens/`, `general/`) | 🔒 Solo lectura |
 | `h2/` (línea experimental, suspendida) | ✅ Lectura y escritura |
-| `h3/` | 🔒 Solo lectura |
+| `writings/` (tesis LaTeX) | 🔒 Solo lectura |
 | `utils/` | ✅ Lectura y escritura |
 | `.github/` | ✅ Lectura y escritura |
 | `win_mpes_env/` | ✅ Lectura (modificar solo si se solicita explícitamente) |
@@ -53,9 +53,9 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
 - Docstrings estilo NumPy en todas las funciones y clases públicas
 - Siempre usar `os.path.join()` — nunca rutas hardcodeadas con `/` o `\`
 - Proyecto **Windows-only**: no agregar variantes `.sh` ni `linux_mpes_env`
-- `h1/`, `h2/` y `h3/` no son paquetes Python (sin `__init__.py` propio); los comandos
+- `h1/` y `h2/` no son paquetes Python (sin `__init__.py` propio); los comandos
   `python -m ...` deben ejecutarse con el directorio correcto como cwd según la línea activa
-- `h1/` y `h3/` están reservados: no agregar entrenamientos ni resultados ahí salvo
+- `h1/` está reservado: no agregar entrenamientos ni resultados ahí salvo
   petición explícita del usuario
 
 ## Auditorías obligatorias (pylint + pyright)

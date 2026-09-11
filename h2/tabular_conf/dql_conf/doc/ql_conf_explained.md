@@ -1,10 +1,9 @@
-# ql_conf - Guía de uso e implementación
+# dql_conf - Guía de uso e implementación
 
-Documentación actual de `tabular_conf.ql_conf`.# ql_conf - Guía de uso e implementación
-
-> Paquete: **`tabular_conf.ql_conf`**. Implementa Double Q-Learning con
+> Paquete: **`tabular_conf.dql_conf`**. Implementa Double Q-Learning con
 > decaimiento exponencial de epsilon, warm-up, PBRS y exploración modulada
 > por confianza.
+> Línea `h2/` suspendida: documentación de referencia, sin resultados activos.
 
 ## Índice
 
@@ -19,7 +18,7 @@ Documentación actual de `tabular_conf.ql_conf`.# ql_conf - Guía de uso e imple
 
 ## 1. Qué hace el paquete
 
-`ql_conf` es el agente tabular del escenario Pandemic. Sus componentes son:
+`dql_conf` es el agente tabular del escenario Pandemic. Sus componentes son:
 
 1. **Double Q-Learning**: mantiene dos tablas independientes, `Q_A` y `Q_B`,
    para desacoplar la selección y evaluación de la acción siguiente.
@@ -47,12 +46,12 @@ Los comandos se ejecutan desde `h2/`, con `win_mpes_env` activado:
 
 | Acción | Comando |
 |---|---|
-| Ejecutar el experimento completo | `python -m tabular_conf.ql_conf` |
-| Entrenar el agente | `python -m tabular_conf.ql_conf.ext.train_rl` |
-| Entrenar con episodios personalizados | `python -m tabular_conf.ql_conf.ext.train_rl 1000000` |
-| Optimizar, 50 trials por defecto | `python -m tabular_conf.ql_conf.ext.optimize_rl` |
-| Optimizar con N trials | `python -m tabular_conf.ql_conf.ext.optimize_rl 100` |
-| Reanudar una optimización | `python -m tabular_conf.ql_conf.ext.optimize_rl 100 --resume 2026-04-21` |
+| Ejecutar el experimento completo | `python -m tabular_conf.dql_conf` |
+| Entrenar el agente | `python -m tabular_conf.dql_conf.ext.train_rl` |
+| Entrenar con episodios personalizados | `python -m tabular_conf.dql_conf.ext.train_rl 1000000` |
+| Optimizar, 50 trials por defecto | `python -m tabular_conf.dql_conf.ext.optimize_rl` |
+| Optimizar con N trials | `python -m tabular_conf.dql_conf.ext.optimize_rl 100` |
+| Reanudar una optimización | `python -m tabular_conf.dql_conf.ext.optimize_rl 100 --resume 2026-04-21` |
 
 `optimize_rl.py` también acepta `--out-dir PATH` y `--storage URL`.
 
@@ -170,6 +169,7 @@ h2/tabular_conf/dql_conf/
 ├── ext/
 │   ├── pandemic.py
 │   ├── tools.py
+│   ├── repro.py
 │   ├── optimize_rl.py
 │   └── train_rl.py
 ├── inputs/

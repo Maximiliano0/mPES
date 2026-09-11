@@ -4,20 +4,21 @@
 
 **Cross-model under-stress evaluation under 22 perturbation scenarios.**
 
-[![Models](https://img.shields.io/badge/models-12-blue.svg)](#scope)
+[![Models](https://img.shields.io/badge/models-13-blue.svg)](#scope)
 [![Scenarios](https://img.shields.io/badge/scenarios-22-blueviolet.svg)](#scenario-catalogue)
-[![Cells](https://img.shields.io/badge/cells-264-success.svg)](#scope)
+[![Cells](https://img.shields.io/badge/cells-286-success.svg)](#scope)
 [![Output](https://img.shields.io/badge/figures-PNG-orange.svg)](#heatmaps-publication-quality)
 
 </div>
 
-> **Purpose** — Generalise and benchmark six individual mPES agents and six
+> **Purpose** — Generalise and benchmark seven individual mPES agents and six
 > ensemble variants under a 22-scenario matrix of severity / length / joint /
 > structural perturbations to expose each model's limitations and identify
 > the most robust one within each suite.
 
-The benchmark stores two comparable suites: `individual` contains the six
-individual agents and `ensemble` contains the six ensemble variants. Both
+The benchmark stores two comparable suites: `individual` contains the seven
+individual agents (`pes_base`, `pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`,
+`pes_a2c`, `pes_trf`) and `ensemble` contains the six ensemble variants. Both
 suites use the same scenario catalogue and seed. All six ensemble variants —
 including `pes_ens` and `pes_ens_consensus_prior` — are part of the active
 benchmark; `pes_ens` is the best-performing ensemble in the current results.
@@ -28,9 +29,9 @@ benchmark; `pes_ens` is the best-performing ensemble in the current results.
 
 | Aspect | Value |
 |---|---|
-| Models evaluated | 12: 6 individual + 6 ensemble models |
+| Models evaluated | 13: 7 individual + 6 ensemble models |
 | Scenarios | 22 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural) |
-| Cells | 12 × 22 = **264** |
+| Cells | 13 × 22 = **286** |
 | `n` per cell | 64 sequences (single seed = 42) |
 | Retraining | **None** — pure inference on existing artefacts |
 
@@ -93,7 +94,9 @@ python -m general.scripts.benchmark run --pkg pes_dqn --force
 general/
 ├── README.md                        # this file
 ├── __init__.py
-├── scripts/                         # eight harness modules
+├── doc/
+│   └── comparacion_modelos.md       # cross-suite comparison report
+├── scripts/                         # seven harness modules
 │   ├── __init__.py
 │   ├── scenarios.py                 # perturbation catalogue + CSV synthesis
 │   ├── benchmark.py                 # cell execution + sweep + progress
@@ -220,7 +223,7 @@ For each `(model, scenario)`:
 
 ## Reproducibility
 
-* Single seed (`42`) for all CSV synthesis ensures all 12 models see the
+* Single seed (`42`) for all CSV synthesis ensures all 13 models see the
   exact same severity / length sequences within a scenario.
 * Each cell's JSON records the workspace-relative paths to the
   subprocess log, the package's results JSON, and the responses file.

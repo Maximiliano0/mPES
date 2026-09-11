@@ -1,6 +1,6 @@
 # Lint & Type-Check (Fix Loop)
 
-> Last updated: 2026-09-01
+> Last updated: 2026-09-11
 
 Run the mandatory quality gates on a package and **iteratively fix every
 issue in source code** until both tools report zero problems. This prompt
@@ -18,10 +18,15 @@ files the way a user invokes a slash command.
   - `h1` tabular family: `tabular/pes_base`, `tabular/pes_ql`, `tabular/pes_dql`.
   - `h1` deep-learning family: `ml/pes_dqn`, `ml/pes_rdqn`, `ml/pes_a2c`,
     `ml/pes_trf`.
+  - `h1` ensemble family: `ens/pes_ens`, `ens/pes_ens_sprb`,
+    `ens/pes_ens_accq`, `ens/pes_ens_trf_guard`, `ens/pes_ens_consensus`,
+    `ens/pes_ens_consensus_prior`.
   - `h1` benchmark harness: `general`.
-  - `h2` (suspended): `tabular_uq/ql_uq`.
+  - `h2` (suspended): `tabular_conf/ql_conf`, `tabular_conf/dql_conf`.
   - Shared helpers: `utils` (checked from the workspace root, not from
     inside `h1/` or `h2/`).
+  - Thesis audit script: `writings/audit/audit.py` (checked from the
+    workspace root; see `thesis-audit.prompt.md`).
 
   If only the short name is provided (e.g. `pes_dqn`), resolve it to its
   group directory (`ml/pes_dqn`) inside `h1/` unless the user specifies `h2`.
