@@ -75,8 +75,10 @@ Transformer.
 
 \subsection{Ensambles y confianza en la decisi\'on conjunta}\label{sec:ens-best}
 
-Los seis ensambles combinan los mismos tres miembros
-(\texttt{pes\_dqn}, \texttt{pes\_rdqn}, \texttt{pes\_trf}) y todos
+Los seis ensambles comparten los miembros
+\texttt{pes\_dqn}, \texttt{pes\_rdqn} y \texttt{pes\_trf} ---las cinco
+variantes optimizables a\~naden el actor de \texttt{pes\_a2c} con peso
+reducido--- y todos
 ponderan a cada miembro por su confianza $c_k = 1-H_{\mathrm{norm}}(p_k)$
 (Sec.~\ref{sec:methods}). Lo que cambia entre ellos es la regla que
 convierte esas cantidades en una acci\'on. Esto permite leer la suite de

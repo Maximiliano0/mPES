@@ -495,16 +495,32 @@ def compile_latex() -> dict:
                 except PermissionError:
                     pass  # archivo en uso; se queda en MAIN_DIR
 
-    # Renombrar y mover PDF a OUT_DIR
+    # Renombrar y mover PDF a OUT_DIR.
+    # En Windows, el archivo PDF puede quedar bloqueado por un visor externo
+    # (p. ej. PDF open in editor). En ese caso, intentamos copiarlo a OUT_DIR
+    # y dejamos el original si no se puede borrar sin bloquear el pipeline.
     src_pdf  = MAIN_DIR / "Main.pdf"
     pdf_name = None
     if src_pdf.exists():
         slug     = _pdf_slug()
         dest_pdf = OUT_DIR / f"{slug}.pdf"
-        if dest_pdf.exists():
-            dest_pdf.unlink()
-        shutil.move(str(src_pdf), str(dest_pdf))
-        pdf_name = dest_pdf.name
+        for _ in range(5):
+            try:
+                if dest_pdf.exists():
+                    dest_pdf.unlink()
+                shutil.move(str(src_pdf), str(dest_pdf))
+                pdf_name = dest_pdf.name
+                break
+            except PermissionError:
+                time.sleep(0.5)
+        else:
+            try:
+                if dest_pdf.exists():
+                    dest_pdf.unlink()
+                shutil.copy2(str(src_pdf), str(dest_pdf))
+                pdf_name = dest_pdf.name
+            except PermissionError:
+                pdf_name = dest_pdf.name if dest_pdf.exists() else None
 
     return {
         "returncode": final.returncode,

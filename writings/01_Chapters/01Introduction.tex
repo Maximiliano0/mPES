@@ -12,7 +12,7 @@ recursos limitados a lo largo del tiempo.
 El entorno de experimentaci\'on \textbf{mPES} surge como una plataforma para
 comparar sistem\'aticamente arquitecturas de Aprendizaje por Refuerzo
 para este tipo de escenarios. La crisis pand\'emica se
-utiliza como banco de pruebas: un caso concreto, exigente y
+utiliza como banco de pruebas ya que es un caso concreto, exigente y
 reproducible que permite estudiar la adaptabilidad de los agentes
 frente a din\'amicas no lineales, informaci\'on incierta y condiciones
 de evaluaci\'on distintas a las del entrenamiento. Para ello, mPES extiende
@@ -22,14 +22,14 @@ BCI-NE Lab de la Universidad de Essex~\citep{BCINE2022}.
 \subsection{Motivaci\'on}\label{sec:motivacion}
 
 La crisis sanitaria provocada por el COVID--19 ofrece un caso
-representativo de este tipo de decisiones. Gobiernos, hospitales y
+representativo de este tipo de escenarios. Gobiernos, hospitales y
 cadenas log\'isticas debieron ponderar beneficios inmediatos contra
 costos a largo plazo, mientras que cada asignaci\'on alteraría la
-evoluci\'on posterior del sistema. En este trabajo, la pandemia no se
+evoluci\'on posterior del sistema sanitario. En este trabajo, la pandemia no se
 considera el l\'imite del problema, sino el escenario experimental que
 permite observar y medir esas propiedades. La investigaci\'on busca
 as\'i evaluar qu\'e modelos matem\'aticos y computacionales producen
-decisiones m\'as adaptativas en escenarios complejos y secuenciales.
+decisiones con mayor adaptabilidad en escenarios secuenciales complejos.
 
 El enfoque metodol\'ogico de esta tesis sigue la disciplina propia
 de la ingenier\'ia: trazabilidad de cada
@@ -43,8 +43,7 @@ com\'un y el procedimiento de ejecuci\'on reproducible est\'an pensados para est
 
 \subsection{Definici\'on del Problema}\label{sec:problema}
 
-El entorno computacional desarrollado implementa, como escenario de
-prueba, una crisis pand\'emica donde un tomador de decisiones (un agente de RL) debe distribuir un
+En una crisis pand\'emica, un tomador de decisiones (un agente de RL) debe distribuir un
 \emph{presupuesto limitado} de recursos m\'edicos o log\'isticos entre
 diversas ciudades afectadas simult\'aneamente. Tres rasgos
 cualitativos definen el escenario: la \emph{din\'amica acumulativa}
@@ -52,12 +51,12 @@ cualitativos definen el escenario: la \emph{din\'amica acumulativa}
 subsiguientes), la \emph{intervenci\'on temprana} (los recursos
 asignados generan un impacto sostenido que premia a los modelos
 capaces de anticiparla) y una \emph{regla de evoluci\'on} lineal con
-saturaci\'on en cero,
+saturaci\'on en cero:
 \[
     S_i' = \max\bigl(0,\; \beta\, S_i - \alpha\, a_i\bigr)
     \qquad \alpha = 0{,}4 \quad \beta = 1 + \alpha = 1{,}4
 \]
-donde $S_i$ es la severidad de la ciudad $i$ antes de la decisi\'on,
+Donde $S_i$ es la severidad de la ciudad $i$ antes de la decisi\'on,
 $a_i \in \{0,\ldots,10\}$ los recursos asignados, $\alpha$ la eficacia
 de cada unidad de recurso y $\beta$ el factor de crecimiento por paso.
 La formulaci\'on completa como MDP (\emph{Markov Decision Process}) finito y el
@@ -104,16 +103,9 @@ Las principales contribuciones de esta tesis son:
     \texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} y
     \texttt{pes\_ens\_trf\_guard}), con \texttt{pes\_base} como
     referencia tabular sin optimizaci\'on.
-    \item Dos matrices de evaluaci\'on de $6 \times 22 = 132$
-    celdas, con una condici\'on de referencia y $21$
-    condiciones de perturbaci\'on, que someten cada agente a cambios
-    sistem\'aticos de severidad, longitud, conjuntos y estructurales,
-    junto con un protocolo de evaluaci\'on estad\'istica unificado ($d$ de Cohen,
-    $t$ de Welch y divergencia KL entre pol\'iticas).
     \item La integraci\'on de la \textbf{entrop\'ia de Shannon} como
     medida de confianza de la decisi\'on: registrada por secuencia para
-    \texttt{pes\_trf} como estudio de caso y empleada como factor de
-    ponderaci\'on de los miembros en los seis ensambles, planteada por
+    cada agente individual y empleada como factor de ponderaci\'on de los miembros en los seis ensambles, planteada por
     analog\'ia con las teor\'ias neurocognitivas de la confianza humana.
     \item Una implementaci\'on reproducible para Windows, con Python 3.12,
     TensorFlow 2.21 y artefactos de evaluaci\'on organizados por suite.
@@ -121,7 +113,7 @@ Las principales contribuciones de esta tesis son:
 
 \subsection{Estructura del Documento}
 
-El resto del documento se organiza como sigue. La
+El resto del documento se organiza de la siguiente forma. La
 Secci\'on~\ref{sec:background} introduce el marco te\'orico
 (MDPs, Q-Learning, redes recurrentes, atenci\'on, ensembles,
 entrop\'ia de Shannon). La Secci\'on~\ref{sec:soa} presenta el
@@ -131,7 +123,7 @@ cuantificaci\'on de incertidumbre). La
 Secci\'on~\ref{sec:methods} describe la metodolog\'ia: el escenario
 pand\'emico, las doce variantes evaluadas y el procedimiento
 experimental. La Secci\'on~\ref{sec:results} reporta los resultados
-emp\'iricos. La Secci\'on~\ref{sec:discussion} interpreta esos
+obtenidos. La Secci\'on~\ref{sec:discussion} interpreta esos
 resultados a la luz de las hip\'otesis y la
 Secci\'on~\ref{sec:conclusion} cierra el trabajo.
 

@@ -8,7 +8,7 @@ La presente investigaci\'on se sit\'ua en la intersecci\'on de la
 epidemiolog\'ia computacional~\citep{Kuhl2021}, la
 neurociencia cognitiva de la confianza y el aprendizaje profundo
 secuencial. La literatura reciente muestra inter\'es en sistemas de
-soporte de decisiones que, adem\'as de optimizar una m\'etrica de
+soporte para la toma de decisiones que, adem\'as de optimizar una m\'etrica de
 rendimiento, informen sobre la \emph{confianza} de sus decisiones.
 
 \subsection{Fundamentos neurocognitivos de la confianza algor\'itmica}
@@ -31,8 +31,7 @@ personas y sistemas artificiales, de modo que la confianza y la
 adaptaci\'on constituyen propiedades relevantes del equipo
 completo~\citep{Nijjar2025}.
 
-La contribuci\'on de mPES en este punto consiste en trasladar esa
-pregunta al plano algor\'itmico: en lugar de una medida fisiol\'ogica,
+La contribuci\'on de mPES en este punto consiste en trasladar estas inquietudes al plano algor\'itmico: en lugar de una medida fisiol\'ogica,
 se utiliza la entrop\'ia de Shannon (Ecuaci\'on~\ref{eq:shannon}) de la
 distribuci\'on de acciones como indicador de incertidumbre del agente.
 Se trata de una analog\'ia funcional; el trabajo no mide se\~nales
@@ -52,7 +51,10 @@ mundo real~\citep{SuttonBarto2018}.
     aprendizaje con aproximadores no lineales. El operador $\max$ del
     blanco de Q-Learning introduce un sesgo de sobreestimaci\'on que
     Double Q-Learning~\citep{Hasselt2010} mitiga al desacoplar la
-    selecci\'on y la evaluaci\'on de la acci\'on.
+    selecci\'on y la evaluaci\'on de la acci\'on; Double
+    DQN~\citep{Hasselt2016} traslada este desacople al caso profundo
+    reutilizando la red objetivo como evaluador, y es la regla que
+    adoptan los agentes DQN de mPES.
     \item \textbf{Estabilizaci\'on del entrenamiento.} En los agentes
     profundos de mPES se emplean el optimizador Adam~\citep{Kingma2015},
     recorte de la norma del gradiente y un esquema de exploraci\'on
@@ -96,7 +98,7 @@ medida de incertidumbre asociada a cada decisi\'on permite se\~nalar
 los casos en los que el modelo distribuye su preferencia entre varias
 acciones, lo que resulta \'util para priorizar la supervisi\'on
 humana. En esta tesis esa medida se obtiene de la entrop\'ia de la
-salida del Transformer causal; su relaci\'on con la incertidumbre
+salida de los agentes; su relaci\'on con la incertidumbre
 humana se plantea como analog\'ia y no como equivalencia.
 
 \subsection{Generalizaci\'on bajo perturbaciones controladas}
