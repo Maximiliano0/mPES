@@ -4,10 +4,12 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
-- ✅ Compilación exitosa — **71 páginas**.
+- ✅ Compilación exitosa — **74 páginas**.
 - 📄 PDF: `out/mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-Secuenciales.pdf`
 
-- ✅ Sin Overfull \hbox.
+**Overfull \hbox:**
+
+- `Overfull \hbox (47.43184pt too wide) detected at line 510`
 
 - ✅ Sin Underfull \hbox.
 
@@ -17,7 +19,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **28**.
 - Tablas con label: **7**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **111**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **113**.
 
 - ✅ Sin referencias rotas.
 

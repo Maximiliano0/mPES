@@ -158,7 +158,7 @@ $31\times11\times10\times11=37\,510$ valores. Las acciones son
 $a\in\{0,\ldots,10\}$ y las que exceden los recursos disponibles se
 enmascaran. En cada paso se selecciona una acci\'on mediante una
 pol\'itica $\varepsilon$-greedy, se observa $(s',r)$ y se actualiza
-la entrada visitada. Para Q-Learning est\'andar, la actualizaci\'on es
+la entrada visitada. Para Q-Learning est\'andar, la actualizaci\'on es:
 
 \begin{equation}
 Q(s,a) \leftarrow Q(s,a) + \alpha
@@ -166,7 +166,7 @@ Q(s,a) \leftarrow Q(s,a) + \alpha
 \label{eq:tabular-update-materials}
 \end{equation}
 
-salvo en un estado terminal, donde se utiliza $Q(s,a)\leftarrow r$.
+Salvo en un estado terminal, donde se utiliza $Q(s,a)\leftarrow r$.
 Las tablas se inicializan con valores de una distribuci\'on uniforme
 $\mathcal{U}(-1,1)$ y la evaluaci\'on utiliza la acci\'on v\'alida con
 mayor valor. Esta especificaci\'on, junto con la din\'amica del entorno
@@ -183,21 +183,11 @@ es $42$. Este agente no emplea Double Q-Learning, warm-up ni PBRS y
 sirve de l\'inea de base inferior.
 
 \paragraph{\texttt{pes\_ql}} Mantiene la misma tabla y actualizaci\'on,
-pero a\~nade un bucle externo de Optuna/TPE. Cada configuraci\'on se
-entrena y se eval\'ua sobre el mismo conjunto de validaci\'on; la
-funci\'on objetivo es el desempe\~no normalizado medio. Optuna muestrea
-$\alpha\in[0{,}05,0{,}40]$ en escala logar\'itmica,
-$\gamma\in[0{,}85,0{,}999]$, $\varepsilon_0\in[0{,}50,1{,}00]$,
-$\varepsilon_{\min}\in[0{,}01,0{,}15]$ y entre $500\,000$ y
-$1\,200\,000$ episodios, en incrementos de $50\,000$. La pol\'itica
+pero a\~nade un bucle externo de Optuna/TPE. La pol\'itica
 de exploraci\'on utiliza el mismo decaimiento lineal que el modelo base;
-el resto del algoritmo permanece sin modificaciones. El mejor de los
-$100$ ensayos (\'indice $63$, semilla de entrenamiento $106$) fij\'o
-$\alpha=0{,}2862$, $\gamma=0{,}8587$,
-$\varepsilon_0=0{,}6813$, $\varepsilon_{\min}=0{,}0437$ y $550\,000$
-episodios, con un desempe\~no normalizado medio de $0{,}887$ sobre las
-$64$ secuencias de validaci\'on; con esa configuraci\'on se reentren\'o
-el agente final.
+el resto del algoritmo permanece sin modificaciones, fijándose los hiperpar\'ametros en
+$\alpha=0{,}2862$, $\gamma=0{,}8587$, $\varepsilon_0=0{,}6813$, $\varepsilon_{\min}=0{,}0437$ y $550\,000$
+episodios.
 
 \paragraph{\texttt{pes\_dql}} Implementa Double
 Q-Learning~\citep{Hasselt2010}, una fase de calentamiento de
@@ -222,10 +212,7 @@ durante $wN$ episodios y alcanza $\varepsilon_{\min}$ en $qN$, con:
 
 Donde $t$ es el \'indice de episodio, $N$ el n\'umero total de
 episodios, $w$ la fracci\'on de calentamiento y $q$ la fracci\'on en la
-que se alcanza $\varepsilon_{\min}$. Los hiperpar\'ametros se fijaron
-con un estudio Optuna/TPE de $100$ ensayos ($14$ completados y $86$
-podados); el mejor (\'indice $3$, semilla de entrenamiento $46$)
-obtuvo un desempe\~no normalizado medio de $0{,}896$ con
+que se alcanza $\varepsilon_{\min}$. Se fijan los  hiperpar\'ametros en
 $\alpha=0{,}1132$, $\gamma=0{,}9777$, $\varepsilon_0=0{,}5998$,
 $\varepsilon_{\min}=0{,}0327$, $N=360\,000$, $w=0{,}0260$
 ($9\,373$ episodios de calentamiento), $q=0{,}6430$ ($\varepsilon_{\min}$
@@ -241,7 +228,7 @@ actualizar la tabla completando las definiciones del agente son:
 
 \subsubsection{Familia profunda}
 
-\paragraph{Representaci\'on del estado.} Los cuatro agentes profundos
+\paragraph{Representaci\'on del estado} Los cuatro agentes profundos
 reciben el estado en forma normalizada: cada componente entera de
 $(R, t, S)$ se divide por su cota superior en el entorno, de modo que
 la entrada de la red es $s = [R/30,\; t/10,\; S/9] \in [0,1]^{3}$. Se
@@ -251,21 +238,20 @@ agentes tabulares indexan la tabla directamente con los enteros. El
 escalado responde a un requisito num\'erico del entrenamiento por
 descenso de gradiente. Sin \'el, la componente $R$ (rango $0$--$30$)
 dominar\'ia a $t$ y $S$ (rangos $0$--$10$ y $0$--$9$) en las
-activaciones de la primera capa, y los rangos dispares interact\'uan
-mal con la inicializaci\'on de los pesos y con la tasa de aprendizaje
+activaciones de la primera capa, y los rangos dispares interactuar\'ian
+mal con la inicializaci\'on de los pesos y la tasa de aprendizaje
 \'unica de Adam; llevar las tres entradas a $[0,1]$ equilibra su
 contribuci\'on inicial y evita ajustar la escala por separado para cada
 una. La transformaci\'on se aplica en todas las fases del ciclo de vida
 del modelo ---entrenamiento (tanto al elegir la acci\'on como al
 almacenar las transiciones en el \emph{buffer}), optimizaci\'on
 bayesiana, evaluaci\'on determinista, barrido de escenarios e
-inferencia de los ensambles, que reproducen la misma funci\'on al cargar
+inferencia de los ensambles los cuales reproducen la misma funci\'on al cargar
 los modelos guardados--- y, por ser una funci\'on determinista de las
 cotas del entorno, no introduce fuga de informaci\'on entre
-entrenamiento y evaluaci\'on. La factibilidad de las acciones se
-recupera invirti\'endola ($R = 30\,s_1$) donde hace falta enmascarar.
+entrenamiento y evaluaci\'on.
 
-\paragraph{Efecto sobre la comparaci\'on entre familias.} La
+\paragraph{Efecto sobre la comparaci\'on entre familias} La
 normalizaci\'on es interna al agente y no altera ninguna de las
 magnitudes sobre las que se construye el an\'alisis. El entorno, la
 din\'amica de la Ecuaci\'on~\eqref{eq:transicion}, la recompensa, el
@@ -279,14 +265,15 @@ con las mismas referencias $S_{\mathrm{peor}}$ y $S_{\mathrm{mejor}}$
 por secuencia, con independencia de c\'omo el agente represente su
 entrada. En consecuencia, la media $\bar r$ por escenario, los $64$
 valores por secuencia sobre los que operan la prueba de Welch, la $d$ de
-Cohen y la KL de rendimiento, y las distribuciones emp\'iricas de
+Cohen y la KL de rendimiento, y las distribuciones de
 acciones sobre las que se calcula la KL de acciones son directamente
-comparables entre agentes tabulares, profundos y ensambles: la
+comparables entre agentes tabulares, profundos y ensambles. La
 normalizaci\'on cambia la parametrizaci\'on de la funci\'on de valor,
 no la escala ni el significado de lo que se mide.
 
-\paragraph{Configuraci\'on compartida.} Los cuatro agentes utilizan el
-optimizador Adam, inicializaci\'on Glorot uniforme y recorte de la
+\paragraph{Configuraci\'on compartida} Los cuatro agentes utilizan el
+optimizador Adam~\citep{Kingma2015}, inicializaci\'on Glorot
+uniforme~\citep{Glorot2010} y recorte de la
 norma global del gradiente. La semilla de entrenamiento de cada modelo
 es $42 + i + 1$, con $i$ el \'indice del mejor ensayo de su estudio
 Optuna, y se aplica a la inicializaci\'on de pesos, al muestreo del
@@ -316,15 +303,12 @@ Ecuaci\'on~\ref{eq:ddqn-target}. La arquitectura es
 \texttt{Input}$(3) \!\to\! \texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\!
 \texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\! \texttt{Dense}(11)$
 ($5\,131$ par\'ametros), y la salida contiene un valor $Q$ para cada
-una de las $11$ acciones. El estudio Optuna comprendi\'o $47$ ensayos;
-el mejor (\'indice $41$, semilla $84$, desempe\~no medio $0{,}894$)
-fij\'o tasa de aprendizaje $0{,}001508$, $\gamma=0{,}9634$,
+Los hiperpar\'ametros se fijaron en: tasa de aprendizaje $0{,}001508$, $\gamma=0{,}9634$,
 $\varepsilon_0=0{,}9627$, $\varepsilon_{\min}=0{,}0691$, $w=0{,}2779$,
 $q=0{,}6290$, lotes de $128$ transiciones, \emph{buffer} de
 $20\,000$, sincronizaci\'on de la red objetivo cada $C=1\,000$ pasos,
 recorte de gradiente en $3{,}953$, $\kappa=0{,}0226$ e inicio del
-aprendizaje en $f=0{,}1615$ ($3\,230$ transiciones). El modelo final
-se entren\'o durante $40\,000$ episodios.
+aprendizaje en $f=0{,}1615$ ($3\,230$ transiciones) y $40\,000$ episodios.
 
 \paragraph{\texttt{pes\_rdqn}} Variante recurrente que incorpora una
 capa LSTM~\citep{Hochreiter1997} entre la entrada y el cabezal de
@@ -341,16 +325,14 @@ ventana se procesa de manera independiente, tanto en la interacci\'on
 con el entorno como en las transiciones muestreadas del \emph{buffer},
 que almacenan la ventana completa. Esto permite incorporar la
 evoluci\'on reciente de la severidad, que no est\'a contenida en el
-estado instant\'aneo $s_t$. El estudio Optuna se lanz\'o con $20$
-ensayos; el mejor (\'indice $14$, semilla $57$, desempe\~no medio
-$0{,}926$) fij\'o tasa de aprendizaje $0{,}002415$, $\gamma=0{,}9719$,
+estado instant\'aneo $s_t$. Los hiperpar\'ametros se fijaron en: tasa de aprendizaje $0{,}002415$, $\gamma=0{,}9719$,
 $\varepsilon_0=0{,}8883$, $\varepsilon_{\min}=0{,}0887$, $w=0{,}1237$,
 $q=0{,}5990$, lotes de $64$ transiciones, \emph{buffer} de $60\,000$,
 $C=2\,000$ pasos, recorte de gradiente en $3{,}475$,
-$\kappa=0{,}00263$ y $f=0{,}2021$ ($12\,128$ transiciones). La
+$\kappa=0{,}00263$, $f=0{,}2021$ ($12\,128$ transiciones) y $30\,000$ episodios. La
 longitud de ventana $W=6$ y la anchura de la LSTM ($64$) se mantienen
 fijas en la configuraci\'on del paquete y no forman parte del espacio
-optimizado. El modelo final se entren\'o durante $30\,000$ episodios.
+optimizado.
 
 \paragraph{\texttt{pes\_a2c}} Actor y cr\'itico como redes
 independientes: \texttt{Input}$(3) \!\to\! \texttt{Dense}(128,\!\mathrm{ReLU})
@@ -361,18 +343,15 @@ independientes: \texttt{Input}$(3) \!\to\! \texttt{Dense}(128,\!\mathrm{ReLU})
 (Ecuaci\'on~\ref{eq:pg}) se calcula sobre la distribuci\'on restringida
 a las acciones factibles~\citep{Mnih2016}. El actor produce
 directamente una distribuci\'on de probabilidad sobre las $11$
-acciones. El estudio Optuna comprendi\'o $100$ ensayos; el mejor
-(\'indice $89$, semilla $132$, desempe\~no medio $0{,}887$) fij\'o
-tasas de aprendizaje iniciales $0{,}000648$ (actor) y $0{,}004299$
+acciones. Los hiperpar\'ametros se fijaron en: tasas de aprendizaje iniciales $0{,}000648$ (actor) y $0{,}004299$
 (cr\'itico), ambas con decaimiento coseno a lo largo del entrenamiento
 hasta el $23{,}75\,\%$ del valor inicial, $\gamma=0{,}8545$,
 coeficiente de entrop\'ia $\beta_H = 0{,}00528$, $\lambda = 0{,}9135$
 en GAE, recorte de la norma del gradiente en $1{,}200$ para ambas
-redes, PBRS con $\kappa = 0{,}1527$, una penalizaci\'on de gasto
+redes, PBRS con $\kappa = 0{,}1527$, $125\,000$ episodios, una penalizaci\'on de gasto
 $r \leftarrow r - 0{,}01039\,a$ y un sesgo inicial de $-1{,}389$ en el
 logit de la acci\'on $a=10$. Las ventajas GAE se tipifican por lote
-antes de la actualizaci\'on del actor. El modelo final se entren\'o
-durante $125\,000$ episodios.
+antes de la actualizaci\'on del actor. 
 
 \paragraph{\texttt{pes\_trf}} Codificador Transformer causal de
 $L = 2$ bloques, $h = 4$ cabezas de atenci\'on con dimensi\'on de clave
@@ -381,7 +360,8 @@ $16$, anchura de representaci\'on $d_{\mathrm{model}} = 32$, capa
 es la misma ventana
 de $W = 6$ estados normalizados que en \texttt{pes\_rdqn}, proyectada
 a $d_{\mathrm{model}}$ y sumada a un vector posicional fijo por
-posici\'on, muestreado con inicializaci\'on Glorot uniforme a partir
+posici\'on, muestreado con inicializaci\'on Glorot
+uniforme~\citep{Glorot2010} a partir
 de la semilla y no actualizado durante el entrenamiento (sus $192$
 valores no forman parte de los par\'ametros entrenables del modelo);
 la m\'ascara causal (Ecuaci\'on~\ref{eq:causal-attention})
@@ -391,9 +371,7 @@ $32$ unidades con ReLU y una capa de salida con los $11$ valores $Q$
 ($27\,019$ par\'ametros entrenables). Cada
 bloque aplica atenci\'on de producto escalar escalado
 (Ecuaci\'on~\ref{eq:attention})~\citep{Vaswani2017} con conexi\'on
-residual y normalizaci\'on de capa. El estudio Optuna comprendi\'o
-$10$ ensayos; el mejor (\'indice $2$, semilla $45$, desempe\~no medio
-$0{,}925$) fij\'o tasa de aprendizaje $0{,}000215$, $\gamma=0{,}9234$,
+residual y normalizaci\'on de capa. Los hiperpar\'ametros se fijaron en: tasa de aprendizaje $0{,}000215$, $\gamma=0{,}9234$,
 $\varepsilon_0=0{,}8651$, $\varepsilon_{\min}=0{,}0838$, $w=0{,}2428$,
 $q=0{,}5333$, lotes de $128$ transiciones, \emph{buffer} de $30\,000$,
 $C=500$ pasos, recorte de gradiente en $4{,}170$, PBRS desactivado
@@ -401,9 +379,7 @@ $C=500$ pasos, recorte de gradiente en $4{,}170$, PBRS desactivado
 del codificador ($W$, $d_{\mathrm{model}}$, $h$, dimensi\'on de clave,
 anchura \emph{feed-forward}, $L$ y \emph{dropout}) se mantiene fija en
 la configuraci\'on del paquete al reentrenar el modelo final, que se
-entren\'o durante $30\,000$ episodios. Sobre los valores $Q$ factibles
-se calcula la medida de confianza basada en entrop\'ia descrita en la
-Sec.~\ref{sec:background}.
+entren\'o durante $30\,000$ episodios.
 
 \subsubsection{Ensambles}
 
@@ -419,29 +395,44 @@ cuarto miembro, cuya salida \emph{softmax} se usa directamente como
 distribuci\'on sobre acciones, mientras que \texttt{pes\_ens} lo
 mantiene deshabilitado.
 
-\paragraph{\texttt{pes\_ens}.} Votaci\'on ponderada en inferencia
+\paragraph{\texttt{pes\_ens}} Votaci\'on ponderada en inferencia
 sobre los modelos guardados de \texttt{pes\_dqn}, \texttt{pes\_rdqn} y
-\texttt{pes\_trf}. Cada miembro
-$k$ convierte sus valores $Q$ en una distribuci\'on mediante una
-\emph{softmax} con temperatura $\tau$,
-$p_k(a \mid s) = \mathrm{softmax}\bigl(Q_k(s, \cdot)/\tau\bigr)_a$, y el
-ensamble combina
+\texttt{pes\_trf} ($K = 3$). Cada miembro
+$k$ convierte sus valores $Q$ en una distribuci\'on mediante la
+\emph{softmax} con temperatura $\tau = 15$ de la
+Ecuaci\'on~\eqref{eq:ens-softmax}, restringida a las acciones
+factibles $a \le R$ y renormalizada, y de ella se obtiene su confianza
+$c_k = 1 - H_{\mathrm{norm}}(p_k)$. La distribuci\'on del ensamble es
+el voto suave de la Ecuaci\'on~\eqref{eq:soft-voting} con pesos
+din\'amicos que combinan un peso base $w_k$ con la confianza del
+miembro:
 \begin{equation}
-  \pi_{\mathrm{ens}}(a \mid s) \;\propto\;
-    \sum_{k=1}^{K} w_k \, p_k(a \mid s),
-  \qquad \sum_k w_k = 1,
+  p_{\mathrm{ens}}(a \mid s) \;=\;
+  \frac{\eta(a)\,\sum_{k=1}^{K} w_k\,(0{,}1 + c_k)\, p_k(a \mid s)}
+       {\sum_{a' \le R} \eta(a')\,\sum_{k=1}^{K} w_k\,(0{,}1 + c_k)\, p_k(a' \mid s)}
+  \qquad
+  \eta(a) = \begin{cases} 0{,}3 & a = 0,\ R > 0 \\ 1 & \text{en otro caso} \end{cases}
   \label{eq:ens-soft}
 \end{equation}
-con $K = 3$, $\tau = 15$ y pesos base $0{,}18$, $0{,}90$ y $5{,}0$
-(renormalizados) para DQN, RDQN y Transformer respectivamente. La
-implementaci\'on a\~nade heur\'isticas fijadas en la configuraci\'on:
-las acciones que exceden los recursos disponibles se enmascaran y la
-distribuci\'on se renormaliza; el peso de cada miembro se multiplica
-por $0{,}1 + c_k$, con $c_k = 1 - H_{\mathrm{norm}}(p_k)$ su propia
-confianza; la distribuci\'on resultante se mezcla, con peso $0{,}17$,
-con una gaussiana centrada en la severidad actual ($\sigma = 3$); y una
-cota de seguridad fuerza $a = \lfloor S/2 \rfloor$ cuando $S \geq 6$ y
-la acci\'on elegida es menor que esa cota. El paquete no introduce
+Donde los pesos base son $0{,}18$, $0{,}90$ y $5{,}0$ para DQN, RDQN y
+Transformer, renormalizados para que sumen $1$, y $\eta$ aten\'ua la
+acci\'on nula mientras quedan recursos. A continuaci\'on
+$p_{\mathrm{ens}}$ se mezcla con un prior gaussiano centrado en la
+severidad actual, como en la Ecuaci\'on~\eqref{eq:ens-prior}, con
+$w_\pi = 0{,}17$ y $\sigma_S = 3$, y la mezcla se renormaliza sobre las
+acciones factibles. La acci\'on ejecutada es la moda de esa
+distribuci\'on final:
+\begin{equation}
+  a_{\mathrm{ens}} \;=\; \arg\max_{a \le R}\; p_{\mathrm{ens}}(a \mid s),
+  \label{eq:ens-action}
+\end{equation}
+Es decir, la asignaci\'on entera $a \in \{0, \ldots, R\}$ con mayor
+probabilidad; no se muestrea de la distribuci\'on. Una cota de
+seguridad sustituye esa elecci\'on por $a = \lfloor S/2 \rfloor$ cuando
+$S \geq 6$, la acci\'on elegida es menor que esa cota y la cota es
+factible. La confianza que el ensamble reporta para la decisi\'on es
+$1 - H_{\mathrm{norm}}(p_{\mathrm{ens}})$, calculada sobre la misma
+distribuci\'on final. El paquete no introduce
 par\'ametros entrenables, en l\'inea con la formulaci\'on de
 \emph{deep ensembles} de Lakshminarayanan
 \emph{et al.}~\citep{Lakshminarayanan2017}. Las cinco variantes
@@ -451,9 +442,9 @@ restantes (\texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq},
 (votaci\'on por acci\'on con desempate por valores $Q$ normalizados,
 consenso ponderado por confianza con t\'erminos de acuerdo y
 desacuerdo, o prioridad del Transformer con respaldo condicional) y
-exponen sus par\'ametros a un m\'odulo \texttt{optimize\_ens.py}.
+exponen sus par\'ametros a un m\'odulo \texttt{optimize\_ens.py} el cual realiza una optimización bayesiana.
 
-\paragraph{Variantes de combinaci\'on.} Las cinco variantes adicionales
+\paragraph{Variantes de combinaci\'on} Las cinco variantes adicionales
 comparten la misma notaci\'on. Para cada miembro $k$ se obtiene, sobre
 las acciones factibles, la distribuci\'on $p_k(a\mid s)$
 (Ecuaci\'on~\eqref{eq:ens-softmax}; para el actor de A2C se toma su
@@ -474,12 +465,12 @@ Las cinco reglas se diferencian en c\'omo agregan estas cantidades.
 
 \begin{itemize}
     \item \texttt{pes\_ens\_sprb} (voto suave probabil\'istico) promedia
-    las distribuciones ponderadas por el peso efectivo,
+    las distribuciones ponderadas por el peso efectivo:
     \begin{equation}
       p_{\mathrm{sprb}}(a\mid s) =
-      \frac{\sum_{k} \tilde w_k\, p_k(a\mid s)}{\sum_{k} \tilde w_k},
+      \frac{\sum_{k} \tilde w_k\, p_k(a\mid s)}{\sum_{k} \tilde w_k}
       \qquad
-      a_{\mathrm{sprb}} = \arg\max_a p_{\mathrm{sprb}}(a\mid s).
+      a_{\mathrm{sprb}} = \arg\max_a p_{\mathrm{sprb}}(a\mid s)
       \label{eq:ens-sprb}
     \end{equation}
     Par\'ametros optimizados: $\tau = 0{,}1044$, $\rho = 0{,}4677$,
@@ -489,16 +480,16 @@ Las cinco reglas se diferencian en c\'omo agregan estas cantidades.
     $Q$) acumula un voto ponderado por la acci\'on preferida de cada
     miembro y resuelve empates con la suma de valores tipificados:
     \begin{equation}
-      V(a) = \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a],
+      V(a) = \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a]
       \qquad
-      T(a) = \sum_{k} \hat Q_k(a),
+      T(a) = \sum_{k} \hat Q_k(a)
       \label{eq:ens-accq-vote}
     \end{equation}
     \begin{equation}
       a_{\mathrm{accq}} =
-      \arg\max_{a \in \mathcal{V}} T(a),
+      \arg\max_{a \in \mathcal{V}} T(a)
       \qquad
-      \mathcal{V} = \{a : V(a)=\textstyle\max_{a'} V(a')\}.
+      \mathcal{V} = \{a : V(a)=\textstyle\max_{a'} V(a')\}
       \label{eq:ens-accq-action}
     \end{equation}
     Par\'ametros optimizados: $\rho = 1{,}005$,
@@ -511,14 +502,13 @@ Las cinco reglas se diferencian en c\'omo agregan estas cantidades.
       \begin{aligned}
       S(a) ={}& \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a]
       \;+\; \beta_a \!\!\sum_{k:\,a_k=a} c_k
-      \;-\; \beta_d \!\!\sum_{k:\,a_k\neq a} c_k \\
-      &+\; \sum_{k} \hat Q_k(a)\, c_k,
-      \qquad
-      a_{\mathrm{cons}} = \arg\max_a S(a),
+      &{}-\; \beta_d \!\!\sum_{k:\,a_k\neq a} c_k
+      \;+\; \sum_{k} \hat Q_k(a)\, c_k
+      a_{\mathrm{cons}} ={}& \arg\max_a S(a)
       \end{aligned}
       \label{eq:ens-consensus}
     \end{equation}
-    con bono de acuerdo $\beta_a$ y penalizaci\'on de desacuerdo
+    Con bono de acuerdo $\beta_a$ y penalizaci\'on de desacuerdo
     $\beta_d$. La regla favorece las acciones apoyadas por miembros
     confiados y penaliza el desacuerdo. Par\'ametros optimizados:
     $\beta_a = 0{,}1649$, $\beta_d = 0{,}3647$, $\rho = 0{,}4026$,
@@ -533,9 +523,9 @@ Las cinco reglas se diferencian en c\'omo agregan estas cantidades.
     gaussiano centrado en la severidad actual $S$,
     \begin{equation}
       \pi_{\mathrm{prior}}(a\mid s) \propto
-      \exp\!\left[-\frac{(a-S)^2}{2\sigma_S^2}\right],
+      \exp\!\left[-\frac{(a-S)^2}{2\sigma_S^2}\right]
       \qquad
-      S(a) = (1-w_\pi)\,\tilde S(a) + w_\pi\,\pi_{\mathrm{prior}}(a\mid s),
+      S(a) = (1-w_\pi)\,\tilde S(a) + w_\pi\,\pi_{\mathrm{prior}}(a\mid s)
       \label{eq:ens-prior}
     \end{equation}
     con peso del prior $w_\pi$ y anchura $\sigma_S$. Una cota de
@@ -548,9 +538,9 @@ Las cinco reglas se diferencian en c\'omo agregan estas cantidades.
     \item \texttt{pes\_ens\_trf\_guard} (compuerta del Transformer)
     calcula una compuerta log\'istica sobre la confianza del Transformer,
     \begin{equation}
-      g = \frac{1}{1+\exp\!\bigl[-\kappa\,(c_{\mathrm{trf}}-\tau_g)\bigr]},
+      g = \frac{1}{1+\mathrm{e}^{-\kappa\,(c_{\mathrm{trf}}-\tau_g)}}
       \qquad
-      f(a) = \sum_{k} \tilde w_k\, p_k(a\mid s),
+      f(a) = \sum_{k} \tilde w_k\, p_k(a\mid s)
       \label{eq:ens-guard}
     \end{equation}
     y selecciona la acci\'on del Transformer cuando $g\geq 0{,}5$ y la del
@@ -614,7 +604,7 @@ $S_i^{\mathrm{final}}$ es la severidad de la ciudad $i$ al terminar la
 secuencia, se define
 
 \begin{equation}
-S_{\mathrm{cruda}} = \sum_{i=1}^{T} S_i^{\mathrm{final}},
+S_{\mathrm{cruda}} = \sum_{i=1}^{T} S_i^{\mathrm{final}}
 \label{eq:raw-severity-materials}
 \end{equation}
 
@@ -636,7 +626,7 @@ es la severidad cruda del agente, la m\'etrica es
 \begin{equation}
 \bar{r} =
 \frac{S_{\mathrm{peor}} - S_{\mathrm{agente}}}
-{S_{\mathrm{peor}} - S_{\mathrm{mejor}}},
+{S_{\mathrm{peor}} - S_{\mathrm{mejor}}}
 \label{eq:normalised-severity-materials}
 \end{equation}
 
@@ -647,7 +637,7 @@ todo aprendizaje.
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.9\linewidth]{random_player_sequence_performance.png}
+  \includegraphics[width=0.8\linewidth]{random_player_sequence_performance.png}
   \caption[Severidad cruda del decisor aleatorio]{Severidad final acumulada
   $S_{\mathrm{cruda}}$ del decisor aleatorio en cada una de las $64$
   secuencias de validaci\'on. La escala vertical conserva las unidades
@@ -670,7 +660,7 @@ humana~\citep{Boldt2015,Fleming2024}.
 
 \begin{figure}[!htb]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.65\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_confidences.png}
     \caption[Confianza por decisi\'on]{Confianza basada en entrop\'ia de
@@ -679,7 +669,7 @@ humana~\citep{Boldt2015,Fleming2024}.
     \label{fig:trf-conf}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.65\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_remapped_confidences.png}
     \caption[Confianza reescalada]{Misma serie reescalada de forma lineal
@@ -687,7 +677,7 @@ humana~\citep{Boldt2015,Fleming2024}.
     \label{fig:trf-conf-remap}
   \end{subfigure}
   \\[0.3em]
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.65\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_cumulative_performance.png}
     \caption[Media acumulada del desempe\~no]{Media acumulada del
@@ -696,7 +686,7 @@ humana~\citep{Boldt2015,Fleming2024}.
     \label{fig:trf-cum}
   \end{subfigure}
   \hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.65\textwidth}
     \centering
     \includegraphics[width=\linewidth]{trf_agent_normalised_performance.png}
     \caption[Desempe\~no normalizado por secuencia]{Desempe\~no normalizado
@@ -717,7 +707,7 @@ El banco de pruebas \texttt{general/} (v\'ease
 \texttt{general/README.md}) define un \textbf{cat\'alogo de
 $22$ escenarios} que eval\'uan cada modelo entrenado a lo largo
 de cuatro ejes de variaci\'on con respecto a la distribuci\'on
-emp\'irica de entrenamiento (etiquetada \texttt{sev\_base}).
+ de entrenamiento (etiquetada \texttt{sev\_base}).
 El armaz\'on de benchmark (\texttt{general/scripts/benchmark.py}) ejecuta
 el producto cartesiano de seis modelos por 22 escenarios en cada suite,
 es decir, $132$ celdas por suite y $264$ en total, evaluando
@@ -731,7 +721,7 @@ Las cuatro familias responden a preguntas distintas:
 
 \begin{itemize}
   \item \textbf{Severidad ($9$ escenarios).} Sustituyen la
-  distribuci\'on emp\'irica de severidades iniciales por familias
+  distribuci\'on de severidades iniciales por familias
   param\'etricas (uniforme, gaussianas truncadas de media baja, media y
   alta, Weibull con cola superior pesada, Beta sesgadas y mezcla
   bimodal) y un caso fuera del soporte de entrenamiento
@@ -763,7 +753,7 @@ propiedades de esa ley. Frente a la referencia se calculan, para cada
 modelo y escenario, la \emph{degradaci\'on}
 $\Delta\bar{r} = \bar{r}_{\text{ref}} - \bar{r}_{\text{celda}}$ y la
 divergencia KL (Ecuaci\'on~\eqref{eq:kl}) entre la distribuci\'on
-emp\'irica de acciones de la celda y la de la referencia. La
+a de acciones de la celda y la de la referencia. La
 significancia del cambio se eval\'ua con la prueba $t$ de Welch
 bilateral (Ecuaci\'on~\eqref{eq:welch}) sobre los $64$ valores por
 secuencia y el tama\~no del efecto con la $d$ de Cohen
@@ -782,7 +772,7 @@ entrenamiento (severidad en $\{10, 11, 12\}$ o longitud en $\{11, \ldots, 20\}$)
 \toprule
 \textbf{Familia} & \textbf{Identificador} & \textbf{Descripci\'on} \\
 \midrule
-baseline      & \texttt{sev\_base}             & Distribuci\'on emp\'irica de entrenamiento (referencia).\\
+baseline      & \texttt{sev\_base}             & Distribuci\'on de entrenamiento (referencia).\\
 \midrule
 severidad     & \texttt{sev\_uniform}          & $U\{0, \ldots, 9\}$, sin estructura modal.\\
 severidad     & \texttt{sev\_gauss\_low}       & $\mathcal{N}(2, 1{,}5)$ truncada, brotes leves.\\
@@ -815,12 +805,12 @@ estructural   & \texttt{struct\_more\_total}        & $8$ bloques $\times$ $16$ 
 \subsection{Protocolo de entrenamiento y evaluaci\'on}
 
 \begin{enumerate}
-\item \textbf{Optimizaci\'on bayesiana de hiperpar\'ametros.} Ensayos
+\item \textbf{Optimizaci\'on bayesiana de hiperpar\'ametros} Ensayos
 Optuna/TPE ejecutados por paquete: \texttt{pes\_ql} ($100$),
 \texttt{pes\_dql} ($100$), \texttt{pes\_a2c} ($100$), \texttt{pes\_dqn}
 ($47$), \texttt{pes\_rdqn} ($20$) y \texttt{pes\_trf} ($10$). El
 n\'umero de ensayos se fija por l\'inea de comandos.
-\item \textbf{Reentrenamiento final.} Con el mejor conjunto de
+\item \textbf{Reentrenamiento final} Con el mejor conjunto de
 hiperpar\'ametros $\boldsymbol{\theta}^{*}$ y la semilla de su ensayo,
 cada modelo optimizado se reentrena desde cero con el presupuesto de
 episodios del mejor ensayo:
@@ -829,10 +819,10 @@ episodios del mejor ensayo:
 \texttt{pes\_rdqn}/\texttt{pes\_trf} ($30\,000$ cada
 uno). \texttt{pes\_base} entrena con par\'ametros fijos durante
 $1\,000\,000$ de episodios.
-\item \textbf{Evaluaci\'on determinista.} Se eval\'uan las $n = 64$
-secuencias con la pol\'itica codiciosa ($\varepsilon = 0$), es decir,
+\item \textbf{Evaluaci\'on determinista} Se eval\'uan las $n = 64$
+secuencias con la pol\'itica greedy ($\varepsilon = 0$), es decir,
 seleccionando en cada paso la acci\'on factible de mayor valor.
-\item \textbf{An\'alisis estad\'istico.} Para cada modelo se calculan
+\item \textbf{An\'alisis estad\'istico} Para cada modelo se calculan
 las matrices modelo $\times$ escenario de media, desviaci\'on est\'andar,
 degradaci\'on, $p$ de Welch~\citep{Welch1947}, $d$ de
 Cohen~\citep{Cohen1988} y KL de acciones frente a la referencia. Para
