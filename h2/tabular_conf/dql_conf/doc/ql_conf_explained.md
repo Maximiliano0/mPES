@@ -1,223 +1,94 @@
-# dql_conf - Guía de uso e implementación
+# dql_conf — Guía de uso e implementación
 
-> Paquete: **`tabular_conf.dql_conf`**. Implementa Double Q-Learning con
-> decaimiento exponencial de epsilon, warm-up, PBRS y exploración modulada
-> por confianza.
-> Línea `h2/` suspendida: documentación de referencia, sin resultados activos.
+> Paquete suspendido en `h2/tabular_conf/dql_conf`. Este documento describe lo
+> que realmente está implementado en el código actual de `__main__.py`,
+> `config/CONFIG.py`, `ext/pandemic.py`, `ext/tools.py`, `ext/train_rl.py` y
+> `ext/optimize_rl.py`.
 
-## Índice
+## 1. Qué implementa este paquete
 
-1. [Qué hace el paquete](#1-qué-hace-el-paquete)
-2. [Cómo usarlo](#2-cómo-usarlo)
-3. [Cómo entrenar](#3-cómo-entrenar)
-4. [Cómo optimizar](#4-cómo-optimizar)
-5. [Exploración basada en confianza](#5-exploración-basada-en-confianza)
-6. [Referencias de código](#6-referencias-de-código)
-7. [Estructura y archivos](#7-estructura-y-archivos)
-8. [Resumen algorítmico](#8-resumen-algorítmico)
+`dql_conf` es una variante experimental de Q-Learning tabular para el entorno
+`Pandemic` con estos elementos activos:
 
-## 1. Qué hace el paquete
+- `Double Q-Learning` sobre dos tablas independientes `Q_A` y `Q_B`.
+- `Warm-up` inicial y decaimiento exponencial de `epsilon`.
+- `PBRS` sobre un potencial basado en la severidad acumulada.
+- `Exploración modular por confianza` según la incertidumbre de los valores Q
+  de las acciones factibles.
 
-`dql_conf` es el agente tabular del escenario Pandemic. Sus componentes son:
+El paquete no forma parte del benchmark activo; su propósito es dejar un
+referente reproducible para la línea experimental `h2/`.
 
-1. **Double Q-Learning**: mantiene dos tablas independientes, `Q_A` y `Q_B`,
-   para desacoplar la selección y evaluación de la acción siguiente.
-2. **Warm-up y decaimiento exponencial**: mantiene `epsilon_initial` durante
-   `warmup_ratio * num_episodes` y alcanza `epsilon_min` en
-   `target_ratio * num_episodes`.
-3. **PBRS**: usa el potencial `Phi(s) = -sum(severities)` y el coeficiente
-   `penalty_coeff` para dar forma a la recompensa durante el entrenamiento.
-4. **Exploración basada en confianza**: aumenta la exploración cuando los
-   valores Q de las acciones factibles son inciertos.
-
-El entorno está implementado en [`../ext/pandemic.py`](../ext/pandemic.py).
-La configuración principal está en [`../config/CONFIG.py`](../config/CONFIG.py).
-Con la configuración actual, la Q-table tiene forma `(31, 11, 10, 11)`:
-recursos disponibles, trial, severidad y acción. Las acciones representan
-asignaciones de 0 a 10 recursos.
-
-La experimentación usa 8 bloques, 8 secuencias por bloque y entre 3 y 10
-trials por secuencia. El entorno parte de `AVAILABLE_RESOURCES_PER_SEQUENCE`
-igual a 39 y reserva las asignaciones iniciales definidas por el entorno.
-
-## 2. Cómo usarlo
-
-Los comandos se ejecutan desde `h2/`, con `win_mpes_env` activado:
-
-| Acción | Comando |
-|---|---|
-| Ejecutar el experimento completo | `python -m tabular_conf.dql_conf` |
-| Entrenar el agente | `python -m tabular_conf.dql_conf.ext.train_rl` |
-| Entrenar con episodios personalizados | `python -m tabular_conf.dql_conf.ext.train_rl 1000000` |
-| Optimizar, 50 trials por defecto | `python -m tabular_conf.dql_conf.ext.optimize_rl` |
-| Optimizar con N trials | `python -m tabular_conf.dql_conf.ext.optimize_rl 100` |
-| Reanudar una optimización | `python -m tabular_conf.dql_conf.ext.optimize_rl 100 --resume 2026-04-21` |
-
-`optimize_rl.py` también acepta `--out-dir PATH` y `--storage URL`.
-
-## 3. Cómo entrenar
-
-El pipeline está en [`../ext/train_rl.py`](../ext/train_rl.py):
-
-1. Carga `inputs/best_params.json`, el resultado fechado más reciente o los
-   valores por defecto de `_DEFAULT_HYPERPARAMS`.
-2. Lee `initial_severity.csv` y `sequence_lengths.csv` desde `inputs/`.
-3. Ejecuta el baseline aleatorio sobre las secuencias de evaluación.
-4. Llama a `QLearning(...)` con `double_q=True`, PBRS, máscara de acciones
-   factibles y exploración modulada por confianza.
-5. Evalúa la Q-table con acciones inviables enmascaradas.
-6. Guarda Q-table, recompensas, configuración y visualizaciones bajo
-   `inputs/<YYYY-MM-DD>_RL_TRAIN/`, además de `inputs/q.npy` y
-   `inputs/rewards.npy` para `__main__.py`.
-
-El argumento opcional `num_episodes` sustituye el valor cargado desde los
-hiperparámetros. La semilla por defecto de `CONFIG.py` es `SEED = 42`.
-
-### Valores por defecto codificados
-
-Estos valores son el fallback de `train_rl.py`, no resultados garantizados:
-
-| Parámetro | Valor |
-|---|---:|
-| `learning_rate` | `0.2592852466099094` |
-| `discount_factor` | `0.9806357182178841` |
-| `epsilon_initial` | `0.839196365086843` |
-| `epsilon_min` | `0.07993292420985183` |
-| `num_episodes` | `860000` |
-| `warmup_ratio` | `0.02403950683025824` |
-| `target_ratio` | `0.5174250836504598` |
-| `penalty_coeff` | `0.21766241123453672` |
-| `confidence_exploration_strength` | `0.0` |
-| `confidence_exploration_exponent` | `1.0` |
-
-En `inputs/<YYYY-MM-DD>_RL_TRAIN/` se generan `q_<date>.npy`,
-`rewards_<date>.npy`, `training_config_<date>.txt` y visualizaciones.
-`confsrl_<date>.npy` solo contiene registros si `track_confidence=True`.
-
-## 4. Cómo optimizar
-
-El optimizador es [`../ext/optimize_rl.py`](../ext/optimize_rl.py). Usa Optuna
-con `TPESampler(seed=SEED, n_startup_trials=10, multivariate=True, group=True)`.
-Cada trial entrena con `SEED + trial.number + 1`, evalúa con máscara de
-acciones inviables y maximiza el rendimiento medio de las secuencias evaluadas.
-
-### Espacio de búsqueda real
-
-| Parámetro | Rango | Escala o paso |
-|---|---|---|
-| `learning_rate` | `[0.05, 0.30]` | log |
-| `discount_factor` | `[0.90, 0.999]` | lineal |
-| `epsilon_initial` | `[0.50, 1.00]` | lineal |
-| `epsilon_min` | `[0.01, 0.10]` | log |
-| `num_episodes` | `[150000, 500000]` | entero, paso `10000` |
-| `warmup_ratio` | `[0.02, 0.15]` | lineal |
-| `target_ratio` | `[0.40, 0.80]` | lineal |
-| `penalty_coeff` | `[1e-4, 0.30]` | log |
-| `confidence_exploration_strength` | `[0.00, 0.60]` | lineal |
-| `confidence_exploration_exponent` | `[0.50, 3.00]` | lineal |
-
-Durante la optimización se usa `track_confidence=False`. Esto solo evita
-registrar `conf_list`; el cálculo de confianza y su efecto sobre la
-exploración permanecen activos.
-
-Las salidas se guardan bajo `inputs/<YYYY-MM-DD>_BAYESIAN_OPT/`, incluyendo la
-base SQLite, parámetros, Q-table, recompensas y gráficas de Optuna.
-
-## 5. Exploración basada en confianza
-
-`confidence_from_q_values(options, resources_left)` en
-[`../ext/tools.py`](../ext/tools.py) usa únicamente las acciones factibles
-`0..resources_left`, limitadas por el espacio de acciones. Una sola acción
-factible produce confianza `1.0`; valores Q factibles empatados producen
-confianza `0.0`.
-
-En Double Q-Learning se usa la tabla media:
-
-$$Q_{sel}(s) = (Q_A(s) + Q_B(s)) / 2$$
-
-Después se calcula:
-
-$$\text{uncertainty} = 1 - \text{confidence}^{\text{exponent}}$$
-
-$$\varepsilon_{state} = \varepsilon + \text{strength} \cdot \text{uncertainty} \cdot (1 - \varepsilon)$$
-
-`epsilon_state` se recorta a `[0, 1]`. La rama greedy enmascara las acciones
-no factibles con `-1e9`; la rama aleatoria elige dentro del rango factible.
-El bootstrap del siguiente estado también aplica la máscara.
-
-## 6. Referencias de código
-
-| Módulo | Responsabilidad |
-|---|---|
-| [`../ext/pandemic.py`](../ext/pandemic.py) | Entorno, Double Q-Learning, warm-up, PBRS y política |
-| [`../ext/tools.py`](../ext/tools.py) | Entropía y `confidence_from_q_values` |
-| [`../ext/optimize_rl.py`](../ext/optimize_rl.py) | Espacio Optuna y evaluación |
-| [`../ext/train_rl.py`](../ext/train_rl.py) | Entrenamiento y persistencia |
-| [`../__main__.py`](../__main__.py) | Validación y experimento |
-| [`../config/CONFIG.py`](../config/CONFIG.py) | Constantes del entorno |
-
-## 7. Estructura y archivos
+## 2. Estructura real del paquete
 
 ```text
 h2/tabular_conf/dql_conf/
 ├── __init__.py
 ├── __main__.py
-├── config/CONFIG.py
+├── config/
+│   └── CONFIG.py
 ├── doc/
-│   ├── ql_conf_explained.md
-│   └── dql_conf_theory.md
+│   ├── ql_conf_explained.md      # documento de referencia del paquete
+│   └── dql_conf_theory.md        # teoría matemática del agente
 ├── ext/
-│   ├── pandemic.py
-│   ├── tools.py
-│   ├── repro.py
-│   ├── optimize_rl.py
-│   └── train_rl.py
+│   ├── pandemic.py               # entorno y actualización de Q
+│   ├── tools.py                  # confianza y utilidades de evaluación
+│   ├── optimize_rl.py            # Optuna / TPE
+│   ├── train_rl.py               # entrenamiento y persistencia
+│   ├── repro.py                  # reproducibilidad / validación
+│   └── recover_optimization.py   # recuperación de optimizaciones
 ├── inputs/
-└── outputs/
+├── outputs/
+└── src/
+    ├── exp_utils.py
+    ├── log_utils.py
+    ├── pygameMediator.py
+    ├── result_formatter.py
+    └── terminal_utils.py
 ```
 
-`__main__.py` consume `inputs/q.npy` y `inputs/rewards.npy` cuando
-`PLAYER_TYPE` es `RL_AGENT`, y valida la forma de la Q-table antes de ejecutar.
+## 3. Comandos reales
 
-## 8. Resumen algorítmico
+Se ejecutan desde la raíz del repositorio con el entorno virtual de Windows
+activo:
 
-Double Q-Learning actualiza una de las dos tablas con la otra como evaluador.
-El warm-up mantiene epsilon inicial y el decaimiento exponencial alcanza el
-mínimo en el objetivo configurado. PBRS añade durante el entrenamiento:
+```powershell
+cd h2
+python -m tabular_conf.dql_conf
+python -m tabular_conf.dql_conf.ext.train_rl
+python -m tabular_conf.dql_conf.ext.train_rl 1000000
+python -m tabular_conf.dql_conf.ext.optimize_rl
+python -m tabular_conf.dql_conf.ext.optimize_rl 100
+python -m tabular_conf.dql_conf.ext.optimize_rl 100 --resume 2026-04-21
+```
 
-$$F(s, s') = \text{penalty\_coeff} \cdot (\gamma\,\Phi(s') - \Phi(s))$$
+`optimize_rl.py` admite además `--out-dir PATH` y `--storage URL`.
 
-con $\Phi(s) = -\sum_i s_i$. No se incluyen resultados numéricos porque no
-están determinados por estos módulos.
-<!--
-# ql_conf — Guía de uso e implementación (archivado)
+## 4. Puntos relevantes del código
 
-> Paquete: **`tabular_conf.ql_conf`** — Double Q-Learning con calentamiento (warm-up)
-> exponencial de ε y *Potential-Based Reward Shaping* (PBRS).
->
-> Última actualización: 2026-05-04
+| Módulo | Función principal |
+|---|---|
+| `__main__.py` | Entrada del experimento y validación del artefacto `q.npy` |
+| `config/CONFIG.py` | Parámetros de entrenamiento, semilla y configuraciones del entorno |
+| `ext/pandemic.py` | Entorno `Pandemic`, pasos de decisión y actualización de Q |
+| `ext/tools.py` | Cálculo de `confidence_from_q_values` y utilidades auxiliares |
+| `ext/train_rl.py` | Entrenamiento y persistencia de `q.npy`, `rewards.npy` y artefactos |
+| `ext/optimize_rl.py` | Optimización bayesiana con Optuna |
 
----
+## 5. Qué no debe leerse en este documento
 
-## Índice
+- No son resultados activos de benchmark ni métricas certificadas.
+- No hay un flujo de comparación en `h2/general` que se use para reportar
+  resultados oficiales.
+- La documentación de esta línea es de referencia y no reemplaza la
+  validación del benchmark activo en `h1/`.
 
-1. [Qué hace el paquete](#1-qué-hace-el-paquete)
-2. [Cómo usarlo (CLI)](#2-cómo-usarlo-cli)
-3. [Cómo entrenar el modelo](#3-cómo-entrenar-el-modelo)
-4. [Cómo optimizar el modelo (Bayesiano)](#4-cómo-optimizar-el-modelo-bayesiano)
-5. [Referencias de código](#5-referencias-de-código)
-6. [Estructura de directorios](#6-estructura-de-directorios)
-7. [Archivos de entrada y salida](#7-archivos-de-entrada-y-salida)
-8. [Resultados de rendimiento](#8-resultados-de-rendimiento)
-9. [Diferencias frente a la configuración anterior](#9-diferencias-frente-a-la-configuración-anterior)
+## 6. Resumen breve
 
----
-
-## 1. Qué hace el paquete
-
-`ql_conf` implementa la versión mejorada del agente tabular de Q-Learning
-para el escenario "Pandemic". Combina **tres mejoras algorítmicas** sobre
-el Q-Learning estándar:
+La variante `dql_conf` combina Double Q-Learning, warm-up, PBRS y una política
+`epsilon-greedy` ajustada por confianza para rebalancear exploración y
+explotación. El paquete queda documentado como trabajo experimental suspendido,
+no como ejecución activa del proyecto.
 
 1. **Double Q-Learning** (Van Hasselt, 2010) — dos tablas Q
    independientes (`Q_A`, `Q_B`) que eliminan el sesgo de maximización del
