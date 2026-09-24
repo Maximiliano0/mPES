@@ -9,7 +9,7 @@ Pipeline stages
 ---------------
 1. Load training data (initial_severity.csv, sequence_lengths.csv)
 2. Run random-player baseline and save performance plots
-3. Train TRF agent (default 175 000 episodes, configurable via CLI)
+3. Train TRF agent (default 30 000 episodes, configurable via CLI)
 4. Save trained model, rewards history, and training config to a dated directory
 5. Evaluate trained agent on the same sequences and generate
    performance/confidence visualisations
@@ -20,7 +20,7 @@ Key differences from pes_ql/ext/train_rl.py
 - Saves a .keras model file instead of a .npy Q-table
 - TRF-specific hyperparameters: hidden_units, batch_size, buffer_size,
   target_sync_freq
-- Default episodes: 175 000 (configurable via CLI; see ``TRF_EPISODES``)
+- Default episodes: 30 000 (configurable via CLI; see ``TRF_EPISODES``)
 - Uses SEED from CONFIG.py for reproducible training
 
 Usage
@@ -382,7 +382,7 @@ def main():
 
     section("TRF Training", width=80)
 
-    # TRF hyperparameters — from CONFIG.py (Bayesian optimisation best trial #8, 2026-04-18)
+    # Encoder architecture always from CONFIG.py; the rest is overridden by inputs/best_params.json when present
     from ..config.CONFIG import (TRF_LEARNING_RATE, TRF_DISCOUNT,
                                  TRF_EPSILON_INITIAL, TRF_EPSILON_MIN,
                                  TRF_HIDDEN_UNITS, TRF_BATCH_SIZE,
@@ -442,8 +442,8 @@ def main():
         # Episode-count resolution:
         #   * CLI-supplied value wins (e.g. ``train_trf 40000`` for parity vs
         #     Optuna mean_perf).
-        #   * Otherwise use the full training budget TRF_EPISODES, NOT the
-        #     low ``bp['num_episodes']`` that Optuna used for fast trials.
+        #   * Otherwise use CONFIG.TRF_EPISODES (currently equal to the
+        #     ``bp['num_episodes']`` of the deployed model).
         opt_episodes        = int(bp['num_episodes'])
         num_episodes        = cli_num_episodes if cli_num_episodes is not None \
                                                 else int(TRF_EPISODES)

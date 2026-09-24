@@ -1,0 +1,19 @@
+Tesis mPES - version 7 (24/09/2026)
+
+Contenido:
+  out/mPES-...Secuenciales.pdf  PDF compilado
+  00_Main/Main.tex              documento principal
+  00_Main/References.bib        bibliografia
+  01_Chapters/                  capitulos, resumenes y apendice
+  02_Images/                    figuras usadas en el texto
+  audit/audit.py, AUDIT.md      auditoria y su ultimo resultado
+  auxiliar/scripts/             rebuild_thesis.py y ensemble_decisions.py
+                                (frecuencias de la Tabla de reglas fijas)
+  notas/                        cambios v5 y v6, revision de AI slop y pendientes
+  descartados/                  agradecimientos y figuras retiradas del texto
+
+Compilar (Windows, desde la raiz del repositorio con win_mpes_env activado):
+  cd writings
+  python audit\audit.py            (auditoria + pdflatex/bibtex -> out/)
+  python audit\audit.py --no-tex   (solo auditoria)
+Requiere una distribucion LaTeX con babel spanish y cm-super (TinyTeX/TeX Live).

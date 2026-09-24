@@ -102,7 +102,7 @@ def build_q_network(state_dim: int, action_dim: int,
     episode) and outputs Q-values for every discrete action.  A
     ``Masking`` layer marks the all-zero pad rows as missing tokens, a
     learned linear projection lifts each timestep to ``d_model`` features,
-    a learned positional embedding is added, and ``num_layers`` causal
+    a fixed positional vector is added (see the note below), and ``num_layers`` causal
     Transformer encoder blocks (multi-head self-attention +
     position-wise feed-forward, both with residual connection and layer
     normalisation) summarise the sequence.  Only the *last* token feeds
@@ -143,6 +143,12 @@ def build_q_network(state_dim: int, action_dim: int,
     tf.keras.Model
         Keras functional model with linear output of shape
         ``(action_dim,)``.
+
+    Notes
+    -----
+    The ``pos_embed`` layer is called on a constant ``tf.range`` tensor, so
+    its Glorot-initialised output is folded into the graph as a constant:
+    the positional vector is not trainable and not tracked as a model layer.
     """
     def _init(layer_idx: int):
         if seed is None:
@@ -155,7 +161,7 @@ def build_q_network(state_dim: int, action_dim: int,
     # Token embedding: lift each (state_dim,) vector to (d_model,).
     x = tf.keras.layers.Dense(int(d_model), kernel_initializer=_init(0),
                               name="token_embed")(x)
-    # Learned positional embedding added to every token.
+    # Evaluated eagerly on constant positions -> fixed, non-trainable vector.
     positions = tf.range(start=0, limit=int(history_len), delta=1)
     pos_emb = tf.keras.layers.Embedding(
         input_dim=int(history_len), output_dim=int(d_model),

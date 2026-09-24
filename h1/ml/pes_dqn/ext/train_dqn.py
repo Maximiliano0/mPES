@@ -9,7 +9,7 @@ Pipeline stages
 ---------------
 1. Load training data (initial_severity.csv, sequence_lengths.csv)
 2. Run random-player baseline and save performance plots
-3. Train DQN agent (default 175 000 episodes, configurable via CLI)
+3. Train DQN agent (default 40 000 episodes, configurable via CLI)
 4. Save trained model, rewards history, and training config to a dated directory
 5. Evaluate trained agent on the same sequences and generate
    performance/confidence visualisations
@@ -20,7 +20,7 @@ Key differences from pes_ql/ext/train_rl.py
 - Saves a .keras model file instead of a .npy Q-table
 - DQN-specific hyperparameters: hidden_units, batch_size, buffer_size,
   target_sync_freq
-- Default episodes: 175 000 (configurable via CLI; see ``DQN_EPISODES``)
+- Default episodes: 40 000 (configurable via CLI; see ``DQN_EPISODES``)
 - Uses SEED from CONFIG.py for reproducible training
 
 Usage
@@ -382,7 +382,7 @@ def main():
 
     section("DQN Training", width=80)
 
-    # DQN hyperparameters — from CONFIG.py (Bayesian optimisation best trial #8, 2026-04-18)
+    # CONFIG.py values are fallbacks; inputs/best_params.json overrides them when present
     from ..config.CONFIG import (DQN_LEARNING_RATE, DQN_DISCOUNT,
                                  DQN_EPSILON_INITIAL, DQN_EPSILON_MIN,
                                  DQN_HIDDEN_UNITS, DQN_BATCH_SIZE,
@@ -439,8 +439,8 @@ def main():
         # Episode-count resolution:
         #   * CLI-supplied value wins (e.g. ``train_dqn 40000`` for parity vs
         #     Optuna mean_perf).
-        #   * Otherwise use the full training budget DQN_EPISODES, NOT the
-        #     low ``bp['num_episodes']`` that Optuna used for fast trials.
+        #   * Otherwise use CONFIG.DQN_EPISODES (currently equal to the
+        #     ``bp['num_episodes']`` of the deployed model).
         opt_episodes        = int(bp['num_episodes'])
         num_episodes        = cli_num_episodes if cli_num_episodes is not None \
                                                 else int(DQN_EPISODES)

@@ -1,47 +1,52 @@
-﻿% !TEX root = ../00_Main/Main.tex
+% !TEX root = ../00_Main/Main.tex
 \documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
 \section{Comandos de reproducci\'on}\label{ap:repro}
 
-La Tabla~\ref{tab:repro-commands} resume los comandos can\'onicos
-que regeneran cada uno de los artefactos reportados en esta tesis.
-Todos se ejecutan desde la ra\'iz del \emph{workspace} \texttt{mPES}
-con el entorno virtual activado (\texttt{win\_mpes\_env} en Windows),
-Python 3.12 y las dependencias
-fijadas en \texttt{utils/config/requirements.txt}.
+La Tabla~\ref{tab:repro-commands} resume los comandos que regeneran los
+resultados de esta tesis. El entorno virtual (\texttt{win\_mpes\_env}, en
+Windows) se activa desde la ra\'iz del repositorio \texttt{mPES}, y todos
+los comandos se ejecutan desde el directorio \texttt{h1/}, con Python 3.12,
+las dependencias fijadas en \texttt{utils/config/requirements.txt} y las
+variables \texttt{VIRTUAL\_ENV}, \texttt{PYTHONIOENCODING=utf-8} y
+\texttt{TF\_ENABLE\_ONEDNN\_OPTS=0}. El entrenamiento final lee los
+hiperpar\'ametros del archivo \texttt{inputs/best\_params.json} de cada
+paquete. En DQN, DQN recurrente y Transformer la arquitectura sale de
+\texttt{config/CONFIG.py}, cuyos valores por defecto (incluido el n\'umero de
+episodios) reproducen los modelos desplegados.
 
 \begin{table}[!ht]
 \centering
-\caption[Comandos de reproducci\'on]{Comandos para reentrenar los modelos,
-optimizar hiperpar\'ametros y ejecutar la evaluaci\'on del benchmark en
-cada paquete del repositorio \texttt{mPES}.}
+\caption[Comandos de reproducci\'on]{Comandos de optimizaci\'on bayesiana,
+entrenamiento final y evaluaci\'on de cada paquete, ejecutados desde
+\texttt{h1/}. \texttt{<pkg>} es cualquiera de los cinco ensambles
+optimizables.}
 \label{tab:repro-commands}
 \small
 \resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}lll@{}}
+\begin{tabular}{@{}llll@{}}
 \toprule
-\textbf{Paquete} & \textbf{Entrenamiento} & \textbf{Optimizaci\'on bayesiana} \\
+\textbf{Paquete} & \textbf{Optimizaci\'on bayesiana} & \textbf{Entrenamiento final} & \textbf{Evaluaci\'on} \\
 \midrule
-\texttt{pes\_base} & \texttt{python -m tabular.pes\_base} & --- \\
-\texttt{pes\_ql}   & \texttt{python -m tabular.pes\_ql}   & \texttt{python -m tabular.pes\_ql.ext.optimize\_rl} \\
-\texttt{pes\_dql}  & \texttt{python -m tabular.pes\_dql}  & \texttt{python -m tabular.pes\_dql.ext.optimize\_rl} \\
-\texttt{pes\_dqn}  & \texttt{python -m ml.pes\_dqn}       & \texttt{python -m ml.pes\_dqn.ext.optimize\_dqn} \\
-\texttt{pes\_rdqn} & \texttt{python -m ml.pes\_rdqn}      & \texttt{python -m ml.pes\_rdqn.ext.optimize\_rdqn} \\
-\texttt{pes\_a2c}  & \texttt{python -m ml.pes\_a2c}       & \texttt{python -m ml.pes\_a2c.ext.optimize\_a2c} \\
-\texttt{pes\_trf}  & \texttt{python -m ml.pes\_trf}       & \texttt{python -m ml.pes\_trf.ext.optimize\_tr} \\
-\texttt{pes\_ens}  & \texttt{python -m ens.pes\_ens}       & --- (sin par\'ametros entrenables) \\
-\texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq} & inferencia en \texttt{h1/ens} & --- \\
-\texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} & inferencia en \texttt{h1/ens} & --- \\
-\texttt{pes\_ens\_trf\_guard} & inferencia en \texttt{h1/ens} & --- \\
+\texttt{pes\_base} & --- & \texttt{python -m tabular.pes\_base.ext.train\_rl} & \texttt{python -m tabular.pes\_base} \\
+\texttt{pes\_ql}   & \texttt{python -m tabular.pes\_ql.ext.optimize\_rl} & \texttt{python -m tabular.pes\_ql.ext.train\_rl} & \texttt{python -m tabular.pes\_ql} \\
+\texttt{pes\_dql}  & \texttt{python -m tabular.pes\_dql.ext.optimize\_rl} & \texttt{python -m tabular.pes\_dql.ext.train\_rl} & \texttt{python -m tabular.pes\_dql} \\
+\texttt{pes\_dqn}  & \texttt{python -m ml.pes\_dqn.ext.optimize\_dqn} & \texttt{python -m ml.pes\_dqn.ext.train\_dqn} & \texttt{python -m ml.pes\_dqn} \\
+\texttt{pes\_rdqn} & \texttt{python -m ml.pes\_rdqn.ext.optimize\_rdqn} & \texttt{python -m ml.pes\_rdqn.ext.train\_rdqn} & \texttt{python -m ml.pes\_rdqn} \\
+\texttt{pes\_a2c}  & \texttt{python -m ml.pes\_a2c.ext.optimize\_a2c} & \texttt{python -m ml.pes\_a2c.ext.train\_a2c} & \texttt{python -m ml.pes\_a2c} \\
+\texttt{pes\_trf}  & \texttt{python -m ml.pes\_trf.ext.optimize\_tr} & \texttt{python -m ml.pes\_trf.ext.train\_transformer} & \texttt{python -m ml.pes\_trf} \\
+\texttt{pes\_ens}  & --- & --- & \texttt{python -m ens.pes\_ens} \\
+\texttt{<pkg>}     & \texttt{python -m ens.<pkg>.ext.optimize\_ens} & --- & \texttt{python -m ens.<pkg>} \\
 \bottomrule
 \end{tabular}
 }%
 \end{table}
 
-\section{Procedimiento de ejecuci\'on del benchmark}\label{ap:orchestrator}
+\section{Ejecuci\'on de la evaluaci\'on}\label{ap:orchestrator}
 
-El benchmark se ejecuta por suite con el comando reanudable:
+La evaluaci\'on en los $22$ escenarios se ejecuta con tres comandos desde
+\texttt{h1/}; el primero es reanudable:
 
 \begin{verbatim}
 python -m general.scripts.benchmark run --suite both
@@ -49,46 +54,119 @@ python -m general.scripts.analysis
 python -m general.scripts.figures
 \end{verbatim}
 
-El procedimiento:
+El primero eval\'ua cada par (modelo, escenario) de los dos grupos de
+modelos (\texttt{individual} y \texttt{ensemble}), reutilizando los
+modelos entrenados y sustituyendo temporalmente sus archivos de entrada
+por los del escenario. El segundo calcula las matrices modelo $\times$
+escenario de media, desviaci\'on est\'andar, m\'inimo, m\'aximo,
+degradaci\'on, $p$ de Welch, $d$ de Cohen y KL de acciones. El tercero
+genera las figuras y las comparaciones entre pares de modelos. Los
+resultados quedan en \texttt{general/results/<grupo>/}:
+\texttt{cells/} (desempe\~no por secuencia y distribuci\'on de acciones
+de cada par modelo--escenario), \texttt{matrices/},
+\texttt{comparison\_metrics.json}, \texttt{figures/} y un resumen
+\texttt{report.md}. Las figuras del agente aleatorio y de la confianza del
+Transformer se generan con \texttt{python -m general.scripts.random\_baseline}
+y \texttt{python -m general.scripts.agent\_internals}.
 
-\begin{sloppypar}
-\begin{enumerate}
-  \item ejecuta cada combinaci\'on (modelo, escenario) de las suites
-  \texttt{individual} y \texttt{ensemble}, reutilizando los artefactos
-  entrenados de cada paquete y sustituyendo temporalmente sus archivos
-  de entrada por los del escenario;
-  \item agrega el rendimiento por secuencia con
-  \texttt{general/scripts/analysis.py} para producir las matrices
-  \texttt{global\_mean}, \texttt{std}, \texttt{min}, \texttt{max},
-  \texttt{stress\_degradation}, \texttt{welch\_p}, \texttt{welch\_logp},
-  \texttt{cohen\_d} y \texttt{action\_kl} en
-  \texttt{general/results/<suite>/matrices/};
-  \item genera las figuras y los contrastes pareados con
-  \texttt{general/scripts/figures.py};
-  \item emite el resumen \texttt{general/results/<suite>/report.md}.
-\end{enumerate}
-\end{sloppypar}
+Las frecuencias de la Tabla~\ref{tab:ens-freq} se obtienen, desde la ra\'iz
+del repositorio, con
+\texttt{python writings/auxiliar/scripts/ensemble\_decisions.py}. El script
+repite la evaluaci\'on del ensamble ponderado, del consenso con
+\emph{prior} y de la compuerta del Transformer sobre los mismos archivos
+de cada escenario. En cada decisi\'on con recursos disponibles registra la
+acci\'on antes y despu\'es del \emph{prior} y de la cota, y la acci\'on que
+prefiere el Transformer. Tambi\'en comprueba que las medias coincidan con
+las del benchmark.
 
-\section{Escenarios de extrapolaci\'on}\label{ap:stressors}
+\section{Mapas estad\'isticos complementarios}\label{ap:stat-maps}
 
-Los tres escenarios de extrapolaci\'on utilizados en las curvas de la
-Sec.~\ref{sec:universal-stressors} son:
+Las Figuras~\ref{fig:heatmap-welch} y~\ref{fig:heatmap-kl} indican, para
+cada modelo individual y cada escenario, si el cambio de desempe\~no
+respecto de la referencia es estad\'isticamente claro (prueba de Welch). Tambi\'en muestran cu\'anto cambia la distribuci\'on de acciones, es decir, la pol\'itica. La
+Figura~\ref{fig:pairwise-cohen} compara todos los pares de modelos
+individuales. Las Figuras~\ref{fig:ensemble-statistical-heatmaps}
+y~\ref{fig:ensemble-pairwise} son las equivalentes para los ensambles.
 
-\begin{itemize}
-  \item \texttt{sev\_extrapolate\_high}: severidades por encima del
-  rango de la condici\'on de referencia.
-  \item \texttt{len\_extrapolate\_long}: secuencias m\'as largas que
-  las observadas durante entrenamiento.
-  \item \texttt{joint\_extrap\_both}: combinaci\'on simult\'anea de
-  las dos anteriores.
-\end{itemize}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
+  \caption[Significancia de Welch por escenario (modelos
+  individuales)]{$\log_{10} p$ de la prueba de Welch entre el desempe\~no
+  de cada escenario y el de la referencia del mismo modelo; valores m\'as
+  negativos indican un cambio m\'as claro.}
+  \label{fig:heatmap-welch}
+\end{figure}
 
-Las tres columnas estructurales (\texttt{struct\_more\_total},
-\texttt{struct\_many\_short\_blocks},
-\texttt{struct\_few\_long\_blocks}) reproducen el valor de la
-condici\'on de referencia, con degradaci\'on nula, y sirven como
-comprobaci\'on de que la agregaci\'on no depende de la partici\'on en
-bloques.
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{ind_04_kl_acciones_por_escenario.png}
+  \caption[Divergencia KL de acciones por escenario (modelos
+  individuales)]{Divergencia KL entre la distribuci\'on de acciones de
+  cada escenario y la de la referencia del mismo modelo: mide cu\'anto
+  cambia la pol\'itica, no el desempe\~no.}
+  \label{fig:heatmap-kl}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.9\linewidth]{ind_13_pares_cohen_d.png}
+  \caption[$d$ de Cohen entre pares de modelos individuales]{$d$ de Cohen
+  entre todos los pares de modelos individuales sobre los $21$
+  escenarios de generalizaci\'on; un valor positivo indica que el modelo
+  de la fila supera al de la columna.}
+  \label{fig:pairwise-cohen}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{ens_03_welch_logp_por_escenario.png}\\[0.4em]
+  \includegraphics[width=0.85\linewidth]{ens_07_cohen_d_por_escenario.png}\\[0.4em]
+  \includegraphics[width=0.85\linewidth]{ens_04_kl_acciones_por_escenario.png}
+  \caption[Comparaci\'on estad\'istica por escenario (ensambles)]{Ensambles:
+  $\log_{10}p$ de Welch (arriba), $d$ de Cohen (centro) y divergencia KL
+  de acciones (abajo) de cada escenario frente a la referencia del mismo
+  ensamble.}
+  \label{fig:ensemble-statistical-heatmaps}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.7\linewidth]{ens_13_pares_cohen_d.png}\\[0.4em]
+  \includegraphics[width=0.7\linewidth]{ens_12_pares_welch_logp.png}
+  \caption[Comparaci\'on entre pares de ensambles]{$d$ de Cohen (arriba) y
+  $\log_{10}p$ de Welch (abajo) entre todos los pares de ensambles sobre
+  los $21$ escenarios de generalizaci\'on.}
+  \label{fig:ensemble-pairwise}
+\end{figure}
+
+\section{Confianza registrada del Transformer}\label{ap:trf-conf}
+
+La Figura~\ref{fig:trf-internals} muestra la confianza del Transformer en
+cada una de las $258$ decisiones con recursos disponibles, registrada al
+evaluarlo sobre las $64$ secuencias de la referencia. En este registro la
+confianza se calcula de otra forma que en los ensambles
+(Secci\'on~\ref{sec:ens-methods}), por lo que sus valores no son
+comparables con los umbrales de la Tabla~\ref{tab:ens-params}. Los valores $Q$
+de las acciones no factibles se reemplazan por un valor muy negativo, y
+el vector se desplaza a valores no negativos y se normaliza. La
+confianza es $1 - H_{\mathrm{norm}}$ de esa distribuci\'on. Cuando hay
+acciones no factibles, el desplazamiento acerca la distribuci\'on a una
+uniforme sobre las acciones disponibles, de modo que la confianza
+refleja sobre todo cu\'antas acciones quedan y no cu\'anto difieren sus
+valores. En la figura, la mayor\'ia de las decisiones tiene una
+confianza baja (media $0{,}116$), lo que es coherente con esa
+limitaci\'on.
+
+\begin{figure}[!htb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{trf_agent_confidences.png}
+  \caption[Confianza del Transformer en cada decisi\'on]{Confianza
+  $1 - H_{\mathrm{norm}}$ del Transformer en cada una de las $258$
+  decisiones con recursos disponibles; la l\'inea punteada indica la
+  media.}
+  \label{fig:trf-internals}
+\end{figure}
 
 \biblio
 \end{document}

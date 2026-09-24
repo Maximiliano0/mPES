@@ -163,6 +163,9 @@ def audit_language() -> list[str]:
     content = strip_comments(all_tex_content())
     # Bloques literales (comandos de shell, código) no son prosa.
     plain   = re.sub(r"\\begin\{(verbatim|lstlisting)\}.*?\\end\{\1\}", " ", content, flags=re.S)
+    # El Abstract en inglés (exigido por el director) va en un bloque
+    # otherlanguage{english} y queda fuera del criterio de idioma único.
+    plain   = re.sub(r"\\begin\{otherlanguage\*?\}\{english\}.*?\\end\{otherlanguage\*?\}", " ", plain, flags=re.S)
     plain   = re.sub(r"\\verb(.)(.*?)\1", " ", plain)
     # Acentos escapados (can\'onicos, a\~no) se funden con la letra base.
     plain   = re.sub(r"\\[`'^\"~=.]\{?([a-zA-Z])\}?", r"\1", plain)

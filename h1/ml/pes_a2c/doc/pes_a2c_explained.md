@@ -288,8 +288,8 @@ Esta probabilidad enmascarada es la que el módulo `pes_ens` consume para la
 
 ## 8. Resultados de rendimiento
 
-Evaluación del 30 de abril de 2026 sobre $n = 64$ ejecuciones independientes
-del escenario completo:
+Evaluación del 30 de abril de 2026 sobre las $n = 64$ secuencias fijas de
+referencia (el benchmark de `general/` obtiene 0.887242):
 
 | Métrica | Valor |
 |---|---|
@@ -297,22 +297,24 @@ del escenario completo:
 | Desviación estándar | 0.063162 |
 | Tamaño de muestra | 64 |
 
-### Comparación con métodos tabulares
+### Comparación con los demás modelos (referencia `sev_base` del benchmark)
 
 | Agente | Algoritmo | Rendimiento medio |
 |---|---|---|
-| `pes_base` | Q-Learning tabular | $\approx 0.65$ |
-| `pes_ql` | Q-Learning + Optuna | $\approx 0.78$ |
-| `pes_dql` | Double Q-Learning + PBRS | $\approx 0.83$ |
+| `pes_base` | Q-Learning tabular | 0.871 |
+| `pes_ql` | Q-Learning + Optuna | 0.887 |
+| `pes_dql` | Double Q-Learning + PBRS | 0.896 |
 | **`pes_a2c`** | **A2C** | **0.887** |
-| `pes_dqn` | DQN | $\approx 0.89$ |
-| `pes_rdqn` | Recurrent DQN | $\approx 0.91$ |
-| `pes_trf` | Causal Transformer | $\approx 0.927$ |
+| `pes_dqn` | DQN | 0.894 |
+| `pes_rdqn` | Recurrent DQN | 0.899 |
+| `pes_trf` | Causal Transformer | 0.927 |
 
-A2C iguala prácticamente al DQN como método sin memoria, demostrando el valor
-del paradigma policy-gradient en este escenario. Su mayor utilidad práctica es
-como **componente del ensemble** (`pes_ens`), donde la diversidad respecto a
-los métodos basados en valor mejora la robustez global.
+A2C queda al nivel de Q-Learning y ligeramente por debajo de DQN en la
+referencia, pero en los 21 escenarios de generalización su media (0.896) casi
+iguala a la de DQN (0.899). Su evaluación recorta la severidad a 9 antes de
+normalizarla y, aun así, obtiene 0.929 con severidades de 10 a 12. Participa
+como cuarto miembro, con peso 0.10, en cinco de los seis ensambles; en
+`pes_ens` está deshabilitado.
 
 ---
 

@@ -1,50 +1,54 @@
-﻿% !TEX root = ../00_Main/Main.tex
+% !TEX root = ../00_Main/Main.tex
 \documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
-Esta tesis presenta el entorno de experimentaci\'on \textbf{mPES} (\emph{Multiple
-Pandemic Experiment Suite}), un entorno multi-paquete para estudiar
-aprendizaje por refuerzo en la asignaci\'on secuencial de recursos bajo
-incertidumbre. El escenario de pandemia funciona como banco de pruebas
-controlado: cada agente debe administrar un presupuesto limitado mientras
-la severidad evoluciona a lo largo de la secuencia.
+Esta tesis compara distintos m\'etodos de aprendizaje por refuerzo en un
+problema de asignaci\'on de recursos limitados bajo incertidumbre, con
+una pandemia simulada como banco de pruebas. En cada paso llega una
+ciudad con un nivel de severidad y el agente decide cu\'antos recursos
+le asigna de un presupuesto fijo. La severidad que no se atiende crece
+en los pasos siguientes, de modo que una asignaci\'on insuficiente al
+principio se paga m\'as adelante. El trabajo se implement\'o en mPES,
+una extensi\'on del entorno de pandemia de la Universidad de Essex.
 
-El estado actual del estudio compara doce modelos agrupados en dos suites: seis
-agentes individuales optimizados (\texttt{pes\_ql}, \texttt{pes\_dql},
-\texttt{pes\_dqn}, \texttt{pes\_rdqn}, \texttt{pes\_a2c} y
-\texttt{pes\_trf}) y seis variantes de ensamble, incluyendo
-\texttt{pes\_ens}, \texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq},
-\texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} y
-\texttt{pes\_ens\_trf\_guard}. El paquete hist\'orico
-\texttt{pes\_base} aparece entre los artefactos individuales como referencia,
-pero no se incluye en este ranking comparativo. El an\'alisis cubre $22$ escenarios,
-una condici\'on base y $21$ perturbaciones, con $64$ secuencias por
-celda y una semilla fija ($42$). La m\'etrica principal es el rendimiento
-normalizado registrado como \texttt{global\_mean\_perf}.
+Se evaluaron seis modelos individuales, con hiperpar\'ametros ajustados por optimizaci\'on bayesiana. Dos son m\'etodos tabulares (Q-Learning y Double Q-Learning) y cuatro son redes neuronales: una red profunda (DQN), una variante
+recurrente que recuerda los \'ultimos estados (DQN recurrente, con una capa LSTM), un m\'etodo
+actor--cr\'itico (A2C) y un Transformer causal, que atiende a la historia
+reciente de la secuencia. Tambi\'en se evaluaron seis ensambles que
+combinan las decisiones de varias de esas redes. Todos se probaron sobre
+las mismas $64$ secuencias, primero en las condiciones de entrenamiento y despu\'es en
+$21$ escenarios de generalizaci\'on que cambian la distribuci\'on de
+severidades, la longitud de las secuencias o ambas. Tres de ellos llevan
+la severidad o la longitud por encima de las cotas del entorno.
 
-Los resultados sit\'uan a \texttt{pes\_trf} como el mejor modelo
-individual: alcanza $\bar r = 0{,}927$ en la condici\'on de referencia y
-$0{,}930$ como media en los $21$ escenarios de perturbaci\'on, con una
-degradaci\'on media de $-0{,}002$ y la menor dispersi\'on entre
-secuencias. Entre los ensambles, \texttt{pes\_ens} obtiene la mejor
-media bajo perturbaci\'on ($0{,}939$) y la menor degradaci\'on m\'axima
-($0{,}037$). La evidencia respalda la hip\'otesis de que el Transformer
-es el modelo individual que mejor generaliza en este entorno, pero no
-una superioridad del Transformer frente a todos los ensambles. La
-confianza de cada agente se cuantifica mediante $1-H_{\mathrm{norm}}$,
-con $H_{\mathrm{norm}}$ la entrop\'ia normalizada de la distribuci\'on
-derivada de sus valores de acci\'on; la medida se registra por secuencia
-para todos los modelos individuales y act\'ua como factor de ponderaci\'on de los
-miembros en la decisi\'on conjunta en los ensambles, constituyendo un
-indicador algor\'itmico y no una validaci\'on fisiol\'ogica.
-La sintonizaci\'on de hiperpar\'ametros emplea Optuna/TPE, mientras que el
-benchmark final se ejecuta en inferencia sobre artefactos ya entrenados.
+El desempe\~no se mide como la fracci\'on de la mejora posible que logra
+el agente en cada secuencia: $0$ equivale a no asignar ning\'un recurso y
+$1$ a la asignaci\'on \'optima, calculada conociendo de antemano la
+secuencia completa. Un agente que decide al azar
+obtiene $0{,}670$.
+
+El Transformer fue el mejor modelo individual: obtuvo $0{,}927$ en las
+condiciones de entrenamiento, frente a $0{,}887$ de Q-Learning, es
+decir, redujo en alrededor de un $36\,\%$ la distancia al \'optimo. En los escenarios de generalizaci\'on mantuvo ese nivel
+($0{,}930$, frente a $0{,}871$ de Q-Learning). El mejor sistema fue un
+ensamble que combina DQN, la red recurrente y el Transformer y agrega dos
+reglas fijas (un \emph{prior} de severidad y una cota de seguridad), con
+$0{,}939$ en los escenarios de generalizaci\'on. Los peores resultados
+fueron los de los m\'etodos tabulares cuando la severidad supera la cota
+del entorno ($0{,}76$ y $0{,}79$, frente a $0{,}996$ del Transformer). Para la mayor\'ia de las redes profundas, el caso m\'as dif\'icil fueron las secuencias m\'as largas que las de entrenamiento.
+
+Los ensambles ponderan a cada modelo seg\'un su confianza en cada
+decisi\'on, medida como uno menos la entrop\'ia normalizada de su
+distribuci\'on de acciones. El \'unico que super\'o al Transformer le da a
+\'este la mayor parte del peso, pero en la referencia su decisi\'on final
+difiere de la del Transformer en el $61\,\%$ de los casos, principalmente
+por el \emph{prior} de severidad; los que s\'olo promedian o votan quedaron
+por debajo.
 
 \par\vspace{0.5\baselineskip}
-\noindent\textbf{Palabras clave:} mPES, Aprendizaje por Refuerzo, Transformer Causal, \emph{Deep Ensembles},
-Cuantificaci\'on de Incertidumbre, Entrop\'ia de Shannon,
-Optimizaci\'on Bayesiana.
+\noindent\textbf{Palabras clave:} aprendizaje por refuerzo, asignaci\'on
+secuencial de recursos, Transformer causal, ensambles de modelos,
+entrop\'ia de Shannon, generalizaci\'on.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
-

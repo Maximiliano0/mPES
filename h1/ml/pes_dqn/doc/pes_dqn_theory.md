@@ -29,7 +29,7 @@ patologías:
 
 1. **Maldición de la dimensionalidad**: si discretizamos $\sigma$ en 100
    bins, hay $40 \cdot 10 \cdot 100 = 40{,}000$ celdas; muchas nunca se
-   visitan en 175 000 episodios.
+   visitan en los 40 000 episodios del entrenamiento final.
 2. **Sin generalización**: los estados $\sigma=0.51$ y $\sigma=0.52$ se
    tratan como *independientes*, aunque la política óptima sea idéntica.
 

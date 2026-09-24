@@ -98,24 +98,26 @@ USE_FIXED_BLOCK_SEQUENCES = True  # Load sequence trial lengths from CSV file (v
 # ==================== RDQN HYPERPARAMETERS ====================
 # RDQN = Recurrent DQN: an LSTM trunk consumes a sliding window of the last
 # RDQN_HISTORY_LEN normalised states; a dense head outputs Q-values.
-# Defaults below are starting points for Bayesian optimisation; tune via
-# ``python -m ml.pes_rdqn.ext.optimize_rdqn`` and write back into this file.
+# RDQN_HISTORY_LEN and RDQN_LSTM_UNITS are always used by training and
+# inference and match the deployed rdqn_model.keras (34,027 params); Optuna's
+# best trial #14 used LSTM(32), which was never deployed.  The remaining values
+# reproduce trial #14 (seed 57) and equal inputs/best_params.json, which overrides them.
 RDQN_HISTORY_LEN = 6                                # Sliding-window length fed to the LSTM
 RDQN_LSTM_UNITS = 64                                # LSTM hidden-state width
-RDQN_HIDDEN_UNITS = [64]                            # Dense-head widths after the LSTM trunk
-RDQN_LEARNING_RATE = 0.0015083436603048935          # Adam learning rate for the Q-network
-RDQN_BATCH_SIZE = 128                               # Mini-batch size sampled from replay buffer
-RDQN_REPLAY_BUFFER_SIZE = 20_000                    # Maximum transitions stored in the replay buffer
-RDQN_TARGET_SYNC_FREQ = 1_000                       # Steps between hard copies of online → target network
-RDQN_DISCOUNT = 0.9634244388615337                  # Discount factor (γ) for TD targets
-RDQN_EPSILON_INITIAL = 0.9627337198502147           # Initial exploration rate (ε-greedy)
-RDQN_EPSILON_MIN = 0.06914686776995618              # Minimum exploration rate after decay
-RDQN_EPISODES = 175_000                             # Default number of training episodes
-RDQN_MAX_GRAD_NORM = 3.9528553802652735             # Global gradient norm clipping threshold
-RDQN_PENALTY_COEFF = 0.02258267089059471            # PBRS reward shaping coefficient (β)
-RDQN_WARMUP_RATIO = 0.2779025551585237              # Fraction of episodes with ε = ε₀ (pure exploration)
-RDQN_TARGET_RATIO = 0.6290206520891799              # Fraction at which ε reaches ε_min via exponential decay
-RDQN_LEARNING_STARTS_FRAC = 0.16154748671160965     # Fraction of buffer_size that must accumulate before training starts
+RDQN_HIDDEN_UNITS = [96, 96]                        # Dense-head widths after the LSTM trunk
+RDQN_LEARNING_RATE = 0.002415187706879797           # Adam learning rate for the Q-network
+RDQN_BATCH_SIZE = 64                                # Mini-batch size sampled from replay buffer
+RDQN_REPLAY_BUFFER_SIZE = 60_000                    # Maximum transitions stored in the replay buffer
+RDQN_TARGET_SYNC_FREQ = 2_000                       # Steps between hard copies of online → target network
+RDQN_DISCOUNT = 0.971927101925925                   # Discount factor (γ) for TD targets
+RDQN_EPSILON_INITIAL = 0.8882905282719732           # Initial exploration rate (ε-greedy)
+RDQN_EPSILON_MIN = 0.08869362616978604              # Minimum exploration rate after decay
+RDQN_EPISODES = 30_000                              # Default number of training episodes (deployed model)
+RDQN_MAX_GRAD_NORM = 3.4745683846777657             # Global gradient norm clipping threshold
+RDQN_PENALTY_COEFF = 0.002630939227551139           # PBRS reward shaping coefficient (β)
+RDQN_WARMUP_RATIO = 0.12367091251239982             # Fraction of episodes with ε = ε₀ (pure exploration)
+RDQN_TARGET_RATIO = 0.5990470166095718              # Fraction at which ε reaches ε_min via exponential decay
+RDQN_LEARNING_STARTS_FRAC = 0.20214436623673876     # Fraction of buffer_size that must accumulate before training starts
 RDQN_MODEL_FILE = 'rdqn_model.keras'                 # Filename for the saved Q-network weights
 
 # ==================== REPRODUCIBILITY ====================

@@ -383,7 +383,9 @@ $$
 donde:
 
 - $\text{Achieved}$: suma de severidades finales obtenida por la política.
-- $\text{BestCase}$: óptimo teórico (asignación voraz informada).
+- $\text{BestCase}$: severidad mínima alcanzable con el presupuesto de la
+  secuencia (30 recursos, 0–10 por ciudad), calculada de forma exacta por
+  programación dinámica de mochila acotada (`_best_feasible_sequence_severity`).
 - $\text{WorstCase}$: peor caso (asignación nula).
 
 $P = 1$ corresponde a la política óptima; $P = 0$ a la peor. La función

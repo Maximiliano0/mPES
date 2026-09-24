@@ -168,9 +168,10 @@ def provide_ens_agent_response(
 ):
     """Generate an ensemble response for the current trial.
 
-    Loads (lazily) the four member models, builds the current state
-    vector, queries every member, averages their distributions with
-    feasibility masking and returns the chosen allocation together
+    Loads (lazily) the enabled member models (DQN, RDQN and TRF by
+    default), builds the current state vector with the severity clipped
+    to ``MAX_SEVERITY``, queries every member, averages their distributions
+    with feasibility masking and returns the chosen allocation together
     with simulated timing and confidence metadata.
 
     Parameters

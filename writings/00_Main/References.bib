@@ -1,78 +1,36 @@
-@inproceedings{Lakshminarayanan2017,
-  title     = {Simple and scalable predictive uncertainty estimation using deep ensembles},
-  author    = {Lakshminarayanan, Balaji and Pritzel, Alexander and Blundell, Charles},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  year      = {2017}
-}
-@misc{mPES2026,
-  title        = {{mPES}: {Multiple Pandemic Experiment Suite}},
-  author       = {Vega, Maximiliano},
-  year         = {2026},
-  howpublished = {\url{https://github.com/Maximiliano0/mPES}},
-  note         = {Repositorio oficial. Accedido: mayo 2026}
-}
-% References.bib
-% BibTeX database for the thesis "A Comparative Evaluation of
-% Reinforcement Learning Architectures for Resource Allocation under
-% Uncertainty in Pandemic Scenarios" (Vega, ITBA, 2026).
-%
-% Curated to contain only the references explicitly cited in the
-% manuscript (36 entries).
-
-% ----- Pandemic Experiment Scenario environment -----
+% ---------------------------------------------------------------------------
+% References.bib -- bibliografía de la tesis. Las claves coinciden con las
+% citadas en 01_Chapters/*.tex.
+% ---------------------------------------------------------------------------
 
 @misc{BCINE2022,
-  title        = {{PES}: {Pandemic Experiment Scenario}},
   author       = {{BCI-NE Lab, University of Essex}},
-  year         = {2022},
+  title        = {{PES}: Pandemic Experiment Scenario},
   howpublished = {\url{https://github.com/BCI-NE/PES}},
-  note         = {Financiado por Dstl/UK MoD y US/UK DoD BARI. Accedido: mayo 2026}
+  year         = {2023},
+  note         = {Accedido: septiembre 2026}
 }
 
-@inproceedings{Nijjar2025,
-  title     = {Enhancing Decision-Making in Human-Machine Teams},
-  author    = {Nijjar, Akashdeep and Promnorakid, Ittipat and Poli, Riccardo
-               and Cinel, Caterina and Reed, Thomas and Baker, Christopher
-               and Hinton, Stephen and Fairclough, Stephen},
-  booktitle = {2025 IEEE International Conference on Metrology for eXtended Reality,
-               Artificial Intelligence and Neural Engineering (MetroXRAINE)},
-  year      = {2025},
-  doi       = {10.1109/metroxraine66377.2025.11340006}
+@article{Towers2024,
+  author  = {Towers, Mark and Kwiatkowski, Ariel and Terry, Jordan and Balis, John U. and De Cola, Gianluca and Deleu, Tristan and Goul{\~a}o, Manuel and Kallinteris, Andreas and Krimmel, Markus and Arjun, K. G. and Perez-Vicente, Rodrigo and Pierr{\'e}, Andrea and Schulhoff, Sander and Tai, Jun Jet and Tan, Hannah and Younis, Omar G.},
+  title   = {Gymnasium: A Standard Interface for Reinforcement Learning Environments},
+  journal = {arXiv preprint arXiv:2407.17032},
+  year    = {2024},
+  url     = {https://arxiv.org/abs/2407.17032}
 }
-
-@article{FonParisi2003,
-  title   = {Litigation and the Evolution of Legal Remedies: A Dynamic Model},
-  author  = {Fon, Vincy and Parisi, Francesco},
-  journal = {Public Choice},
-  volume  = {116},
-  number  = {3--4},
-  pages   = {419--433},
-  year    = {2003},
-  doi     = {10.1023/A:1024822710849}
-}
-
-@misc{ds004477,
-  author    = {{BCI-NE Lab}},
-  title     = {{OpenNeuro Dataset ds004477}},
-  year      = {2022},
-  url       = {https://nemar.org/dataexplorer/detail?dataset_id=ds004477},
-  note      = {Disponible en NEMAR/OpenNeuro}
-}
-
-% ----- Foundations of Reinforcement Learning -----
 
 @book{SuttonBarto2018,
-  title     = {Reinforcement Learning: An Introduction},
   author    = {Sutton, Richard S. and Barto, Andrew G.},
-  year      = {2018},
-  edition   = {2nd},
+  title     = {Reinforcement Learning: An Introduction},
   publisher = {The MIT Press},
-  address   = {Cambridge, MA}
+  address   = {Cambridge, MA},
+  edition   = {2nd},
+  year      = {2018}
 }
 
 @article{Watkins1992,
-  title   = {Q-learning},
   author  = {Watkins, Christopher J. C. H. and Dayan, Peter},
+  title   = {Q-learning},
   journal = {Machine Learning},
   volume  = {8},
   number  = {3--4},
@@ -81,8 +39,8 @@
 }
 
 @inproceedings{Hasselt2010,
-  title     = {Double {Q}-learning},
   author    = {van Hasselt, Hado},
+  title     = {Double {Q}-learning},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   volume    = {23},
   pages     = {2613--2621},
@@ -90,27 +48,15 @@
 }
 
 @inproceedings{Ng1999,
-  title     = {Policy invariance under reward transformations: Theory and application to reward shaping},
   author    = {Ng, Andrew Y. and Harada, Daishi and Russell, Stuart},
+  title     = {Policy invariance under reward transformations: Theory and application to reward shaping},
   booktitle = {International Conference on Machine Learning (ICML)},
   year      = {1999}
 }
 
-@article{Williams1992,
-  title   = {Simple statistical gradient-following algorithms for connectionist reinforcement learning},
-  author  = {Williams, Ronald J.},
-  journal = {Machine Learning},
-  volume  = {8},
-  number  = {3--4},
-  pages   = {229--256},
-  year    = {1992}
-}
-
-% ----- Deep RL -----
-
 @article{Mnih2015,
-  title   = {Human-level control through deep reinforcement learning},
   author  = {Mnih, Volodymyr and Kavukcuoglu, Koray and Silver, David and Rusu, Andrei A. and Veness, Joel and Bellemare, Marc G. and Graves, Alex and Riedmiller, Martin and Fidjeland, Andreas K. and Ostrovski, Georg and others},
+  title   = {Human-level control through deep reinforcement learning},
   journal = {Nature},
   volume  = {518},
   number  = {7540},
@@ -118,44 +64,9 @@
   year    = {2015}
 }
 
-@inproceedings{Hasselt2016,
-  title     = {Deep reinforcement learning with double {Q}-learning},
-  author    = {van Hasselt, Hado and Guez, Arthur and Silver, David},
-  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume    = {30},
-  pages     = {2094--2100},
-  year      = {2016}
-}
-
-@article{Huber1964,
-  title   = {Robust estimation of a location parameter},
-  author  = {Huber, Peter J.},
-  journal = {The Annals of Mathematical Statistics},
-  volume  = {35},
-  number  = {1},
-  pages   = {73--101},
-  year    = {1964}
-}
-
-@inproceedings{Glorot2010,
-  title     = {Understanding the difficulty of training deep feedforward neural networks},
-  author    = {Glorot, Xavier and Bengio, Yoshua},
-  booktitle = {Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics (AISTATS)},
-  volume    = {9},
-  pages     = {249--256},
-  year      = {2010}
-}
-
-@inproceedings{Mnih2016,
-  title     = {Asynchronous methods for deep reinforcement learning},
-  author    = {Mnih, Volodymyr and Badia, Adri{\`a} Puigdom{\`e}nech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
-  booktitle = {International Conference on Machine Learning (ICML)},
-  year      = {2016}
-}
-
 @article{Lin1992,
-  title   = {Self-improving reactive agents based on reinforcement learning, planning and teaching},
   author  = {Lin, Long-Ji},
+  title   = {Self-improving reactive agents based on reinforcement learning, planning and teaching},
   journal = {Machine Learning},
   volume  = {8},
   number  = {3--4},
@@ -163,9 +74,35 @@
   year    = {1992}
 }
 
+@inproceedings{Kingma2015,
+  author    = {Kingma, Diederik P. and Ba, Jimmy},
+  title     = {Adam: A method for stochastic optimization},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2015}
+}
+
+@inproceedings{Hasselt2016,
+  author    = {van Hasselt, Hado and Guez, Arthur and Silver, David},
+  title     = {Deep reinforcement learning with double {Q}-learning},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {30},
+  pages     = {2094--2100},
+  year      = {2016}
+}
+
+@article{Huber1964,
+  author  = {Huber, Peter J.},
+  title   = {Robust estimation of a location parameter},
+  journal = {The Annals of Mathematical Statistics},
+  volume  = {35},
+  number  = {1},
+  pages   = {73--101},
+  year    = {1964}
+}
+
 @article{Hochreiter1997,
-  title   = {Long short-term memory},
   author  = {Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
+  title   = {Long short-term memory},
   journal = {Neural Computation},
   volume  = {9},
   number  = {8},
@@ -174,116 +111,84 @@
 }
 
 @inproceedings{Hausknecht2015,
-  title     = {Deep recurrent {Q}-learning for partially observable {MDPs}},
   author    = {Hausknecht, Matthew and Stone, Peter},
+  title     = {Deep recurrent {Q}-learning for partially observable {MDPs}},
   booktitle = {AAAI Fall Symposium Series},
   year      = {2015}
 }
 
-@inproceedings{Kingma2015,
-  title     = {{Adam}: A Method for Stochastic Optimization},
-  author    = {Kingma, Diederik P. and Ba, Jimmy},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2015}
+@article{Williams1992,
+  author  = {Williams, Ronald J.},
+  title   = {Simple statistical gradient-following algorithms for connectionist reinforcement learning},
+  journal = {Machine Learning},
+  volume  = {8},
+  number  = {3--4},
+  pages   = {229--256},
+  year    = {1992}
 }
 
-@inproceedings{Andrychowicz2021,
-  title     = {What matters for on-policy deep actor-critic methods? {A} large-scale study},
-  author    = {Andrychowicz, Marcin and Raichuk, Anton and Sta{\'n}czyk, Piotr and Orsini, Manu and Girgin, Sertan and Marinier, Rapha{\"e}l and Hussenot, L{\'e}onard and Geist, Matthieu and Pietquin, Olivier and Michalski, Marcin and Gelly, Sylvain and Bachem, Olivier},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2021}
+@inproceedings{Mnih2016,
+  author    = {Mnih, Volodymyr and Badia, Adri{\`a} Puigdom{\`e}nech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
+  title     = {Asynchronous methods for deep reinforcement learning},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2016}
 }
 
-% ----- Attention / Transformers -----
 
 @inproceedings{Vaswani2017,
-  title     = {Attention Is All You Need},
   author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
+  title     = {Attention is all you need},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year      = {2017}
 }
 
 @inproceedings{Parisotto2020,
-  title     = {Stabilizing transformers for reinforcement learning},
   author    = {Parisotto, Emilio and Song, H. Francis and Rae, Jack W. and Pascanu, Razvan and Gulcehre, Caglar and Jayakumar, Siddhant M. and Jaderberg, Max and Kaufman, Raphael Lopez and Clark, Aidan and Noury, Seb and Botvinick, Matthew M. and Heess, Nicolas and Hadsell, Raia},
+  title     = {Stabilizing transformers for reinforcement learning},
   booktitle = {International Conference on Machine Learning (ICML)},
   year      = {2020}
 }
 
 @inproceedings{Chen2021,
-  title     = {{Decision Transformer}: Reinforcement Learning via Sequence Modeling},
   author    = {Chen, Lili and Lu, Kevin and Rajeswaran, Aravind and Lee, Kimin and Grover, Aditya and Laskin, Michael and Abbeel, Pieter and Srinivas, Aravind and Mordatch, Igor},
+  title     = {Decision {T}ransformer: Reinforcement learning via sequence modeling},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year      = {2021}
 }
 
-% ----- Ensembles -----
-
-
-
-% ----- Generalisation and OOD -----
-
-@inproceedings{Cobbe2020,
-  title     = {Leveraging procedural generation to benchmark reinforcement learning},
-  author    = {Cobbe, Karl and Hesse, Christopher and Hilton, Jacob and Schulman, John},
-  booktitle = {International Conference on Machine Learning (ICML)},
-  year      = {2020}
-}
-
-@misc{Packer2018,
-  title        = {Assessing Generalization in Deep Reinforcement Learning},
-  author       = {Packer, Charles and Gao, Katelyn and Kos, Jernej and Kr{\"a}henb{\"u}hl, Philipp and Koltun, Vladlen and Song, Dawn},
-  year         = {2018},
-  howpublished = {arXiv preprint arXiv:1810.12282},
-  url          = {https://arxiv.org/abs/1810.12282}
-}
-
-@article{Kirk2023,
-  title   = {A survey of zero-shot generalisation in deep reinforcement learning},
-  author  = {Kirk, Robert and Zhang, Amy and Grefenstette, Edward and Rockt{\"a}schel, Tim},
-  journal = {Journal of Artificial Intelligence Research},
-  volume  = {76},
-  pages   = {201--264},
-  year    = {2023}
-}
-
-@inproceedings{Henderson2018,
-  title     = {Deep reinforcement learning that matters},
-  author    = {Henderson, Peter and Islam, Riashat and Bachman, Philip and Pineau, Joelle and Precup, Doina and Meger, David},
-  booktitle = {AAAI Conference on Artificial Intelligence},
-  year      = {2018}
-}
-
-% ----- Hyper-parameter optimisation -----
-
-@inproceedings{Akiba2019,
-  title     = {{Optuna}: A next-generation hyperparameter optimization framework},
-  author    = {Akiba, Takuya and Sano, Shotaro and Yanase, Toshihiko and Ohta, Takeru and Koyama, Masanori},
-  booktitle = {ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)},
-  year      = {2019}
+@inproceedings{Lakshminarayanan2017,
+  author    = {Lakshminarayanan, Balaji and Pritzel, Alexander and Blundell, Charles},
+  title     = {Simple and scalable predictive uncertainty estimation using deep ensembles},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  year      = {2017}
 }
 
 @inproceedings{Bergstra2011,
-  title     = {Algorithms for hyper-parameter optimization},
   author    = {Bergstra, James and Bardenet, R{\'e}mi and Bengio, Yoshua and K{\'e}gl, Bal{\'a}zs},
+  title     = {Algorithms for hyper-parameter optimization},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year      = {2011}
 }
 
-% ----- Statistics -----
+@inproceedings{Akiba2019,
+  author    = {Akiba, Takuya and Sano, Shotaro and Yanase, Toshihiko and Ohta, Takeru and Koyama, Masanori},
+  title     = {Optuna: A next-generation hyperparameter optimization framework},
+  booktitle = {ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)},
+  year      = {2019}
+}
 
 @book{Cohen1988,
-  title     = {Statistical Power Analysis for the Behavioral Sciences},
   author    = {Cohen, Jacob},
-  year      = {1988},
-  edition   = {2nd},
+  title     = {Statistical Power Analysis for the Behavioral Sciences},
   publisher = {Lawrence Erlbaum Associates},
-  address   = {Hillsdale, NJ}
+  address   = {Hillsdale, NJ},
+  edition   = {2nd},
+  year      = {1988}
 }
 
 @article{Welch1947,
-  title   = {The generalization of {Student}'s problem when several different population variances are involved},
   author  = {Welch, Bernard L.},
+  title   = {The generalization of {S}tudent's problem when several different population variances are involved},
   journal = {Biometrika},
   volume  = {34},
   number  = {1/2},
@@ -291,44 +196,115 @@
   year    = {1947}
 }
 
-% ----- Gymnasium -----
-
-@misc{Towers2024,
-  title  = {Gymnasium: A Standard Interface for Reinforcement Learning Environments},
-  author = {Towers, Mark and Kwiatkowski, Ariel and Terry, Jordan and Balis, John U. and De Cola, Gianluca and Deleu, Tristan and Goul\~ao, Manuel and Kallinteris, Andreas and Krimmel, Markus and Arjun, K. G. and Perez-Vicente, Rodrigo and Pierr\'e, Andrea and Schulhoff, Sander and Tai, Jun Jet and Tan, Hannah and Younis, Omar G.},
-  year   = {2024},
-  howpublished = {arXiv preprint arXiv:2407.17032},
-  url      = {https://arxiv.org/abs/2407.17032},
-  note     = {Aceptado en NeurIPS Datasets and Benchmarks 2025}
-}
-
-% ----- Computational epidemiology -----
-
 @book{Kuhl2021,
-  title     = {Computational Epidemiology: Data-Driven Modeling of {COVID-19}},
   author    = {Kuhl, Ellen},
+  title     = {Computational Epidemiology: Data-Driven Modeling of {COVID-19}},
   publisher = {Springer},
   year      = {2021}
 }
 
-% ----- Metacognition / confidence -----
-
-@article{Boldt2015,
-  title   = {Shared neural markers of decision confidence and error detection},
-  author  = {Boldt, Annika and Yeung, Nick},
-  journal = {Journal of Neuroscience},
-  volume  = {35},
-  number  = {8},
-  pages   = {3478--3484},
-  year    = {2015}
+@misc{ds004477,
+  author       = {Papastylianou, Tasos and Ramele, Rodrigo and Citi, Luca and Cinel, Caterina and Poli, Riccardo},
+  title        = {{PES} -- Pandemic Emergency Scenario},
+  howpublished = {OpenNeuro, conjunto de datos ds004477, versi\'on 1.0.2},
+  year         = {2023},
+  doi          = {10.18112/openneuro.ds004477.v1.0.2},
+  url          = {https://doi.org/10.18112/openneuro.ds004477.v1.0.2}
 }
 
-@article{Fleming2024,
-  title   = {Metacognition and confidence: A review and synthesis},
-  author  = {Fleming, Stephen M.},
-  journal = {Annual Review of Psychology},
-  volume  = {75},
-  pages   = {241--268},
-  year    = {2024}
+@inproceedings{Nijjar2025,
+  author    = {Nijjar, Akashdeep and Promnorakid, Ittipat and Poli, Riccardo and Cinel, Caterina and Reed, Thomas and Baker, Christopher and Hinton, Stephen and Fairclough, Stephen},
+  title     = {Enhancing decision-making in human-machine teams},
+  booktitle = {2025 IEEE International Conference on Metrology for eXtended Reality, Artificial Intelligence and Neural Engineering (MetroXRAINE)},
+  year      = {2025},
+  doi       = {10.1109/metroxraine66377.2025.11340006}
 }
 
+@inproceedings{Henderson2018,
+  author    = {Henderson, Peter and Islam, Riashat and Bachman, Philip and Pineau, Joelle and Precup, Doina and Meger, David},
+  title     = {Deep reinforcement learning that matters},
+  booktitle = {AAAI Conference on Artificial Intelligence},
+  year      = {2018}
+}
+
+@inproceedings{Cobbe2020,
+  author    = {Cobbe, Karl and Hesse, Christopher and Hilton, Jacob and Schulman, John},
+  title     = {Leveraging procedural generation to benchmark reinforcement learning},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  year      = {2020}
+}
+
+@article{Packer2018,
+  author  = {Packer, Charles and Gao, Katelyn and Kos, Jernej and Kr{\"a}henb{\"u}hl, Philipp and Koltun, Vladlen and Song, Dawn},
+  title   = {Assessing generalization in deep reinforcement learning},
+  journal = {arXiv preprint arXiv:1810.12282},
+  year    = {2018},
+  url     = {https://arxiv.org/abs/1810.12282}
+}
+
+@article{Kirk2023,
+  author  = {Kirk, Robert and Zhang, Amy and Grefenstette, Edward and Rockt{\"a}schel, Tim},
+  title   = {A survey of zero-shot generalisation in deep reinforcement learning},
+  journal = {Journal of Artificial Intelligence Research},
+  volume  = {76},
+  pages   = {201--264},
+  year    = {2023}
+}
+
+@misc{mPES2026,
+  author       = {Vega, Maximiliano},
+  title        = {{mPES}: Multiple Pandemic Experiment Suite},
+  howpublished = {\url{https://github.com/Maximiliano0/mPES}},
+  year         = {2026},
+  note         = {Repositorio oficial. Accedido: septiembre 2026}
+}
+
+
+@inproceedings{Glorot2010,
+  author    = {Glorot, Xavier and Bengio, Yoshua},
+  title     = {Understanding the difficulty of training deep feedforward neural networks},
+  booktitle = {Proceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  volume    = {9},
+  pages     = {249--256},
+  year      = {2010}
+}
+
+@article{Shannon1948,
+  author  = {Shannon, Claude E.},
+  title   = {A mathematical theory of communication},
+  journal = {The Bell System Technical Journal},
+  volume  = {27},
+  number  = {3},
+  pages   = {379--423},
+  year    = {1948},
+  doi     = {10.1002/j.1538-7305.1948.tb01338.x}
+}
+
+@inproceedings{Schulman2016,
+  author    = {Schulman, John and Moritz, Philipp and Levine, Sergey and Jordan, Michael I. and Abbeel, Pieter},
+  title     = {High-dimensional continuous control using generalized advantage estimation},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2016}
+}
+
+@article{Wiering2008,
+  author  = {Wiering, Marco A. and van Hasselt, Hado},
+  title   = {Ensemble algorithms in reinforcement learning},
+  journal = {IEEE Transactions on Systems, Man, and Cybernetics, Part B (Cybernetics)},
+  volume  = {38},
+  number  = {4},
+  pages   = {930--936},
+  year    = {2008},
+  doi     = {10.1109/TSMCB.2008.920231}
+}
+
+@article{Parisi2021,
+  author  = {Parisi, Andrea and Brand, Samuel P. C. and Hilton, Joe and Aziza, Rabia and Keeling, Matt J. and Nokes, D. James},
+  title   = {Spatially resolved simulations of the spread of {COVID-19} in three {European} countries},
+  journal = {PLOS Computational Biology},
+  volume  = {17},
+  number  = {7},
+  pages   = {e1009090},
+  year    = {2021},
+  doi     = {10.1371/journal.pcbi.1009090}
+}

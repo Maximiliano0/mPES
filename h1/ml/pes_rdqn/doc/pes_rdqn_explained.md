@@ -15,7 +15,7 @@ El **Recurrent DQN** (Hausknecht & Stone, 2015) sustituye la red
 intuición:
 
 - En el Pandemic Scenario el "estado oficial"
-  $s_t = [r_t/39,\, t_t/10,\, \sigma_t]$ no codifica **cómo** llegamos a
+  $s_t = [R_t/30,\, t_t/10,\, S_t/9]$ no codifica **cómo** llegamos a
   esa severidad: ¿el agente acaba de gastar 5 recursos seguidos? ¿Lleva
   3 trials sin asignar nada?
 - Esa información es relevante para predecir la dinámica
@@ -49,10 +49,13 @@ win_mpes_env\Scripts\Activate.ps1
 Ejemplos:
 
 ```powershell
-python -m ml.pes_rdqn.ext.train_rdqn 50000
+python -m ml.pes_rdqn.ext.train_rdqn         # reproduce el modelo desplegado
 python -m ml.pes_rdqn.ext.optimize_rdqn 80
 python -m ml.pes_rdqn
 ```
+
+Sin argumento, `train_rdqn` usa `RDQN_EPISODES = 30 000`, el valor del mejor
+ensayo.
 
 > Recuerda exportar `PYTHONIOENCODING=utf-8`,
 > `TF_ENABLE_ONEDNN_OPTS=0` y `VIRTUAL_ENV` antes de lanzar procesos
@@ -115,16 +118,19 @@ t=k: [s_{k-5}] [s_{k-4}] [s_{k-3}] [s_{k-2}] [s_{k-1}] [s_k]    (L=6)
 
 Implementado en [ext/train_rdqn.py](../ext/train_rdqn.py).
 
-### 4.1 Arquitectura
+### 4.1 Arquitectura (modelo desplegado, 34 027 parámetros)
 
 ```
-Input (history_len, 3)
+Input (6, 3)
         │
         ▼
-   LSTM(64)        ← RDQN_LSTM_UNITS
+   LSTM(64)        ← RDQN_LSTM_UNITS (CONFIG)
         │
         ▼
-   Dense(64, ReLU) ← RDQN_HIDDEN_UNITS
+   Dense(96, ReLU) ← best_params.json (hidden_units)
+        │
+        ▼
+   Dense(96, ReLU)
         │
         ▼
    Dense(11, lineal) → Q(s_{t-L+1:t}, a)
@@ -190,18 +196,38 @@ el estudio se crea con `direction='maximize'`, por lo que Optuna
 
 ### 5.3 Mejores hiperparámetros encontrados
 
+Mejor ensayo #14 de 20 (2026-04-29, semilla 57, `mean_perf` = 0.9260),
+guardado en `inputs/best_params.json`:
+
 ```json
 {
-  "RDQN_HISTORY_LEN":   6,
-  "RDQN_LSTM_UNITS":    64,
-  "RDQN_HIDDEN_UNITS":  64,
-  "RDQN_LEARNING_RATE": 0.001,
-  "RDQN_DISCOUNT":      0.96
+  "history_len":          6,
+  "lstm_units":           32,
+  "hidden_units":         [96, 96],
+  "learning_rate":        0.002415187706879797,
+  "discount_factor":      0.971927101925925,
+  "epsilon_initial":      0.8882905282719732,
+  "epsilon_min":          0.08869362616978604,
+  "batch_size":           64,
+  "buffer_size":          60000,
+  "target_sync_freq":     2000,
+  "max_grad_norm":        3.4745683846777657,
+  "penalty_coeff":        0.002630939227551139,
+  "warmup_ratio":         0.12367091251239982,
+  "target_ratio":         0.5990470166095718,
+  "learning_starts_frac": 0.20214436623673876,
+  "num_episodes":         30000
 }
 ```
 
-Con $L = 6$ el LSTM ve los últimos 6 trials, lo que cubre toda secuencia
-de longitud media (3–10) sin saturar memoria.
+`train_rdqn.py` toma de este archivo los hiperparámetros de entrenamiento y
+la cabeza densa, pero `RDQN_HISTORY_LEN` (6) y `RDQN_LSTM_UNITS` (64) siempre
+salen de `config/CONFIG.py`. Por eso el modelo desplegado usa LSTM(64) y no
+las 32 unidades del mejor ensayo, y obtiene 0.8987 en lugar de 0.9260. Los
+valores de entrenamiento y la cabeza de `CONFIG.py` coinciden con este archivo,
+así que la configuración por defecto reproduce el modelo desplegado.
+
+Con $L = 6$ el LSTM ve los últimos 6 trials.
 
 ---
 
@@ -258,11 +284,10 @@ ml/pes_rdqn/
 | **`pes_rdqn`** | **RDQN (LSTM, L=6)** | **0.8987** | **0.0488** | 64 |
 
 Mejora absoluta: **+0.005** en media y **−0.007** en desviación
-estándar. La ganancia es modesta porque el estado original ya contiene
-casi toda la información markoviana relevante (recursos, trial,
-severidad). El LSTM ayuda principalmente en las secuencias largas
-(8–10 trials) donde la trayectoria reciente predice mejor la dinámica
-de severidad agregada.
+estándar en la referencia. En los 21 escenarios de generalización del
+benchmark la relación se invierte (0.889 frente a 0.899 de DQN): el DQN
+recurrente es el mejor modelo con secuencias de 11 a 20 pasos (0.889), pero
+cae a 0.831 con severidades de 10 a 12.
 
 ---
 

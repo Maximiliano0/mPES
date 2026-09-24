@@ -164,7 +164,7 @@ def calculate_normalised_final_severity_performance_metric( SeveritiesFromSequen
     tuple
         - Performance (float): Normalized performance metric (0-1)
         - WorstCaseSequenceSeverity (float): Sum of severities if no resources allocated
-        - BestCaseSequenceSeverity (float): Sum of severities if max resources allocated
+        - BestCaseSequenceSeverity (float): Minimum sum of severities under the per-sequence budget (exact DP)
     """
 
     FinalSequenceSeverity     = numpy.sum( SeveritiesFromSequence )

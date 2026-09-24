@@ -64,9 +64,13 @@ Aquí $S_{\mathrm{final},i}$ es la severidad final observada, y los límites de
 referencia de la secuencia son:
 
 $$
-S_{\mathrm{worst},i} \;=\; \text{peor severidad alcanzable}, \qquad
-S_{\mathrm{best},i} \;=\; \text{mejor severidad alcanzable}.
+S_{\mathrm{worst},i} \;=\; \text{severidad sin asignar recursos}, \qquad
+S_{\mathrm{best},i} \;=\; \text{mínima severidad alcanzable con el presupuesto}.
 $$
+
+$S_{\mathrm{best},i}$ se calcula de forma exacta por programación dinámica
+(mochila acotada sobre asignaciones de 0 a 10 por ciudad que suman a lo sumo
+30) en `_best_feasible_sequence_severity` de cada `src/exp_utils.py`.
 
 El desempeño medio de un modelo $m$ en un escenario $s$ es:
 

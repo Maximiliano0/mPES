@@ -56,10 +56,10 @@ Search space (23 parameters):
     num_layers           ∈ [1, 4]            (stacked encoder blocks)
     dropout              ∈ [0.0, 0.3]        (MHSA / FFN dropout rate)
 
-Note: ``num_episodes`` is intentionally low during optimisation so each trial
-fits in <1h on Colab CPU. The winning hyperparameter set is then retrained
-at the FULL ``TRF_EPISODES`` count (default 175 000) inside the optimisation
-script itself, before saving ``trf_best_<date>.keras``.
+Note: ``num_episodes`` is part of the search space and kept low so each trial
+fits in <1h on Colab CPU. The best trial's in-memory model is saved as
+``trf_best_<date>.keras`` without retraining; ``train_transformer.py`` retrains
+it from ``inputs/best_params.json`` (the encoder architecture comes from CONFIG).
 
 Outputs (saved to INPUTS_PATH/<date>_BAYESIAN_OPT/):
     - trf_best_<date>.keras                   : Model from the best optimization trial
@@ -759,11 +759,7 @@ def main():
             info(f"Found legacy pickle artifact at {pkl_path} — ignored.")
 
     # Reuse the in-memory best per-trial model whenever its score matches the
-    # study's best.value.  The previous third clause required
-    # ``num_episodes >= TRF_EPISODES`` (175 000), which the search space caps
-    # at 60 000 — so it was always False and forced an unwanted full retrain
-    # at 175 000 episodes after every Colab/Optuna run.  For a longer-horizon
-    # model, use ``train_transformer.py --from-best <date>`` on the local PC.
+    # study's best.value; retrain longer with ``train_transformer.py --from-best <date>``.
     if _best_artifacts['weights'] is not None and _best_artifacts['value'] >= best.value:
         # Rebuild model with preserved architecture and weights
         hidden_units = _best_artifacts['hidden_units']

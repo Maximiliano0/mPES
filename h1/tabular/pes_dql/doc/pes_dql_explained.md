@@ -131,8 +131,9 @@ delimitada en el log con cabeceras de `terminal_utils`):
    Llama a `QLearning(env, learning, discount, epsilon, min_eps,
    episodes, warmup_ratio, target_ratio, double_q=True,
    penalty_coeff=...)` desde
-   [`pandemic.py`](../ext/pandemic.py). Por defecto entrena durante
-   **860 000 episodios** con `SEED=42`.
+   [`pandemic.py`](../ext/pandemic.py). Con el `inputs/best_params.json`
+   vigente entrena durante **360 000 episodios** con la semilla 46
+   (`SEED + best_trial_number + 1`).
 
 5. **Evaluación dual**
    Ejecuta dos pasadas sobre las 64 secuencias fijas:
@@ -150,22 +151,27 @@ delimitada en el log con cabeceras de `terminal_utils`):
    Q-table y `rewards.npy` a `inputs/q.npy` y `inputs/rewards.npy`,
    que son los ficheros que consume `python -m tabular.pes_dql`.
 
-### 3.2 Hiperparámetros por defecto
+### 3.2 Hiperparámetros del modelo desplegado
 
-Los valores codificados en `_DEFAULT_HYPERPARAMS` (resultado de la
-optimización bayesiana del 2026-04-21):
+Valores de `inputs/best_params.json` (mejor ensayo #3 de la optimización
+bayesiana del 2026-04-21), que `train_rl.py` carga por defecto:
 
 | Parámetro | Valor | Descripción |
 |---|---|---|
-| `learning_rate` (α) | 0.2593 | Tasa de aprendizaje |
-| `discount_factor` (γ) | 0.9806 | Factor de descuento |
-| `epsilon_initial` (ε₀) | 0.8392 | Exploración inicial |
-| `epsilon_min` (ε_min) | 0.0799 | Exploración mínima |
-| `warmup_ratio` | 0.0240 | Fracción de episodios en warm-up |
-| `target_ratio` | 0.5174 | Fracción de episodios para alcanzar ε_min |
-| `penalty_coeff` (β) | 0.2177 | Coeficiente PBRS |
-| `num_episodes` | 860 000 | Episodios totales |
-| `seed` | 42 | Semilla global |
+| `learning_rate` (α) | 0.1132 | Tasa de aprendizaje |
+| `discount_factor` (γ) | 0.9777 | Factor de descuento |
+| `epsilon_initial` (ε₀) | 0.5998 | Exploración inicial |
+| `epsilon_min` (ε_min) | 0.0327 | Exploración mínima |
+| `warmup_ratio` | 0.0260 | Fracción de episodios en warm-up |
+| `target_ratio` | 0.6430 | Fracción de episodios para alcanzar ε_min |
+| `penalty_coeff` (β) | 0.000392 | Coeficiente PBRS |
+| `num_episodes` | 360 000 | Episodios totales |
+| `seed` | 46 | `SEED + best_trial_number + 1` |
+
+El diccionario `_DEFAULT_HYPERPARAMS` del script (α 0.2593, γ 0.9806,
+ε 0.8392 → 0.0799, warm-up 0.0240, target 0.5174, β 0.2177, 860 000
+episodios) es sólo un respaldo heredado que se usa si no existe ningún
+`best_params`; no corresponde al modelo desplegado.
 
 ### 3.3 Salidas del entrenamiento
 
@@ -362,22 +368,24 @@ tabular/pes_dql/
 ```json
 {
     "hyperparameters": {
-        "learning_rate":   0.2593,
-        "discount_factor": 0.9806,
-        "epsilon_initial": 0.8392,
-        "epsilon_min":     0.0799,
-        "num_episodes":    860000,
-        "warmup_ratio":    0.0240,
-        "target_ratio":    0.5174,
-        "penalty_coeff":   0.2177
+        "learning_rate":   0.11320391141177716,
+        "discount_factor": 0.9777324201779083,
+        "epsilon_initial": 0.5998368910791798,
+        "epsilon_min":     0.032676417657817626,
+        "num_episodes":    360000,
+        "warmup_ratio":    0.026038553653599705,
+        "target_ratio":    0.6430179407605754,
+        "penalty_coeff":   0.0003916814960230879
     },
-    "trial_seed":       143,
+    "seed":             46,
     "track_confidence": false,
     "double_q":         true,
-    "mean_perf":        0.896344,
-    "trial_number":     100
+    "mean_perf":        0.8963435995059954
 }
 ```
+
+El estudio del 2026-04-21 tuvo 100 ensayos (14 completos y 86
+interrumpidos por el `MedianPruner`); el mejor es el #3 (índice desde 0).
 
 ### 7.3 Salidas del experimento (`__main__.py`)
 
@@ -392,31 +400,36 @@ tabular/pes_dql/
 ## 8. Resultados de rendimiento
 
 La métrica de rendimiento es la **severidad final normalizada** (más alto =
-mejor; 1.0 sería un agente perfecto que reduce toda la severidad a cero):
+mejor; 1.0 corresponde a la asignación óptima):
 
-$$\text{perf}(\text{seq}) = 1 - \frac{\text{severidad\_final}}{\text{severidad\_máxima\_posible}}$$
+$$\text{perf}(\text{seq}) = \frac{S_{\text{peor}} - S_{\text{agente}}}{S_{\text{peor}} - S_{\text{mejor}}}$$
 
-### 8.1 Última corrida (2026-04-30)
+donde $S_{\text{peor}}$ es la severidad sin asignar recursos y
+$S_{\text{mejor}}$ la mínima alcanzable con el presupuesto de la secuencia,
+calculada por programación dinámica.
+
+### 8.1 Modelo desplegado (entrenado el 2026-04-21)
 
 | Métrica | Valor |
 |---|---|
 | `raw_mean_perf` | **0.896344** |
 | `std` | 0.047708 |
 | `n` (secuencias) | 64 |
-| Episodios | 860 000 |
-| Semilla | 143 (`SEED + best_trial_number + 1`) |
+| Episodios | 360 000 |
+| Semilla | 46 (`SEED + best_trial_number + 1`) |
 
 ### 8.2 Interpretación
 
-- Un valor de **0.896** indica que el agente reduce la severidad final
-  al ~10.4 % del peor caso posible. Comparado con `pes_ql` (Q-Learning
-  estándar con la misma optimización bayesiana), Double Q + PBRS aporta
-  una mejora estadísticamente consistente atribuible a:
-  - Eliminación del sesgo de maximización (Double Q).
-  - Mejor distribución temporal de exploración (warm-up).
-  - Convergencia más rápida sin alterar la política óptima (PBRS).
-- La desviación estándar (0.048) sobre 64 secuencias indica buena
-  consistencia entre mapas de distinta longitud.
+- Un valor de **0.896** indica que el agente logra el ~89.6 % de la
+  reducción de severidad que obtendría la asignación óptima. Comparado con
+  `pes_ql` (0.887 en la misma referencia), Double Q-Learning queda
+  ligeramente por encima. El coeficiente PBRS del mejor ensayo es muy
+  pequeño (β ≈ 0.0004), de modo que el aporte del *shaping* es marginal.
+- El entrenamiento sólo presenta severidades de 2 a 8 (distribución
+  empírica de `initial_severity.csv`), por lo que las filas de severidad 0,
+  1 y 9 de la Q-table conservan su inicialización aleatoria. Eso explica la
+  caída en escenarios con severidades fuera de ese rango (p. ej. 0.785 con
+  severidades 10–12, que se recortan a 9).
 
 ---
 

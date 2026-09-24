@@ -114,11 +114,11 @@ $$\mathrm{PE} = \mathrm{Embedding}(\{0, 1, \dots, h-1\})$$
 Tabla de parámetros entrenables; mejor capacidad expresiva pero limitada a
 la longitud máxima vista en entrenamiento.
 
-`pes_trf` permite ambas; en la configuración por defecto se usa la versión
-**aprendida** porque `TRF_HISTORY_LEN = 6` es fijo. La variante
-sinusoidal se documenta a título teórico pero **no** está implementada
-en el código: `transformer_model.build_q_network()` siempre instancia un
-`tf.keras.layers.Embedding` aprendido («pos_embed»).
+`pes_trf` sólo implementa una codificación de tipo tabla: el código crea un
+`tf.keras.layers.Embedding` («pos_embed»), pero lo evalúa sobre posiciones
+constantes al construir el modelo, de modo que la codificación queda como un
+vector fijo inicializado con Glorot uniforme y **no se entrena**. La variante
+sinusoidal se documenta a título teórico pero **no** está implementada.
 
 ---
 
@@ -235,9 +235,10 @@ El LSTM (Hochreiter & Schmidhuber, 1997) procesa la secuencia de forma
 
 | Aspecto | RDQN (LSTM) | TRF (Transformer) | Diferencia |
 |---|---|---|---|
-| Rendimiento medio | 0.91 | **0.927** | +1.7 pts |
-| Desviación estándar | 0.05 | **0.045** | $-10\%$ |
-| Episodios para converger | $\sim 80\,000$ | $\sim 50\,000$ | $-37\%$ |
+| Rendimiento medio (referencia) | 0.899 | **0.927** | +2.8 pts |
+| Desviación estándar | 0.049 | **0.045** | $-7\%$ |
+| Media en 21 escenarios de generalización | 0.889 | **0.930** | +4.1 pts |
+| Episodios de entrenamiento | 30 000 | 30 000 | — |
 
 ---
 

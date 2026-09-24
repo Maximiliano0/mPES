@@ -49,10 +49,10 @@ Search space (16 parameters):
     target_ratio         ∈ [0.50, 0.95]      (ε-decay target fraction)
     learning_starts_frac ∈ [0.05, 0.25]      (replay-buffer warm-up fraction)
 
-Note: ``num_episodes`` is intentionally low during optimisation so each trial
-fits in <1h on Colab CPU. The winning hyperparameter set is then retrained
-at the FULL ``DQN_EPISODES`` count (default 175 000) inside the optimisation
-script itself, before saving ``dqn_best_<date>.keras``.
+Note: ``num_episodes`` is part of the search space and kept low so each trial
+fits in <1h on Colab CPU. The best trial's in-memory model is saved as
+``dqn_best_<date>.keras`` without retraining; ``train_dqn.py`` retrains it
+from ``inputs/best_params.json``.
 
 Outputs (saved to INPUTS_PATH/<date>_BAYESIAN_OPT/):
     - dqn_best_<date>.keras                   : Model from the best optimization trial
@@ -718,11 +718,7 @@ def main():
             info(f"Found legacy pickle artifact at {pkl_path} — ignored.")
 
     # Reuse the in-memory best per-trial model whenever its score matches the
-    # study's best.value.  The previous third clause required
-    # ``num_episodes >= DQN_EPISODES`` (175 000), which the search space caps
-    # at 100 000 — so it was always False and forced an unwanted full retrain
-    # at 175 000 episodes after every Colab/Optuna run.  For a longer-horizon
-    # model, use ``train_dqn.py --from-best <date>`` on the local PC.
+    # study's best.value; retrain longer with ``train_dqn.py --from-best <date>``.
     if _best_artifacts['weights'] is not None and _best_artifacts['value'] >= best.value:
         # Rebuild model with preserved architecture and weights
         hidden_units = _best_artifacts['hidden_units']

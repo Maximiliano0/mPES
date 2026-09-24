@@ -53,8 +53,8 @@ Luego ejecuta cualquiera de los tres modos:
 Ejemplos:
 
 ```powershell
-# Entrenar 175 000 episodios (valor por defecto, `DQN_EPISODES`)
-python -m ml.pes_dqn.ext.train_dqn 175000
+# Reproducir el modelo desplegado (DQN_EPISODES = 40 000, igual que el mejor ensayo)
+python -m ml.pes_dqn.ext.train_dqn
 
 # Buscar hiperparámetros con 100 trials Optuna
 python -m ml.pes_dqn.ext.optimize_dqn 100
@@ -87,7 +87,7 @@ y la red en [ml/pes_dqn/ext/dqn_model.py](../ext/dqn_model.py).
 
 ### 3.2 Bucle por episodio
 
-Para cada episodio (1…`DQN_EPISODES = 175 000`):
+Para cada episodio (1…`DQN_EPISODES = 40 000`):
 
 1. **Reset** del entorno → `state ∈ ℝ³` normalizado por
    `normalize_state(state, max_resources, max_trials, max_severity)`,
@@ -187,9 +187,14 @@ secuencias y devuelve **`mean_perf`** directamente; el estudio se crea con
   "DQN_TARGET_SYNC_FREQ":   1000,
   "DQN_EPSILON_INITIAL":    0.9627337198502147,
   "DQN_EPSILON_MIN":        0.06914686776995618,
-  "DQN_EPISODES":           175000
+  "DQN_EPISODES":           40000
 }
 ```
+
+`DQN_EPISODES` es el valor por defecto cuando no se pasa un número de
+episodios y coincide con el del mejor ensayo. El modelo desplegado
+(`inputs/dqn_model.keras`, 2026-04-30, 5 131 parámetros) se entrenó con esos
+40 000 episodios (ensayo #41, semilla 84, `mean_perf` = 0,893729).
 
 ---
 

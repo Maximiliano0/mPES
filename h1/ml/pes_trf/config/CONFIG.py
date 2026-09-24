@@ -98,9 +98,11 @@ USE_FIXED_BLOCK_SEQUENCES = True  # Load sequence trial lengths from CSV file (v
 # ==================== TRF HYPERPARAMETERS ====================
 # TRF = Transformer DQN: a stack of causal Transformer encoder blocks consumes
 # a sliding window of the last TRF_HISTORY_LEN normalised states; only the
-# *last* token feeds the dense Q-head.  Defaults below are starting points
-# for Bayesian optimisation; tune via
-# ``python -m ml.pes_trf.ext.optimize_tr`` and write back into this file.
+# *last* token feeds the dense Q-head.  The encoder constants (TRF_HISTORY_LEN
+# .. TRF_DROPOUT) are always used by training and inference and match the
+# deployed trf_model.keras (27,019 params); Optuna's best trial #2 used a
+# different encoder that was never deployed.  The remaining values reproduce
+# trial #2 (seed 45) and equal inputs/best_params.json, which overrides them.
 TRF_HISTORY_LEN = 6                                # Sliding-window length fed to the encoder
 TRF_D_MODEL = 32                                   # Token-embedding (residual stream) width
 TRF_NUM_HEADS = 4                                  # Attention heads per encoder block
@@ -108,20 +110,20 @@ TRF_KEY_DIM = 16                                   # Per-head key/query dimensio
 TRF_FF_DIM = 64                                    # Position-wise feed-forward hidden width
 TRF_NUM_LAYERS = 2                                 # Number of stacked encoder blocks
 TRF_DROPOUT = 0.0                                  # Dropout rate inside MHSA / FFN sub-layers
-TRF_HIDDEN_UNITS = [64]                            # Dense-head widths after the encoder trunk
-TRF_LEARNING_RATE = 0.0015083436603048935          # Adam learning rate for the Q-network
+TRF_HIDDEN_UNITS = [32]                            # Dense-head widths after the encoder trunk
+TRF_LEARNING_RATE = 0.000215262809722153           # Adam learning rate for the Q-network
 TRF_BATCH_SIZE = 128                               # Mini-batch size sampled from replay buffer
-TRF_REPLAY_BUFFER_SIZE = 20_000                    # Maximum transitions stored in the replay buffer
-TRF_TARGET_SYNC_FREQ = 1_000                       # Steps between hard copies of online → target network
-TRF_DISCOUNT = 0.9634244388615337                  # Discount factor (γ) for TD targets
-TRF_EPSILON_INITIAL = 0.9627337198502147           # Initial exploration rate (ε-greedy)
-TRF_EPSILON_MIN = 0.06914686776995618              # Minimum exploration rate after decay
-TRF_EPISODES = 175_000                             # Default number of training episodes
-TRF_MAX_GRAD_NORM = 3.9528553802652735             # Global gradient norm clipping threshold
-TRF_PENALTY_COEFF = 0.02258267089059471            # PBRS reward shaping coefficient (β)
-TRF_WARMUP_RATIO = 0.2779025551585237              # Fraction of episodes with ε = ε₀ (pure exploration)
-TRF_TARGET_RATIO = 0.6290206520891799              # Fraction at which ε reaches ε_min via exponential decay
-TRF_LEARNING_STARTS_FRAC = 0.16154748671160965     # Fraction of buffer_size that must accumulate before training starts
+TRF_REPLAY_BUFFER_SIZE = 30_000                    # Maximum transitions stored in the replay buffer
+TRF_TARGET_SYNC_FREQ = 500                         # Steps between hard copies of online → target network
+TRF_DISCOUNT = 0.9233920466682904                  # Discount factor (γ) for TD targets
+TRF_EPSILON_INITIAL = 0.8650660661526529           # Initial exploration rate (ε-greedy)
+TRF_EPSILON_MIN = 0.08384868504100158              # Minimum exploration rate after decay
+TRF_EPISODES = 30_000                              # Default number of training episodes (deployed model)
+TRF_MAX_GRAD_NORM = 4.169576428046754              # Global gradient norm clipping threshold
+TRF_PENALTY_COEFF = 0.0                            # PBRS reward shaping coefficient (β); 0 = PBRS off
+TRF_WARMUP_RATIO = 0.24281758667148645             # Fraction of episodes with ε = ε₀ (pure exploration)
+TRF_TARGET_RATIO = 0.5333200932803407              # Fraction at which ε reaches ε_min via exponential decay
+TRF_LEARNING_STARTS_FRAC = 0.12169314570885453     # Fraction of buffer_size that must accumulate before training starts
 TRF_MODEL_FILE = 'trf_model.keras'                 # Filename for the saved Q-network weights
 
 # ==================== REPRODUCIBILITY ====================

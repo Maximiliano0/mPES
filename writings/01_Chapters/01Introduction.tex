@@ -1,133 +1,93 @@
-﻿% !TEX root = ../00_Main/Main.tex
+% !TEX root = ../00_Main/Main.tex
 \documentclass[../00_Main/Main.tex]{subfiles}
 
 \begin{document}
 
-La toma de decisiones complejas y secuenciales bajo incertidumbre
-constituye un desaf\'io central para los sistemas de inteligencia
-artificial. En estos problemas, cada acci\'on modifica el estado del
-entorno y condiciona las decisiones posteriores, por lo que una
-pol\'itica eficaz debe anticipar consecuencias acumulativas y asignar
-recursos limitados a lo largo del tiempo.
-El entorno de experimentaci\'on \textbf{mPES} surge como una plataforma para
-comparar sistem\'aticamente arquitecturas de Aprendizaje por Refuerzo
-para este tipo de escenarios. La crisis pand\'emica se
-utiliza como banco de pruebas ya que es un caso concreto, exigente y
-reproducible que permite estudiar la adaptabilidad de los agentes
-frente a din\'amicas no lineales, informaci\'on incierta y condiciones
-de evaluaci\'on distintas a las del entrenamiento. Para ello, mPES extiende
-el entorno original \emph{Pandemic Experiment Scenario} (PES) del
-BCI-NE Lab de la Universidad de Essex~\citep{BCINE2022}.
+Esta tesis compara arquitecturas de aprendizaje por refuerzo (RL,
+\emph{Reinforcement Learning}) en un problema de asignaci\'on secuencial
+de recursos bajo incertidumbre. Un agente reparte un presupuesto fijo
+entre ciudades que llegan de a una, sin saber cu\'antas faltan ni cu\'an
+graves ser\'an, y cada unidad que asigna deja de estar disponible para
+las siguientes. El entorno de experimentaci\'on, \textbf{mPES}, extiende
+el \emph{Pandemic Experiment Scenario} (PES) del BCI-NE Lab de la
+Universidad de Essex~\citep{BCINE2022}, que usa una pandemia simulada
+como contexto.
 
 \subsection{Motivaci\'on}\label{sec:motivacion}
 
-La crisis sanitaria provocada por el COVID--19 ofrece un caso
-representativo de este tipo de escenarios. Gobiernos, hospitales y
-cadenas log\'isticas debieron ponderar beneficios inmediatos contra
-costos a largo plazo, mientras que cada asignaci\'on alteraría la
-evoluci\'on posterior del sistema sanitario. En este trabajo, la pandemia no se
-considera el l\'imite del problema, sino el escenario experimental que
-permite observar y medir esas propiedades. La investigaci\'on busca
-as\'i evaluar qu\'e modelos matem\'aticos y computacionales producen
-decisiones con mayor adaptabilidad en escenarios secuenciales complejos.
+La pandemia de COVID--19 mostr\'o este tipo de problema a gran escala:
+gobiernos y hospitales debieron repartir recursos escasos sabiendo que
+cada asignaci\'on modificaba la evoluci\'on posterior del sistema
+sanitario. En este trabajo la pandemia no es el objeto de estudio, sino un escenario controlado y reproducible. En \'el se puede medir qu\'e
+modelos deciden mejor y c\'omo se comportan fuera de las condiciones de
+entrenamiento.
 
-El enfoque metodol\'ogico de esta tesis sigue la disciplina propia
-de la ingenier\'ia: trazabilidad de cada
-artefacto, reproducibilidad estricta, control de versiones del
-entorno computacional y evaluaci\'on bajo cambios de condiciones como
-requisito de aceptaci\'on. Bajo esta \'optica, mPES no se concibe
-como un experimento aislado sino como un \emph{sistema} ---
-doce modelos comparativos en dos suites, adem\'as del paquete hist\'orico
-\texttt{pes\_base} como referencia individual. El esquema de evaluaci\'on
-com\'un y el procedimiento de ejecuci\'on reproducible est\'an pensados para estudiar arquitecturas en dominios de alta complejidad.
+\subsection{Definici\'on del problema}\label{sec:problema}
 
-\subsection{Definici\'on del Problema}\label{sec:problema}
+Un agente de RL debe distribuir un \emph{presupuesto limitado} de
+recursos entre ciudades que se incorporan de a una. En cada paso decide
+cu\'antos recursos, entre $0$ y $10$, asignar a la ciudad que acaba de
+llegar. La severidad de cada ciudad crece un $40\,\%$ en cada paso, y
+cada unidad de recurso asignada la reduce en $0{,}4$
+(Ecuaci\'on~\eqref{eq:transicion}). Esta regla es una simplificaci\'on
+deliberada de los modelos compartimentales de la epidemiolog\'ia
+computacional~\citep{Kuhl2021}, como las simulaciones espacialmente
+resueltas de la propagaci\'on de COVID-19 en tres pa\'ises europeos de
+Parisi \emph{et al.}~\citep{Parisi2021}: conserva s\'olo el crecimiento
+de la severidad y el efecto de los recursos asignados.
+El Cap\'itulo~\ref{sec:methods} detalla la formulaci\'on como MDP
+(\emph{Markov Decision Process}) y las $64$ secuencias de evaluaci\'on.
 
-En una crisis pand\'emica, un tomador de decisiones (un agente de RL) debe distribuir un
-\emph{presupuesto limitado} de recursos m\'edicos o log\'isticos entre
-diversas ciudades afectadas simult\'aneamente. Tres rasgos
-cualitativos definen el escenario: la \emph{din\'amica acumulativa}
-(la severidad no atendida crece de forma exponencial en los pasos
-subsiguientes), la \emph{intervenci\'on temprana} (los recursos
-asignados generan un impacto sostenido que premia a los modelos
-capaces de anticiparla) y una \emph{regla de evoluci\'on} lineal con
-saturaci\'on en cero:
-\[
-    S_i' = \max\bigl(0,\; \beta\, S_i - \alpha\, a_i\bigr)
-    \qquad \alpha = 0{,}4 \quad \beta = 1 + \alpha = 1{,}4
-\]
-Donde $S_i$ es la severidad de la ciudad $i$ antes de la decisi\'on,
-$a_i \in \{0,\ldots,10\}$ los recursos asignados, $\alpha$ la eficacia
-de cada unidad de recurso y $\beta$ el factor de crecimiento por paso.
-La formulaci\'on completa como MDP (\emph{Markov Decision Process}) finito y el
-\emph{benchmark} fijo de $64$ secuencias compartido por todos los
-enfoques se detallan en la Sec.~\ref{sec:methods}.
+\subsection{Preguntas e hip\'otesis de trabajo}\label{sec:hypothesis}
 
-\subsection{Hip\'otesis de Trabajo}\label{sec:hypothesis}
+El trabajo responde dos preguntas:
 
-El trabajo se organiza alrededor de una hip\'otesis falsable
-desdoblada en dos niveles:
+\begin{enumerate}
+    \item ?`Qu\'e arquitectura individual toma mejores decisiones, y cu\'al
+    conserva mejor su desempe\~no cuando cambian la severidad o la
+    longitud de las secuencias?
+    \item ?`Combinar varios modelos ya entrenados en un ensamble mejora al
+    mejor modelo individual? Si es as\'i, ?`con qu\'e regla de
+    combinaci\'on?
+\end{enumerate}
+
+Para la primera pregunta se plantea la siguiente hip\'otesis:
 
 \begin{quote}
-\textbf{H1a (arquitect\'onica).} \emph{Entre los modelos individuales
-evaluados, el Transformer causal alcanza el mayor desempe\~no medio y
-conserva el rendimiento bajo cambios de severidad y longitud, utilizando
-la asignaci\'on de recursos durante una pandemia como escenario de prueba.}
-
-\textbf{H1b (confianza y decisi\'on conjunta).} \emph{La cantidad
-$1-H_{\mathrm{norm}}$, donde $H_{\mathrm{norm}}$ es la entrop\'ia
-normalizada de la distribuci\'on de acciones de un agente, proporciona
-un indicador operativo de su confianza y puede emplearse como criterio
-de ponderaci\'on en la decisi\'on conjunta de un ensamble de modelos, de
-manera an\'aloga a la confianza estudiada en los sistemas de decisi\'on
-conjunta humano--m\'aquina.}
+\textbf{H1.} \emph{Entre los modelos individuales evaluados, el
+Transformer causal alcanza el mayor desempe\~no medio y lo conserva en
+los escenarios de generalizaci\'on.}
 \end{quote}
 
+La segunda se responde de forma exploratoria, comparando seis reglas de
+combinaci\'on.
 
 \subsection{Contribuciones}
 
-Las principales contribuciones de esta tesis son:
-
 \begin{enumerate}
-    \item Un \emph{benchmark} reutilizable ---
-    \emph{workspace} \textbf{mPES} --- donde seis modelos individuales y
-    seis variantes de ensamble comparten el mismo entorno Gymnasium~\citep{Towers2024}, el mismo
-    \emph{pipeline} de optimizaci\'on bayesiana con Optuna y el mismo
-    esquema de evaluaci\'on sobre $n = 64$ secuencias \emph{fijas}.
-    \item Una comparaci\'on cuantitativa y estad\'isticamente
-    fundamentada entre m\'etodos tabulares
-    (\texttt{pes\_ql}, \texttt{pes\_dql}), arquitecturas profundas
-    (\texttt{pes\_dqn}, \texttt{pes\_rdqn}, \texttt{pes\_a2c},
-    \texttt{pes\_trf}) y seis ensambles (\texttt{pes\_ens},
-    \texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq},
-    \texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} y
-    \texttt{pes\_ens\_trf\_guard}), con \texttt{pes\_base} como
-    referencia tabular sin optimizaci\'on.
-    \item La integraci\'on de la \textbf{entrop\'ia de Shannon} como
-    medida de confianza de la decisi\'on: registrada por secuencia para
-    cada agente individual y empleada como factor de ponderaci\'on de los miembros en los seis ensambles, planteada por
-    analog\'ia con las teor\'ias neurocognitivas de la confianza humana.
-    \item Una implementaci\'on reproducible para Windows, con Python 3.12,
-    TensorFlow 2.21 y artefactos de evaluaci\'on organizados por suite.
+    \item Una comparaci\'on de seis implementaciones de RL bajo el mismo
+    entorno, el mismo protocolo y las mismas $64$ secuencias de evaluaci\'on. Son dos tabulares (Q-Learning y Double Q-Learning) y cuatro profundas (DQN, DQN recurrente, A2C y Transformer causal), todas con
+    hiperpar\'ametros ajustados por optimizaci\'on bayesiana.
+    \item Seis reglas para combinar esos modelos en un ensamble sin
+    reentrenarlos; cada modelo pesa seg\'un su confianza, medida con la
+    entrop\'ia de su distribuci\'on de acciones.
+    \item Una evaluaci\'on en $21$ escenarios de generalizaci\'on que
+    cambian la severidad inicial, la longitud de las secuencias o ambas;
+    tres de ellos superan las cotas de severidad o de longitud del
+    entorno.
 \end{enumerate}
 
-\subsection{Estructura del Documento}
+\subsection{Estructura del documento}
 
-El resto del documento se organiza de la siguiente forma. La
-Secci\'on~\ref{sec:background} introduce el marco te\'orico
-(MDPs, Q-Learning, redes recurrentes, atenci\'on, ensembles,
-entrop\'ia de Shannon). La Secci\'on~\ref{sec:soa} presenta el
-estado de la cuesti\'on (antecedentes neurocognitivos de la confianza,
-RL en gesti\'on de crisis, Transformers en RL y
-cuantificaci\'on de incertidumbre). La
-Secci\'on~\ref{sec:methods} describe la metodolog\'ia: el escenario
-pand\'emico, las doce variantes evaluadas y el procedimiento
-experimental. La Secci\'on~\ref{sec:results} reporta los resultados
-obtenidos. La Secci\'on~\ref{sec:discussion} interpreta esos
-resultados a la luz de las hip\'otesis y la
-Secci\'on~\ref{sec:conclusion} cierra el trabajo.
+Los Cap\'itulos~\ref{sec:background} y~\ref{sec:soa} presentan el marco
+te\'orico y los trabajos relacionados. El Cap\'itulo~\ref{sec:methods}
+describe el entorno, los modelos, los ensambles y el protocolo de
+evaluaci\'on; el Cap\'itulo~\ref{sec:results}, los resultados; el
+Cap\'itulo~\ref{sec:discussion}, su discusi\'on, y el
+Cap\'itulo~\ref{sec:conclusion}, las conclusiones. El Ap\'endice re\'une
+los comandos de reproducci\'on, los mapas estad\'isticos de apoyo y el
+registro de confianza del Transformer.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 
 \end{document}
-

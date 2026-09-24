@@ -1,158 +1,103 @@
-﻿% !TEX root = ../00_Main/Main.tex
+% !TEX root = ../00_Main/Main.tex
 \documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
 \label{sec:conclusion}
 
-Esta tesis present\'o \textbf{mPES}, una plataforma de aprendizaje
-por refuerzo para la asignaci\'on \'optima de recursos en una
-pandemia simulada, y la utiliz\'o como banco de prueba para una
-comparaci\'on rigurosa entre seis modelos individuales y seis variantes
-de ensamble. La suite individual incluye \texttt{pes\_ql},
-\texttt{pes\_dql}, \texttt{pes\_dqn}, \texttt{pes\_rdqn},
-\texttt{pes\_a2c} y \texttt{pes\_trf}; la suite de ensambles incluye
-\texttt{pes\_ens}, \texttt{pes\_ens\_sprb}, \texttt{pes\_ens\_accq},
-\texttt{pes\_ens\_consensus}, \texttt{pes\_ens\_consensus\_prior} y
-\texttt{pes\_ens\_trf\_guard}.
+Esta tesis compar\'o seis implementaciones de aprendizaje por refuerzo y
+seis formas de combinarlas en un ensamble, evaluadas sobre las mismas
+secuencias en la condici\'on de entrenamiento y en $21$ escenarios de
+generalizaci\'on.
 
-\subsection{Contraste de las hip\'otesis}
+\subsection{Respuesta a las preguntas}
 
 \begin{description}
-    \item[H1a (arquitect\'onica): respaldada.] \texttt{pes\_trf} obtiene
-    la mayor media de la suite individual en la condici\'on de referencia
-    ($0{,}927$) y en los $21$ escenarios de perturbaci\'on ($0{,}930$),
-    con degradaci\'on media negativa ($-0{,}002$) y la menor dispersi\'on
-    entre secuencias. La diferencia frente a \texttt{pes\_ql} tiene
-    $d = 0{,}78$ y frente a \texttt{pes\_rdqn} $d = 0{,}57$
-    (Tabla~\ref{tab:pairwise-stats}). Su peor escenario es
-    \texttt{len\_extrapolate\_long} ($0{,}860$), de modo que la
-    conservaci\'on del rendimiento es clara en severidad y m\'as limitada
-    en longitud. El respaldo se circunscribe a una semilla y a los
-    hiperpar\'ametros reutilizados de \texttt{pes\_dqn}.
-    \item[H1b (confianza y decisi\'on conjunta): respaldada
-    parcialmente.] La medida $1 - H_{\mathrm{norm}}$ se calcula de forma
-    reproducible para cada agente y se comporta como indicador operativo:
-    crece cuando la distribuci\'on derivada de los valores de acci\'on se
-    concentra en una opci\'on. Como criterio de ponderaci\'on en la
-    decisi\'on conjunta, los seis ensambles la utilizan y el sistema con
-    mejor rendimiento del benchmark, \texttt{pes\_ens}, modula sus pesos
-    con ella; sin embargo, \texttt{pes\_ens\_sprb} y
-    \texttt{pes\_ens\_accq}, que aplican la misma ponderaci\'on con una
-    regla de combinaci\'on distinta, quedan por debajo del Transformer
-    individual. La ponderaci\'on por confianza es, por tanto, un
-    componente utilizable pero no suficiente por s\'i solo, y su
-    contribuci\'on aislada no se midi\'o mediante ablaci\'on. No se
-    realiz\'o una calibraci\'on frente al acierto ni un estudio con
-    participantes; la analog\'ia con la decisi\'on conjunta
-    humano--m\'aquina queda como motivaci\'on y l\'inea de trabajo
-    futuro.
+    \item[?`Cu\'al es el mejor modelo individual?] El Transformer, lo que
+    respalda la hip\'otesis H1. En los escenarios de generalizaci\'on
+    obtiene $0{,}930$, por encima de todos los dem\'as modelos, y en la
+    referencia reduce en alrededor de un $36\,\%$ la distancia al
+    \'optimo que deja Q-Learning. Su ventaja es de
+    tama\~no medio frente a DQN y al DQN recurrente. Conserva el
+    desempe\~no con severidades fuera de rango, donde fallan los m\'etodos
+    tabulares, y lo pierde en parte con secuencias m\'as largas que las de
+    entrenamiento, el punto d\'ebil de todas las redes. No es, en cambio,
+    el que menos pierde respecto de su propia referencia: su peor
+    escenario cae $0{,}067$, frente a $0{,}053$ de DQN.
+    \item[?`Alg\'un ensamble lo supera?] S\'i, el ensamble ponderado, con
+    $0{,}939$ en generalizaci\'on y un peor escenario m\'as alto que el del
+    Transformer. Es el \'unico de los seis: la compuerta del Transformer
+    lo iguala y los otros cuatro quedan por debajo. Aunque le da al
+    Transformer la mayor parte del peso base, en la referencia su acci\'on
+    final difiere de la del Transformer en el $61\,\%$ de las decisiones,
+    sobre todo por el \emph{prior} de severidad. Su ventaja no se debe,
+    por lo tanto, a ponderar a los modelos por su confianza.
 \end{description}
-
-\subsection{Conclusiones principales}
-
-\begin{enumerate}
-    \item \textbf{El Transformer es el mejor modelo individual del
-    benchmark comparativo.} En la condici\'on de referencia alcanza
-    $\bar r = 0{,}927$ y presenta la mayor media individual bajo
-    perturbaci\'on, $0{,}930$, con la menor dispersi\'on entre
-    secuencias. Frente a la l\'inea de base tabular optimizada, la
-    diferencia tiene un tama\~no de efecto $d = 0{,}78$.
-    \item \textbf{Los ensambles no superan al Transformer de forma
-    uniforme.} \texttt{pes\_ens} obtiene la mejor media bajo
-    perturbaci\'on del benchmark ($0{,}939$) y la menor degradaci\'on
-    m\'axima; otras variantes quedan por debajo del Transformer
-    individual. La ventaja de \texttt{pes\_ens} no puede atribuirse
-    s\'olo al promedio de modelos, dado que su regla de combinaci\'on
-    incluye heur\'isticas adicionales.
-    \item \textbf{La entrop\'ia proporciona un indicador de confianza
-    interpretable y utilizable en la decisi\'on conjunta.} La medida
-    $1 - H_{\mathrm{norm}}$ acompa\~na a cada acci\'on del Transformer y
-    pondera a los miembros de los seis ensambles. Su relaci\'on con la
-    confianza humana es una analog\'ia motivada por la literatura; no se
-    realiz\'o una validaci\'on fisiol\'ogica ni una calibraci\'on
-    probabil\'istica.
-    \item \textbf{El benchmark es reproducible.} El m\'odulo
-    \texttt{general/scripts/benchmark.py}, seguido por el an\'alisis y
-    la generaci\'on de figuras, organiza dos suites de $132$ celdas
-    cada una, con $64$ secuencias por celda y una semilla fija.
-\end{enumerate}
 
 \subsection{Limitaciones del estudio}\label{sec:limitations}
 
-Las conclusiones deben interpretarse considerando las limitaciones
-del dise\~no experimental. En primer lugar, el benchmark se
-ejecut\'o con una \emph{semilla} fija ($42$) por celda. Aunque las
-$n=64$ secuencias por escenario permiten estimar diferencias entre
-arquitecturas, una r\'eplica con varias semillas ser\'ia necesaria para
-separar con mayor rigor el efecto algor\'itmico de la variabilidad
-aleatoria, especialmente en los extremos del ranking.
+En primer lugar, la referencia usa un \'unico conjunto fijo de $64$
+secuencias, y cada escenario de generalizaci\'on se gener\'o con una
+\'unica semilla ($42$). Eso garantiza que todos los modelos enfrenten las
+mismas secuencias, pero hace que cada media dependa de una \'unica muestra
+de $64$ secuencias por escenario. En los escenarios de generalizaci\'on no
+era necesario fijar la semilla: con semillas distintas se habr\'ia
+podido estimar la variabilidad de cada media y dar intervalos de
+confianza para el ordenamiento de los modelos.
 
-La limitaci\'on principal proviene del propio escenario utilizado como
-representante de una decisi\'on secuencial compleja. El entorno
-\emph{Pandemic Scenario} modela de forma controlada una din\'amica
-acumulativa: cada asignaci\'on modifica la severidad futura y obliga a
-administrar un presupuesto limitado a lo largo de una secuencia. En
-ese sentido, constituye un banco de pruebas adecuado para estudiar
-anticipaci\'on, memoria y robustez ante cambios en las condiciones de
-entrada. Sin embargo, sigue siendo una representaci\'on simplificada: no
-reproduce la totalidad de las variables, restricciones y
-retroalimentaciones presentes en una decisi\'on del mundo real.
+En segundo lugar, los hiperpar\'ametros de los modelos y de los
+ensambles se ajustaron con las mismas $64$ secuencias con que despu\'es
+se evalu\'o la referencia. Adem\'as, el entorno de entrenamiento sortea
+las secuencias a partir de los mismos archivos de severidades iniciales
+y longitudes. Por eso los valores de la referencia pueden ser algo
+optimistas. Los escenarios de generalizaci\'on est\'an menos expuestos a
+ese sesgo, porque sus secuencias provienen de otras distribuciones.
 
-Por ello, los resultados identifican un ajuste entre arquitectura y
-estructura del problema, no una superioridad universal de un modelo.
-Adem\'as, la complejidad comportamental de la decisi\'on humana incluye
-factores como preferencias, interpretaci\'on de evidencia, presi\'on
-social, confianza y deliberaci\'on, que no est\'an representados en la
-pol\'itica del agente. La relaci\'on entre la entrop\'ia algor\'itmica y
-la confianza humana debe entenderse, por tanto, como una analog\'ia
-funcional y como una limitaci\'on del propio hallazgo, no como una
-equivalencia neurofisiol\'ogica. La generalizaci\'on a otros dominios
-requiere nuevos escenarios y estudios con participaci\'on humana.
+En tercer lugar, el entrenamiento s\'olo present\'o severidades de $2$ a
+$8$. En los m\'etodos tabulares, las filas de severidad $0$, $1$ y $9$
+quedaron con sus valores iniciales aleatorios, de modo que parte de su
+ca\'ida en los escenarios de severidad refleja esa falta de cobertura del
+entrenamiento y no s\'olo la capacidad de generalizar del algoritmo.
 
-\subsection{Trabajo futuro}
+En cuarto lugar, los modelos evaluados no siempre son la mejor
+configuraci\'on que encontr\'o cada b\'usqueda. El DQN recurrente y el
+Transformer finales conservan la arquitectura fija de su paquete y no la
+del mejor ensayo; el DQN recurrente final queda $0{,}027$ por debajo de
+ese ensayo. En cuatro de los ensambles, los par\'ametros provienen de
+estudios hechos con otra configuraci\'on de miembros. Las comparaciones se
+refieren, por lo tanto, a los modelos finales evaluados.
+
+En quinto lugar, la confianza con que los ensambles ponderan a cada
+modelo se calcula sobre una distribuci\'on derivada de los valores $Q$ y
+no sobre probabilidades aprendidas, y no se comprob\'o que sea mayor en
+las decisiones acertadas.
+
+Por \'ultimo, los resultados no identifican la causa de la ventaja del
+Transformer, y todas las conclusiones se limitan a este entorno y a los
+modelos entrenados.
+
+\subsection{Trabajo futuro}\label{sec:future}
 
 \begin{itemize}
-    \item \textbf{R\'eplica con varias semillas.} Repetir el barrido de
-    las dos suites de $6 \times 22$ celdas con semillas independientes
-    permitir\'ia construir intervalos de confianza alrededor del
-    ordenamiento de la Tabla~\ref{tab:global-mean} y verificar la
-    estabilidad de los resultados en los escenarios de extrapolaci\'on
-    (Sec.~\ref{sec:universal-stressors}).
-    \item \textbf{Estudios de ablaci\'on.} Permutar o eliminar la
-    ventana de estados del Transformer y del modelo recurrente,
-    desactivar las heur\'isticas de \texttt{pes\_ens} y fijar $\rho = 0$
-    en las variantes de ensamble, para aislar la contribuci\'on de cada
-    componente --- incluida la ponderaci\'on por confianza --- al
-    rendimiento observado.
+    \item \textbf{Evaluaci\'on con semillas variables.} Generar cada
+    escenario con semillas independientes para dar intervalos de
+    confianza al ordenamiento de la Tabla~\ref{tab:global-mean}.
     \item \textbf{Validaci\'on de la medida de confianza.} Relacionar
     $1 - H_{\mathrm{norm}}$ con el desempe\~no por secuencia mediante
     curvas de calibraci\'on, y extender el c\'alculo a los dem\'as
     modelos con un procedimiento de calibraci\'on com\'un.
-    \item \textbf{Sustituir el escenario simulado} por series
-    temporales reales (por ejemplo, datos de COVID-19 desagregados por
-    regi\'on) y evaluar la generalizaci\'on frente a los marcos de
-    modelado epidemiol\'ogico~\citep{Kuhl2021}.
-    \item \textbf{Acoplamiento humano--agente.} Dise\~nar interfaces que
-    comuniquen $1 - H_{\mathrm{norm}}$ al decisor humano y medir su
-    efecto en la calidad de la decisi\'on conjunta, en la l\'inea de los
-    estudios de equipos humano--m\'aquina~\citep{Nijjar2025}.
     \item \textbf{Pesos dependientes del contexto en el ensamble.} Los
-    pesos base $w_k$ de la Ecuaci\'on~\eqref{eq:ens-soft} son constantes
-    fijadas en la configuraci\'on y s\'olo se modulan por la confianza
-    instant\'anea de cada miembro; una extensi\'on es aprender pesos
-    $w_k(s)$ dependientes del estado.
+    pesos base $w_k$ son constantes; una extensi\'on es aprender pesos
+    $w_k(s)$ que dependan del estado.
 \end{itemize}
 
 \subsection{Conclusi\'on general}
 
-En el escenario controlado de mPES, la arquitectura Transformer obtiene
-el mejor resultado entre los modelos individuales, y el benchmark
-permite comparar ese comportamiento con seis ensambles bajo un mismo
-protocolo. La medida de confianza basada en entrop\'ia ofrece una se\~nal
-interpretable para inspecci\'on, pero su valor como estimador de acierto
-requiere calibraci\'on y validaci\'on posteriores. Estas conclusiones se
-limitan al entorno, los artefactos y la semilla descritos.
+En el escenario controlado de mPES, el Transformer causal es el modelo
+individual que mejor decide, tanto en las condiciones de entrenamiento
+como cuando \'estas cambian, aunque no es el que menos pierde respecto
+de su propia referencia. Combinar modelos lo mejor\'o en un solo caso:
+el ensamble que suaviza las preferencias de los modelos y las mezcla con
+un \emph{prior} de severidad, que cambia buena parte de sus decisiones.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
-

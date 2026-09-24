@@ -35,7 +35,7 @@ El Transformer tiene dos ventajas clave sobre el LSTM:
    procesa paso a paso.
 
 Empíricamente, en *Pandemic*, el Transformer alcanza
-**0.927 de rendimiento normalizado** (n=64), superando a RDQN ($\approx 0.91$)
+**0.927 de rendimiento normalizado** (n=64), superando a RDQN (0.899)
 y al resto de agentes individuales.
 
 ---
@@ -54,8 +54,7 @@ python -m ml.pes_trf
 ### Entrenar el modelo
 
 ```powershell
-python -m ml.pes_trf.ext.train_transformer            # episodios por defecto
-python -m ml.pes_trf.ext.train_transformer 50000      # personalizado
+python -m ml.pes_trf.ext.train_transformer            # reproduce el modelo desplegado (TRF_EPISODES = 30 000)
 ```
 
 Salida principal: `ml/pes_trf/inputs/trf_model.keras`.
@@ -164,20 +163,29 @@ def train_step_trf(model, target_model, optimizer, batch, gamma):
 
 `ext/optimize_tr.py` usa **Optuna** con muestreador TPE para buscar:
 
-| Hiperparámetro (Optuna) | Rango | Óptimo (2026-05-02) |
-|---|---|---|
-| `history_len` | $[3, 10]$ entero | **6** (`TRF_HISTORY_LEN`) |
-| `d_model` | $\{16, 32, 64, 128\}$ | **32** (`TRF_D_MODEL`) |
-| `num_heads` | $\{2, 4, 8\}$ | **4** (`TRF_NUM_HEADS`) |
-| `key_dim` | $\{8, 16, 32\}$ | **16** (`TRF_KEY_DIM`) |
-| `ff_dim` | $\{32, 64, 128, 256\}$ | **64** |
-| `num_layers` | $[1, 4]$ entero | **2** |
-| `dropout` | $[0.0, 0.3]$ | — |
-| `learning_rate` | $[10^{-4}, 5\times10^{-3}]$ log | $\approx 5\times10^{-4}$ |
-| `discount_factor` ($\gamma$) | $[0.92, 0.995]$ | $\approx 0.97$ |
+| Hiperparámetro (Optuna) | Rango | Mejor ensayo #2 (2026-04-29) | Modelo desplegado |
+|---|---|---|---|
+| `history_len` | $[3, 10]$ entero | 3 | **6** (`TRF_HISTORY_LEN`) |
+| `d_model` | $\{16, 32, 64, 128\}$ | 16 | **32** (`TRF_D_MODEL`) |
+| `num_heads` | $\{2, 4, 8\}$ | 8 | **4** (`TRF_NUM_HEADS`) |
+| `key_dim` | $\{8, 16, 32\}$ | 16 | **16** (`TRF_KEY_DIM`) |
+| `ff_dim` | $\{32, 64, 128, 256\}$ | 128 | **64** (`TRF_FF_DIM`) |
+| `num_layers` | $[1, 4]$ entero | 4 | **2** (`TRF_NUM_LAYERS`) |
+| `dropout` | $[0.0, 0.3]$ | 0.148 | **0** (`TRF_DROPOUT`) |
+| `learning_rate` | $[10^{-4}, 5\times10^{-3}]$ log | 0.000215 | 0.000215 |
+| `discount_factor` ($\gamma$) | $[0.92, 0.995]$ | 0.9234 | 0.9234 |
+| `num_episodes` | $[20\,000, 60\,000]$ | 30 000 | 30 000 |
 
-Cada trial entrena una versión reducida y devuelve el rendimiento medio sobre
-64 evaluaciones independientes.
+`train_transformer.py` toma de `inputs/best_params.json` los hiperparámetros
+de entrenamiento, la semilla del ensayo (45) y la cabeza densa (`[32]`), pero
+la arquitectura del codificador siempre sale de `config/CONFIG.py`. Por eso el
+modelo desplegado (27 019 parámetros, 0.927 en la referencia) no usa la
+arquitectura del mejor ensayo (`mean_perf` = 0.9245). Los valores de
+entrenamiento y la cabeza de `CONFIG.py` coinciden con `best_params.json`, así
+que la configuración por defecto reproduce el modelo desplegado.
+
+Cada trial entrena desde cero con su propio `num_episodes` y devuelve el
+rendimiento medio sobre las 64 secuencias fijas.
 
 ### Almacenamiento
 
@@ -199,16 +207,18 @@ Contiene:
 
 - **Enmascarado causal**: se aplica con `use_causal_mask=True` sobre la capa
   `MultiHeadAttention` de cada bloque; no existe una función `causal_mask`.
-- **Embedding posicional aprendido**: capa `tf.keras.layers.Embedding`
-  (`name="pos_embed"`) sumada a cada token. Solo la variante **aprendida**
-  está implementada; la sinusoidal se menciona en el documento teórico pero
-  no en el código.
+- **Vector posicional fijo**: el código crea un `tf.keras.layers.Embedding`
+  (`name="pos_embed"`), pero lo evalúa sobre posiciones constantes al
+  construir el modelo, de modo que su salida queda como una constante
+  inicializada con Glorot uniforme a partir de la semilla y **no se entrena**
+  (no forma parte de los 27 019 parámetros entrenables). La variante
+  sinusoidal se menciona en el documento teórico pero no está implementada.
 - **Bloques encoder inline**: cada bloque Pre-LN aplica MHA causal + FFN con
   conexiones residuales, ensamblado dentro de `build_q_network`.
 - **`build_q_network(state_dim, action_dim, history_len, d_model,
   num_heads, key_dim, ff_dim, num_layers, ...)`**: ensambla
-  `Input → Dense(d_model) → + pos_embed → N × bloque encoder (causal)
-   → Lambda(last_token) → Dense(11)` (last-token pooling, no global avg).
+  `Input → Masking → Dense(d_model) → + posición → N × bloque encoder (causal)
+   → Lambda(last_token) → Dense(32, ReLU) → Dense(11)` (last-token pooling, no global avg).
 - **`train_step_trf(...)`**: paso Double DQN con Huber loss.
 - **`Lambda` de pooling**: el pooling de último token usa una
   `tf.keras.layers.Lambda` (`name="last_token"`), por lo que al cargar el
@@ -295,7 +305,8 @@ class HistoryDeque:
 
 ## 9. Resultados de rendimiento
 
-Evaluación del 2 de mayo de 2026 sobre $n=64$ ejecuciones independientes:
+Evaluación del 2 de mayo de 2026 sobre las $n=64$ secuencias fijas de
+referencia (el benchmark de `general/` obtiene 0.927189):
 
 | Métrica | Valor |
 |---|---|
@@ -305,28 +316,29 @@ Evaluación del 2 de mayo de 2026 sobre $n=64$ ejecuciones independientes:
 
 **El Transformer es el mejor agente individual del workspace.**
 
-### Comparación global
+### Comparación global (referencia `sev_base` del benchmark)
 
 | Agente | Algoritmo | Rendimiento medio | $\sigma$ |
 |---|---|---|---|
-| `pes_base` | Q-Learning tabular | $\approx 0.65$ | 0.10 |
-| `pes_ql` | Q-Learning + Optuna | $\approx 0.78$ | 0.08 |
-| `pes_dql` | Double Q-Learning + PBRS | $\approx 0.83$ | 0.07 |
+| `pes_base` | Q-Learning tabular | 0.871 | 0.074 |
+| `pes_ql` | Q-Learning + Optuna | 0.887 | 0.061 |
+| `pes_dql` | Double Q-Learning + PBRS | 0.896 | 0.048 |
 | `pes_a2c` | A2C | 0.887 | 0.063 |
-| `pes_dqn` | DQN | $\approx 0.89$ | 0.06 |
-| `pes_rdqn` | Recurrent DQN (LSTM) | $\approx 0.91$ | 0.05 |
+| `pes_dqn` | DQN | 0.894 | 0.055 |
+| `pes_rdqn` | Recurrent DQN (LSTM) | 0.899 | 0.049 |
 | **`pes_trf`** | **Causal Transformer** | **0.927** | **0.045** |
-| `pes_ens` | Ensemble (votación blanda) | $\approx 0.93$ | 0.04 |
+| `pes_ens` | Ensamble ponderado con *prior* de severidad | 0.937 | 0.035 |
 
 Observaciones clave:
 
-- El Transformer reduce la desviación estándar respecto a RDQN, lo que indica
-  decisiones **más consistentes**.
-- Su superioridad frente a RDQN se atribuye a la atención sobre **toda** la
-  historia disponible (en lugar del cuello de botella del estado oculto del
-  LSTM).
-- El ensemble (`pes_ens`) apenas mejora sobre `pes_trf`, lo que confirma que
-  la cabeza Transformer ya captura la mayor parte de la información útil.
+- El Transformer tiene la menor desviación estándar de los modelos
+  individuales, lo que indica decisiones **más consistentes** entre
+  secuencias.
+- El DQN recurrente recibe la misma ventana de 6 estados y queda por debajo,
+  de modo que la ventaja no se debe sólo a ver la historia; los resultados no
+  identifican su causa.
+- El ensamble `pes_ens` mejora al Transformer en la referencia (0.937 frente
+  a 0.927) y en los escenarios de generalización (0.939 frente a 0.930).
 
 ---
 
@@ -340,7 +352,7 @@ Observaciones clave:
 | Procesamiento | Secuencial $O(h)$ | Paralelo $O(h^2)$ pero vectorizado |
 | Cuello de botella | Vector oculto único | Ninguno |
 | Sensibilidad a $h$ largo | Olvido gradual | Atención decreciente pero accesible |
-| Rendimiento (Pandemic) | $\approx 0.91$ | **0.927** |
+| Rendimiento (Pandemic) | 0.899 | **0.927** |
 
 ### vs métodos tabulares (`pes_base`, `pes_ql`, `pes_dql`)
 
@@ -348,7 +360,8 @@ Observaciones clave:
   $Q[s, a]$. No pueden generalizar a estados no vistos.
 - El Transformer aprende una representación **continua y contextual** del
   estado, generalizando sobre patrones no exactamente repetidos.
-- Diferencia de rendimiento: **+30 puntos porcentuales** sobre `pes_base`.
+- Diferencia de rendimiento en la referencia: **+5.7 puntos** sobre
+  `pes_base` (0.927 frente a 0.871) y +4.1 sobre `pes_ql`.
 
 ### vs DQN (sin memoria)
 

@@ -107,7 +107,7 @@ DQN_TARGET_SYNC_FREQ = 1_000                       # Steps between hard copies o
 DQN_DISCOUNT = 0.9634244388615337                  # Discount factor (γ) for TD targets
 DQN_EPSILON_INITIAL = 0.9627337198502147           # Initial exploration rate (ε-greedy)
 DQN_EPSILON_MIN = 0.06914686776995618              # Minimum exploration rate after decay
-DQN_EPISODES = 175_000                             # Default number of training episodes
+DQN_EPISODES = 40_000                              # Default number of training episodes (deployed model)
 DQN_MAX_GRAD_NORM = 3.9528553802652735             # Global gradient norm clipping threshold
 DQN_PENALTY_COEFF = 0.02258267089059471            # PBRS reward shaping coefficient (β)
 DQN_WARMUP_RATIO = 0.2779025551585237              # Fraction of episodes with ε = ε₀ (pure exploration)

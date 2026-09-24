@@ -23,23 +23,25 @@ algorithmic variants. The LaTeX thesis reporting the `h1/` results lives in
 | `ml/pes_rdqn` | Recurrent DQN (LSTM over trial history) | `ext/rdqn_model.py`, `ext/train_rdqn.py`, `ext/optimize_rdqn.py` |
 | `ml/pes_a2c` | Advantage Actor-Critic (A2C, separate actor + critic nets) | `ext/ac_model.py`, `ext/train_a2c.py`, `ext/optimize_a2c.py` |
 | `ml/pes_trf` | Causal Transformer encoder + RL | `ext/transformer_model.py`, `ext/train_transformer.py`, `ext/optimize_tr.py` |
-| `ens/pes_ens_sprb` | Confidence-weighted soft voting over action probabilities (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
-| `ens/pes_ens_accq` | Confidence-weighted action voting with Q-value tie-breaking (DQN + RDQN + TRF) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens_sprb` | Confidence-weighted soft voting over action probabilities (DQN + RDQN + TRF + A2C actor) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
+| `ens/pes_ens_accq` | Confidence-weighted action voting with Q-value tie-breaking (DQN + RDQN + TRF + A2C actor) | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `ens/pes_ens_trf_guard` | Transformer-first confidence-gated fallback ensemble | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `ens/pes_ens_consensus` | Confidence consensus with agreement and disagreement terms | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
-| `ens/pes_ens` | Weighted soft-voting ensemble (DQN + A2C + RDQN + TRF), inference-only | `ext/ensemble_model.py`, `ext/tools.py` |
+| `ens/pes_ens` | Weighted soft-voting ensemble (DQN + RDQN + TRF; A2C member disabled) with severity prior and safety floor, inference-only | `ext/ensemble_model.py`, `ext/tools.py` |
 | `ens/pes_ens_consensus_prior` | Confidence consensus with severity-informed prior | `ext/ensemble.py`, `ext/evaluate_ens.py`, `ext/optimize_ens.py` |
 | `general/` | Cross-model Under Stress Experiments harness (22 scenarios × 7 individual + 6 ensemble models) | `scripts/benchmark.py`, `scripts/analysis.py`, `scripts/figures.py`, `scripts/random_baseline.py`, `scripts/agent_internals.py` |
 
-> The ensemble implementations combine `pes_dqn`, `pes_rdqn`, and `pes_trf`.
+> The ensemble implementations combine `pes_dqn`, `pes_rdqn`, and `pes_trf`;
+> all except `pes_ens` also load the `pes_a2c` actor as a fourth member.
 > `pes_ens_sprb` uses soft voting, `pes_ens_accq` uses action voting with
 > normalized-Q tie-breaking, `pes_ens_trf_guard` gives the Transformer a
 > confidence gate with fallback, and `pes_ens_consensus` rewards agreement
 > while penalizing disagreement. All expose tunable parameters through
 > `ext/optimize_ens.py` and evaluate through `ext/evaluate_ens.py`.
 >
-> `pes_ens` is a weighted soft-voting ensemble over `pes_dqn`, `pes_a2c`,
-> `pes_rdqn` and `pes_trf` (inference-only), and `pes_ens_consensus_prior`
+> `pes_ens` is a weighted soft-voting ensemble over `pes_dqn`, `pes_rdqn`
+> and `pes_trf` (A2C is configured but disabled; inference-only), and
+> `pes_ens_consensus_prior`
 > extends the consensus ensemble with a severity-informed prior. Both are
 > part of the active benchmark workflow; `pes_ens` is the best-performing
 > ensemble in the current results.

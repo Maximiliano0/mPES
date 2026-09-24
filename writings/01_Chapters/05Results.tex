@@ -4,101 +4,58 @@
 
 \label{sec:results}
 
-Este cap\'itulo presenta los resultados emp\'iricos del benchmark
-mPES, comparando dos suites de \textbf{seis modelos} sobre $n = 64$
-secuencias por escenario, agrupadas en
-\textbf{cuatro familias} --- \emph{severidad}, \emph{longitud},
-\emph{conjunta} y \emph{estructural} --- que cubren las $22$
-condiciones del cat\'alogo \texttt{general/}. La m\'etrica principal
-es el \emph{desempe\~no normalizado medio} $\bar{r} \in [0, 1]$
-(registrado en los JSON como \texttt{global\_mean\_perf}), definida
-como el promedio sobre las $n$ secuencias de la m\'etrica por
-secuencia de la Ecuaci\'on~\eqref{eq:normalised-severity-materials}:
+Este cap\'itulo responde las dos preguntas de la
+Secci\'on~\ref{sec:hypothesis}: cu\'al es el mejor modelo individual y si
+alg\'un ensamble lo supera. Todos los valores son el desempe\~no
+normalizado $\bar r$ (Ecuaci\'on~\eqref{eq:normalised-severity-materials})
+promediado sobre las secuencias de cada escenario. \emph{Referencia}
+designa la condici\'on de entrenamiento y \emph{generalizaci\'on}, la
+media en los $21$ escenarios de generalizaci\'on
+(Secci\'on~\ref{sec:scenario-catalogue}). Los mapas estad\'isticos de
+apoyo est\'an en el Ap\'endice~\ref{ap:stat-maps}.
 
-\begin{equation}
-\bar{r} \;=\; \frac{1}{n} \sum_{i=1}^{n}
-  \frac{S^{(i)}_{\text{peor}} - S^{(i)}_{\text{agente}}}
-       {S^{(i)}_{\text{peor}} - S^{(i)}_{\text{mejor}}}
-\label{eq:mean-perf}
-\end{equation}
+\subsection{Mejor modelo individual}\label{sec:res-individual}
 
-Donde, para la secuencia $i$, $S^{(i)}_{\text{agente}}$ es la
-severidad acumulada obtenida por el agente, $S^{(i)}_{\text{peor}}$ la
-que resulta de no asignar recursos y $S^{(i)}_{\text{mejor}}$ la
-m\'inima alcanzable bajo el presupuesto de la secuencia. Estas dos cotas
-se calculan retrospectivamente sobre la secuencia completa, una vez
-obtenidas las acciones del agente, y no intervienen en sus decisiones ni
-en la evoluci\'on del entorno. En particular, $S^{(i)}_{\text{peor}}$ no
-es el resultado del agente aleatorio, y $S^{(i)}_{\text{mejor}}$ es una
-referencia contrafactual con informaci\'on completa, no una pol\'itica
-disponible para decidir en l\'inea. Por construcci\'on cada t\'ermino est\'a
-en $[0, 1]$: $0$ equivale a no actuar y $1$ a alcanzar el \'optimo
-factible. A diferencia de la
-recompensa del MDP (Ecuaci\'on~\eqref{eq:reward}), esta m\'etrica es
-adimensional y est\'a normalizada por las cotas de cada secuencia, por
-lo que resulta comparable entre escenarios de distinta severidad y
-longitud y entre arquitecturas con distinto \emph{shaping} de
-recompensa.
-
-\subsection{Familias de perturbaciones evaluadas}\label{sec:res-variations}
-
-El cat\'alogo completo de las $22$ condiciones se detalla en la
-Sec.~\ref{sec:scenario-catalogue} (Tabla~\ref{tab:scenarios}); las
-cuatro familias agrupan, respectivamente, $9$ escenarios de
-\emph{severidad}, $5$ de \emph{longitud}, $4$ \emph{conjuntos} y
-$3$ \emph{estructurales}, que junto con la condici\'on de referencia
-suman $22$. Tres de ellos (\texttt{sev\_extrapolate\_high},
-\texttt{len\_extrapolate\_long} y \texttt{joint\_extrap\_both})
-utilizan valores fuera del soporte de entrenamiento. La condici\'on
-\texttt{sev\_base} act\'ua como referencia de cada modelo: las
-m\'etricas derivadas de este cap\'itulo --- degradaci\'on
-$\Delta\bar{r} = \bar{r}_{\text{ref}} - \bar{r}_{\text{celda}}$,
-divergencia KL entre distribuciones de acciones, $d$ de Cohen y $p$ de
-Welch --- se calculan siempre respecto de esa fila. Cada celda del
-benchmark corresponde a un par (modelo, escenario) ejecutado en
-inferencia sobre el mismo conjunto de $64$ secuencias generadas con
-semilla $42$.
-
-\subsection{Suite individual: resumen cuantitativo}\label{sec:res-individual}
-
-La Tabla~\ref{tab:global-mean} resume la condici\'on de referencia de
-los seis modelos individuales. El Transformer causal obtiene el mayor
-desempe\~no medio ($0{,}927$) y la menor dispersi\'on entre secuencias
-($0{,}045$). En los $21$ escenarios de perturbaci\'on su media es
-$0{,}930$, con degradaci\'on media $-0{,}002$, es decir, un rendimiento
-ligeramente superior al de la referencia en promedio. El Transformer
-es, por tanto, el mejor modelo individual. La suite de ensambles se
-presenta por separado en la Sec.~\ref{sec:res-ensembles}.
+El Transformer es el mejor modelo individual, tanto en la referencia
+como en generalizaci\'on (Tabla~\ref{tab:global-mean}). En generalizaci\'on obtiene $0{,}930$; el
+resto de los modelos optimizados queda entre $0{,}871$ y $0{,}899$.
+Tambi\'en tiene la menor dispersi\'on entre secuencias y la mayor media
+en $16$ de los $22$ escenarios (Figura~\ref{fig:heatmap-global}; con dos
+decimales, dos celdas aparecen empatadas). La media de generalizaci\'on incluye los
+tres escenarios estructurales, que reproducen la referencia, y
+escenarios m\'as f\'aciles que ella, como las secuencias cortas; por eso
+conviene leerla junto con el peor escenario. En ese criterio el
+Transformer no es el que menos pierde: cae $0{,}067$ respecto de su
+referencia, frente a $0{,}053$ de DQN y $0{,}061$ de A2C.
 
 \begin{table}[H]
 \centering
-\caption[Desempe\~no normalizado medio por modelo]{Desempe\~no
-normalizado medio $\bar{r}$ (Ec.~\eqref{eq:mean-perf}) y desviaci\'on
-est\'andar entre secuencias $\sigma$ de cada modelo individual en la
-condici\'on de referencia \texttt{sev\_base} ($n = 64$,
-semilla $= 42$). \texttt{pes\_base} se incluye como referencia sin
-optimizaci\'on.}
+\caption[Desempe\~no de los modelos individuales]{Desempe\~no normalizado
+medio $\bar{r}$ de cada modelo individual en la referencia (con su
+desviaci\'on est\'andar entre secuencias, $\sigma$), media en los $21$
+escenarios de generalizaci\'on y peor escenario.}
 \label{tab:global-mean}
-\begin{tabular}{@{}lcc@{}}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcccl@{}}
 \toprule
-\textbf{Modelo individual} & $\bar{r}$ & $\sigma$ \\
+\textbf{Modelo} & \textbf{Referencia} & $\sigma$ & \textbf{Generalizaci\'on} & \textbf{Peor escenario} \\
 \midrule
-\texttt{pes\_trf}           & 0{,}927          & 0{,}045 \\
-\texttt{pes\_rdqn}          & 0{,}899          & 0{,}049 \\
-\texttt{pes\_dql}           & 0{,}896          & 0{,}048 \\
-\texttt{pes\_dqn}           & 0{,}894          & 0{,}055 \\
-\texttt{pes\_a2c}           & 0{,}887          & 0{,}063 \\
-\texttt{pes\_ql}            & 0{,}887          & 0{,}061 \\
-\texttt{pes\_base}          & 0{,}871          & 0{,}074 \\
+Transformer       & $0{,}927$ & $0{,}045$ & $0{,}930$ & Secuencias largas ($0{,}860$) \\
+DQN               & $0{,}894$ & $0{,}055$ & $0{,}899$ & Secuencias largas ($0{,}841$) \\
+A2C               & $0{,}887$ & $0{,}063$ & $0{,}896$ & Secuencias largas ($0{,}826$) \\
+DQN recurrente    & $0{,}899$ & $0{,}049$ & $0{,}889$ & Severidad fuera de rango ($0{,}831$) \\
+Double Q-Learning & $0{,}896$ & $0{,}048$ & $0{,}877$ & Severidad fuera de rango ($0{,}785$) \\
+Q-Learning        & $0{,}887$ & $0{,}061$ & $0{,}871$ & Severidad fuera de rango ($0{,}762$) \\
+Q-Learning base   & $0{,}871$ & $0{,}074$ & $0{,}851$ & Severidad fuera de rango ($0{,}627$) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Reducci\'on de la severidad normalizada}
-
-Tomando \texttt{pes\_ql} como l\'inea de base tabular y utilizando
-$1 - \bar{r}$ como medida de severidad residual normalizada, la
-reducci\'on relativa de un modelo $m$ en la condici\'on de referencia es:
+La ventaja tambi\'en puede expresarse como distancia al \'optimo. Si
+$1 - \bar{r}$ mide cu\'anto le falta al agente para igualar la
+asignaci\'on \'optima, la reducci\'on relativa de esa distancia
+para un modelo $m$ respecto de Q-Learning es:
 
 \begin{equation}
 \Delta_{\mathrm{rel}}(m) =
@@ -108,565 +65,324 @@ reducci\'on relativa de un modelo $m$ en la condici\'on de referencia es:
 \label{eq:severity-reduction}
 \end{equation}
 
-Con $\bar{r}_{\mathrm{ql}} = 0{,}887$, la severidad residual de la
-l\'inea de base es $0{,}113$. Para \texttt{pes\_trf}
-($\bar{r} = 0{,}927$) la residual es $0{,}073$ y
-$\Delta_{\mathrm{rel}} \approx 0{,}35$. Es decir, el Transformer
-reduce la severidad residual normalizada en torno a un $35\,\%$
-respecto de la l\'inea de base tabular. La cifra es descriptiva de la
-condici\'on de referencia y no se extiende a los escenarios de
-perturbaci\'on.
+En la referencia, el Transformer reduce en alrededor de un $36\,\%$ la
+distancia que deja Q-Learning.
 
-La hip\'otesis H1a (Sec.~\ref{sec:hypothesis}) queda respaldada por el
-ordenamiento de la suite individual. La Tabla~\ref{tab:pairwise-stats}
-resume los contrastes pareados de mayor inter\'es entre modelos
-individuales, calculados sobre los $21$ escenarios de perturbaci\'on
-($21 \times 64$ observaciones por modelo). Los valores $p$ son
-extremadamente peque\~nos porque la muestra es grande y las
-observaciones de distintos escenarios se agrupan; deben leerse junto
-con la $d$ de Cohen, que mide la magnitud de la diferencia en unidades
-de desviaci\'on est\'andar, y no como prueba de un mecanismo causal.
+\subsubsection{Desempe\~no por familia de escenarios}
+
+Cada familia falla en un tipo distinto de escenario
+(Figura~\ref{fig:heatmap-global}; la diferencia de cada celda con la
+primera columna es la degradaci\'on).
+Los modelos tabulares caen por debajo de $0{,}8$ en la extrapolaci\'on de
+severidad. Su tabla recorta esas severidades a $S = 9$, una fila que el
+entrenamiento nunca visit\'o, de modo que deciden con los valores
+iniciales aleatorios de la tabla (Secci\'on~\ref{sec:tabular}). A2C
+tambi\'en recibe la severidad recortada a $9$, pero, como red, extiende a
+esa entrada lo aprendido para severidades cercanas y obtiene $0{,}929$.
+
+Las redes mantienen su desempe\~no en ese escenario: el Transformer queda
+a menos de $0{,}005$ del \'optimo ($\bar r = 0{,}996$ en la extrapolaci\'on
+de severidad y $0{,}997$ en la conjunta). Eso no basta para concluir que
+generaliza mejor all\'i que en la referencia: con severidades de $10$ a
+$12$, una pol\'itica que asigna mucho a cada ciudad puede acercarse al
+\'optimo, y A2C tambi\'en supera en ese escenario su propia referencia.
+Su punto d\'ebil son las secuencias m\'as largas que las de
+entrenamiento. El DQN recurrente es la excepci\'on: falla m\'as con
+severidades fuera de rango que con secuencias largas.
+
+Los tres escenarios estructurales reproducen el valor de la referencia,
+como se espera de un control.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{ind_01_desempeno_por_escenario.png}
+  \caption[Desempe\~no medio por escenario (modelos
+  individuales)]{Modelos individuales: desempe\~no medio $\bar r$ por
+  modelo y escenario. La primera columna es la referencia.}
+  \label{fig:heatmap-global}
+\end{figure}
+
+\subsubsection{Tama\~no de la ventaja del Transformer}
+
+Para saber si la diferencia de medias es grande en relaci\'on con la
+variabilidad entre secuencias, la Tabla~\ref{tab:pairwise-stats} compara
+al Transformer con las dos redes que usan su misma regla de aprendizaje,
+DQN y DQN recurrente, y con Q-Learning. Cada comparaci\'on junta las
+secuencias de los $21$ escenarios de generalizaci\'on.
 
 \begin{table}[!htb]
 \centering
-\caption[Comparaciones entre modelos individuales]{Contrastes pareados
-de la suite individual sobre los $21$ escenarios de perturbaci\'on.
-$d$: tama\~no de efecto de Cohen (positivo cuando el primer modelo tiene
-mayor media); $\log_{10} p$: valor $p$ bilateral de Welch en escala
-logar\'itmica; $D_{\mathrm{KL}}^{\mathrm{sym}}$: divergencia
-simetrizada entre los histogramas de rendimiento de ambos modelos.}
+\caption[Comparaci\'on del Transformer con otros modelos]{Comparaci\'on
+del Transformer con otros modelos sobre los $21$ escenarios de
+generalizaci\'on. $d$: diferencia de medias en desviaciones est\'andar
+(positiva si gana el Transformer); $\log_{10} p$: significancia de la
+prueba de Welch; $D_{\mathrm{KL}}^{\mathrm{sym}}$: diferencia entre los
+histogramas de desempe\~no de ambos modelos (Secci\'on~\ref{sec:stats-bg}).}
 \label{tab:pairwise-stats}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Comparaci\'on} & $d$ de Cohen & $\log_{10} p$ & $D_{\mathrm{KL}}^{\mathrm{sym}}$ \\
 \midrule
-\texttt{pes\_trf} vs \texttt{pes\_ql}   & 0{,}78 & $-87{,}8$ & 0{,}49 \\
-\texttt{pes\_trf} vs \texttt{pes\_rdqn} & 0{,}57 & $-48{,}9$ & 0{,}34 \\
-\texttt{pes\_trf} vs \texttt{pes\_dqn}  & 0{,}51 & $-39{,}2$ & 0{,}17 \\
+Transformer vs Q-Learning     & 0{,}78 & $-87{,}8$ & 0{,}49 \\
+Transformer vs DQN recurrente & 0{,}57 & $-48{,}9$ & 0{,}34 \\
+Transformer vs DQN            & 0{,}51 & $-39{,}2$ & 0{,}17 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Comportamiento por familia algor\'itmica}
+La medida principal es la $d$ de Cohen, que mide el tama\~no de la
+ventaja. Es de tama\~no medio frente a las otras dos redes y cercana a
+grande frente a Q-Learning. El $\log_{10} p$ es muy negativo en las tres
+comparaciones, pero debe leerse con cautela. Las secuencias no son
+independientes entre s\'i: se generan con la misma semilla y son las
+mismas para ambos modelos. Adem\'as, con m\'as de mil secuencias por
+modelo incluso diferencias moderadas dan valores $p$ muy peque\~nos. La divergencia KL indica que la
+distribuci\'on de desempe\~nos del Transformer se parece a la de DQN y
+se aleja m\'as de la de Q-Learning. La comparaci\'on entre todos los
+pares de modelos est\'a en el Ap\'endice (Figura~\ref{fig:pairwise-cohen}).
 
-Las observaciones siguientes se apoyan en la matriz de desempe\~no por
-escenario (Figura~\ref{fig:heatmap-global}) y en el informe de la suite.
+\subsubsection{Resultados por modelo en la referencia}\label{sec:per-model}
 
-\begin{description}
-    \item[Tabular (\texttt{pes\_base}, \texttt{pes\_ql}, \texttt{pes\_dql}).]
-    Su desempe\~no es comparable al de los modelos profundos en la
-    condici\'on de referencia y en secuencias cortas
-    (\texttt{len\_all\_short}: $0{,}943$ para \texttt{pes\_ql}). El
-    peor escenario de los tres es la extrapolaci\'on de severidad
-    (\texttt{sev\_extrapolate\_high}: $0{,}627$, $0{,}762$ y $0{,}785$
-    respectivamente), donde la tabla $Q$ s\'olo cubre severidades
-    $0$--$9$ y la inferencia recorta el \'indice de estado al \'ultimo
-    nivel, de modo que $S \in \{10, 11, 12\}$ se eval\'ua con la
-    pol\'itica aprendida para $S = 9$. Tambi\'en pierden
-    rendimiento con secuencias largas (\texttt{len\_all\_long}:
-    $0{,}859$ y $0{,}878$ para \texttt{pes\_ql} y \texttt{pes\_dql}).
-    \item[\texttt{pes\_dqn}.] La aproximaci\'on funcional recibe la
-    severidad normalizada $S/9$ como entrada continua, tambi\'en cuando
-    excede $1$. En
-    \texttt{sev\_extrapolate\_high} obtiene $0{,}890$ frente a
-    $0{,}762$ de \texttt{pes\_ql}; la diferencia es descriptiva y no
-    a\'isla el efecto de la representaci\'on de otros factores de
-    entrenamiento. Su peor escenario es \texttt{len\_extrapolate\_long}
-    ($0{,}841$).
-    \item[\texttt{pes\_a2c}.] Obtiene su mejor resultado en
-    \texttt{joint\_low\_short} ($0{,}988$) y \texttt{joint\_extrap\_both}
-    ($0{,}949$), y el peor en \texttt{len\_extrapolate\_long}
-    ($0{,}826$). Su media bajo perturbaci\'on ($0{,}896$) supera a su
-    referencia ($0{,}887$).
-    \item[\texttt{pes\_rdqn}.] La capa LSTM sobre la ventana de seis
-    estados sit\'ua al modelo en $0{,}899$ en la referencia, por encima
-    de \texttt{pes\_dqn}. En \texttt{len\_extrapolate\_long} alcanza
-    $0{,}889$ frente a $0{,}841$ de \texttt{pes\_dqn}, mientras que en
-    \texttt{sev\_extrapolate\_high} desciende a $0{,}831$, su peor
-    escenario.
-    \item[\texttt{pes\_trf}.] Obtiene la mayor media en $16$ de los
-    $22$ escenarios de la suite individual. En
-    \texttt{sev\_extrapolate\_high} alcanza $0{,}996$ y en
-    \texttt{joint\_extrap\_both} $0{,}997$; su peor escenario es
-    \texttt{len\_extrapolate\_long} ($0{,}860$). Estos resultados son
-    compatibles con la hip\'otesis de que la ventana de estados y la
-    atenci\'on causal aportan informaci\'on \'util sobre la tendencia
-    de la severidad, pero el dise\~no experimental no permite aislar ese
-    mecanismo (v\'ease Sec.~\ref{sec:discussion}).
-\end{description}
-
-\subsection{Artefactos generados por el procedimiento experimental}
-
-El m\'odulo \texttt{general/scripts/benchmark.py}, junto con
-\texttt{analysis.py} y \texttt{figures.py}, genera para cada suite
-(\texttt{individual} y \texttt{ensemble}) los siguientes artefactos en
-\texttt{general/results/<suite>/}:
-
-\begin{itemize}
-    \item \texttt{cells/<modelo>\_\_<escenario>.json}: rendimiento por
-    secuencia, distribuci\'on emp\'irica de acciones y estad\'isticos de
-    cada celda.
-    \item \texttt{matrices/*.csv}: matrices modelo $\times$ escenario de
-    media, desviaci\'on est\'andar, degradaci\'on, $p$ y $\log_{10} p$ de
-    Welch, $d$ de Cohen y KL de acciones frente a la referencia.
-    \item \texttt{comparison\_metrics.json}: contrastes pareados entre
-    modelos de la suite.
-    \item \texttt{figures/}: mapas de calor, curvas por familia y por
-    escenario, ranking y perfiles de generalizaci\'on.
-    \item \texttt{report.md}: resumen ejecutivo de la suite.
-\end{itemize}
-
-Las matrices principales de la suite individual se representan en las
-Figuras~\ref{fig:heatmap-global}--\ref{fig:heatmap-kl}: desempe\~no
-medio, degradaci\'on frente a la referencia, $\log_{10} p$ de Welch y
-divergencia KL de acciones. La Figura~\ref{fig:pairwise-cohen} muestra
-los tama\~nos de efecto pareados entre los modelos individuales. En los
-mapas de degradaci\'on, las tres columnas
-estructurales muestran valor nulo por construcci\'on, ya que
-reproducen la distribuci\'on de referencia con otra partici\'on en
-bloques. Los mapas equivalentes de la suite de ensambles se presentan
-en la Sec.~\ref{sec:res-ensembles}.
+Las Figuras~\ref{fig:c-base}--\ref{fig:c-trf} muestran, para cada modelo
+individual, el desempe\~no de cada una de las $64$ secuencias de la
+referencia, su distribuci\'on, los estad\'isticos por bloque y un resumen
+descriptivo. En ellas cada modelo aparece con el nombre de su paquete
+(Tabla~\ref{tab:packages}).
 
 \begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=\linewidth]{ind_01_desempeno_por_escenario.png}
-  \caption[Desempe\~no medio por modelo y escenario (individual)]{Suite
-  individual: desempe\~no normalizado medio $\bar r$ por modelo y
-  escenario. Cada celda promedia $64$ secuencias; la primera columna es
-  la condici\'on de referencia \texttt{sev\_base}.}
-  \label{fig:heatmap-global}
-\end{figure}
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=\linewidth]{ind_02_degradacion_por_escenario.png}
-  \caption[Degradaci\'on frente a la referencia (individual)]{Suite
-  individual: degradaci\'on $\Delta\bar r = \bar r_{\text{ref}} -
-  \bar r_{\text{celda}}$ respecto de \texttt{sev\_base}. Los valores
-  positivos indican p\'erdida de desempe\~no y los negativos, mejora.}
-  \label{fig:heatmap-reference-degradation}
-\end{figure}
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
-  \caption[Significancia de Welch por escenario (individual)]{Suite
-  individual: $\log_{10} p$ de la prueba $t$ de Welch entre los $64$
-  valores por secuencia de cada celda y los de la referencia del mismo
-  modelo. Valores m\'as negativos indican mayor evidencia de cambio en
-  la media; las celdas con $p$ inferior al l\'imite de la escala se
-  marcan como recortadas.}
-  \label{fig:heatmap-welch}
-\end{figure}
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=\linewidth]{ind_04_kl_acciones_por_escenario.png}
-  \caption[Divergencia KL de acciones por escenario (individual)]{Suite
-  individual: divergencia $D_{\mathrm{KL}}$ (Ecuaci\'on~\eqref{eq:kl})
-  entre la distribuci\'on emp\'irica de acciones de cada escenario y la
-  de la referencia del mismo modelo. Mide el desplazamiento de la
-  pol\'itica, no el rendimiento.}
-  \label{fig:heatmap-kl}
-\end{figure}
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.9\linewidth]{ind_13_pares_cohen_d.png}
-  \caption[Tama\~no de efecto pareado entre modelos individuales]{$d$ de
-  Cohen (Ecuaci\'on~\eqref{eq:cohen}) entre pares de modelos de la suite
-  individual, calculada sobre los $21$ escenarios de perturbaci\'on. Un
-  valor positivo indica que el modelo de la fila supera en media al de
-  la columna.}
-  \label{fig:pairwise-cohen}
-\end{figure}
-
-\FloatBarrier
-
-\subsection{Resultados por modelo}\label{sec:per-model}
-
-Las Figuras~\ref{fig:c-base}--\ref{fig:c-trf} muestran el desempe\~no
-por secuencia de los siete paquetes individuales en la condici\'on de
-referencia. En consonancia con la
-Tabla~\ref{tab:global-mean}, los m\'etodos tabulares
-(Figs.~\ref{fig:c-base}--\ref{fig:c-dql}) presentan medias m\'as bajas y
-mayor dispersi\'on entre secuencias ($\sigma$ entre $0{,}048$ y
-$0{,}074$), mientras que \texttt{pes\_trf} (Fig.~\ref{fig:c-trf})
-combina la mayor media con la menor dispersi\'on ($0{,}045$).
-
-\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_BASE_results.png}
-  \caption[Resultados del modelo base]{Desempe\~no por secuencia, distribuci\'on,
-  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_base}.}
+  \caption[Resultados por secuencia: Q-Learning base]{Resultados por secuencia de Q-Learning base (\texttt{pes\_base}) en la referencia.}
   \label{fig:c-base}
 \end{figure}
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_QL_results.png}
-  \caption[Resultados de Q-Learning optimizado]{Desempe\~no por secuencia,
-  distribuci\'on, estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ql}.}
+  \caption[Resultados por secuencia: Q-Learning]{Resultados por secuencia de Q-Learning (\texttt{pes\_ql}) en la referencia.}
   \label{fig:c-ql}
 \end{figure}
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_DQL_results.png}
-  \caption[Resultados de Double Q-Learning]{Desempe\~no por secuencia,
-  distribuci\'on, estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_dql}.}
+  \caption[Resultados por secuencia: Double Q-Learning]{Resultados por secuencia de Double Q-Learning (\texttt{pes\_dql}) en la referencia.}
   \label{fig:c-dql}
 \end{figure}
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_DQN_results.png}
-  \caption[Resultados de DQN]{Desempe\~no por secuencia, distribuci\'on,
-  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_dqn}.}
+  \caption[Resultados por secuencia: DQN]{Resultados por secuencia de DQN (\texttt{pes\_dqn}) en la referencia.}
   \label{fig:c-dqn}
 \end{figure}
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_RDQN_results.png}
-  \caption[Resultados de RDQN]{Desempe\~no por secuencia, distribuci\'on,
-  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_rdqn}.}
+  \caption[Resultados por secuencia: DQN recurrente]{Resultados por secuencia del DQN recurrente (\texttt{pes\_rdqn}) en la referencia.}
   \label{fig:c-rdqn}
 \end{figure}
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_A2C_results.png}
-  \caption[Resultados de A2C]{Desempe\~no por secuencia, distribuci\'on,
-  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_a2c}.}
+  \caption[Resultados por secuencia: A2C]{Resultados por secuencia de A2C (\texttt{pes\_a2c}) en la referencia.}
   \label{fig:c-a2c}
 \end{figure}
-\begin{figure}[!htb]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_TRF_results.png}
-  \caption[Resultados del Transformer]{Desempe\~no por secuencia, distribuci\'on,
-  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_trf}.}
+  \caption[Resultados por secuencia: Transformer]{Resultados por secuencia del Transformer (\texttt{pes\_trf}) en la referencia.}
   \label{fig:c-trf}
 \end{figure}
 
-\subsection{Resultados por escenario}\label{sec:per-seq-extended}
+\FloatBarrier
 
-La Figura~\ref{fig:extra-sev-skew} presenta curvas de desempe\~no por
-secuencia en seis escenarios representativos, organizadas por familia de
-perturbaci\'on: severidad (\texttt{sev\_bimodal},
-\texttt{sev\_gauss\_high}, \texttt{sev\_beta\_highskew}), longitud
-(\texttt{len\_poisson}, \texttt{len\_extrapolate\_long}) y conjunta
-(\texttt{joint\_high\_long}). En cada panel las $64$ secuencias se
-ordenan de menor a mayor $\bar r$, de modo que una curva situada por
-encima de otra indica mejor desempe\~no en toda la distribuci\'on de
-secuencias, y la pendiente inicial refleja la magnitud de los peores
-casos. La Figura~\ref{fig:ranking} resume, para la suite individual, la
-media en la referencia y la media en los $21$ escenarios de
-perturbaci\'on.
+\subsubsection{Curvas por escenario}\label{sec:per-seq-extended}
 
-\begin{figure}[!htb]
+La Figura~\ref{fig:extra-sev-skew} muestra el desempe\~no de cada
+secuencia en seis escenarios de generalizaci\'on: tres de severidad, dos
+de longitud y uno conjunto. En cada panel las secuencias se ordenan de
+menor a mayor $\bar r$: una curva por encima de otra indica mejor
+desempe\~no en toda la distribuci\'on, y el tramo inicial muestra los
+peores casos. En los escenarios de severidad y en el de longitudes
+Poisson, el Transformer queda por encima o al nivel del resto, con la
+mayor ventaja en los peores casos de la distribuci\'on bimodal. Con
+secuencias largas lo supera el DQN recurrente, y con alta severidad y
+secuencias largas las curvas casi se superponen.
+
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{ind_05_curvas_por_familia.png}
-  \caption[Curvas por secuencia y familia de perturbaci\'on]{Suite
-  individual: desempe\~no por secuencia ordenado de menor a mayor $\bar r$
-  (Ec.~\eqref{eq:mean-perf}) en seis escenarios. Fila superior:
-  severidad; fila inferior: longitud y conjunta. Se incluyen los siete
-  paquetes individuales, con \texttt{pes\_base} como referencia sin
-  optimizaci\'on; el trazo grueso corresponde a \texttt{pes\_trf}, el
-  modelo de mayor media bajo perturbaci\'on.}
+  \caption[Curvas por secuencia en seis escenarios (modelos
+  individuales)]{Desempe\~no por secuencia, ordenado de menor a mayor,
+  en seis escenarios de generalizaci\'on. Fila superior: severidad;
+  fila inferior: longitud y conjunta. El trazo grueso corresponde al
+  Transformer.}
   \label{fig:extra-sev-skew}
 \end{figure}
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.8\linewidth]{ind_08_ranking_desempeno.png}
-  \caption[Ordenamiento por desempe\~no medio (individual)]{Media de
-  $\bar r$ en la condici\'on de referencia (barra clara) y en los $21$
-  escenarios de perturbaci\'on (barra oscura) para la suite individual;
-  el borde destaca a \texttt{pes\_trf}.}
-  \label{fig:ranking}
-\end{figure}
-
-\subsection{Evaluaci\'on en escenarios de extrapolaci\'on}\label{sec:extrapolation-curves}
-
-El cat\'alogo incluye tres condiciones cuyos valores quedan fuera del
-soporte de entrenamiento: \texttt{sev\_extrapolate\_high},
-\texttt{joint\_extrap\_both} y \texttt{len\_extrapolate\_long}. La
-Figura~\ref{fig:extrapolation-curves} muestra el desempe\~no por
-secuencia de \texttt{pes\_trf} en cada una, junto con el modelo
-tabular de mayor rendimiento (\texttt{pes\_dql}) en la extrapolaci\'on
-de severidad, el modelo de gradiente de pol\'itica (\texttt{pes\_a2c}) en
-la extrapolaci\'on conjunta y \texttt{pes\_dqn} en la extrapolaci\'on de
-longitud. En los dos primeros escenarios las curvas son casi planas y
-cercanas a $1$ para \texttt{pes\_trf}, lo que indica que la asignaci\'on
-elegida alcanza la cota factible en la mayor\'ia de las secuencias; en la
-extrapolaci\'on de longitud la dispersi\'on entre secuencias es mayor
-para todos los modelos. Las curvas describen el comportamiento
-observado y no se interpretan como prueba de un mecanismo causal.
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{ind_06_curvas_extrapolacion.png}
-  \caption[Curvas en los escenarios de extrapolaci\'on]{Desempe\~no por
-  secuencia, ordenado de menor a mayor $\bar r$, en los tres escenarios
-  fuera del soporte de entrenamiento. \emph{Izquierda:}
-  \texttt{sev\_extrapolate\_high} (\texttt{pes\_dql} y
-  \texttt{pes\_trf}). \emph{Centro:} \texttt{joint\_extrap\_both}
-  (\texttt{pes\_a2c} y \texttt{pes\_trf}). \emph{Derecha:}
-  \texttt{len\_extrapolate\_long} (\texttt{pes\_dqn} y
-  \texttt{pes\_trf}). El trazo grueso corresponde a \texttt{pes\_trf} y
-  las l\'ineas punteadas marcan la media de cada
-  modelo sobre las $64$ secuencias.}
-  \label{fig:extrapolation-curves}
-\end{figure}
 \FloatBarrier
 
-\subsection{Suite de ensambles}\label{sec:res-ensembles}
+\subsection{Ensambles}\label{sec:res-ensembles}
 
-Las seis variantes de ensamble se eval\'uan como una suite
-independiente sobre los mismos $22$ escenarios y las mismas $64$
-secuencias por celda. La Tabla~\ref{tab:ensemble-stress} recoge la
-comparaci\'on. \texttt{pes\_ens} obtiene la mayor media bajo
-perturbaci\'on ($0{,}939$) y la menor degradaci\'on m\'axima
-($0{,}037$), seguido por \texttt{pes\_ens\_trf\_guard} ($0{,}931$) y
-\texttt{pes\_ens\_consensus\_prior} ($0{,}923$). La variante de consenso
-sin prior alcanza $0{,}904$, mientras que \texttt{pes\_ens\_sprb} y
-\texttt{pes\_ens\_accq} obtienen $0{,}902$ y $0{,}901$,
-respectivamente, y concentran su mayor degradaci\'on en la
-extrapolaci\'on de severidad.
+El ensamble ponderado es el \'unico que supera al Transformer
+(Tabla~\ref{tab:ensemble-stress}).
+En generalizaci\'on obtiene $0{,}939$, frente a $0{,}930$ del
+Transformer solo, y su peor escenario queda $0{,}040$ por encima del
+peor del Transformer. En la referencia reduce en alrededor de un $45\,\%$
+la distancia que deja Q-Learning
+(Ecuaci\'on~\eqref{eq:severity-reduction}), frente al $36\,\%$ del
+Transformer.
 
 \begin{table}[H]
 \centering
-\caption[Resultados de los ensambles bajo perturbaci\'on]{Rendimiento
-en la condici\'on de referencia, media en los $21$ escenarios de
-perturbaci\'on y mayor degradaci\'on observada para las seis variantes
-de ensamble.}
+\caption[Desempe\~no de los ensambles]{Desempe\~no de los ensambles en la
+referencia, media en los $21$ escenarios de generalizaci\'on y mayor
+degradaci\'on respecto de la referencia.}
 \label{tab:ensemble-stress}
 \small
 \begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Ensamble} & Referencia & Media bajo perturb. & Mayor degradaci\'on \\
+\textbf{Ensamble} & \textbf{Referencia} & \textbf{Generalizaci\'on} & \textbf{Mayor degradaci\'on} \\
 \midrule
-\texttt{pes\_ens} & 0{,}937 & 0{,}939 & 0{,}037 \\
-\texttt{pes\_ens\_trf\_guard} & 0{,}928 & 0{,}931 & 0{,}067 \\
-\texttt{pes\_ens\_consensus\_prior} & 0{,}918 & 0{,}923 & 0{,}042 \\
-\texttt{pes\_ens\_consensus} & 0{,}893 & 0{,}904 & 0{,}063 \\
-\texttt{pes\_ens\_sprb} & 0{,}914 & 0{,}902 & 0{,}054 \\
-\texttt{pes\_ens\_accq} & 0{,}914 & 0{,}901 & 0{,}055 \\
+Ensamble ponderado        & 0{,}937 & 0{,}939 & 0{,}037 \\
+Compuerta del Transformer & 0{,}928 & 0{,}931 & 0{,}067 \\
+Consenso con prior        & 0{,}918 & 0{,}923 & 0{,}042 \\
+Consenso                  & 0{,}893 & 0{,}904 & 0{,}063 \\
+Voto suave                & 0{,}914 & 0{,}902 & 0{,}054 \\
+Voto por acci\'on         & 0{,}914 & 0{,}901 & 0{,}055 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Con la misma l\'inea de base tabular de la
-Ecuaci\'on~\eqref{eq:severity-reduction}, \texttt{pes\_ens}
-($\bar{r} = 0{,}937$) deja una severidad residual de $0{,}063$ y
-$\Delta_{\mathrm{rel}} \approx 0{,}45$, frente al $0{,}35$ del
-Transformer individual. El mejor resultado del benchmark completo
-corresponde, por tanto, a \texttt{pes\_ens}: su media bajo
-perturbaci\'on ($0{,}939$) supera a la de \texttt{pes\_trf} ($0{,}930$).
-Este resultado no sostiene una superioridad del Transformer frente a
-todos los sistemas evaluados, sino s\'olo frente a los modelos
-individuales (Sec.~\ref{sec:res-individual}).
+Los otros cinco ensambles no superan al Transformer. La compuerta del
+Transformer lo iguala, con resultados casi id\'enticos a los del
+Transformer solo. Los dos consensos quedan por debajo. El voto suave y
+el voto por acci\'on, que s\'olo promedian o votan, obtienen las medias
+m\'as bajas y tienen su peor escenario en la extrapolaci\'on de
+severidad, el escenario en que el Transformer casi alcanza el \'optimo.
 
-La Figura~\ref{fig:ensemble-ranking} muestra este ordenamiento al
-comparar, para cada variante, la media en la referencia con la media en
-los $21$ escenarios de perturbaci\'on. La Figura~\ref{fig:ensemble-curves}
-permite observar la dispersi\'on por secuencia y por familia. En ella,
-\texttt{pes\_ens} conserva una banda estrecha y un rendimiento alto,
-mientras que \texttt{pes\_ens\_sprb} y \texttt{pes\_ens\_accq} presentan
-mayor dispersi\'on en los escenarios de severidad.
+Como en los modelos individuales, cada ensamble falla en un tipo
+distinto de escenario (Figura~\ref{fig:heatmap-ens}). La longitud es el
+cambio m\'as desfavorable para la compuerta del Transformer y los dos
+consensos; el voto suave y el voto por acci\'on pierden m\'as con la
+severidad.
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.8\linewidth]{ens_08_ranking_desempeno.png}
-  \caption[Ordenamiento de los ensambles]{Media del desempe\~no
-  normalizado en la condici\'on de referencia y en los $21$ escenarios de
-  perturbaci\'on para las seis variantes de ensamble; el borde destaca a
-  \texttt{pes\_ens}.}
-  \label{fig:ensemble-ranking}
-\end{figure}
+\subsubsection{Cu\'anto cambian las reglas fijas la decisi\'on}\label{sec:res-freq}
 
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{ens_05_curvas_por_familia.png}
-  \caption[Curvas de los ensambles por familia de perturbaci\'on]{Curvas
-  de desempe\~no por secuencia, ordenadas de menor a mayor, para los
-  seis ensambles en escenarios de severidad, longitud y perturbaci\'on
-  conjunta. El trazo grueso corresponde a \texttt{pes\_ens}, la variante
-  de mayor media bajo perturbaci\'on.}
-  \label{fig:ensemble-curves}
-\end{figure}
-
-La Figura~\ref{fig:ensemble-extrapolation} concentra la lectura en los
-tres escenarios cuyos valores quedan fuera del soporte de entrenamiento.
-El ensamble \texttt{pes\_ens} alcanza $1{,}000$ en la extrapolaci\'on de
-severidad y $0{,}900$ en la de longitud; por el contrario,
-\texttt{pes\_ens\_trf\_guard} y \texttt{pes\_ens\_consensus} alcanzan
-sus mayores p\'erdidas en \texttt{len\_extrapolate\_long}, con
-degradaciones $0{,}067$ y $0{,}063$ respectivamente.
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=\linewidth]{ens_06_curvas_extrapolacion.png}
-  \caption[Curvas de los ensambles en escenarios de extrapolaci\'on]{Curvas
-  por secuencia de las seis variantes de ensamble en los tres escenarios
-  de extrapolaci\'on; el trazo grueso corresponde a \texttt{pes\_ens} y
-  las l\'ineas punteadas a la media de cada variante. Las curvas muestran
-  la distribuci\'on de rendimiento
-  y no constituyen una prueba causal sobre la regla de combinaci\'on.}
-  \label{fig:ensemble-extrapolation}
-\end{figure}
-
-Los mapas de las Figuras~\ref{fig:heatmap-ens},
-\ref{fig:ensemble-statistical-heatmaps} y \ref{fig:ensemble-pairwise}
-complementan el ranking con tres tipos de evidencia. El mapa de
-desempe\~no permite comparar las seis variantes escenario por
-escenario; el de degradaci\'on muestra que la longitud es el factor
-m\'as desfavorable para \texttt{pes\_ens\_trf\_guard},
-\texttt{pes\_ens\_consensus} y \texttt{pes\_ens\_consensus\_prior}; y
-los mapas de Welch y $d$ permiten separar diferencias de media de su
-magnitud estandarizada. La Tabla~\ref{tab:pairwise-ens} y la
-Figura~\ref{fig:ensemble-pairwise} muestran que \texttt{pes\_ens}
-supera a \texttt{pes\_ens\_consensus} con $d=0{,}62$ y
-$\log_{10}p=-55{,}6$, mientras que la diferencia frente a
-\texttt{pes\_ens\_trf\_guard} es peque\~na ($d=0{,}17$,
-$\log_{10}p=-5{,}1$). El valor $p$ indica evidencia estad\'istica de
-una diferencia de medias, pero no identifica por s\'i solo la causa de
-la diferencia ni su relevancia operativa.
+Para saber cu\'anto pesan en la decisi\'on el Transformer, el
+\emph{prior} de severidad y la cota de seguridad, se repiti\'o la
+evaluaci\'on de los tres ensambles que usan esas reglas
+(Ap\'endice~\ref{ap:orchestrator}). En cada decisi\'on con recursos
+disponibles se registr\'o la acci\'on antes y despu\'es de cada regla y la
+acci\'on que prefiere el Transformer. La repetici\'on reproduce las medias
+del benchmark con una diferencia m\'axima de $0{,}002$. La
+Tabla~\ref{tab:ens-freq} resume los resultados.
 
 \begin{table}[!htb]
 \centering
-\caption[Comparaciones entre ensambles]{Contrastes pareados de la suite
-de ensambles sobre los $21$ escenarios de perturbaci\'on; columnas como
-en la Tabla~\ref{tab:pairwise-stats}.}
+\caption[Frecuencia con que las reglas cambian la decisi\'on]{Porcentaje
+de las decisiones con recursos disponibles en que ocurre cada evento, en
+la referencia y en el conjunto de los $21$ escenarios de
+generalizaci\'on.}
+\label{tab:ens-freq}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.2\linewidth}>{\raggedright\arraybackslash}p{0.4\linewidth}cc@{}}
+\toprule
+\textbf{Ensamble} & \textbf{Evento} & \textbf{Referencia} & \textbf{Generalizaci\'on} \\
+\midrule
+Compuerta del Transformer & Sigue al Transformer ($g \ge 0{,}5$) & $96{,}9$ & $95{,}0$ \\
+                          & Acci\'on final distinta de la del Transformer & $0{,}8$ & $2{,}6$ \\
+\midrule
+Consenso con prior & El \emph{prior} cambia la acci\'on votada & $7{,}7$ & $9{,}0$ \\
+                   & La cota cambia la acci\'on & $0{,}0$ & $0{,}6$ \\
+                   & Acci\'on final distinta de la del Transformer & $61{,}3$ & $56{,}3$ \\
+\midrule
+Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9$ & $32{,}5$ \\
+                   & La cota cambia la acci\'on & $0{,}0$ & $0{,}3$ \\
+                   & Acci\'on final distinta de la del Transformer & $61{,}2$ & $48{,}1$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La compuerta sigue al Transformer en casi todas las decisiones, lo que
+explica que sus resultados sean casi id\'enticos a los del Transformer
+solo. En el ensamble ponderado ocurre lo contrario: aunque el
+Transformer tiene el $82\,\%$ del peso base, la acci\'on final difiere de
+la suya en el $61\,\%$ de las decisiones de la referencia y en el
+$48\,\%$ de las de generalizaci\'on. Con
+$\tau = 15$ las distribuciones de los tres miembros quedan casi planas.
+En la referencia, la acci\'on m\'as probable de cada uno tiene en promedio
+probabilidad $0{,}19$ y supera a la segunda por s\'olo $0{,}02$--$0{,}03$.
+Por eso el voto ya difiere de la acci\'on del Transformer en el $31\,\%$
+de las decisiones, y el \emph{prior} cambia la acci\'on votada en el
+$41\,\%$. La cota de seguridad casi nunca act\'ua. En la extrapolaci\'on
+de severidad y en la conjunta, en cambio, todas las decisiones del
+ensamble ponderado coinciden con las de su miembro Transformer, que all\'i
+recibe la severidad recortada a $9$.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{ens_01_desempeno_por_escenario.png}
+  \caption[Desempe\~no medio por escenario (ensambles)]{Ensambles:
+  desempe\~no medio $\bar r$ por ensamble y escenario. La primera columna
+  es la referencia.}
+  \label{fig:heatmap-ens}
+\end{figure}
+
+La Figura~\ref{fig:ensemble-extrapolation} muestra el detalle por
+secuencia en los tres escenarios fuera de rango. El ensamble ponderado
+alcanza el \'optimo en todas las secuencias de la extrapolaci\'on de
+severidad y de la conjunta ($\bar r = 1$, $\sigma = 0$), y tiene la mayor
+media con secuencias largas. El voto
+suave y el voto por acci\'on, en cambio, se separan en dos grupos en la
+extrapolaci\'on de severidad: en cerca del $40\,\%$ de las secuencias quedan por debajo de
+$0{,}8$, mientras que en el resto se acercan a los dem\'as.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{ens_06_curvas_extrapolacion.png}
+  \caption[Curvas de los ensambles en los escenarios fuera de
+  rango]{Desempe\~no por secuencia, ordenado de menor a mayor, de los seis
+  ensambles en los tres escenarios fuera de rango; el trazo grueso
+  corresponde al ensamble ponderado y las l\'ineas punteadas a la media
+  de cada ensamble.}
+  \label{fig:ensemble-extrapolation}
+\end{figure}
+
+Para saber si la ventaja del ensamble ponderado sobre los dem\'as es
+real, la Tabla~\ref{tab:pairwise-ens} lo compara con el consenso y con la
+compuerta del Transformer. Frente al consenso la ventaja es de tama\~no
+medio ($d = 0{,}62$). Frente a la compuerta, que se comporta casi como el
+Transformer solo, es peque\~na ($d = 0{,}17$). Las comparaciones entre todos
+los pares est\'an en el Ap\'endice (Figura~\ref{fig:ensemble-pairwise}).
+
+\begin{table}[!htb]
+\centering
+\caption[Comparaci\'on del ensamble ponderado con otros
+ensambles]{Comparaci\'on del ensamble ponderado con otros ensambles
+sobre los $21$ escenarios de generalizaci\'on; columnas como en la
+Tabla~\ref{tab:pairwise-stats}.}
 \label{tab:pairwise-ens}
 \begin{tabular}{@{}lccc@{}}
 \toprule
 \textbf{Comparaci\'on} & $d$ de Cohen & $\log_{10} p$ & $D_{\mathrm{KL}}^{\mathrm{sym}}$ \\
 \midrule
-\texttt{pes\_ens} vs \texttt{pes\_ens\_consensus} & 0{,}62 & $-55{,}6$ & 0{,}25 \\
-\texttt{pes\_ens} vs \texttt{pes\_ens\_trf\_guard} & 0{,}17 & $-5{,}1$ & 0{,}03 \\
-\bottomrule 
-\end{tabular} 
-\end{table} 
+Ponderado vs consenso                  & 0{,}62 & $-55{,}6$ & 0{,}25 \\
+Ponderado vs compuerta del Transformer & 0{,}17 & $-5{,}1$  & 0{,}03 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
-\begin{figure}[!htbp] 
-  \centering  
-  \includegraphics[width=0.85\linewidth]{ens_01_desempeno_por_escenario.png}\\[0.4em]
-  \includegraphics[width=0.85\linewidth]{ens_02_degradacion_por_escenario.png}
-  \caption[Desempe\~no y degradaci\'on de los ensambles]{Suite de
-  ensambles: desempe\~no normalizado medio por escenario (arriba) y
-  degradaci\'on respecto de la referencia (abajo) para las seis variantes
-  de ensamble.}
-  \label{fig:heatmap-ens}
-\end{figure}
+La Figura~\ref{fig:c-ens} muestra el detalle por secuencia del ensamble
+ponderado, que combina la mayor media de todos los sistemas evaluados con
+la menor dispersi\'on entre secuencias ($\sigma = 0{,}035$).
 
 \begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.85\linewidth]{ens_03_welch_logp_por_escenario.png}\\[0.4em]
-  \includegraphics[width=0.85\linewidth]{ens_07_cohen_d_por_escenario.png}\\[0.4em]
-  \includegraphics[width=0.85\linewidth]{ens_04_kl_acciones_por_escenario.png}
-  \caption[Mapas estad\'isticos de los ensambles]{Suite de ensambles:
-  $\log_{10}p$ de Welch (arriba), $d$ de Cohen (centro) y divergencia KL
-  de acciones (abajo) por modelo y escenario. Welch cuantifica evidencia
-  de diferencia de medias frente a la referencia; Cohen incorpora la
-  magnitud estandarizada; KL cuantifica el desplazamiento de la
-  distribuci\'on de acciones. Ninguna de las tres medidas identifica por
-  s\'i sola un mecanismo causal.}
-  \label{fig:ensemble-statistical-heatmaps}
-\end{figure}
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.7\linewidth]{ens_13_pares_cohen_d.png}\\[0.4em]
-  \includegraphics[width=0.7\linewidth]{ens_12_pares_welch_logp.png}
-  \caption[Contrastes pareados de los ensambles]{Contrastes pareados
-  entre las seis variantes de ensamble: $d$ de Cohen arriba y
-  $\log_{10}p$ de Welch abajo, calculados sobre los $21$ escenarios de
-  perturbaci\'on comunes y sus $64$ secuencias.}
-  \label{fig:ensemble-pairwise}
-\end{figure}
-
-\FloatBarrier
-
-La Figura~\ref{fig:c-ens} presenta el desempe\~no por secuencia de
-\texttt{pes\_ens} en la condici\'on de referencia, con el mismo formato
-que las figuras individuales de la Sec.~\ref{sec:per-model}: el
-ensamble combina la mayor media del benchmark con la menor dispersi\'on
-entre secuencias ($\sigma = 0{,}035$).
-
-\begin{figure}[!htb]
   \centering
   \includegraphics[width=0.9\linewidth]{PES_ENS_results.png}
-  \caption[Resultados del ensamble]{Desempe\~no por secuencia, distribuci\'on,
-  estad\'isticos por bloque y resumen descriptivo de \texttt{pes\_ens}.}
+  \caption[Resultados por secuencia: ensamble ponderado]{Resultados por secuencia del ensamble ponderado (\texttt{pes\_ens}) en la referencia.}
   \label{fig:c-ens}
 \end{figure}
 
 \FloatBarrier
 
-\subsection{An\'alisis de cuantificaci\'on de incertidumbre}
-
-La medida de confianza $1 - H_{\mathrm{norm}}$ interviene en dos
-lugares del trabajo. Como traza por decisi\'on, los siete paquetes
-individuales la calculan y la guardan (\texttt{confsrl}) durante la
-evaluaci\'on posterior al entrenamiento, pero en este trabajo s\'olo se
-analiza gr\'aficamente para \texttt{pes\_trf}, que act\'ua como estudio
-de caso (Figura~\ref{fig:trf-internals}). Como factor de decisi\'on
-conjunta se calcula, en cada paso, para cada miembro de los seis
-ensambles a partir de la distribuci\'on $p_k$ sobre las acciones
-factibles --- la \emph{softmax} de los valores $Q$
-(Ecuaci\'on~\eqref{eq:ens-softmax}) o, para el actor de A2C, su
-salida directa ---, siendo $c_k = 1 - H_{\mathrm{norm}}(p_k)$ la
-confianza del miembro $k$. \texttt{pes\_ens} multiplica el peso base de
-cada miembro por $0{,}1 + c_k$ (Ecuaci\'on~\eqref{eq:ens-soft}), y las
-cinco variantes optimizables usan el peso efectivo
-$\tilde w_k = w_k\, c_k^{\rho}$ con el exponente $\rho$ ajustado por
-Optuna en cada variante (Sec.~\ref{sec:methods}); en
-\texttt{pes\_ens\_trf\_guard} la confianza del Transformer gobierna
-adem\'as la compuerta de respaldo, y en las variantes de consenso
-interviene en los t\'erminos de acuerdo y desacuerdo. Los artefactos del
-benchmark no almacenan estos valores $c_k$ por paso, de modo que su
-efecto s\'olo puede observarse de forma agregada en el rendimiento de
-cada ensamble (Tabla~\ref{tab:ensemble-stress}).
-
-Fuera de los ensambles, las salidas de los agentes no son comparables
-entre s\'i como probabilidades: las tablas $Q$ y las redes DQN, RDQN y
-Transformer producen valores cuya escala depende de la
-parametrizaci\'on y del entrenamiento, y s\'olo el actor de A2C produce
-directamente una distribuci\'on de probabilidad. La \emph{softmax} que
-aplican los ensambles es una conversi\'on operativa, con temperatura
-fijada o ajustada por optimizaci\'on, y no una calibraci\'on: obtener
-probabilidades comparables entre modelos exigir\'ia un procedimiento
-de calibraci\'on y una validaci\'on espec\'ifica de su calidad
-probabil\'istica, que no forman parte de este trabajo.
-
-El c\'odigo de evaluaci\'on de \texttt{pes\_trf} calcula la confianza a
-partir de la entrop\'ia de los valores $Q$ de las once acciones,
-despu\'es de asignar un valor muy negativo a las no factibles,
-desplazar el vector a valores no negativos y normalizarlo como una
-distribuci\'on. La confianza se obtiene por interpolaci\'on lineal
-entre la entrop\'ia de una distribuci\'on concentrada en una acci\'on
-(confianza $1$) y la de una distribuci\'on uniforme sobre las once
-acciones (confianza $0$), lo que equivale a $1 - H_{\mathrm{norm}}$
-(Ecuaci\'on~\eqref{eq:shannon-norm}) sobre esa distribuci\'on derivada.
-Las trazas de la Figura~\ref{fig:trf-internals} permiten inspeccionar
-conjuntamente la confianza por decisi\'on y el desempe\~no por
-secuencia.
-
-Dos limitaciones deben quedar expl\'icitas. Primero, la distribuci\'on
-sobre la que se calcula la entrop\'ia se deriva de valores $Q$ y no de
-probabilidades aprendidas, por lo que la confianza es un indicador
-heur\'istico y no una probabilidad calibrada. El desplazamiento a
-valores no negativos hace, adem\'as, que el resultado dependa del m\'inimo
-del vector: cuando hay acciones no factibles, la m\'ascara domina ese
-m\'inimo y la distribuci\'on derivada se aproxima a una uniforme sobre
-las acciones factibles, de modo que la confianza refleja sobre todo
-cu\'antas acciones quedan disponibles y no la separaci\'on entre sus
-valores $Q$. Segundo, el material disponible no incluye una prueba que
-relacione la confianza con la tasa de acierto ni con el desempe\~no por
-secuencia; establecer esa relaci\'on requerir\'ia un an\'alisis
-adicional. La comparaci\'on con la confianza humana se mantiene, en
-consecuencia, como analog\'ia conceptual: las referencias
-neurocognitivas motivan la interpretaci\'on, pero los experimentos no
-miden se\~nales fisiol\'ogicas. Las implicaciones se discuten en el
-Cap.~\ref{sec:discussion}.
-
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
-
