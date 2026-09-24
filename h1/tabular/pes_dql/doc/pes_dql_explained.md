@@ -60,9 +60,8 @@ memoria durante el entrenamiento (≈ 586 KB).
 
 ## 2. Cómo usarlo (CLI)
 
-Todos los comandos asumen que la raíz del workspace
-(`c:\Users\maxvega\Documents\Win_mPES`) es el directorio actual y que el
-entorno virtual está activado.
+Todos los comandos se ejecutan desde `h1/`, con el entorno virtual activado
+desde la raíz del repositorio.
 
 ### 2.1 Activar el entorno virtual
 

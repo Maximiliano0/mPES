@@ -21,7 +21,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **21**.
 - Tablas con label: **13**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **87**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **88**.
 
 - ✅ Sin referencias rotas.
 
@@ -30,17 +30,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 - Imágenes referenciadas con `\includegraphics`: **24**.
 - ✅ Todas las imágenes referenciadas existen.
 
-**Imágenes huérfanas en `02_Images/` (no referenciadas, 9 archivos):**
-
-- `02_Images/agent_internals/trf_agent_cumulative_performance.png`
-- `02_Images/agent_internals/trf_agent_normalised_performance.png`
-- `02_Images/agent_internals/trf_agent_remapped_confidences.png`
-- `02_Images/heatmaps/ens_02_degradacion_por_escenario.png`
-- `02_Images/heatmaps/ens_08_ranking_desempeno.png`
-- `02_Images/heatmaps/ind_02_degradacion_por_escenario.png`
-- `02_Images/heatmaps/ind_08_ranking_desempeno.png`
-- `02_Images/ood_curves/ind_06_curvas_extrapolacion.png`
-- `02_Images/per_sequence/ens_05_curvas_por_familia.png`
+- ✅ Sin imágenes huérfanas.
 
 ## 3. Citas y bibliografía (APA)
 

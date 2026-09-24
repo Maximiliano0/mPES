@@ -58,13 +58,12 @@ quedaron con sus valores iniciales aleatorios, de modo que parte de su
 ca\'ida en los escenarios de severidad refleja esa falta de cobertura del
 entrenamiento y no s\'olo la capacidad de generalizar del algoritmo.
 
-En cuarto lugar, los modelos evaluados no siempre son la mejor
-configuraci\'on que encontr\'o cada b\'usqueda. El DQN recurrente y el
-Transformer finales conservan la arquitectura fija de su paquete y no la
-del mejor ensayo; el DQN recurrente final queda $0{,}027$ por debajo de
-ese ensayo. En cuatro de los ensambles, los par\'ametros provienen de
-estudios hechos con otra configuraci\'on de miembros. Las comparaciones se
-refieren, por lo tanto, a los modelos finales evaluados.
+En cuarto lugar, la arquitectura del DQN recurrente y la del Transformer
+se eligieron mediante exploraciones \emph{ad hoc}, porque optimizarlas con
+la b\'usqueda bayesiana era demasiado costoso para los recursos de c\'omputo
+disponibles; en ellos s\'olo se optimizaron los hiperpar\'ametros de
+entrenamiento. Otras arquitecturas podr\'ian cambiar el ordenamiento. Las
+comparaciones se refieren, por lo tanto, a los modelos finales evaluados.
 
 En quinto lugar, la confianza con que los ensambles ponderan a cada
 modelo se calcula sobre una distribuci\'on derivada de los valores $Q$ y

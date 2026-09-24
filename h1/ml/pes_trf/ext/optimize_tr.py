@@ -4,7 +4,7 @@ pes_trf - Pandemic Experiment Scenario
 Bayesian Optimization of TRF hyperparameters using Optuna.
 
 Optimizes: learning_rate, discount_factor, epsilon_initial, epsilon_min,
-           num_episodes, hidden_units, batch_size, buffer_size, target_sync_freq,
+           num_episodes, batch_size, buffer_size, target_sync_freq,
            max_grad_norm, penalty_coeff (PBRS), warmup_ratio, target_ratio
 Objective: maximize mean normalised performance over the 64 evaluation sequences.
 
@@ -31,14 +31,12 @@ Usage:
     --resume YYYY-MM-DD : str, optional
         Resume a previous optimization run stored under that date.
 
-Search space (23 parameters):
+Search space (14 parameters):
     learning_rate        ∈ [1e-4, 5e-3]      (log scale)
     discount_factor      ∈ [0.92, 0.995]
     epsilon_initial      ∈ [0.80, 1.0]
     epsilon_min          ∈ [0.01, 0.20]
     num_episodes         ∈ [20000, 60000]    (step=10000, opt-time only)
-    hidden_layer_size    ∈ {32, 64, 96, 128}
-    num_hidden_layers    ∈ {1, 2, 3}
     batch_size           ∈ {32, 64, 128, 256}
     buffer_size          ∈ [20000, 100000]   (step=10000)
     target_sync_freq     ∈ [500, 5000]       (step=500)
@@ -48,18 +46,15 @@ Search space (23 parameters):
     warmup_ratio         ∈ [0.05, 0.30]      (ε-warmup fraction)
     target_ratio         ∈ [0.50, 0.95]      (ε-decay target fraction)
     learning_starts_frac ∈ [0.05, 0.25]      (replay-buffer warm-up fraction)
-    history_len          ∈ [3, 10]           (Transformer sliding-window length)
-    d_model              ∈ {16, 32, 64, 128} (token-embedding width)
-    num_heads            ∈ {2, 4, 8}         (attention heads per encoder block)
-    key_dim              ∈ {8, 16, 32}       (per-head key/query dimensionality)
-    ff_dim               ∈ {32, 64, 128, 256}(position-wise FFN hidden width)
-    num_layers           ∈ [1, 4]            (stacked encoder blocks)
-    dropout              ∈ [0.0, 0.3]        (MHSA / FFN dropout rate)
+
+The architecture (window, encoder and dense head) is not searched: it is fixed in
+CONFIG.py by ad-hoc exploration, because optimising it was too costly for the
+available compute.
 
 Note: ``num_episodes`` is part of the search space and kept low so each trial
 fits in <1h on Colab CPU. The best trial's in-memory model is saved as
 ``trf_best_<date>.keras`` without retraining; ``train_transformer.py`` retrains
-it from ``inputs/best_params.json`` (the encoder architecture comes from CONFIG).
+it from ``inputs/best_params.json``.
 
 Outputs (saved to INPUTS_PATH/<date>_BAYESIAN_OPT/):
     - trf_best_<date>.keras                   : Model from the best optimization trial
@@ -88,7 +83,9 @@ from ..config.CONFIG import (SEED, TRF_LEARNING_RATE, TRF_DISCOUNT,
                              TRF_REPLAY_BUFFER_SIZE, TRF_TARGET_SYNC_FREQ,
                              TRF_WARMUP_RATIO, TRF_TARGET_RATIO,
                              TRF_MAX_GRAD_NORM, TRF_PENALTY_COEFF,
-                             TRF_LEARNING_STARTS_FRAC)
+                             TRF_LEARNING_STARTS_FRAC, TRF_HISTORY_LEN, TRF_D_MODEL,
+                             TRF_NUM_HEADS, TRF_KEY_DIM, TRF_FF_DIM, TRF_NUM_LAYERS,
+                             TRF_DROPOUT)
 from .. import INPUTS_PATH
 
 ##########################
@@ -145,6 +142,11 @@ _trials_per_sequence = None
 _sevs = None
 _number_cities_prob = None
 _severity_prob = None
+
+# Encoder architecture fixed in CONFIG.py (not part of the search space)
+_TRF_ARCH = {'history_len': TRF_HISTORY_LEN, 'd_model': TRF_D_MODEL, 'num_heads': TRF_NUM_HEADS,
+             'key_dim': TRF_KEY_DIM, 'ff_dim': TRF_FF_DIM, 'num_layers': TRF_NUM_LAYERS,
+             'dropout': TRF_DROPOUT}
 
 # Store best model weights/rewards during optimization to avoid lossy retraining
 _best_artifacts: dict = {'weights': None, 'rewards': None, 'value': float('-inf'),
@@ -259,9 +261,6 @@ def objective(trial: optuna.Trial) -> float:
     # Colab CPU. The winning hyperparameter set is retrained at the FULL
     # ``TRF_EPISODES`` count after ``study.optimize`` returns.
     num_episodes = trial.suggest_int('num_episodes', 20_000, 60_000, step=10_000)
-    hidden_layer_size = trial.suggest_categorical(
-        'hidden_layer_size', [32, 64, 96, 128])
-    num_hidden_layers = trial.suggest_int('num_hidden_layers', 1, 3)
     batch_size = trial.suggest_categorical('batch_size', [32, 64, 128, 256])
     buffer_size = trial.suggest_int('buffer_size', 20_000, 100_000, step=10_000)
     target_sync_freq = trial.suggest_int('target_sync_freq', 500, 5_000, step=500)
@@ -279,16 +278,8 @@ def objective(trial: optuna.Trial) -> float:
     learning_starts_frac = trial.suggest_float('learning_starts_frac', 0.05, 0.25)
     learning_starts = max(int(learning_starts_frac * buffer_size), int(batch_size))
 
-    # Transformer-specific knobs.
-    history_len = trial.suggest_int('history_len', 3, 10)
-    d_model = trial.suggest_categorical('d_model', [16, 32, 64, 128])
-    num_heads = trial.suggest_categorical('num_heads', [2, 4, 8])
-    key_dim = trial.suggest_categorical('key_dim', [8, 16, 32])
-    ff_dim = trial.suggest_categorical('ff_dim', [32, 64, 128, 256])
-    num_layers = trial.suggest_int('num_layers', 1, 4)
-    dropout = trial.suggest_float('dropout', 0.0, 0.3)
-
-    hidden_units = [hidden_layer_size] * num_hidden_layers
+    hidden_units = list(TRF_HIDDEN_UNITS)
+    history_len = _TRF_ARCH['history_len']
 
     # --- Pruning callback (reports avg reward every 10k episodes) ---
     _step_counter = [0]
@@ -320,9 +311,7 @@ def objective(trial: optuna.Trial) -> float:
         pruning_callback=_pruning_cb,
         warmup_ratio=warmup_ratio, target_ratio=target_ratio,
         learning_starts=learning_starts,
-        history_len=history_len, d_model=d_model,
-        num_heads=num_heads, key_dim=key_dim,
-        ff_dim=ff_dim, num_layers=num_layers, dropout=dropout,
+        **_TRF_ARCH,
     )
 
     # --- Evaluate on fixed sequences ---
@@ -425,7 +414,7 @@ def _save_report(study, opt_dir, opt_date, best_model, best_rewards):
         # Copy-paste-ready CONFIG.py snippet so train_transformer.py on the local PC
         # reproduces exactly the same mean_perf as the optimisation trial.
         bp = best.params
-        hidden = [bp['hidden_layer_size']] * bp['num_hidden_layers']
+        hidden = list(TRF_HIDDEN_UNITS)
         use_pbrs = bool(bp.get('use_pbrs', bp.get('penalty_coeff', 0.0) > 0))
         penalty = float(bp.get('penalty_coeff', 0.0)) if use_pbrs else 0.0
         f.write("CONFIG.PY SNIPPET (copy-paste into pes_trf/config/CONFIG.py)\n")
@@ -541,9 +530,7 @@ def _save_report(study, opt_dir, opt_date, best_model, best_rewards):
     # train_transformer.py --from-best <date> reads this in preference to the SQLite DB
     # so users can reproduce mean_perf by copying just one small file.
     bp = best.params
-    hidden = best.user_attrs.get('hidden_units')
-    if hidden is None and 'hidden_layer_size' in bp:
-        hidden = [bp['hidden_layer_size']] * bp.get('num_hidden_layers', 1)
+    hidden = best.user_attrs.get('hidden_units') or list(TRF_HIDDEN_UNITS)
     trial_seed = int(best.user_attrs.get('trial_seed', SEED + int(best.number) + 1))
     best_params_payload = {
         'opt_date':           opt_date,
@@ -621,14 +608,12 @@ def main():
 
     # --- Run optimisation ---
     section("Running Bayesian Optimisation", width=80)
-    info("Search space (16 parameters):")
+    info("Search space (14 parameters; architecture fixed in CONFIG.py):")
     list_item("learning_rate        ∈ [1e-4, 5e-3]      (log scale)")
     list_item("discount_factor      ∈ [0.92, 0.995]")
     list_item("epsilon_initial      ∈ [0.80, 1.0]")
     list_item("epsilon_min          ∈ [0.01, 0.20]")
     list_item("num_episodes         ∈ [20000, 60000]    (step=10000, opt-time only)")
-    list_item("hidden_layer_size    ∈ {32, 64, 96, 128}")
-    list_item("num_hidden_layers    ∈ {1, 2, 3}")
     list_item("batch_size           ∈ {32, 64, 128, 256}")
     list_item("buffer_size          ∈ [20000, 100000]   (step=10000)")
     list_item("target_sync_freq     ∈ [500, 5000]       (step=500)")
@@ -669,7 +654,6 @@ def main():
         warm_episodes = int(min(max(TRF_EPISODES, 20_000), 60_000))
         # Snap to the 10k step grid declared in trial.suggest_int().
         warm_episodes = (warm_episodes // 10_000) * 10_000
-        warm_hidden = int(TRF_HIDDEN_UNITS[0]) if TRF_HIDDEN_UNITS[0] in (32, 64, 96, 128) else 64
         warm_eps_min = float(min(max(TRF_EPSILON_MIN, 0.01), 0.20))
         study.enqueue_trial({
             'learning_rate': TRF_LEARNING_RATE,
@@ -677,8 +661,6 @@ def main():
             'epsilon_initial': TRF_EPSILON_INITIAL,
             'epsilon_min': warm_eps_min,
             'num_episodes': warm_episodes,
-            'hidden_layer_size': warm_hidden,
-            'num_hidden_layers': len(TRF_HIDDEN_UNITS),
             'batch_size': TRF_BATCH_SIZE,
             'buffer_size': TRF_REPLAY_BUFFER_SIZE,
             'target_sync_freq': TRF_TARGET_SYNC_FREQ,
@@ -763,17 +745,8 @@ def main():
     if _best_artifacts['weights'] is not None and _best_artifacts['value'] >= best.value:
         # Rebuild model with preserved architecture and weights
         hidden_units = _best_artifacts['hidden_units']
-        _trf_kwargs = {
-            'history_len': int(best.params.get('history_len', 6)),
-            'd_model': int(best.params.get('d_model', 32)),
-            'num_heads': int(best.params.get('num_heads', 4)),
-            'key_dim': int(best.params.get('key_dim', 16)),
-            'ff_dim': int(best.params.get('ff_dim', 64)),
-            'num_layers': int(best.params.get('num_layers', 2)),
-            'dropout': float(best.params.get('dropout', 0.0)),
-        }
-        best_model = build_q_network(3, 11, hidden_units, **_trf_kwargs)
-        best_model(tf.zeros((1, _trf_kwargs['history_len'], 3)))  # Build the model
+        best_model = build_q_network(3, 11, hidden_units, **_TRF_ARCH)
+        best_model(tf.zeros((1, _TRF_ARCH['history_len'], 3)))  # Build the model
         best_model.set_weights(_best_artifacts['weights'])
         best_rewards = numpy.array(_best_artifacts['rewards'])
         success("Using model from best optimization trial (no retraining needed)")
@@ -781,7 +754,7 @@ def main():
         info(f"Retraining best hyperparameters at full TRF_EPISODES={TRF_EPISODES:,} "
              f"(opt-trial used {best.params.get('num_episodes', '?')} episodes)...")
         bp = best.params
-        hidden_units = [bp['hidden_layer_size']] * bp['num_hidden_layers']
+        hidden_units = list(TRF_HIDDEN_UNITS)
         # Reuse the per-trial seed so the retrain reproduces the original
         # objective() value bit-exact (subject to TF/HW LSB).
         best_trial_seed = int(best.user_attrs.get('trial_seed', SEED + int(best.number) + 1))
@@ -811,13 +784,7 @@ def main():
                 int(bp.get('learning_starts_frac', 0.1) * bp['buffer_size']),
                 int(bp['batch_size']),
             ),
-            history_len=int(bp.get('history_len', 6)),
-            d_model=int(bp.get('d_model', 32)),
-            num_heads=int(bp.get('num_heads', 4)),
-            key_dim=int(bp.get('key_dim', 16)),
-            ff_dim=int(bp.get('ff_dim', 64)),
-            num_layers=int(bp.get('num_layers', 2)),
-            dropout=float(bp.get('dropout', 0.0)),
+            **_TRF_ARCH,
         )
         best_rewards = numpy.array(best_rewards_list)
         success(f"Retrained at full episodes (deterministic — seed = {best_trial_seed})")

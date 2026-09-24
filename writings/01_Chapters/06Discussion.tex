@@ -31,12 +31,12 @@ El de esta tesis usa una de sus dos modificaciones, la normalizaci\'on
 previa a cada subcapa, sin compuertas, y es peque\~no: dos bloques sobre
 una ventana de seis estados.
 
-Tampoco puede atribuirse la ventaja a una b\'usqueda de hiperpar\'ametros
-m\'as intensa: el Transformer tuvo $10$ ensayos, frente a $47$ de DQN, y
-su arquitectura no es la del mejor ensayo sino la fija de su paquete
-(Secci\'on~\ref{sec:deep}). Eso no descarta que la combinaci\'on de esa
-arquitectura con los hiperpar\'ametros de entrenamiento elegidos le
-resulte especialmente favorable.
+Tampoco puede atribuirse la ventaja a una b\'usqueda m\'as completa: la
+arquitectura del Transformer no se optimiz\'o, sino que se eligi\'o mediante
+exploraciones \emph{ad hoc}, y s\'olo sus hiperpar\'ametros de entrenamiento
+se ajustaron por optimizaci\'on bayesiana (Secci\'on~\ref{sec:deep}). Eso no
+descarta que la combinaci\'on de esa arquitectura con los hiperpar\'ametros
+elegidos le resulte especialmente favorable.
 
 En l\'inea con Packer \emph{et al.}~\citep{Packer2018}, que distinguen
 entre interpolaci\'on y extrapolaci\'on, cada familia falla al extrapolar
@@ -80,14 +80,15 @@ permite ver qui\'en decide en cada caso:
     resultados son casi id\'enticos a los del
     Transformer ($0{,}931$ frente a $0{,}930$ en generalizaci\'on).
     \item El \textbf{voto suave} y el \textbf{voto por acci\'on} usan pesos
-    en los que DQN pesa m\'as que el Transformer. En la extrapolaci\'on de
-    severidad quedan por debajo de ambos y s\'olo superan al DQN
-    recurrente: la ponderaci\'on por confianza no alcanz\'o para que el
+    en los que el DQN recurrente pesa m\'as que el Transformer. En la
+    extrapolaci\'on de severidad quedan por debajo de ambos y s\'olo superan
+    al DQN recurrente: la ponderaci\'on por confianza no alcanz\'o para que el
     miembro m\'as acertado dominara la decisi\'on.
-    \item El \textbf{consenso} obtiene la referencia m\'as baja. Agregarle
-    el \emph{prior} de severidad mejora tanto su referencia como su peor
-    escenario, aunque el \emph{prior} s\'olo cambia el $8\,\%$ de sus
-    decisiones en la referencia.
+    \item El \textbf{consenso} obtiene la referencia m\'as baja. La
+    variante con \emph{prior}, que adem\'as suma distribuciones en lugar
+    de votar, mejora tanto su referencia como su peor escenario, aunque el
+    \emph{prior} s\'olo cambia el $2\,\%$ de sus decisiones en la referencia
+    y el $4\,\%$ en generalizaci\'on.
 \end{itemize}
 
 El \'unico ensamble que super\'o al Transformer no es el que m\'as lo sigue.

@@ -382,7 +382,7 @@ def main():
 
     section("RDQN Training", width=80)
 
-    # Window/LSTM always from CONFIG.py; the rest is overridden by inputs/best_params.json when present
+    # Architecture always from CONFIG.py (fixed ad hoc); training hyperparameters from inputs/best_params.json
     from ..config.CONFIG import (RDQN_LEARNING_RATE, RDQN_DISCOUNT,
                                  RDQN_EPSILON_INITIAL, RDQN_EPSILON_MIN,
                                  RDQN_HIDDEN_UNITS, RDQN_BATCH_SIZE,
@@ -422,8 +422,7 @@ def main():
         discount_factor  = bp['discount_factor']
         epsilon_initial  = bp['epsilon_initial']
         epsilon_min      = bp['epsilon_min']
-        hidden_units     = list(best_info['hidden_units']) if best_info['hidden_units'] \
-                                                          else list(RDQN_HIDDEN_UNITS)
+        hidden_units     = list(RDQN_HIDDEN_UNITS)
         batch_size       = bp['batch_size']
         buffer_size      = bp['buffer_size']
         target_sync_freq = bp['target_sync_freq']
@@ -628,16 +627,14 @@ def main():
             _expected = best_info['mean_perf']
             _delta = abs(parity_mean - _expected)
             list_item(f"Optuna reported mean_perf:         {_expected:.6f}")
-            # Tolerance bands account for cuDNN-LSTM (Colab GPU) vs generic
-            # CPU LSTM drift, which empirically reaches ~3% mean-perf delta
-            # even with identical weights / seeds.  Anything above 5% likely
-            # indicates a real bug (wrong weights, wrong sequences, etc.).
+            # Optuna's mean_perf comes from the search, whose architecture can differ from the ad-hoc one
+            # in CONFIG.py; retraining on another device (Colab GPU vs local CPU) also changes the result.
             if _delta < 1e-6:
                 _verdict = 'OK (bit-exact)'
             elif _delta < 1e-3:
                 _verdict = 'within float tolerance'
             elif _delta < 5e-2:
-                _verdict = 'GPU↔CPU LSTM drift (expected)'
+                _verdict = 'expected: CONFIG architecture or device differ from the search'
             else:
                 _verdict = 'MISMATCH — check TF version / hardware / weights'
             list_item(f"|Δ| = {_delta:.6f}  ({_verdict})")

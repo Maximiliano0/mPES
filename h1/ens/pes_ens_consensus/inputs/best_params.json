@@ -1,13 +1,14 @@
 {
   "hyperparameters": {
-    "agreement_bonus": 0.16493969827571014,
-    "confidence_power": 0.40256080733388305,
-    "disagreement_penalty": 0.3646792806690612,
-    "weight_dqn": 2.9952751091324137,
-    "weight_rdqn": 0.3204895082182499,
-    "weight_trf": 1.6951464214373022
+    "agreement_bonus": 2.074141233950096,
+    "confidence_power": 0.2753760898722405,
+    "disagreement_penalty": 0.12114331796804485,
+    "weight_a2c": 1.8806509347197027,
+    "weight_dqn": 1.5316839703772924,
+    "weight_rdqn": 1.931138209871471,
+    "weight_trf": 2.503555728585605
   },
-  "mean_perf": 0.9110561614418475,
-  "std_perf": 0.03934615067681341,
-  "value": 0.9110561614418475
+  "mean_perf": 0.8893172824074216,
+  "std_perf": 0.06371800406157052,
+  "value": 0.8893172824074216
 }

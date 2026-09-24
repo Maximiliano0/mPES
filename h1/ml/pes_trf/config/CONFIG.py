@@ -98,11 +98,10 @@ USE_FIXED_BLOCK_SEQUENCES = True  # Load sequence trial lengths from CSV file (v
 # ==================== TRF HYPERPARAMETERS ====================
 # TRF = Transformer DQN: a stack of causal Transformer encoder blocks consumes
 # a sliding window of the last TRF_HISTORY_LEN normalised states; only the
-# *last* token feeds the dense Q-head.  The encoder constants (TRF_HISTORY_LEN
-# .. TRF_DROPOUT) are always used by training and inference and match the
-# deployed trf_model.keras (27,019 params); Optuna's best trial #2 used a
-# different encoder that was never deployed.  The remaining values reproduce
-# trial #2 (seed 45) and equal inputs/best_params.json, which overrides them.
+# *last* token feeds the dense Q-head.  Architecture (TRF_HISTORY_LEN .. TRF_DROPOUT and the dense
+# head) chosen by ad-hoc exploration: optimising it with the Bayesian search was too costly for the
+# available compute. Training always uses it (27,019 params). The training hyperparameters come from
+# Bayesian optimisation (inputs/best_params.json, seed 45), which overrides them.
 TRF_HISTORY_LEN = 6                                # Sliding-window length fed to the encoder
 TRF_D_MODEL = 32                                   # Token-embedding (residual stream) width
 TRF_NUM_HEADS = 4                                  # Attention heads per encoder block

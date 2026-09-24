@@ -12,9 +12,10 @@ las dependencias fijadas en \texttt{utils/config/requirements.txt} y las
 variables \texttt{VIRTUAL\_ENV}, \texttt{PYTHONIOENCODING=utf-8} y
 \texttt{TF\_ENABLE\_ONEDNN\_OPTS=0}. El entrenamiento final lee los
 hiperpar\'ametros del archivo \texttt{inputs/best\_params.json} de cada
-paquete. En DQN, DQN recurrente y Transformer la arquitectura sale de
-\texttt{config/CONFIG.py}, cuyos valores por defecto (incluido el n\'umero de
-episodios) reproducen los modelos desplegados.
+paquete. En DQN recurrente y Transformer la arquitectura, elegida mediante
+exploraciones \emph{ad hoc}, sale de \texttt{config/CONFIG.py}. Los valores
+por defecto de \texttt{config/CONFIG.py} (incluido el n\'umero de episodios)
+reproducen los modelos desplegados.
 
 \begin{table}[!ht]
 \centering

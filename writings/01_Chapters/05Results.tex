@@ -244,8 +244,8 @@ degradaci\'on respecto de la referencia.}
 \midrule
 Ensamble ponderado        & 0{,}937 & 0{,}939 & 0{,}037 \\
 Compuerta del Transformer & 0{,}928 & 0{,}931 & 0{,}067 \\
-Consenso con prior        & 0{,}918 & 0{,}923 & 0{,}042 \\
-Consenso                  & 0{,}893 & 0{,}904 & 0{,}063 \\
+Consenso con prior        & 0{,}917 & 0{,}922 & 0{,}046 \\
+Consenso                  & 0{,}889 & 0{,}905 & 0{,}063 \\
 Voto suave                & 0{,}914 & 0{,}902 & 0{,}054 \\
 Voto por acci\'on         & 0{,}914 & 0{,}901 & 0{,}055 \\
 \bottomrule
@@ -273,7 +273,7 @@ evaluaci\'on de los tres ensambles que usan esas reglas
 (Ap\'endice~\ref{ap:orchestrator}). En cada decisi\'on con recursos
 disponibles se registr\'o la acci\'on antes y despu\'es de cada regla y la
 acci\'on que prefiere el Transformer. La repetici\'on reproduce las medias
-del benchmark con una diferencia m\'axima de $0{,}002$. La
+del benchmark con una diferencia m\'axima menor que $0{,}0001$. La
 Tabla~\ref{tab:ens-freq} resume los resultados.
 
 \begin{table}[!htb]
@@ -289,11 +289,11 @@ generalizaci\'on.}
 \textbf{Ensamble} & \textbf{Evento} & \textbf{Referencia} & \textbf{Generalizaci\'on} \\
 \midrule
 Compuerta del Transformer & Sigue al Transformer ($g \ge 0{,}5$) & $96{,}9$ & $95{,}0$ \\
-                          & Acci\'on final distinta de la del Transformer & $0{,}8$ & $2{,}6$ \\
+                          & Acci\'on final distinta de la del Transformer & $0{,}8$ & $2{,}7$ \\
 \midrule
-Consenso con prior & El \emph{prior} cambia la acci\'on votada & $7{,}7$ & $9{,}0$ \\
-                   & La cota cambia la acci\'on & $0{,}0$ & $0{,}6$ \\
-                   & Acci\'on final distinta de la del Transformer & $61{,}3$ & $56{,}3$ \\
+Consenso con prior & El \emph{prior} cambia la acci\'on votada & $2{,}4$ & $3{,}6$ \\
+                   & La cota cambia la acci\'on & $0{,}0$ & $1{,}1$ \\
+                   & Acci\'on final distinta de la del Transformer & $63{,}5$ & $57{,}9$ \\
 \midrule
 Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9$ & $32{,}5$ \\
                    & La cota cambia la acci\'on & $0{,}0$ & $0{,}3$ \\
@@ -350,7 +350,7 @@ $0{,}8$, mientras que en el resto se acercan a los dem\'as.
 Para saber si la ventaja del ensamble ponderado sobre los dem\'as es
 real, la Tabla~\ref{tab:pairwise-ens} lo compara con el consenso y con la
 compuerta del Transformer. Frente al consenso la ventaja es de tama\~no
-medio ($d = 0{,}62$). Frente a la compuerta, que se comporta casi como el
+medio ($d = 0{,}58$). Frente a la compuerta, que se comporta casi como el
 Transformer solo, es peque\~na ($d = 0{,}17$). Las comparaciones entre todos
 los pares est\'an en el Ap\'endice (Figura~\ref{fig:ensemble-pairwise}).
 
@@ -365,7 +365,7 @@ Tabla~\ref{tab:pairwise-stats}.}
 \toprule
 \textbf{Comparaci\'on} & $d$ de Cohen & $\log_{10} p$ & $D_{\mathrm{KL}}^{\mathrm{sym}}$ \\
 \midrule
-Ponderado vs consenso                  & 0{,}62 & $-55{,}6$ & 0{,}25 \\
+Ponderado vs consenso                  & 0{,}58 & $-48{,}6$ & 0{,}23 \\
 Ponderado vs compuerta del Transformer & 0{,}17 & $-5{,}1$  & 0{,}03 \\
 \bottomrule
 \end{tabular}

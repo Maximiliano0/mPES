@@ -1,5 +1,5 @@
 '''
-ql_conf - Pandemic Experiment Scenario (Double Q-Learning)
+dql_conf - Pandemic Experiment Scenario (Double Q-Learning)
 
 Bayesian Optimization of Q-Learning hyperparameters using Optuna.
 
@@ -14,7 +14,7 @@ in __main__.py.  The best Q-table found during the search is preserved in memory
 and saved directly, avoiding a lossy re-training step.
 
 Usage:
-    python3 -m tabular_conf.ql_conf.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
+    python -m tabular_conf.dql_conf.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
                                        [--out-dir PATH] [--storage URL]
 
     n_trials : int, optional

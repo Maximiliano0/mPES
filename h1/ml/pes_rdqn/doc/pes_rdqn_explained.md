@@ -120,14 +120,18 @@ Implementado en [ext/train_rdqn.py](../ext/train_rdqn.py).
 
 ### 4.1 Arquitectura (modelo desplegado, 34 027 parámetros)
 
+La arquitectura se eligió mediante exploraciones *ad hoc* y está fijada en
+`config/CONFIG.py`: optimizarla con la búsqueda bayesiana era demasiado
+costoso para los recursos de cómputo disponibles.
+
 ```
-Input (6, 3)
+Input (6, 3)       ← RDQN_HISTORY_LEN
         │
         ▼
-   LSTM(64)        ← RDQN_LSTM_UNITS (CONFIG)
+   LSTM(64)        ← RDQN_LSTM_UNITS
         │
         ▼
-   Dense(96, ReLU) ← best_params.json (hidden_units)
+   Dense(96, ReLU) ← RDQN_HIDDEN_UNITS
         │
         ▼
    Dense(96, ReLU)
@@ -169,24 +173,23 @@ Modelo guardado en `inputs/rdqn_model.keras` y curva de recompensas en
 ## 5. Optimización bayesiana
 
 [ext/optimize_rdqn.py](../ext/optimize_rdqn.py) define un estudio Optuna
-con TPE.
+con TPE sobre los hiperparámetros de entrenamiento. La arquitectura no se
+busca: se toma de `config/CONFIG.py` (§4.1), porque optimizarla era demasiado
+costoso para los recursos de cómputo disponibles.
 
 ### 5.1 Espacio de búsqueda
 
 | Hiperparámetro (Optuna) | Tipo | Rango |
 |---|---|---|
-| `history_len` | int | 3 … 10 |
-| `lstm_units` | categórico | 32, 64, 96, 128 |
-| `hidden_layer_size` | categórico | 32, 64, 96, 128 |
 | `learning_rate` | log-float | 1e-4 … 5e-3 |
 | `discount_factor` | float | 0.92 … 0.995 |
+| `num_episodes` | int (step=10 000) | 20 000 … 60 000 |
 | `batch_size` | categórico | 32, 64, 128, 256 |
-| `target_sync_freq` | int (step=500) | 500 … 5 000 |
-| `epsilon_initial` / `epsilon_min` / `warmup_ratio` / `target_ratio` | float | (ver `optimize_rdqn.py`) |
-
-> **Importante**: `history_len` es un hiperparámetro **estructural**:
-> cambia la forma de entrada del modelo y, por tanto, los pesos
-> entrenables. Cada *trial* construye un modelo nuevo desde cero.
+| `buffer_size` | int (step=10 000) | 20 000 … 100 000 |
+| `target_sync_freq` | int (step=500) | 500 … 5 000 |
+| `max_grad_norm` | float | 0.5 … 5.0 |
+| `use_pbrs` / `penalty_coeff` | categórico / log-float | True, False / 1e-4 … 0.1 |
+| `epsilon_initial` / `epsilon_min` / `warmup_ratio` / `target_ratio` / `learning_starts_frac` | float | (ver `optimize_rdqn.py`) |
 
 ### 5.2 Objetivo
 
@@ -194,16 +197,13 @@ con TPE.
 el estudio se crea con `direction='maximize'`, por lo que Optuna
 **maximiza** `mean_perf` directamente (no se invierte el signo).
 
-### 5.3 Mejores hiperparámetros encontrados
+### 5.3 Hiperparámetros de entrenamiento
 
-Mejor ensayo #14 de 20 (2026-04-29, semilla 57, `mean_perf` = 0.9260),
-guardado en `inputs/best_params.json`:
+Valores de `inputs/best_params.json` (semilla 57) que usa el modelo
+desplegado:
 
 ```json
 {
-  "history_len":          6,
-  "lstm_units":           32,
-  "hidden_units":         [96, 96],
   "learning_rate":        0.002415187706879797,
   "discount_factor":      0.971927101925925,
   "epsilon_initial":      0.8882905282719732,
@@ -221,11 +221,14 @@ guardado en `inputs/best_params.json`:
 ```
 
 `train_rdqn.py` toma de este archivo los hiperparámetros de entrenamiento y
-la cabeza densa, pero `RDQN_HISTORY_LEN` (6) y `RDQN_LSTM_UNITS` (64) siempre
-salen de `config/CONFIG.py`. Por eso el modelo desplegado usa LSTM(64) y no
-las 32 unidades del mejor ensayo, y obtiene 0.8987 en lugar de 0.9260. Los
-valores de entrenamiento y la cabeza de `CONFIG.py` coinciden con este archivo,
-así que la configuración por defecto reproduce el modelo desplegado.
+la semilla; toda la arquitectura (`RDQN_HISTORY_LEN` = 6, `RDQN_LSTM_UNITS` =
+64 y `RDQN_HIDDEN_UNITS` = `[96, 96]`) sale siempre de `config/CONFIG.py`. El
+archivo actual todavía conserva claves de arquitectura (`history_len`,
+`lstm_units`, `hidden_units`, ...) que el entrenamiento no usa. Su `mean_perf`
+(0.9260) es el puntaje registrado por la búsqueda, no el del modelo
+desplegado, cuya arquitectura es la de `CONFIG.py`. Los valores de
+`CONFIG.py` coinciden con los que usa el entrenamiento, así que la
+configuración por defecto reproduce el modelo desplegado (0.8987).
 
 Con $L = 6$ el LSTM ve los últimos 6 trials.
 

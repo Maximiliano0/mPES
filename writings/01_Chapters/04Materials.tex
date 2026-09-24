@@ -309,12 +309,7 @@ ventana y su \'ultimo estado oculto $h_t$ (Ecuaci\'on~\eqref{eq:lstm})
 pasa por dos capas densas de $96$ unidades con ReLU y una salida de
 $11$ valores $Q$. Cada ventana se procesa de forma independiente: el
 estado oculto no se conserva entre decisiones y el \emph{buffer}
-guarda la ventana completa de cada transici\'on. La b\'usqueda bayesiana
-incluy\'o $W$, el ancho de la LSTM y el de las capas densas, pero el
-entrenamiento final s\'olo toma del mejor ensayo las capas densas y los
-hiperpar\'ametros de entrenamiento: $W = 6$ y las $64$ unidades de la
-LSTM son los valores fijos de la configuraci\'on del paquete (el mejor
-ensayo usaba $32$ unidades).
+guarda la ventana completa de cada transici\'on.
 
 \paragraph{Transformer} Recibe la misma ventana de $W = 6$ estados. Cada
 estado se proyecta a dimensi\'on $d_{\mathrm{model}} = 32$ y se le suma
@@ -326,30 +321,26 @@ $64$ unidades. Cada subcapa tiene conexi\'on residual y va precedida de
 normalizaci\'on de capa (disposici\'on \emph{Pre-LN}~\citep{Parisotto2020}).
 No se usa \emph{dropout}. La representaci\'on de la \'ultima
 posici\'on pasa por una capa densa de $32$ unidades con ReLU y una
-salida de $11$ valores $Q$. La b\'usqueda bayesiana incluy\'o la ventana
-$W$ y la arquitectura del codificador ($d_{\mathrm{model}}$, n\'umero de
-cabezas y de bloques, dimensi\'on de las claves, ancho de la capa
-\emph{feed-forward} y \emph{dropout}), pero el entrenamiento final s\'olo
-toma del mejor ensayo la capa densa de salida y los hiperpar\'ametros de
-entrenamiento. La ventana y el codificador descritos son los valores
-fijos de la configuraci\'on del paquete; el mejor ensayo usaba $W = 3$,
-$d_{\mathrm{model}} = 16$, $8$ cabezas, $4$ bloques, una capa
-\emph{feed-forward} de $128$ unidades y \emph{dropout} de $0{,}15$.
+salida de $11$ valores $Q$.
+
+La arquitectura del DQN recurrente y la del Transformer (ventana, LSTM o
+codificador y capas densas) se eligieron mediante exploraciones
+\emph{ad hoc} y est\'an fijadas en la configuraci\'on de cada paquete.
+Optimizarlas con la b\'usqueda bayesiana, junto con los hiperpar\'ametros,
+era demasiado costoso para los recursos de c\'omputo disponibles. En estos
+dos modelos la optimizaci\'on bayesiana s\'olo ajust\'o los hiperpar\'ametros
+de entrenamiento.
 
 \begin{table}[!htb]
 \centering
 \caption[Hiperpar\'ametros de los modelos de tipo DQN]{Arquitectura e
-hiperpar\'ametros de DQN, DQN recurrente y Transformer, tal como se
-entrenaron los modelos desplegados. Entre par\'entesis, el n\'umero de
-transiciones que corresponde a la fracci\'on $f$. En DQN, todas las filas
-vienen del mejor ensayo de la optimizaci\'on bayesiana. En DQN recurrente
-y Transformer, la entrada, los par\'ametros entrenables y los ensayos de
-optimizaci\'on corresponden a la arquitectura fija de \texttt{config/CONFIG.py}
-del paquete; el resto de las filas (tasa de aprendizaje, $\gamma$,
-$\varepsilon$, fracciones $w$/$q$, lote, \emph{buffer}, sincronizaci\'on,
-recorte del gradiente, PBRS, inicio del aprendizaje y episodios) s\'i
-vienen del mejor ensayo de cada paquete (v\'ease \S\ref{sec:deep} para la
-discrepancia entre la arquitectura del mejor ensayo y la desplegada).}
+hiperpar\'ametros de DQN, DQN recurrente y Transformer. Los
+hiperpar\'ametros de entrenamiento son los del mejor ensayo de la
+optimizaci\'on bayesiana de cada paquete. La arquitectura de DQN tambi\'en
+proviene de esa optimizaci\'on; la del DQN recurrente y la del Transformer
+(entrada y par\'ametros entrenables) se eligi\'o mediante exploraciones
+\emph{ad hoc} (Secci\'on~\ref{sec:deep}). Entre par\'entesis, el n\'umero de
+transiciones que corresponde a la fracci\'on $f$.}
 \label{tab:deep-hparams}
 \small
 \begin{tabular}{@{}lccc@{}}
@@ -369,7 +360,6 @@ Recorte del gradiente & $3{,}953$ & $3{,}475$ & $4{,}170$ \\
 PBRS $\kappa$ & $0{,}0226$ & $0{,}00263$ & $0$ \\
 Inicio del aprendizaje $f$ & $0{,}1615$ ($3\,230$) & $0{,}2021$ ($12\,128$) & $0{,}1217$ ($3\,650$) \\
 Episodios & $40\,000$ & $30\,000$ & $30\,000$ \\
-Ensayos de optimizaci\'on & $47$ & $20$ & $10$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -478,16 +468,11 @@ calculan:
 
 Los par\'ametros de cada ensamble se listan en la
 Tabla~\ref{tab:ens-params}. Los del ensamble ponderado son valores fijos
-de su configuraci\'on. Los de los otros cinco provienen de estudios de
-Optuna (TPE) sobre las $64$ secuencias de evaluaci\'on. S\'olo en el
-consenso con \emph{prior} el estudio guardado corresponde a la
-configuraci\'on evaluada: su puntaje registrado ($0{,}918$) coincide con
-la media que obtiene el ensamble en la referencia. En los otros cuatro,
-el archivo de par\'ametros no incluye el peso de A2C, que toma el valor
-por defecto $0{,}10$, y el puntaje registrado por el estudio (entre
-$0{,}888$ y $0{,}911$) no coincide con la media evaluada
-(Tabla~\ref{tab:ensemble-stress}). Esos estudios se hicieron, por lo
-tanto, con una configuraci\'on de miembros distinta de la evaluada.
+de su configuraci\'on. Los de los otros cinco son los del mejor ensayo de
+su estudio de Optuna (TPE) sobre las $64$ secuencias de evaluaci\'on,
+guardados en el archivo \texttt{inputs/best\_params.json} de cada paquete.
+En los cinco, el puntaje registrado por el estudio coincide con la media
+que obtiene el ensamble en la referencia (Tabla~\ref{tab:ensemble-stress}).
 
 \subsubsection{Ensamble ponderado}
 
@@ -632,7 +617,7 @@ voto suave de respaldo con todos los miembros. Si $g \geq 0{,}5$ se
 ejecuta la acci\'on del Transformer, $a_{\mathrm{trf}}$; si no, la de
 mayor $f(a)$. Como $g \geq 0{,}5$ equivale a $c_{\mathrm{trf}} \ge
 \tau_g$, el ensamble sigue al Transformer siempre que su confianza
-supere $\tau_g = 0{,}2248$.
+supere $\tau_g = 0{,}2222$.
 
 \begin{table}[!htb]
 \centering
@@ -650,11 +635,11 @@ $c_k^{\rho}$ y el actor de A2C no participa.}
 \textbf{Ensamble} & $\tau$ & $\rho$ & $w_{\mathrm{DQN}}$ & $w_{\mathrm{rec}}$ & $w_{\mathrm{trf}}$ & $w_{\mathrm{A2C}}$ & \textbf{Otros} \\
 \midrule
 Ponderado & $15$ & --- & $0{,}18$ & $0{,}90$ & $5{,}0$ & --- & $w_\pi = 0{,}17$, $\sigma_S = 3$ \\
-Voto suave & $0{,}1044$ & $0{,}4677$ & $2{,}852$ & $1{,}628$ & $1{,}134$ & $0{,}10$ & --- \\
-Voto por acci\'on & $1$ & $1{,}005$ & $2{,}374$ & $0{,}722$ & $1{,}008$ & $0{,}10$ & --- \\
-Consenso & $1$ & $0{,}4026$ & $2{,}995$ & $0{,}320$ & $1{,}695$ & $0{,}10$ & $\beta_a = 0{,}1649$, $\beta_d = 0{,}3647$ \\
-Consenso con prior & $1$ & $0{,}4180$ & $2{,}778$ & $2{,}465$ & $2{,}840$ & $0{,}1044$ & $\beta_a = 1{,}810$, $\beta_d = 0{,}3462$, $w_\pi = 0{,}2051$, $\sigma_S = 0{,}9177$ \\
-Compuerta Transformer & $1$ & $1{,}896$ & $1{,}124$ & $2{,}852$ & $2{,}196$ & $0{,}10$ & $\tau_g = 0{,}2248$, $\kappa_g = 3{,}964$ \\
+Voto suave & $1{,}219$ & $2{,}681$ & $0{,}270$ & $1{,}760$ & $0{,}896$ & $0{,}0070$ & --- \\
+Voto por acci\'on & $1$ & $2{,}197$ & $0{,}468$ & $2{,}599$ & $1{,}803$ & $0{,}174$ & --- \\
+Consenso & $1$ & $0{,}2754$ & $1{,}532$ & $1{,}931$ & $2{,}504$ & $1{,}881$ & $\beta_a = 2{,}074$, $\beta_d = 0{,}1211$ \\
+Consenso con prior & $1$ & $0{,}3253$ & $2{,}558$ & $2{,}942$ & $2{,}996$ & $0{,}432$ & $\beta_a = 1{,}605$, $\beta_d = 0{,}4115$, $w_\pi = 0{,}1186$, $\sigma_S = 1{,}436$ \\
+Compuerta Transformer & $1$ & $1{,}452$ & $0{,}837$ & $2{,}561$ & $2{,}601$ & $0{,}0674$ & $\tau_g = 0{,}2222$, $\kappa_g = 2{,}397$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -676,18 +661,16 @@ Los ensayos poco prometedores se interrumpen con \texttt{MedianPruner}
 y el estudio se guarda en una base SQLite, lo que permite reanudarlo. El
 modelo final se reentrena desde cero con $\boldsymbol{\theta}^{*}$ y la
 semilla de su ensayo. El n\'umero de episodios forma parte del espacio de
-b\'usqueda, y el entrenamiento final usa el del mejor ensayo. Los n\'umeros
-de ensayos y de episodios de cada modelo est\'an en las
-Tablas~\ref{tab:tabular-hparams}, \ref{tab:deep-hparams}
-y~\ref{tab:a2c-hparams}; A2C us\'o $100$ ensayos. En Double Q-Learning,
-$86$ de los $100$ ensayos se interrumpieron por el \texttt{MedianPruner}.
+b\'usqueda, y el entrenamiento final usa el del mejor ensayo. Los episodios
+de cada modelo est\'an en las Tablas~\ref{tab:tabular-hparams},
+\ref{tab:deep-hparams} y~\ref{tab:a2c-hparams}. DQN us\'o $47$ ensayos y A2C
+$100$. En Double Q-Learning, $86$ de los $100$ ensayos se interrumpieron por
+el \texttt{MedianPruner}. En el DQN recurrente y el Transformer, la
+arquitectura no se tom\'o de la optimizaci\'on sino de la configuraci\'on del
+paquete (Secci\'on~\ref{sec:deep}).
 
 En Q-Learning, Double Q-Learning, DQN y A2C, el modelo final reproduce
-el puntaje de su mejor ensayo. En el DQN recurrente y el Transformer, en
-cambio, el reentrenamiento conserva la arquitectura fija del paquete
-y no la del mejor ensayo. El DQN recurrente final obtiene $0{,}899$, por
-debajo de los $0{,}926$ de su mejor ensayo; el Transformer final obtiene
-$0{,}927$, frente a $0{,}925$.
+el puntaje de su mejor ensayo.
 
 \subsection{Escenarios de generalizaci\'on}\label{sec:scenario-catalogue}
 
@@ -779,7 +762,8 @@ estructural   & \texttt{struct\_more\_total}        & $8$ bloques $\times$ $16$ 
 \begin{enumerate}
 \item \textbf{Optimizaci\'on y reentrenamiento.} Cada modelo optimizable
 se ajusta con Optuna y se reentrena desde cero con los mejores
-hiperpar\'ametros. Q-Learning base se entrena con sus valores fijos.
+hiperpar\'ametros; el DQN recurrente y el Transformer usan la arquitectura
+fijada en su configuraci\'on. Q-Learning base se entrena con sus valores fijos.
 \item \textbf{Evaluaci\'on determinista.} Cada modelo se eval\'ua en los
 $22$ escenarios (Ap\'endice~\ref{ap:orchestrator}) eligiendo siempre la acci\'on factible de mayor valor
 ($\varepsilon = 0$). Los modelos individuales y los ensambles se

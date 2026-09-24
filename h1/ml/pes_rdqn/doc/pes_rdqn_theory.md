@@ -78,7 +78,7 @@ propiedades clave son:
 - **Input gate** $i_t$ aprende **qué incorporar** del presente.
 
 En este paquete se usa una sola capa con `RDQN_LSTM_UNITS = 64` unidades
-ocultas (`tf.keras.layers.LSTM(64)`), y solo se conserva la salida final
+ocultas (`tf.keras.layers.LSTM(64)`, elegidas mediante exploraciones *ad hoc*), y solo se conserva la salida final
 $h_T$ (no la secuencia entera) como entrada al MLP que produce
 $Q(s_{t-L+1:t}, a)$.
 
@@ -203,7 +203,7 @@ ligeramente superior** a partir de los 30 k.
 | Objetivo Double DQN recurrente | `train_step_rdqn()` con `tf.GradientTape` |
 | Pérdida Huber | `tf.keras.losses.Huber()` |
 | ε-greedy con warm-up | selección inline en `RDQNTraining` (`pandemic.py`) |
-| TPE bayesiano sobre `history_len` | `optimize_rdqn.py` con `optuna.create_study` |
+| TPE bayesiano sobre los hiperparámetros de entrenamiento | `optimize_rdqn.py` con `optuna.create_study` |
 
 ---
 

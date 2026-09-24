@@ -1,5 +1,5 @@
 """
-pes_dql — Main entry point for the Pandemic Experiment Scenario (Q-Learning v2).
+dql_conf — Main entry point for the Pandemic Experiment Scenario (Double Q-Learning + confidence exploration).
 
 Orchestrates the full experiment lifecycle: configuration validation,
 RL-Agent loading (Double Q-Learning + PBRS), experiment execution across
@@ -25,7 +25,7 @@ Configuration:
 
 Usage::
 
-    python3 -m tabular_conf.ql_conf
+    python -m tabular_conf.dql_conf
 """
 
 ##############################################################
@@ -82,7 +82,7 @@ call_nominated_aggregator = {
 ##             Main             ###
 ###################################
 def main():
-    """Run the full pes_dql experiment: validate, execute blocks/sequences, and save results."""
+    """Run the full dql_conf experiment: validate, execute blocks/sequences, and save results."""
 
     global Responses_filehandle
 
@@ -105,7 +105,7 @@ def main():
             terminal_utils.error("Q-Table file not found!")
             terminal_utils.list_item(f"Expected path: {q_file}", level=2)
             print("\nTo train the RL-Agent, run:")
-            terminal_utils.list_item("python3 -m tabular_conf.ql_conf.ext.train_rl")
+            terminal_utils.list_item("python -m tabular_conf.dql_conf.ext.train_rl")
             print()
             return
 
@@ -113,7 +113,7 @@ def main():
             terminal_utils.error("Rewards history file not found!")
             terminal_utils.list_item(f"Expected path: {rewards_file}", level=2)
             print("\nTo train the RL-Agent, run:")
-            terminal_utils.list_item("python3 -m tabular_conf.ql_conf.ext.train_rl")
+            terminal_utils.list_item("python -m tabular_conf.dql_conf.ext.train_rl")
             print()
             return
 
@@ -141,7 +141,7 @@ def main():
                 terminal_utils.list_item(f"Expected: (*, {expected_tail[0]}, {expected_tail[1]}, {expected_tail[2]})", level=2)
                 print("\nThe Q-table likely belongs to a different experiment configuration.")
                 print("Please retrain by running:")
-                terminal_utils.list_item("python3 -m tabular_conf.ql_conf.ext.train_rl")
+                terminal_utils.list_item("python -m tabular_conf.dql_conf.ext.train_rl")
                 print()
                 return
 
@@ -153,7 +153,7 @@ def main():
             terminal_utils.error("Failed to load training files!")
             terminal_utils.list_item(f"Error: {str(e)}", level=2)
             print("\nPlease retrain the model by running:")
-            terminal_utils.list_item("python3 -m tabular_conf.ql_conf.ext.train_rl")
+            terminal_utils.list_item("python -m tabular_conf.dql_conf.ext.train_rl")
             print()
             return
 

@@ -86,9 +86,8 @@ h2/tabular_conf/ql_conf/
 
 ## 3. Comandos de ejecución
 
-Todos los comandos asumen el directorio raíz del workspace
-(`Win_mPES/`) y el entorno virtual Windows activo
-(`win_mpes_env\Scripts\Activate.ps1`).
+Todos los comandos se ejecutan desde `h2/`, con el entorno virtual Windows
+activado desde la raíz del repositorio (`win_mpes_env\Scripts\Activate.ps1`).
 
 ### 3.1. Optimización Bayesiana
 
@@ -397,22 +396,25 @@ $$
 
 donde $1$ = óptimo, $0$ = peor caso (no asignar recursos).
 
-### Mejor resultado (2026-04-30)
+### Mejor resultado (2026-09-02)
+
+Fuente: `inputs/best_params.json` (optimización del 2026-09-02, 41 ensayos).
 
 | Métrica | Valor |
 |---------|-------|
-| `raw_mean_perf` | **0.886640** |
-| `std_perf` | 0.060781 |
+| `mean_perf` (mejor ensayo) | **0.872504** |
 | Secuencias evaluadas | 64 |
-| `learning_rate` | ≈ 0.286 |
-| `discount_factor` | ≈ 0.859 |
-| `epsilon_initial` | ≈ 0.681 |
-| `epsilon_min` | ≈ 0.044 |
+| `learning_rate` | ≈ 0.280 |
+| `discount_factor` | ≈ 0.890 |
+| `epsilon_initial` | ≈ 0.535 |
+| `epsilon_min` | ≈ 0.104 |
+| `confidence_exploration_strength` | ≈ 0.081 |
+| `confidence_exploration_exponent` | ≈ 1.533 |
 | `num_episodes` | 550 000 |
-| `trial_seed` | 106 (= 42 + 63 + 1) |
+| `trial_seed` | 65 (= 42 + 22 + 1) |
 
-> Comparado con el baseline aleatorio (~0.50), Q-Learning con búsqueda
-> Bayesiana mejora la performance en **+0.39** (≈78 % de mejora relativa).
+La corrida del experimento `outputs/2026-09-02_RL_AGENT/` obtuvo
+0.874233 ± 0.066388 sobre las mismas 64 secuencias.
 
 ### Cómo interpretar
 

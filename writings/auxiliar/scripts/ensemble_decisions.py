@@ -53,11 +53,14 @@ with contextlib.redirect_stdout(io.StringIO()):
                                           ENS_SEVERITY_PRIOR_WEIGHT, ENS_SOFTMAX_TEMPERATURE)
     from ens.pes_ens.ext.ensemble_model import EnsembleAgent
     from ens.pes_ens_consensus_prior.ext import ensemble as consensus_prior
+    from ens.pes_ens_consensus_prior.ext import evaluate_ens as consensus_prior_evaluate
     from ens.pes_ens_trf_guard.ext.ensemble import TransformerGuardEnsemble
+    from ens.pes_ens_trf_guard.ext import evaluate_ens as guard_evaluate
     from ens.pes_ens_trf_guard.src.pandemic_env import Pandemic, run_experiment
     from ens.pes_ens_trf_guard.src.tools_env import convert_globalseq_to_seqs
 
 DEFAULT_WEIGHTS = {'dqn': 0.15, 'a2c': 0.10, 'rdqn': 0.25, 'trf': 0.50}
+EVALUATORS = {'pes_ens_consensus_prior': consensus_prior_evaluate, 'pes_ens_trf_guard': guard_evaluate}
 MAX_SEVERITY = 9
 MAX_RESOURCES = 30
 MAX_TRIALS = 10
@@ -67,7 +70,7 @@ MAX_TRIALS = 10
 ##  Helpers
 ###############
 def load_params(pkg: str) -> dict:
-    """Return the ``hyperparameters`` block of ``ens/<pkg>/inputs/best_params.json``.
+    """Return the tuned parameters that ``ens/<pkg>/ext/evaluate_ens.py`` loads.
 
     Parameters
     ----------
@@ -77,9 +80,11 @@ def load_params(pkg: str) -> dict:
     Returns
     -------
     dict
-        Tuned parameters, exactly as ``evaluate_ens.py`` reads them.
+        ``hyperparameters`` block of the ``best_params.json`` chosen by the
+        package's own ``_find_best_params``.
     """
-    with open(os.path.join(H1, 'ens', pkg, 'inputs', 'best_params.json'), encoding='utf-8') as handle:
+    path = EVALUATORS[pkg]._find_best_params(os.path.join(H1, 'ens', pkg, 'inputs'))
+    with open(path, encoding='utf-8') as handle:
         return json.load(handle)['hyperparameters']
 
 

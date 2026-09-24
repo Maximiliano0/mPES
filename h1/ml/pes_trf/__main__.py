@@ -638,10 +638,8 @@ def main():
 
             # Print the raw 64-sequence mean explicitly so it can be compared
             # one-glance against ``best_params.json['mean_perf']`` (the metric
-            # Optuna reports).  Note that on Windows CPU the value can drift
-            # ~3% from a Colab-GPU Optuna run because of cuDNN kernel
-            # differences — see pes_trf/ext/eval_model.py (if present) for a
-            # stand-alone reproducer.
+            # Optuna reports).  They differ because the deployed model uses the
+            # ad-hoc architecture of CONFIG.py, not the one of the search.
             try:
                 _raw_mean = float(numpy.mean(MyPerformances))
                 _raw_std = float(numpy.std(MyPerformances))

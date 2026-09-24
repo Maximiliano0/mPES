@@ -60,20 +60,15 @@
 
 % ----- Appearance and language ----- 
 \usepackage[english,main=spanish,es-nodecimaldot,es-tabla]{babel} % document language (Spanish); english only for the Abstract
-% Rutas de búsqueda para \includegraphics: TODAS las figuras se
-% mantienen como copias locales en 02_Images/ (organizadas por tipo)
-% para que el documento sea autocontenido y portable.
+% Rutas de búsqueda para \includegraphics: todas las figuras están dentro de
+% writings/02_Images/ (ver writings/auxiliar/scripts/sync_figures.py).
 \graphicspath{
-  {02_Images/}{../02_Images/}
-  {../general/results/}
-  {02_Images/heatmaps/}{../02_Images/heatmaps/}
-  {02_Images/training/}{../02_Images/training/}
-  {02_Images/optuna/}{../02_Images/optuna/}
-  {02_Images/per_sequence/}{../02_Images/per_sequence/}
-  {02_Images/process/}{../02_Images/process/}
+  {02_Images/frontpage/}{../02_Images/frontpage/}
   {02_Images/baseline/}{../02_Images/baseline/}
+  {02_Images/per_model/}{../02_Images/per_model/}
+  {02_Images/individual/}{../02_Images/individual/}
+  {02_Images/ensemble/}{../02_Images/ensemble/}
   {02_Images/agent_internals/}{../02_Images/agent_internals/}
-  {02_Images/ood_curves/}{../02_Images/ood_curves/}
 }
 \usepackage[margin=2.54cm]{geometry} % sets margins for the document
 \usepackage{setspace}

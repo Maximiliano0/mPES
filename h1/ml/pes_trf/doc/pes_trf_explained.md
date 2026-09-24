@@ -101,8 +101,8 @@ propias proyecciones $W_Q^h, W_K^h, W_V^h$) y se concatenan:
 
 $$\mathrm{MultiHead}(Q,K,V) = \mathrm{Concat}(\mathrm{head}_1, \dots, \mathrm{head}_H) W^O$$
 
-En `pes_trf` por defecto: $H = 4$ cabezas (`TRF_NUM_HEADS`), $d_\mathrm{model} = 32$.
-El espacio de búsqueda Optuna admite $H \in \{2, 4, 8\}$.
+En `pes_trf`: $H = 4$ cabezas (`TRF_NUM_HEADS`), $d_\mathrm{model} = 32$, elegidos
+mediante exploraciones *ad hoc* (§5).
 
 ---
 
@@ -161,28 +161,34 @@ def train_step_trf(model, target_model, optimizer, batch, gamma):
 
 ## 5. Optimización Bayesiana (`optimize_tr.py`)
 
-`ext/optimize_tr.py` usa **Optuna** con muestreador TPE para buscar:
+`ext/optimize_tr.py` usa **Optuna** con muestreador TPE sobre los
+hiperparámetros de entrenamiento. La arquitectura no se busca: se eligió
+mediante exploraciones *ad hoc* y está fijada en `config/CONFIG.py`, porque
+optimizarla con la búsqueda bayesiana era demasiado costoso para los recursos
+de cómputo disponibles.
 
-| Hiperparámetro (Optuna) | Rango | Mejor ensayo #2 (2026-04-29) | Modelo desplegado |
-|---|---|---|---|
-| `history_len` | $[3, 10]$ entero | 3 | **6** (`TRF_HISTORY_LEN`) |
-| `d_model` | $\{16, 32, 64, 128\}$ | 16 | **32** (`TRF_D_MODEL`) |
-| `num_heads` | $\{2, 4, 8\}$ | 8 | **4** (`TRF_NUM_HEADS`) |
-| `key_dim` | $\{8, 16, 32\}$ | 16 | **16** (`TRF_KEY_DIM`) |
-| `ff_dim` | $\{32, 64, 128, 256\}$ | 128 | **64** (`TRF_FF_DIM`) |
-| `num_layers` | $[1, 4]$ entero | 4 | **2** (`TRF_NUM_LAYERS`) |
-| `dropout` | $[0.0, 0.3]$ | 0.148 | **0** (`TRF_DROPOUT`) |
-| `learning_rate` | $[10^{-4}, 5\times10^{-3}]$ log | 0.000215 | 0.000215 |
-| `discount_factor` ($\gamma$) | $[0.92, 0.995]$ | 0.9234 | 0.9234 |
-| `num_episodes` | $[20\,000, 60\,000]$ | 30 000 | 30 000 |
+| Parámetro | Rango de la búsqueda | Modelo desplegado |
+|---|---|---|
+| `history_len` | — (no se busca) | 6 (`TRF_HISTORY_LEN`, *ad hoc*) |
+| `d_model` | — (no se busca) | 32 (`TRF_D_MODEL`, *ad hoc*) |
+| `num_heads` | — (no se busca) | 4 (`TRF_NUM_HEADS`, *ad hoc*) |
+| `key_dim` | — (no se busca) | 16 (`TRF_KEY_DIM`, *ad hoc*) |
+| `ff_dim` | — (no se busca) | 64 (`TRF_FF_DIM`, *ad hoc*) |
+| `num_layers` | — (no se busca) | 2 (`TRF_NUM_LAYERS`, *ad hoc*) |
+| `dropout` | — (no se busca) | 0 (`TRF_DROPOUT`, *ad hoc*) |
+| cabeza densa | — (no se busca) | `[32]` (`TRF_HIDDEN_UNITS`, *ad hoc*) |
+| `learning_rate` | $[10^{-4}, 5\times10^{-3}]$ log | 0.000215 (optimización bayesiana) |
+| `discount_factor` ($\gamma$) | $[0.92, 0.995]$ | 0.9234 (optimización bayesiana) |
+| `num_episodes` | $[20\,000, 60\,000]$ | 30 000 (optimización bayesiana) |
 
 `train_transformer.py` toma de `inputs/best_params.json` los hiperparámetros
-de entrenamiento, la semilla del ensayo (45) y la cabeza densa (`[32]`), pero
-la arquitectura del codificador siempre sale de `config/CONFIG.py`. Por eso el
-modelo desplegado (27 019 parámetros, 0.927 en la referencia) no usa la
-arquitectura del mejor ensayo (`mean_perf` = 0.9245). Los valores de
-entrenamiento y la cabeza de `CONFIG.py` coinciden con `best_params.json`, así
-que la configuración por defecto reproduce el modelo desplegado.
+de entrenamiento y la semilla (45); toda la arquitectura sale siempre de
+`config/CONFIG.py`. El archivo actual todavía conserva claves de arquitectura
+(`history_len`, `d_model`, `hidden_units`, ...) que el entrenamiento no usa.
+Su `mean_perf` (0.9245) es el puntaje registrado por la búsqueda, no el del
+modelo desplegado. Los valores de `CONFIG.py` coinciden con los que usa el entrenamiento, así que
+la configuración por defecto reproduce el modelo desplegado (27 019
+parámetros, 0.927 en la referencia).
 
 Cada trial entrena desde cero con su propio `num_episodes` y devuelve el
 rendimiento medio sobre las 64 secuencias fijas.

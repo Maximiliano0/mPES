@@ -177,7 +177,7 @@ def main():
             elif delta < 1e-3:
                 verdict = 'within float tolerance'
             elif delta < 5e-2:
-                verdict = 'GPU↔CPU LSTM drift (expected)'
+                verdict = 'expected: CONFIG architecture or device differ from the search'
             else:
                 verdict = 'MISMATCH — check TF version / hardware / weights'
             info(f'|Δ| = {delta:.6f}  ({verdict})')

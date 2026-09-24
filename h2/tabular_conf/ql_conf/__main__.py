@@ -1,5 +1,5 @@
 """
-Main entry point for the pes_ql experiment.
+Main entry point for the ql_conf experiment.
 
 Defines the main() function that orchestrates the full experiment lifecycle:
 validation of RL-Agent training files, session creation with logging,
@@ -7,7 +7,7 @@ block/sequence/trial assignment, RL-Agent decision collection via
 pygameMediator, severity updates, performance calculation, and
 result report generation (JSON + PNG).
 
-This module is structurally identical to pes/__main__.py.  The Bayesian-specific
+This module mirrors h1/tabular/pes_ql/__main__.py.  The Bayesian-specific
 behaviour (hyperparameter search) is performed offline via ext/optimize_rl.py;
 the resulting Q-table is consumed here at experiment time.
 
@@ -33,7 +33,7 @@ Usage
 -----
 ::
 
-    python3 -m tabular.pes_ql
+    python -m tabular_conf.ql_conf
 
 Configuration
 -------------
@@ -97,7 +97,7 @@ call_nominated_aggregator = {
 
 
 def main():
-    """Orchestrate the full pes_ql experiment lifecycle.
+    """Orchestrate the full ql_conf experiment lifecycle.
 
     Validates the trained Q-Learning artefacts (``q.npy`` and
     ``rewards.npy``) under ``INPUTS_PATH``, creates a dated session
@@ -129,7 +129,7 @@ def main():
             terminal_utils.error("Q-Table file not found!")
             terminal_utils.list_item(f"Expected path: {q_file}", level=2)
             print("\nTo train the RL-Agent, run:")
-            terminal_utils.list_item("python3 -m tabular.pes_ql.ext.train_rl")
+            terminal_utils.list_item("python -m tabular_conf.ql_conf.ext.train_rl")
             print()
             return
 
@@ -137,7 +137,7 @@ def main():
             terminal_utils.error("Rewards history file not found!")
             terminal_utils.list_item(f"Expected path: {rewards_file}", level=2)
             print("\nTo train the RL-Agent, run:")
-            terminal_utils.list_item("python3 -m tabular.pes_ql.ext.train_rl")
+            terminal_utils.list_item("python -m tabular_conf.ql_conf.ext.train_rl")
             print()
             return
 
@@ -157,7 +157,7 @@ def main():
             terminal_utils.error("Failed to load training files!")
             terminal_utils.list_item(f"Error: {str(e)}", level=2)
             print("\nPlease retrain the model by running:")
-            terminal_utils.list_item("python3 -m tabular.pes_ql.ext.train_rl")
+            terminal_utils.list_item("python -m tabular_conf.ql_conf.ext.train_rl")
             print()
             return
 

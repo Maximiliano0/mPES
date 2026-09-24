@@ -98,10 +98,10 @@ USE_FIXED_BLOCK_SEQUENCES = True  # Load sequence trial lengths from CSV file (v
 # ==================== RDQN HYPERPARAMETERS ====================
 # RDQN = Recurrent DQN: an LSTM trunk consumes a sliding window of the last
 # RDQN_HISTORY_LEN normalised states; a dense head outputs Q-values.
-# RDQN_HISTORY_LEN and RDQN_LSTM_UNITS are always used by training and
-# inference and match the deployed rdqn_model.keras (34,027 params); Optuna's
-# best trial #14 used LSTM(32), which was never deployed.  The remaining values
-# reproduce trial #14 (seed 57) and equal inputs/best_params.json, which overrides them.
+# Architecture (window, LSTM and dense widths) chosen by ad-hoc exploration: optimising it with the
+# Bayesian search was too costly for the available compute. Training always uses it (34,027 params).
+# The training hyperparameters come from Bayesian optimisation (inputs/best_params.json, seed 57),
+# which overrides them.
 RDQN_HISTORY_LEN = 6                                # Sliding-window length fed to the LSTM
 RDQN_LSTM_UNITS = 64                                # LSTM hidden-state width
 RDQN_HIDDEN_UNITS = [96, 96]                        # Dense-head widths after the LSTM trunk

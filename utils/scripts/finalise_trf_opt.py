@@ -58,6 +58,7 @@ _cfg = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_cfg)
 SEED: int = _cfg.SEED
 TRF_EPISODES: int = _cfg.TRF_EPISODES
+TRF_HIDDEN_UNITS: list = list(_cfg.TRF_HIDDEN_UNITS)
 _INPUTS_PATH = os.path.join(_ROOT, 'ml', 'pes_trf', 'inputs')
 
 _DATE_RE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
@@ -76,9 +77,7 @@ def _open_study(opt_dir: str, opt_date: str) -> optuna.Study:
 def _write_sidecar(study: optuna.Study, opt_dir: str, opt_date: str) -> dict:
     best = study.best_trial
     bp = best.params
-    hidden = best.user_attrs.get('hidden_units')
-    if hidden is None and 'hidden_layer_size' in bp:
-        hidden = [bp['hidden_layer_size']] * bp.get('num_hidden_layers', 1)
+    hidden = best.user_attrs.get('hidden_units') or TRF_HIDDEN_UNITS
     trial_seed = int(best.user_attrs.get('trial_seed', SEED + int(best.number) + 1))
 
     payload = {
@@ -113,7 +112,7 @@ def _write_sidecar(study: optuna.Study, opt_dir: str, opt_date: str) -> dict:
 def _write_text_report(study: optuna.Study, opt_dir: str, opt_date: str) -> None:
     best = study.best_trial
     bp = best.params
-    hidden = [bp['hidden_layer_size']] * bp['num_hidden_layers']
+    hidden = TRF_HIDDEN_UNITS
     use_pbrs = bool(bp.get('use_pbrs', bp.get('penalty_coeff', 0.0) > 0))
     penalty = float(bp.get('penalty_coeff', 0.0)) if use_pbrs else 0.0
     full_episodes = max(int(TRF_EPISODES), int(bp['num_episodes']))

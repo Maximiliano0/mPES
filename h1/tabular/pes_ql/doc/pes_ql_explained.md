@@ -85,9 +85,8 @@ tabular/pes_ql/
 
 ## 3. Comandos de ejecución
 
-Todos los comandos asumen el directorio raíz del workspace
-(`Win_mPES/`) y el entorno virtual Windows activo
-(`win_mpes_env\Scripts\Activate.ps1`).
+Todos los comandos se ejecutan desde `h1/`, con el entorno virtual Windows
+activado desde la raíz del repositorio (`win_mpes_env\Scripts\Activate.ps1`).
 
 ### 3.1. Optimización Bayesiana
 

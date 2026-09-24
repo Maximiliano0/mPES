@@ -57,10 +57,10 @@ entre posiciones. Por ejemplo, una cabeza puede capturar correlaciones a
 corto plazo (último trial) y otra a largo plazo (primeros trials de la
 secuencia).
 
-En `pes_trf` por defecto: $H = 4$ (el espacio de búsqueda admite
-$\{2, 4, 8\}$) y $d_\mathrm{model} = 32$. La dimensión por cabeza
-$d_k$ es un hiperparámetro independiente (`TRF_KEY_DIM`, por defecto $16$,
-espacio $\{8, 16, 32\}$), no se deriva de $d_\mathrm{model}/H$: la capa
+En `pes_trf` (arquitectura elegida mediante exploraciones *ad hoc*): $H = 4$ y
+$d_\mathrm{model} = 32$. La dimensión por cabeza
+$d_k$ es un parámetro independiente (`TRF_KEY_DIM` $= 16$), no se deriva de
+$d_\mathrm{model}/H$: la capa
 `MultiHeadAttention` de Keras acepta `key_dim` por separado.
 
 ---
@@ -138,8 +138,9 @@ El **feed-forward** aplica una MLP punto-a-punto:
 $$\mathrm{FFN}(x) = \mathrm{ReLU}(x W_1 + b_1) W_2 + b_2$$
 
 con $W_1 \in \mathbb{R}^{d \times d_\mathrm{ff}}$ y $W_2 \in
-\mathbb{R}^{d_\mathrm{ff} \times d}$. En `pes_trf` óptimo:
-$d = 32$, $d_\mathrm{ff} = 64$, $N_\mathrm{layers} = 2$.
+\mathbb{R}^{d_\mathrm{ff} \times d}$. En `pes_trf` (valores de `config/CONFIG.py`,
+elegidos mediante exploraciones *ad hoc*): $d = 32$, $d_\mathrm{ff} = 64$,
+$N_\mathrm{layers} = 2$.
 
 ---
 
@@ -249,12 +250,13 @@ La longitud de la ventana `TRF_HISTORY_LEN` ($h$) es un trade-off:
 | $h$ | Pros | Contras |
 |---|---|---|
 | Pequeño (2–4) | Rápido, poco memory footprint | Pierde patrones de largo plazo |
-| **Medio (6–8)** | **Equilibrio óptimo en *Pandemic*** | — |
+| Medio (6–8) | Ve casi toda la secuencia | Más coste por paso |
 | Grande (>10) | Captura patrones largos | Atención difusa, sobreajuste, $O(h^2)$ memoria |
 
-El estudio Optuna seleccionó $h = 6$ como óptimo, lo que coincide con la
-**duración promedio de las decisiones críticas** en *Pandemic* (3–10 trials
-por secuencia, con la media en torno a 6).
+En `pes_trf` se usa $h = 6$, elegido mediante exploraciones *ad hoc* junto
+con el resto de la arquitectura: optimizarla con la búsqueda bayesiana era
+demasiado costoso para los recursos de cómputo disponibles. Con secuencias de
+3 a 10 trials, esa ventana cubre la mayor parte de cada secuencia.
 
 ### Análisis teórico
 
@@ -266,36 +268,30 @@ satura cuando $h \ge k$. Aumentar $h$ más allá:
 3. Diluye la atención softmax sobre más posiciones, lo que puede degradar
    la precisión.
 
-Por eso el rendimiento como función de $h$ es **unimodal** con máximo
-alrededor de la longitud característica del proceso de decisión.
-
 ---
 
 ## 9. Optimización Bayesiana del Transformer
 
 `optimize_tr.py` usa **Optuna** (Akiba et al., 2019) con muestreador TPE
-sobre el espacio:
+sólo sobre los hiperparámetros de entrenamiento; la arquitectura no se busca y
+se toma de `config/CONFIG.py` (§8). Los principales parámetros del espacio son:
 
 ```python
-trial.suggest_int        ('history_len',      3, 10)
-trial.suggest_categorical('d_model',          [16, 32, 64, 128])
-trial.suggest_categorical('num_heads',        [2, 4, 8])
-# La restricción d_model %% num_heads == 0 NO se valida: key_dim es
-# independiente en MultiHeadAttention, por lo que no hace falta.
-trial.suggest_categorical('key_dim',          [8, 16, 32])
-trial.suggest_categorical('ff_dim',           [32, 64, 128, 256])
-trial.suggest_int        ('num_layers',       1, 4)
-trial.suggest_float      ('dropout',          0.0, 0.3)
 trial.suggest_float      ('learning_rate',    1e-4, 5e-3, log=True)
 trial.suggest_float      ('discount_factor',  0.92, 0.995)
+trial.suggest_int        ('num_episodes',     20_000, 60_000, step=10_000)
+trial.suggest_categorical('batch_size',       [32, 64, 128, 256])
+trial.suggest_int        ('buffer_size',      20_000, 100_000, step=10_000)
+trial.suggest_int        ('target_sync_freq', 500, 5_000, step=500)
 ```
 
-### Restricciones de coherencia
+La lista completa (14 parámetros) está en el docstring de `optimize_tr.py`.
 
-- En Keras, `key_dim` es un hiperparámetro independiente de la capa
-  `MultiHeadAttention`, así que **no** se exige $d_\mathrm{model} \bmod
-  n_\mathrm{heads} = 0$ y el estudio no realiza ninguna validación ni
-  poda por esta causa.
+### Nota sobre la arquitectura
+
+- En Keras, `key_dim` es un parámetro independiente de la capa
+  `MultiHeadAttention`, así que **no** hace falta que $d_\mathrm{model}$ sea
+  múltiplo del número de cabezas.
 
 ### Pruning anticipado
 

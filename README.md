@@ -62,7 +62,7 @@
 | `pes_ens_accq` | Confidence-weighted action/Q-value ensemble | [`__main__.py`](h1/ens/pes_ens_accq/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_accq/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_accq/ext/optimize_ens.py) |
 | `pes_ens_trf_guard` | Transformer-first confidence-gated ensemble | [`__main__.py`](h1/ens/pes_ens_trf_guard/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_trf_guard/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_trf_guard/ext/optimize_ens.py) |
 | `pes_ens_consensus` | Agreement/disagreement confidence consensus | [`__main__.py`](h1/ens/pes_ens_consensus/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_consensus/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_consensus/ext/optimize_ens.py) |
-| `pes_ens` | Weighted soft-voting ensemble (DQN + A2C + RDQN + TRF), inference-only | [`__main__.py`](h1/ens/pes_ens/__main__.py), [`ext/ensemble_model.py`](h1/ens/pes_ens/ext/ensemble_model.py), [`ext/tools.py`](h1/ens/pes_ens/ext/tools.py) |
+| `pes_ens` | Weighted soft-voting ensemble (DQN + RDQN + TRF; A2C configured but disabled), inference-only | [`__main__.py`](h1/ens/pes_ens/__main__.py), [`ext/ensemble_model.py`](h1/ens/pes_ens/ext/ensemble_model.py), [`ext/tools.py`](h1/ens/pes_ens/ext/tools.py) |
 | `pes_ens_consensus_prior` | Confidence consensus with severity-informed prior | [`__main__.py`](h1/ens/pes_ens_consensus_prior/__main__.py), [`ext/ensemble.py`](h1/ens/pes_ens_consensus_prior/ext/ensemble.py), [`ext/optimize_ens.py`](h1/ens/pes_ens_consensus_prior/ext/optimize_ens.py) |
 
 > All six ensemble variants (`pes_ens`, `pes_ens_sprb`, `pes_ens_accq`, `pes_ens_consensus`, `pes_ens_consensus_prior` and `pes_ens_trf_guard`) are part of the active benchmark workflow. `pes_ens` is the best-performing ensemble in the current results.
@@ -140,9 +140,8 @@ The active repository documentation is centred on the executable packages in `h1
 | `pes_ens_trf_guard` | [`pes_ens_trf_guard_explained.md`](h1/ens/pes_ens_trf_guard/doc/pes_ens_trf_guard_explained.md) · [`pes_ens_trf_guard_theory.md`](h1/ens/pes_ens_trf_guard/doc/pes_ens_trf_guard_theory.md) |
 | `pes_ens_consensus` | [`pes_ens_consensus_explained.md`](h1/ens/pes_ens_consensus/doc/pes_ens_consensus_explained.md) · [`pes_ens_consensus_theory.md`](h1/ens/pes_ens_consensus/doc/pes_ens_consensus_theory.md) |
 | `pes_ens` | [`pes_ens_explained.md`](h1/ens/pes_ens/doc/pes_ens_explained.md) · [`pes_ens_theory.md`](h1/ens/pes_ens/doc/pes_ens_theory.md) |
+| `pes_ens_consensus_prior` | [`pes_ens_consensus_prior_explained.md`](h1/ens/pes_ens_consensus_prior/doc/pes_ens_consensus_prior_explained.md) · [`pes_ens_consensus_prior_theory.md`](h1/ens/pes_ens_consensus_prior/doc/pes_ens_consensus_prior_theory.md) |
 | general benchmark | [`h1/general/README.md`](h1/general/README.md) |
-
-> `pes_ens_consensus_prior` has no `doc/` directory yet; its behaviour is described in the consensus guides above plus the severity-prior parameters in its `config/CONFIG.py`.
 
 ---
 
@@ -160,7 +159,7 @@ sequence-length, joint and structural changes. The comparison report defines
 the normalized performance, Welch $p$, Cohen $d$, degradation and KL metrics,
 and links the generated heatmaps and sequence curves.
 
-```bash
+```powershell
 cd h1
 python -m general.scripts.benchmark run --suite both
 python -m general.scripts.analysis

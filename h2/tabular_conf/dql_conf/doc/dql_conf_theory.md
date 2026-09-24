@@ -511,7 +511,7 @@ políticas Q-greedy intermedias).
 ### 7.1 Planteamiento del problema
 
 El espacio de hiperparámetros tiene 10 dimensiones (ver § 4.2 de
-[`ql_conf_explained.md`](./ql_conf_explained.md)): además de los ocho
+[`dql_conf_explained.md`](./dql_conf_explained.md)): además de los ocho
 parámetros principales, incluye `confidence_exploration_strength` y
 `confidence_exploration_exponent`. Cada evaluación
 requiere entrenar un Double Q-Learning de hasta 500 000 episodios y
