@@ -6,7 +6,7 @@ agent: "agent"
 
 # Create New mPES Package — `<NEW_PKG>`
 
-> Last updated: 2026-05-04
+> Last updated: 2026-09-25
 
 Generate a brand-new package inside the mPES workspace that follows the
 established `pes_*` structure, conventions, and end-to-end pipeline. The
@@ -16,16 +16,20 @@ package self-contained and comparable.
 
 ## Workspace layout
 
-Packages are grouped by algorithm family under two top-level directories:
+Packages are grouped by algorithm family under three directories inside
+`h1/` (run `cd h1` first):
 
 - `tabular/` — value-based tabular RL (`pes_base`, `pes_ql`, `pes_dql`).
 - `ml/`      — deep / neural RL (`pes_dqn`, `pes_rdqn`, `pes_a2c`,
                `pes_trf`).
-- `ens/`     — ensemble models (`pes_ens_sprb`, `pes_ens_accq`).
+- `ens/`     — ensemble models (`pes_ens`, `pes_ens_sprb`, `pes_ens_accq`,
+               `pes_ens_trf_guard`, `pes_ens_consensus`,
+               `pes_ens_consensus_prior`).
 
 New packages **must** be placed inside the appropriate group based on the
 algorithm family. Tabular methods go in `tabular/`; anything that uses
-Keras/TensorFlow weights, deep nets, or ensembles thereof goes in `ml/`.
+Keras/TensorFlow weights or deep nets goes in `ml/`; ensembles over the
+trained `ml/` agents go in `ens/`.
 
 ## Usage
 
@@ -222,10 +226,10 @@ After scaffolding, update the following workspace-level files:
    algorithm description.
 2. `.github/copilot-instructions.md` — add `<GROUP>/<NEW_PKG>` to the
    package table.
-3. `.github/prompts/pkg-scope.prompt.md`,
-   `.github/prompts/audit-project.prompt.md`, and
+3. `.github/prompts/audit-project.prompt.md`,
+   `.github/prompts/lint-and-typecheck.prompt.md`, and
    `.github/prompts/update-pkg-docs.prompt.md` — add `<NEW_PKG>` to
-   their "Available Packages" / usage examples.
+   their package lists / usage examples.
 4. `utils/config/requirements.txt` — append any new third-party
    dependency the algorithm needs (and call it out to the user).
 

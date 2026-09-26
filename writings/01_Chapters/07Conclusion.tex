@@ -4,99 +4,72 @@
 
 \label{sec:conclusion}
 
-Esta tesis compar\'o seis implementaciones de aprendizaje por refuerzo y
-seis formas de combinarlas en un ensamble, evaluadas sobre las mismas
-secuencias en la condici\'on de entrenamiento y en $21$ escenarios de
-generalizaci\'on.
+\subsection{Respuesta a las preguntas de investigaci\'on}
 
-\subsection{Respuesta a las preguntas}
+\textbf{Mejor modelo individual.} Los resultados respaldan la hip\'otesis
+H1. El Transformer causal obtuvo el mayor desempe\~no medio entre los
+modelos individuales, en la referencia y en los escenarios de
+generalizaci\'on; en estos \'ultimos super\'o en un $3\%$ a DQN y en un
+$5\%$ al DQN recurrente, diferencias de tama\~no medio. Mantuvo el
+desempe\~no con severidades fuera de rango, pero no fue el m\'as estable
+en su peor escenario: con secuencias largas perdi\'o un $7\%$ respecto de
+su referencia, frente al $6\%$ de DQN.
 
-\begin{description}
-    \item[?`Cu\'al es el mejor modelo individual?] El Transformer, lo que
-    respalda la hip\'otesis H1. En los escenarios de generalizaci\'on
-    obtiene $0{,}930$, por encima de todos los dem\'as modelos, y en la
-    referencia reduce en alrededor de un $36\,\%$ la distancia al
-    \'optimo que deja Q-Learning. Su ventaja es de
-    tama\~no medio frente a DQN y al DQN recurrente. Conserva el
-    desempe\~no con severidades fuera de rango, donde fallan los m\'etodos
-    tabulares, y lo pierde en parte con secuencias m\'as largas que las de
-    entrenamiento, el punto d\'ebil de todas las redes. No es, en cambio,
-    el que menos pierde respecto de su propia referencia: su peor
-    escenario cae $0{,}067$, frente a $0{,}053$ de DQN.
-    \item[?`Alg\'un ensamble lo supera?] S\'i, el ensamble ponderado, con
-    $0{,}939$ en generalizaci\'on y un peor escenario m\'as alto que el del
-    Transformer. Es el \'unico de los seis: la compuerta del Transformer
-    lo iguala y los otros cuatro quedan por debajo. Aunque le da al
-    Transformer la mayor parte del peso base, en la referencia su acci\'on
-    final difiere de la del Transformer en el $61\,\%$ de las decisiones,
-    sobre todo por el \emph{prior} de severidad. Su ventaja no se debe,
-    por lo tanto, a ponderar a los modelos por su confianza.
-\end{description}
+\textbf{Ensambles frente al mejor modelo individual.} Los resultados no
+respaldan la hip\'otesis H2. S\'olo el ensamble ponderado super\'o al Transformer,
+en un $1\%$ en generalizaci\'on, una diferencia significativa pero de
+tama\~no despreciable. La
+compuerta del Transformer alcanz\'o un desempe\~no equivalente y los
+otros cuatro ensambles quedaron por debajo. La ventaja del ensamble ponderado no se explica por
+la ponderaci\'on por confianza: su acci\'on final difiere de la del
+Transformer en el $61\%$ de las decisiones de la referencia, en buena
+medida por la temperatura alta y el \emph{prior} de severidad.
+
+\textbf{Ponderaci\'on por confianza.} El dise\~no no permite determinar si
+ponderar por la confianza mejora a una votaci\'on simple, porque todos los
+ensambles aplican esa ponderaci\'on. Los que s\'olo promedian o votan con
+esos pesos obtuvieron un desempe\~no inferior al del Transformer
+individual.
 
 \subsection{Limitaciones del estudio}\label{sec:limitations}
 
-En primer lugar, la referencia usa un \'unico conjunto fijo de $64$
-secuencias, y cada escenario de generalizaci\'on se gener\'o con una
-\'unica semilla ($42$). Eso garantiza que todos los modelos enfrenten las
-mismas secuencias, pero hace que cada media dependa de una \'unica muestra
-de $64$ secuencias por escenario. En los escenarios de generalizaci\'on no
-era necesario fijar la semilla: con semillas distintas se habr\'ia
-podido estimar la variabilidad de cada media y dar intervalos de
-confianza para el ordenamiento de los modelos.
-
-En segundo lugar, los hiperpar\'ametros de los modelos y de los
-ensambles se ajustaron con las mismas $64$ secuencias con que despu\'es
-se evalu\'o la referencia. Adem\'as, el entorno de entrenamiento sortea
-las secuencias a partir de los mismos archivos de severidades iniciales
-y longitudes. Por eso los valores de la referencia pueden ser algo
-optimistas. Los escenarios de generalizaci\'on est\'an menos expuestos a
-ese sesgo, porque sus secuencias provienen de otras distribuciones.
-
-En tercer lugar, el entrenamiento s\'olo present\'o severidades de $2$ a
-$8$. En los m\'etodos tabulares, las filas de severidad $0$, $1$ y $9$
-quedaron con sus valores iniciales aleatorios, de modo que parte de su
-ca\'ida en los escenarios de severidad refleja esa falta de cobertura del
-entrenamiento y no s\'olo la capacidad de generalizar del algoritmo.
-
-En cuarto lugar, la arquitectura del DQN recurrente y la del Transformer
-se eligieron mediante exploraciones \emph{ad hoc}, porque optimizarlas con
-la b\'usqueda bayesiana era demasiado costoso para los recursos de c\'omputo
-disponibles; en ellos s\'olo se optimizaron los hiperpar\'ametros de
-entrenamiento. Otras arquitecturas podr\'ian cambiar el ordenamiento. Las
-comparaciones se refieren, por lo tanto, a los modelos finales evaluados.
-
-En quinto lugar, la confianza con que los ensambles ponderan a cada
-modelo se calcula sobre una distribuci\'on derivada de los valores $Q$ y
-no sobre probabilidades aprendidas, y no se comprob\'o que sea mayor en
-las decisiones acertadas.
-
-Por \'ultimo, los resultados no identifican la causa de la ventaja del
-Transformer, y todas las conclusiones se limitan a este entorno y a los
-modelos entrenados.
+\begin{itemize}
+    \item Cada escenario se gener\'o con una \'unica semilla ($42$), lo que
+    impide estimar la variabilidad de las medias y construir intervalos de
+    confianza para el ordenamiento.
+    \item Los hiperpar\'ametros se ajustaron sobre las mismas $64$
+    secuencias de la referencia, por lo que el desempe\~no en esa
+    condici\'on puede estar sobreestimado.
+    \item Las arquitecturas del DQN recurrente y del Transformer se
+    eligieron \emph{ad hoc}; otras configuraciones podr\'ian modificar el
+    ordenamiento.
+    \item La confianza se calcula sobre valores $Q$ transformados y no
+    sobre probabilidades calibradas, y no se verific\'o su relaci\'on con
+    el acierto de las decisiones.
+\end{itemize}
 
 \subsection{Trabajo futuro}\label{sec:future}
 
 \begin{itemize}
-    \item \textbf{Evaluaci\'on con semillas variables.} Generar cada
-    escenario con semillas independientes para dar intervalos de
-    confianza al ordenamiento de la Tabla~\ref{tab:global-mean}.
-    \item \textbf{Validaci\'on de la medida de confianza.} Relacionar
-    $1 - H_{\mathrm{norm}}$ con el desempe\~no por secuencia mediante
-    curvas de calibraci\'on, y extender el c\'alculo a los dem\'as
-    modelos con un procedimiento de calibraci\'on com\'un.
-    \item \textbf{Pesos dependientes del contexto en el ensamble.} Los
-    pesos base $w_k$ son constantes; una extensi\'on es aprender pesos
-    $w_k(s)$ que dependan del estado.
+    \item Repetir la evaluaci\'on con semillas independientes para
+    obtener intervalos de confianza del ordenamiento de la
+    Tabla~\ref{tab:global-mean}.
+    \item Relacionar la confianza con el acierto de cada decisi\'on
+    mediante curvas de calibraci\'on.
+    \item Aprender pesos $w_k(s)$ dependientes del estado.
 \end{itemize}
 
 \subsection{Conclusi\'on general}
 
-En el escenario controlado de mPES, el Transformer causal es el modelo
-individual que mejor decide, tanto en las condiciones de entrenamiento
-como cuando \'estas cambian, aunque no es el que menos pierde respecto
-de su propia referencia. Combinar modelos lo mejor\'o en un solo caso:
-el ensamble que suaviza las preferencias de los modelos y las mezcla con
-un \emph{prior} de severidad, que cambia buena parte de sus decisiones.
+\enlargethispage{2\baselineskip} % evita que las \'ultimas l\'ineas queden solas en una p\'agina
+En el entorno controlado de mPES, el Transformer causal es el modelo
+individual con mejor desempe\~no, en las condiciones de entrenamiento y
+fuera de ellas, aunque no es el que menos se degrada en su peor
+escenario. La combinaci\'on de modelos lo super\'o en un solo caso y por un
+margen despreciable, mediante una regla que suaviza las preferencias de
+los miembros y las mezcla con un \emph{prior} de severidad. En
+consecuencia, H1 no se refuta y H2 se refuta. Estas conclusiones se limitan al entorno y a los modelos
+evaluados.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

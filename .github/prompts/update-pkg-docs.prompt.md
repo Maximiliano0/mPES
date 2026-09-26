@@ -1,6 +1,6 @@
 # Update Package Documentation
 
-> Last updated: 2026-09-11
+> Last updated: 2026-09-25
 
 Read a target package's source code, then update its Markdown
 documentation so that it faithfully explains the current implementation.
@@ -14,7 +14,7 @@ Packages are grouped by algorithm family inside `h1/` (run `cd h1` first):
 - `tabular/` — `pes_base`, `pes_ql`, `pes_dql`.
 - `ml/`      — `pes_dqn`, `pes_rdqn`, `pes_a2c`, `pes_trf`.
 - `ens/`     — `pes_ens`, `pes_ens_sprb`, `pes_ens_accq`, `pes_ens_trf_guard`,
-  `pes_ens_consensus`, `pes_ens_consensus_prior` (the last one has no `doc/` yet).
+  `pes_ens_consensus`, `pes_ens_consensus_prior`.
 
 Throughout this prompt, `<GROUP>` is the parent directory (`tabular`, `ml`
 or `ens`) and `<PKG>` is the package short name. Accept either a short name
@@ -38,6 +38,7 @@ Examples:
 @update-pkg-docs pes_ens_accq   # ens/pes_ens_accq
 @update-pkg-docs pes_ens_trf_guard   # ens/pes_ens_trf_guard
 @update-pkg-docs pes_ens_consensus   # ens/pes_ens_consensus
+@update-pkg-docs pes_ens_consensus_prior   # ens/pes_ens_consensus_prior
 @update-pkg-docs pes_ens        # ens/pes_ens
 @update-pkg-docs all
 ```
@@ -194,20 +195,20 @@ each package's `doc/`.
 
 ### What to check and update
 
-- **Package table**: list every `tabular/pes_*` and `ml/pes_*` folder
-  that exists, with a one-line algorithm description and the key files.
+- **Package table**: list every `tabular/pes_*`, `ml/pes_*` and `ens/pes_ens*`
+  folder that exists, with a one-line algorithm description and the key files.
   Drop entries for removed packages.
 - **Package layout** ASCII tree: confirm it matches the actual directory
-  structure shared by all packages, including the `tabular/` / `ml/`
+  structure shared by all packages, including the `tabular/` / `ml/` / `ens/`
   grouping.
 - **Setup section**:
-  - Python version per OS (must match `copilot-instructions.md`).
+  - Python version (must match `copilot-instructions.md`; Windows only).
   - Dependency table versions (cross-check with `utils/config/requirements.txt`).
-  - Virtual-env activation snippets (Windows + Linux).
+  - Virtual-env activation snippets (Windows PowerShell / cmd only).
   - Required environment variables.
 - **Usage examples**: every `python -m tabular.<pkg>` /
-  `python -m ml.<pkg>` and training/optimisation command must reference
-  a package and script that still exists.
+  `python -m ml.<pkg>` / `python -m ens.<pkg>` and training/optimisation
+  command must reference a package and script that still exists.
 - **Pandemic Scenario summary**: state/action ranges, severity formula,
   reward sign, and total state count must match `Pandemic.__init__()` and
   `CONFIG.py`.

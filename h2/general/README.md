@@ -2,6 +2,8 @@
 
 # h2 — Experimental Line
 
+</div>
+
 `h2/` mirrors the project structure used by the active branch and is reserved
 for experimental variants that have not yet been promoted to the validated
 workflow.
@@ -21,7 +23,7 @@ h2/
 │   ├── README.md            # this file
 │   ├── doc/
 │   ├── results/
-│   ├── scripts/             # orchestrate / runner / aggregate / report / plotting
+│   ├── scripts/             # scenarios / orchestrate / runner / progress / aggregate / report / plot_*
 │   └── work/
 └── tabular_conf/
     ├── ql_conf/             # experimental tabular Q-Learning variant

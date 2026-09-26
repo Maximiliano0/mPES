@@ -1,6 +1,6 @@
 # GitHub Copilot Instructions
 
-> Last updated: 2026-09-24
+> Last updated: 2026-09-25
 
 ## Project Overview
 
@@ -153,7 +153,10 @@ python audit\audit.py          # audit + pdflatex/bibtex → writings/out/
 python audit\audit.py --no-tex # audit only
 python auxiliar\scripts\sync_figures.py        # copy generated figures into 02_Images, delete stale ones
 python auxiliar\scripts\ensemble_decisions.py  # decision frequencies of trf_guard, consensus_prior, pes_ens
+python auxiliar\scripts\rebuild_thesis.py      # wrapper around audit.py that checks the PDF in writings/out/
 ```
+
+`python audit\audit.py --clean` only deletes LaTeX/OS build artefacts under `writings/` and exits (no compilation).
 
 The thesis only loads images from `writings/02_Images/{frontpage,baseline,per_model,individual,ensemble,agent_internals}`
 (`\graphicspath` in `Main.tex`); rerun `sync_figures.py` after regenerating figures in `h1/`.
@@ -176,6 +179,11 @@ The thesis only loads images from `writings/02_Images/{frontpage,baseline,per_mo
   ├── result_formatter.py # Matplotlib result plots
   └── terminal_utils.py  # Rich console output (header, section, info…)
 ```
+
+> The five optimisable ensembles (`pes_ens_sprb`, `pes_ens_accq`, `pes_ens_trf_guard`,
+> `pes_ens_consensus`, `pes_ens_consensus_prior`) use a different `src/`: `pandemic_env.py`,
+> `tools_env.py`, `exp_utils_env.py`, `result_formatter_env.py`, `env_constants.py` and local copies of the
+> member model builders (`dqn_model.py`, `rdqn_model.py`, `ac_model.py`, `transformer_model.py`).
 
 ## Windows Setup
 

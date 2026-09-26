@@ -45,6 +45,7 @@ win_mpes_env\Scripts\Activate.ps1
 | Experimento completo | `python -m ml.pes_rdqn` |
 | Entrenamiento RDQN | `python -m ml.pes_rdqn.ext.train_rdqn [num_episodes]` |
 | Optimización bayesiana | `python -m ml.pes_rdqn.ext.optimize_rdqn [n_trials]` |
+| Evaluación de un modelo ya entrenado | `python -m ml.pes_rdqn.ext.eval_model [ruta.keras]` |
 
 Ejemplos:
 
@@ -56,6 +57,11 @@ python -m ml.pes_rdqn
 
 Sin argumento, `train_rdqn` usa `RDQN_EPISODES = 30 000`, el valor del mejor
 ensayo.
+
+`eval_model` carga `inputs/rdqn_model.keras` (o el `.keras` indicado) y lo
+evalúa con el mismo protocolo de 64 secuencias fijas que `optimize_rdqn`;
+imprime media, desviación, mínimo, máximo y el vector por secuencia, sin
+entrenar ni tocar el estudio Optuna.
 
 > Recuerda exportar `PYTHONIOENCODING=utf-8`,
 > `TF_ENABLE_ONEDNN_OPTS=0` y `VIRTUAL_ENV` antes de lanzar procesos
@@ -72,7 +78,7 @@ clase `HistoryDeque`, definida en
 ```python
 class HistoryDeque:
     """Per-episode sliding window of normalised states, left-padded with zeros."""
-    def __init__(self, history_len: int, state_dim: int = 3):
+    def __init__(self, history_len: int, state_dim: int):
         self._history_len = history_len
         self._state_dim   = state_dim
         self._buffer      = collections.deque(maxlen=history_len)
@@ -245,12 +251,16 @@ ml/pes_rdqn/
 │   ├── pandemic.py         # PandemicEnv compartido
 │   ├── rdqn_model.py       # build_q_network, HistoryDeque, ReplayBuffer, train_step_rdqn
 │   ├── train_rdqn.py       # Bucle de entrenamiento RDQNTraining
-│   └── optimize_rdqn.py    # Estudio Optuna
+│   ├── optimize_rdqn.py    # Estudio Optuna
+│   ├── eval_model.py       # Evaluación aislada de un .keras ya entrenado
+│   └── tools.py            # Utilidades (entropía, conversión de secuencias, plots)
 ├── inputs/
 │   ├── rdqn_model.keras
 │   ├── best_params.json
 │   ├── initial_severity.csv
-│   └── sequence_lengths.csv
+│   ├── sequence_lengths.csv
+│   ├── rewards.npy
+│   └── <fecha>_RDQN_TRAIN/  # Artefactos fechados del entrenamiento
 └── outputs/<fecha>_RDQN_AGENT/
 ```
 
@@ -274,6 +284,7 @@ ml/pes_rdqn/
 | `inputs/best_params.json` | Mejor combinación TPE. |
 | `inputs/initial_severity.csv` | Severidades iniciales. |
 | `inputs/sequence_lengths.csv` | Longitudes por secuencia. |
+| `inputs/rewards.npy` | Curva de recompensas del entrenamiento. |
 | `outputs/<fecha>_RDQN_AGENT/PES_RDQN_log_*.txt` | Log dual. |
 | `outputs/<fecha>_RDQN_AGENT/*.png` | Gráficos (severidad media, distribución de acciones). |
 

@@ -200,7 +200,8 @@ rendimiento medio sobre las 64 secuencias fijas.
 - **Logs**: `outputs/PES_TRF_log_<fecha>_BAYESIAN_OPT.txt`.
 
 ```powershell
-.\utils\win\optuna_dashboard.ps1 ml\pes_trf\inputs\<fecha>_BAYESIAN_OPT\optuna_study_<fecha>.db
+# desde h1/
+optuna-dashboard sqlite:///ml/pes_trf/inputs/<fecha>_BAYESIAN_OPT/optuna_study_<fecha>.db
 ```
 
 ---
@@ -298,6 +299,8 @@ class HistoryDeque:
 | `best_params.json` | Mejores hiperparámetros del estudio Optuna |
 | `initial_severity.csv` | Severidades iniciales por secuencia |
 | `sequence_lengths.csv` | Número de trials por secuencia |
+| `rewards.npy` | Curva de recompensas del entrenamiento |
+| `<fecha>_TRF_TRAIN/` | Modelo, recompensas, confianzas y figuras fechadas del entrenamiento |
 | `<fecha>_BAYESIAN_OPT/` | Bases de datos Optuna |
 
 ### Salidas (`ml/pes_trf/outputs/`)

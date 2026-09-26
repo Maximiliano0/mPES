@@ -101,7 +101,7 @@ $env:TF_ENABLE_ONEDNN_OPTS = "0"
 El script de entrenamiento es
 [`tabular/pes_dql/ext/train_rl.py`](../ext/train_rl.py). Se invoca con:
 
-```bash
+```powershell
 python -m tabular.pes_dql.ext.train_rl [num_episodes]
 ```
 
@@ -205,7 +205,7 @@ El script de optimización es
 
 ### 4.1 Invocación
 
-```bash
+```powershell
 python -m tabular.pes_dql.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
                                           [--out-dir PATH] [--storage URL]
 ```

@@ -8,7 +8,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - `01_Chapters/Acknowledgement.tex`
 
-- ✅ Compilación exitosa — **59 páginas**.
+- ✅ Compilación exitosa — **37 páginas**.
 - 📄 PDF: `out/mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-Secuenciales.pdf`
 
 - ✅ Sin Overfull \hbox.
@@ -19,20 +19,24 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 2. Figuras, tablas y numeración
 
-- Figuras con label: **21**.
-- Tablas con label: **13**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **88**.
+- Figuras con label: **19**.
+- Tablas con label: **12**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **50**.
 
 - ✅ Sin referencias rotas.
 
 - ✅ Sin etiquetas duplicadas.
 
-- Imágenes referenciadas con `\includegraphics`: **24**.
+- Imágenes referenciadas con `\includegraphics`: **21**.
 - ✅ Todas las imágenes referenciadas existen.
 
-- ✅ Sin imágenes huérfanas.
+**Imágenes huérfanas en `02_Images/` (no referenciadas, 3 archivos):**
 
-## 3. Citas y bibliografía (APA)
+- `02_Images/agent_internals/trf_agent_confidences.png`
+- `02_Images/ensemble/ens_04_kl_acciones_por_escenario.png`
+- `02_Images/individual/ind_04_kl_acciones_por_escenario.png`
+
+## 3. Citas y bibliografía (numérico, unsrtnat)
 
 - ✅ Todas las claves citadas existen en `References.bib`.
 

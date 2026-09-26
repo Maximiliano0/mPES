@@ -11,9 +11,8 @@ Carpetas de ``02_Images``:
 ``frontpage``      logo de la portada
 ``baseline``       jugador aleatorio (``general.scripts.random_baseline``)
 ``per_model``      resultados por secuencia en la referencia (benchmark)
-``individual``     mapas y curvas de los modelos individuales
-``ensemble``       mapas y curvas de los ensambles
-``agent_internals`` confianza del Transformer (``general.scripts.agent_internals``)
+``individual``     mapas y curvas de los modelos individuales (Resultados y Apéndice C)
+``ensemble``       mapas y curvas de los ensambles (Resultados y Apéndice C)
 =================  ==========================================================
 
 Uso (desde la raíz del repositorio)::
@@ -41,12 +40,13 @@ KEEP = {os.path.join('frontpage', 'LOGO-ITBA.jpg')}
 
 PER_MODEL = {'PES_BASE': 'pes_base', 'PES_QL': 'pes_ql', 'PES_DQL': 'pes_dql', 'PES_DQN': 'pes_dqn',
              'PES_RDQN': 'pes_rdqn', 'PES_A2C': 'pes_a2c', 'PES_TRF': 'pes_trf', 'PES_ENS': 'pes_ens'}
+# Los mapas de Welch y d de Cohen están en el Apéndice C. Los mapas de KL y la
+# confianza del Transformer (antiguo Apéndice D) no se usan en la tesis.
 SUITE_FIGURES = {'ind': ('individual', ['01_desempeno_por_escenario', '03_welch_logp_por_escenario',
-                                         '04_kl_acciones_por_escenario', '05_curvas_por_familia',
-                                         '13_pares_cohen_d']),
+                                         '05_curvas_por_familia', '13_pares_cohen_d']),
                  'ens': ('ensemble', ['01_desempeno_por_escenario', '03_welch_logp_por_escenario',
-                                      '04_kl_acciones_por_escenario', '06_curvas_estresores_universales',
-                                      '07_cohen_d_por_escenario', '12_pares_welch_logp', '13_pares_cohen_d'])}
+                                      '06_curvas_estresores_universales', '07_cohen_d_por_escenario',
+                                      '12_pares_welch_logp', '13_pares_cohen_d'])}
 RENAMES = {'ens_06_curvas_estresores_universales': 'ens_06_curvas_extrapolacion'}
 
 
@@ -89,8 +89,6 @@ def figure_map() -> dict:
         for stem in stems:
             name = RENAMES.get(f'{tag}_{stem}', f'{tag}_{stem}')
             mapping[os.path.join(suite, f'{name}.png')] = os.path.join(RESULTS, suite, 'figures', f'{stem}.png')
-    mapping[os.path.join('agent_internals', 'trf_agent_confidences.png')] = os.path.join(
-        RESULTS, 'agent_internals', 'trf_agent_confidences.png')
     return mapping
 
 

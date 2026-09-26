@@ -171,10 +171,10 @@ Cada trial entrena un agente reducido (menos episodios) y devuelve el
 - **Mejores parámetros**: `inputs/best_params.json`.
 - **Logs**: `outputs/PES_A2C_log_<fecha>_BAYESIAN_OPT.txt`.
 
-Para visualizar el progreso del estudio:
+Para visualizar el progreso del estudio (desde `h1/`):
 
 ```powershell
-.\utils\win\optuna_dashboard.ps1 ml\pes_a2c\inputs\<fecha>_BAYESIAN_OPT\optuna_study_<fecha>.db
+optuna-dashboard sqlite:///ml/pes_a2c/inputs/<fecha>_BAYESIAN_OPT/optuna_study_<fecha>.db
 ```
 
 ---

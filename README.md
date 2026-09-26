@@ -22,8 +22,8 @@
 - 🧪 **Experimental staging line:** `h2/` (`tabular_conf/ql_conf`, `tabular_conf/dql_conf`) remains out of the validated benchmark path.
 - 📊 **Under Stress Experiments:** [`h1/general/`](h1/general/) over seven individual models and six ensemble variants.
 - 🔬 **Bayesian optimisation:** Optuna for the trainable variants.
-- 🌍 **Windows-first workflow:** Python 3.12 and the `win_mpes_env` environment.
-- 📚 **Package-level docs:** focused on the active models and their executable workflows, while legacy variants remain documented as archive material.
+- 🌍 **Windows-only workflow:** Python 3.12 and the `win_mpes_env` environment.
+- 📚 **Package-level docs:** every package ships `doc/<pkg>_explained.md` (usage) and `doc/<pkg>_theory.md` (theory), in Markdown only.
 - 📝 **Thesis:** [`writings/`](writings/) holds the LaTeX manuscript (`00_Main/Main.tex`, chapters in `01_Chapters/`, figures in `02_Images/`) and its audit script (`audit/audit.py`).
 
 ### Repository lines
@@ -77,11 +77,28 @@
 
 ---
 
+## ⚙️ Setup
+
+Activate the virtual environment from the repository root (PowerShell):
+
+```powershell
+win_mpes_env\Scripts\Activate.ps1
+$env:PYTHONIOENCODING = "utf-8"
+$env:TF_ENABLE_ONEDNN_OPTS = "0"
+```
+
+`VIRTUAL_ENV` must point to the active environment (set by the activation
+script); otherwise each package's `__init__.py` pauses with a "Press ENTER"
+prompt. Pinned dependencies live in
+[`utils/config/requirements.txt`](utils/config/requirements.txt).
+
+---
+
 ## ▶️ Usage
 
 > Run all commands from inside `h1/`.
 
-```bash
+```powershell
 cd h1
 
 python -m tabular.pes_base
@@ -103,7 +120,7 @@ python -m ens.pes_ens
 
 ### Bayesian optimisation
 
-```bash
+```powershell
 cd h1
 python -m tabular.pes_ql.ext.optimize_rl 50
 python -m tabular.pes_dql.ext.optimize_rl 50
@@ -124,7 +141,7 @@ python -m ens.pes_ens_consensus_prior.ext.optimize_ens 50
 
 ## 📚 Documentation
 
-The active repository documentation is centred on the executable packages in `h1/`. The general benchmark harness compares individual and ensemble suites under the same stress catalogue; historical thesis-style write-ups are retained only as archive material and are not part of the active workflow.
+The active repository documentation is centred on the executable packages in `h1/`. The general benchmark harness compares individual and ensemble suites under the same stress catalogue.
 
 | Package | Guide |
 |---------|-------|
@@ -170,6 +187,22 @@ python -m general.scripts.agent_internals
 
 The full comparison is documented in
 [`h1/general/doc/comparacion_modelos.md`](h1/general/doc/comparacion_modelos.md).
+
+---
+
+## 📝 Thesis
+
+```powershell
+cd writings
+python audit\audit.py                          # audit + pdflatex/bibtex -> writings/out/
+python audit\audit.py --no-tex                 # audit only
+python auxiliar\scripts\sync_figures.py        # copy generated h1/ figures into 02_Images
+python auxiliar\scripts\ensemble_decisions.py  # decision frequencies of the fixed ensemble rules
+python auxiliar\scripts\rebuild_thesis.py      # wrapper around audit.py that checks the PDF in out/
+```
+
+The audit report is written to
+[`writings/audit/AUDIT.md`](writings/audit/AUDIT.md).
 
 ---
 

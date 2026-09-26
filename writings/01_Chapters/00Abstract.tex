@@ -2,52 +2,46 @@
 \documentclass[../00_Main/Main.tex]{subfiles}
 \begin{document}
 
-Esta tesis compara distintos m\'etodos de aprendizaje por refuerzo en un
-problema de asignaci\'on de recursos limitados bajo incertidumbre, con
-una pandemia simulada como banco de pruebas. En cada paso llega una
-ciudad con un nivel de severidad y el agente decide cu\'antos recursos
-le asigna de un presupuesto fijo. La severidad que no se atiende crece
-en los pasos siguientes, de modo que una asignaci\'on insuficiente al
-principio se paga m\'as adelante. El trabajo se implement\'o en mPES,
-una extensi\'on del entorno de pandemia de la Universidad de Essex.
+Esta tesis compara m\'etodos de aprendizaje por refuerzo en un problema
+de asignaci\'on secuencial con recursos limitados. Como escenario de prueba
+se emplea una pandemia simulada, en la cual las ciudades se presentan
+sucesivamente, cada una con una severidad inicial, y un agente decide
+cu\'antos recursos asignarle a partir de un presupuesto fijo. La severidad
+no atendida crece en cada paso, por lo que una asignaci\'on insuficiente
+en una ciudad se ampl\'ia en los pasos siguientes.
 
-Se evaluaron seis modelos individuales, con hiperpar\'ametros ajustados por optimizaci\'on bayesiana. Dos son m\'etodos tabulares (Q-Learning y Double Q-Learning) y cuatro son redes neuronales: una red profunda (DQN), una variante
-recurrente que recuerda los \'ultimos estados (DQN recurrente, con una capa LSTM), un m\'etodo
-actor--cr\'itico (A2C) y un Transformer causal, que atiende a la historia
-reciente de la secuencia. Tambi\'en se evaluaron seis ensambles que
-combinan las decisiones de varias de esas redes. Todos se probaron sobre
-las mismas $64$ secuencias, primero en las condiciones de entrenamiento y despu\'es en
-$21$ escenarios de generalizaci\'on que cambian la distribuci\'on de
-severidades, la longitud de las secuencias o ambas. Tres de ellos llevan
-la severidad o la longitud por encima de las cotas del entorno.
+Se entrenaron seis agentes: dos tabulares (Q-Learning y Double
+Q-Learning) y cuatro redes neuronales (una red Q profunda, una variante
+recurrente que procesa los \'ultimos estados, un m\'etodo actor--cr\'itico
+y un Transformer causal que atiende a la historia reciente). Se
+evaluaron adem\'as seis reglas para combinar las redes en un ensamble, en
+las que cada red se pondera seg\'un su confianza en la decisi\'on,
+derivada de la entrop\'ia de Shannon. Todos
+los modelos se evaluaron sobre las mismas $64$ secuencias de ciudades en
+las condiciones de entrenamiento y en $21$ escenarios con otras
+severidades o longitudes, tres de ellos fuera del rango de entrenamiento.
 
-El desempe\~no se mide como la fracci\'on de la mejora posible que logra
-el agente en cada secuencia: $0$ equivale a no asignar ning\'un recurso y
-$1$ a la asignaci\'on \'optima, calculada conociendo de antemano la
-secuencia completa. Un agente que decide al azar
-obtiene $0{,}670$.
+Como m\'etrica de comparaci\'on se emplea el desempe\~no normalizado de
+cada secuencia, donde $0$ representa la ausencia de asignaci\'on y $1$ la
+asignaci\'on \'optima, calculada con conocimiento de la secuencia
+completa. El an\'alisis identifica al Transformer como el mejor modelo
+individual, tanto en las condiciones de entrenamiento como en los
+escenarios de generalizaci\'on.
 
-El Transformer fue el mejor modelo individual: obtuvo $0{,}927$ en las
-condiciones de entrenamiento, frente a $0{,}887$ de Q-Learning, es
-decir, redujo en alrededor de un $36\,\%$ la distancia al \'optimo. En los escenarios de generalizaci\'on mantuvo ese nivel
-($0{,}930$, frente a $0{,}871$ de Q-Learning). El mejor sistema fue un
-ensamble que combina DQN, la red recurrente y el Transformer y agrega dos
-reglas fijas (un \emph{prior} de severidad y una cota de seguridad), con
-$0{,}939$ en los escenarios de generalizaci\'on. Los peores resultados
-fueron los de los m\'etodos tabulares cuando la severidad supera la cota
-del entorno ($0{,}76$ y $0{,}79$, frente a $0{,}996$ del Transformer). Para la mayor\'ia de las redes profundas, el caso m\'as dif\'icil fueron las secuencias m\'as largas que las de entrenamiento.
-
-Los ensambles ponderan a cada modelo seg\'un su confianza en cada
-decisi\'on, medida como uno menos la entrop\'ia normalizada de su
-distribuci\'on de acciones. El \'unico que super\'o al Transformer le da a
-\'este la mayor parte del peso, pero en la referencia su decisi\'on final
-difiere de la del Transformer en el $61\,\%$ de los casos, principalmente
-por el \emph{prior} de severidad; los que s\'olo promedian o votan quedaron
-por debajo.
+Entre los ensambles, s\'olo el ensamble ponderado supera al Transformer
+individual, por un margen reducido, y aquel que incluye una compuerta
+que regula la participaci\'on del Transformer alcanza un desempe\~no
+equivalente, porque ejecuta la acci\'on de este en casi todas las
+decisiones. La ventaja del ensamble ponderado se asocia a una
+temperatura alta y a un \emph{prior} de severidad m\'as que a la
+ponderaci\'on por confianza. Los ensambles que s\'olo promedian o votan
+con pesos derivados de la entrop\'ia de Shannon quedan por debajo del
+Transformer individual, por lo que esa confianza no basta por s\'i sola
+para superar al mejor miembro en t\'erminos de desempe\~no promedio.
 
 \par\vspace{0.5\baselineskip}
 \noindent\textbf{Palabras clave:} aprendizaje por refuerzo, asignaci\'on
-secuencial de recursos, Transformer causal, ensambles de modelos,
+secuencial con recursos limitados, Transformer causal, ensambles de modelos,
 entrop\'ia de Shannon, generalizaci\'on.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

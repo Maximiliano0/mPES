@@ -468,7 +468,9 @@ def compile_latex() -> dict:
     underfull = re.findall(r"Underfull \\hbox[^\n]+", log)
     warnings = re.findall(
         r"^(?:LaTeX|Package [^\s]+) Warning:[^\n]+", log, re.MULTILINE)
-    errors   = re.findall(r"^!.+", log, re.MULTILINE)
+    # Con -file-line-error, pdflatex informa los errores como
+    # "archivo.tex:línea: mensaje" en lugar de "! mensaje": se buscan ambos.
+    errors   = re.findall(r"^(?:!.+|[^\n]*\.tex:\d+: .+)", log, re.MULTILINE)
     pages    = None
     m_out    = re.search(r"Output written on[^\n]+", log)
     if m_out:
@@ -635,7 +637,7 @@ def build_report(tex_result: dict | None) -> str:
         L.append("- ✅ Sin imágenes huérfanas.\n")
 
     # 3 ── Citas
-    L.append("## 3. Citas y bibliografía (APA)\n")
+    L.append("## 3. Citas y bibliografía (numérico, unsrtnat)\n")
     bib = audit_bib()
     if bib["missing"]:
         L.append("**Claves citadas sin entrada en `.bib`:**\n")

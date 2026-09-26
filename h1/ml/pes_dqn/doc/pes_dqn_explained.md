@@ -14,7 +14,7 @@ función de valor de acción. En el Pandemic Scenario, el estado normalizado
 es continuo:
 
 $$
-s = \left[\frac{\text{recursos}}{39},\; \frac{\text{trial}}{10},\; \frac{\text{severidad}}{1}\right] \in [0,1]^3
+s = \left[\frac{\text{recursos}}{30},\; \frac{\text{trial}}{10},\; \frac{\text{severidad}}{9}\right] \in [0,1]^3
 $$
 
 Una tabla discretiza ese espacio en celdas y sufre dos problemas graves:
@@ -82,7 +82,7 @@ y la red en [ml/pes_dqn/ext/dqn_model.py](../ext/dqn_model.py).
    `inputs/sequence_lengths.csv`.
 2. Se crean **dos** redes Q idénticas: `q_online` y `q_target`, ambas vía
    `build_q_network(state_dim=3, action_dim=11, hidden_units=[64, 64])`.
-3. Se instancia el `ReplayBuffer(max_size=20000)` (`DQN_REPLAY_BUFFER_SIZE`).
+3. Se instancia el `ReplayBuffer(capacity=20000)` (`DQN_REPLAY_BUFFER_SIZE`).
 4. Se fija `epsilon = DQN_EPSILON_INITIAL ≈ 0.963` (valor mejor de Optuna).
 
 ### 3.2 Bucle por episodio
@@ -209,13 +209,16 @@ ml/pes_dqn/
 │   ├── pandemic.py        # PandemicEnv (gymnasium)
 │   ├── dqn_model.py       # build_q_network, ReplayBuffer, sync_target_network, normalize_state, train_step_dqn
 │   ├── train_dqn.py       # Bucle de entrenamiento DQNTraining
-│   └── optimize_dqn.py    # Estudio Optuna
+│   ├── optimize_dqn.py    # Estudio Optuna
+│   └── tools.py           # Utilidades (entropía, conversión de secuencias, plots)
 ├── inputs/
 │   ├── dqn_model.keras    # Pesos finales
 │   ├── best_params.json   # Resultado de la optimización
 │   ├── initial_severity.csv
 │   ├── sequence_lengths.csv
-│   └── rewards.npy
+│   ├── rewards.npy
+│   ├── <fecha>_BAYESIAN_OPT/   # Estudio Optuna fechado
+│   └── <fecha>_DQN_TRAIN/      # Artefactos fechados del entrenamiento
 └── outputs/<fecha>_DQN_AGENT/   # Logs y gráficos
 ```
 

@@ -5,18 +5,19 @@
 
 @misc{BCINE2022,
   author       = {{BCI-NE Lab, University of Essex}},
-  title        = {{PES}: Pandemic Experiment Scenario},
+  title        = {{PES}: {Pandemic Experiment Scenario}},
   howpublished = {\url{https://github.com/BCI-NE/PES}},
   year         = {2023},
   note         = {Accedido: septiembre 2026}
 }
 
-@article{Towers2024,
-  author  = {Towers, Mark and Kwiatkowski, Ariel and Terry, Jordan and Balis, John U. and De Cola, Gianluca and Deleu, Tristan and Goul{\~a}o, Manuel and Kallinteris, Andreas and Krimmel, Markus and Arjun, K. G. and Perez-Vicente, Rodrigo and Pierr{\'e}, Andrea and Schulhoff, Sander and Tai, Jun Jet and Tan, Hannah and Younis, Omar G.},
-  title   = {Gymnasium: A Standard Interface for Reinforcement Learning Environments},
-  journal = {arXiv preprint arXiv:2407.17032},
-  year    = {2024},
-  url     = {https://arxiv.org/abs/2407.17032}
+@inproceedings{Towers2024,
+  author    = {Towers, Mark and Kwiatkowski, Ariel and Terry, Jordan and Balis, John U. and De Cola, Gianluca and Deleu, Tristan and Goul{\~a}o, Manuel and Kallinteris, Andreas and Krimmel, Markus and KG, Arjun and Perez-Vicente, Rodrigo and Pierr{\'e}, Andrea and Schulhoff, Sander and Tai, Jun Jet and Tan, Hannah and Younis, Omar G.},
+  title     = {Gymnasium: A Standard Interface for Reinforcement Learning Environments},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track},
+  year      = {2025},
+  note      = {arXiv:2407.17032},
+  url       = {https://arxiv.org/abs/2407.17032}
 }
 
 @book{SuttonBarto2018,
@@ -51,6 +52,7 @@
   author    = {Ng, Andrew Y. and Harada, Daishi and Russell, Stuart},
   title     = {Policy invariance under reward transformations: Theory and application to reward shaping},
   booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {278--287},
   year      = {1999}
 }
 
@@ -100,15 +102,6 @@
   year    = {1964}
 }
 
-@article{Hochreiter1997,
-  author  = {Hochreiter, Sepp and Schmidhuber, J{\"u}rgen},
-  title   = {Long short-term memory},
-  journal = {Neural Computation},
-  volume  = {9},
-  number  = {8},
-  pages   = {1735--1780},
-  year    = {1997}
-}
 
 @inproceedings{Hausknecht2015,
   author    = {Hausknecht, Matthew and Stone, Peter},
@@ -131,6 +124,9 @@
   author    = {Mnih, Volodymyr and Badia, Adri{\`a} Puigdom{\`e}nech and Mirza, Mehdi and Graves, Alex and Lillicrap, Timothy and Harley, Tim and Silver, David and Kavukcuoglu, Koray},
   title     = {Asynchronous methods for deep reinforcement learning},
   booktitle = {International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {48},
+  pages     = {1928--1937},
   year      = {2016}
 }
 
@@ -139,13 +135,17 @@
   author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
   title     = {Attention is all you need},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {30},
   year      = {2017}
 }
 
 @inproceedings{Parisotto2020,
-  author    = {Parisotto, Emilio and Song, H. Francis and Rae, Jack W. and Pascanu, Razvan and Gulcehre, Caglar and Jayakumar, Siddhant M. and Jaderberg, Max and Kaufman, Raphael Lopez and Clark, Aidan and Noury, Seb and Botvinick, Matthew M. and Heess, Nicolas and Hadsell, Raia},
+  author    = {Parisotto, Emilio and Song, H. Francis and Rae, Jack W. and Pascanu, Razvan and Gulcehre, Caglar and Jayakumar, Siddhant M. and Jaderberg, Max and Kaufman, Rapha{\"e}l Lopez and Clark, Aidan and Noury, Seb and Botvinick, Matthew M. and Heess, Nicolas and Hadsell, Raia},
   title     = {Stabilizing transformers for reinforcement learning},
   booktitle = {International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {7487--7498},
   year      = {2020}
 }
 
@@ -153,6 +153,7 @@
   author    = {Chen, Lili and Lu, Kevin and Rajeswaran, Aravind and Lee, Kimin and Grover, Aditya and Laskin, Michael and Abbeel, Pieter and Srinivas, Aravind and Mordatch, Igor},
   title     = {Decision {T}ransformer: Reinforcement learning via sequence modeling},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {34},
   year      = {2021}
 }
 
@@ -160,6 +161,7 @@
   author    = {Lakshminarayanan, Balaji and Pritzel, Alexander and Blundell, Charles},
   title     = {Simple and scalable predictive uncertainty estimation using deep ensembles},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {30},
   year      = {2017}
 }
 
@@ -167,6 +169,8 @@
   author    = {Bergstra, James and Bardenet, R{\'e}mi and Bengio, Yoshua and K{\'e}gl, Bal{\'a}zs},
   title     = {Algorithms for hyper-parameter optimization},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {24},
+  pages     = {2546--2554},
   year      = {2011}
 }
 
@@ -174,7 +178,9 @@
   author    = {Akiba, Takuya and Sano, Shotaro and Yanase, Toshihiko and Ohta, Takeru and Koyama, Masanori},
   title     = {Optuna: A next-generation hyperparameter optimization framework},
   booktitle = {ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (KDD)},
-  year      = {2019}
+  pages     = {2623--2631},
+  year      = {2019},
+  doi       = {10.1145/3292500.3330701}
 }
 
 @book{Cohen1988,
@@ -205,7 +211,7 @@
 
 @misc{ds004477,
   author       = {Papastylianou, Tasos and Ramele, Rodrigo and Citi, Luca and Cinel, Caterina and Poli, Riccardo},
-  title        = {{PES} -- Pandemic Emergency Scenario},
+  title        = {{PES} -- {Pandemic Emergency Scenario}},
   howpublished = {OpenNeuro, conjunto de datos ds004477, versi\'on 1.0.2},
   year         = {2023},
   doi          = {10.18112/openneuro.ds004477.v1.0.2},
@@ -223,23 +229,21 @@
 @inproceedings{Henderson2018,
   author    = {Henderson, Peter and Islam, Riashat and Bachman, Philip and Pineau, Joelle and Precup, Doina and Meger, David},
   title     = {Deep reinforcement learning that matters},
-  booktitle = {AAAI Conference on Artificial Intelligence},
-  year      = {2018}
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {32},
+  number    = {1},
+  year      = {2018},
+  doi       = {10.1609/aaai.v32i1.11694}
 }
 
 @inproceedings{Cobbe2020,
   author    = {Cobbe, Karl and Hesse, Christopher and Hilton, Jacob and Schulman, John},
   title     = {Leveraging procedural generation to benchmark reinforcement learning},
   booktitle = {International Conference on Machine Learning (ICML)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {119},
+  pages     = {2048--2056},
   year      = {2020}
-}
-
-@article{Packer2018,
-  author  = {Packer, Charles and Gao, Katelyn and Kos, Jernej and Kr{\"a}henb{\"u}hl, Philipp and Koltun, Vladlen and Song, Dawn},
-  title   = {Assessing generalization in deep reinforcement learning},
-  journal = {arXiv preprint arXiv:1810.12282},
-  year    = {2018},
-  url     = {https://arxiv.org/abs/1810.12282}
 }
 
 @article{Kirk2023,
@@ -253,7 +257,7 @@
 
 @misc{mPES2026,
   author       = {Vega, Maximiliano},
-  title        = {{mPES}: Multiple Pandemic Experiment Suite},
+  title        = {{mPES}: {Multiple Pandemic Experiment Suite}},
   howpublished = {\url{https://github.com/Maximiliano0/mPES}},
   year         = {2026},
   note         = {Repositorio oficial. Accedido: septiembre 2026}
@@ -278,6 +282,7 @@
   pages   = {379--423},
   year    = {1948},
   doi     = {10.1002/j.1538-7305.1948.tb01338.x}
+
 }
 
 @inproceedings{Schulman2016,

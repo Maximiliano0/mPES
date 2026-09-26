@@ -51,8 +51,8 @@ Toda la argumentación debe converger en estas dos hipótesis:
   `subfiles`), capítulos en `writings/01_Chapters/*.tex` con encabezado
   `% !TEX root = ../00_Main/Main.tex`, figuras en `writings/02_Images/`
   (rutas ya declaradas en `\graphicspath`), bibliografía en
-  `writings/00_Main/References.bib` (único `.bib` cargado por `Main.tex`;
-  `mPES_citation.bib` y `Lakshminarayanan2017.bib` son copias auxiliares).
+  `writings/00_Main/References.bib` (único `.bib` del documento; estilo
+  numérico `unsrtnat`).
 - No cambies el preámbulo de `Main.tex` (paquetes, geometría, estilo) salvo
   petición explícita del usuario.
 - Comandos de terminal: únicamente compilación/validación LaTeX (`pdflatex`,

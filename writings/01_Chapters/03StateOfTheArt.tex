@@ -4,89 +4,53 @@
 
 \label{sec:soa}
 
-Este trabajo se apoya en tres l\'ineas: el aprendizaje por refuerzo
-profundo, los modelos secuenciales basados en atenci\'on y la
-evaluaci\'on de la generalizaci\'on en RL. El punto de partida es el
-entorno \emph{Pandemic Experiment Scenario} (PES)~\citep{BCINE2022},
-desarrollado por el BCI-NE Lab de la Universidad de Essex para estudiar
-la decisi\'on conjunta en equipos humano--m\'aquina~\citep{Nijjar2025}. Los datos
-de un experimento en el que nueve participantes decid\'ian junto a un
-agente artificial est\'an publicados como el conjunto
-\texttt{ds004477}~\citep{ds004477}. Esta tesis s\'olo toma el entorno:
-no trabaja con participantes ni con esos datos, sino con agentes
-artificiales.
+El entorno de partida, PES~\citep{BCINE2022}, fue desarrollado por el
+BCI-NE Lab de la Universidad de Essex para estudiar decisiones tomadas en
+conjunto por personas y agentes artificiales~\citep{Nijjar2025,ds004477}.
+Esta tesis utiliza \'unicamente el entorno; todas las decisiones son
+tomadas por agentes artificiales.
 
-\subsection{Aprendizaje por refuerzo profundo}
+\subsection{Transformers en aprendizaje por refuerzo}\label{sec:soa-trf}
 
-El RL pas\'o de m\'etodos tabulares como Q-Learning~\citep{Watkins1992}
-a aproximaciones capaces de manejar espacios de estados
-grandes~\citep{SuttonBarto2018}. Los trabajos en los que se apoyan los
-modelos de esta tesis son la red Q profunda de Mnih
-\emph{et al.}~\citep{Mnih2015}, con repetici\'on de experiencia y red
-objetivo; las correcciones de la sobreestimaci\'on de Double
-Q-Learning~\citep{Hasselt2010} y Double DQN~\citep{Hasselt2016}; y los
-m\'etodos actor--cr\'itico~\citep{Mnih2016}. Sus fundamentos se resumen
-en el Cap\'itulo~\ref{sec:background}.
-
-\subsection{Modelado secuencial con Transformers}\label{sec:soa-trf}
-
-La arquitectura Transformer~\citep{Vaswani2017} usa la atenci\'on causal
-(Ecuaci\'on~\eqref{eq:causal-attention}) para combinar todas las
-posiciones previas de una ventana de estados. En RL se la us\'o de dos
-maneras. El \emph{Decision Transformer}~\citep{Chen2021} trata el RL
-como modelado de secuencias: aprende de trayectorias ya registradas y
-genera acciones condicionadas al retorno deseado. La otra manera la usa
+En RL, el Transformer se ha empleado de dos maneras. El \emph{Decision
+Transformer}~\citep{Chen2021} aprende de trayectorias ya registradas y
+genera acciones condicionadas al retorno deseado. La segunda lo emplea
 como codificador de la historia en un agente que aprende interactuando
-con el entorno. En ese caso, Parisotto
-\emph{et al.}~\citep{Parisotto2020} mostraron que el Transformer
-est\'andar es dif\'icil de entrenar y que, con la normalizaci\'on de capa
-aplicada antes de cada subcapa y compuertas en las conexiones
-residuales, iguala o supera a las LSTM en tareas que requieren memoria.
-El Transformer de esta tesis sigue la segunda manera: es un DQN cuyo
-codificador procesa los \'ultimos estados.
+con el entorno: Parisotto \emph{et al.}~\citep{Parisotto2020} mostraron
+que en ese caso el Transformer est\'andar es dif\'icil de entrenar y que,
+con normalizaci\'on de capa antes de cada subcapa y compuertas en las
+conexiones residuales, alcanza o supera el desempe\~no de las LSTM en
+tareas que requieren memoria. El Transformer de esta tesis sigue el segundo enfoque: es un DQN
+cuyo codificador procesa los \'ultimos estados. Como el estado de mPES no
+incluye la severidad de las ciudades ya atendidas ni la longitud de la
+secuencia (Secci\'on~\ref{sec:env-dyn}), comparar modelos con ventana
+(DQN recurrente y Transformer) y sin ella (DQN) indica si esa
+informaci\'on mejora las decisiones.
 
-En mPES el estado no incluye la severidad de las ciudades ya atendidas,
-que suma a la recompensa, ni la longitud de la secuencia
-(Secci\'on~\ref{sec:env-dyn}). Un modelo que ve los estados recientes
-dispone de informaci\'on para estimar mejor el retorno de cada acci\'on.
-Si eso se traduce en mejores decisiones es una pregunta emp\'irica, que
-esta tesis responde comparando modelos con y sin ventana.
+\subsection{Ensambles en aprendizaje por refuerzo}
 
-\subsection{Ensambles de modelos}
+Lakshminarayanan \emph{et al.}~\citep{Lakshminarayanan2017} mostraron
+que promediar redes de la misma arquitectura, entrenadas desde
+inicializaciones distintas, mejora la estimaci\'on de la incertidumbre.
+Wiering y van Hasselt~\citep{Wiering2008} combinaron las pol\'iticas de
+cinco algoritmos distintos, entre ellos Q-learning, Sarsa y
+actor--cr\'itico, mediante votaci\'on y combinaciones de distribuciones de
+Boltzmann. Los ensambles de esta
+tesis siguen esa l\'inea, pero combinan modelos ya entrenados y ponderan
+a cada uno por la entrop\'ia de su distribuci\'on de acciones.
 
-Combinar varios modelos es una forma habitual de obtener predicciones
-m\'as estables. Lakshminarayanan
-\emph{et al.}~\citep{Lakshminarayanan2017} mostraron que promediar redes
-de la misma arquitectura, entrenadas desde inicializaciones distintas,
-mejora la estimaci\'on de la incertidumbre. En RL, Wiering y van
-Hasselt~\citep{Wiering2008} combinaron en un mismo agente las pol\'iticas
-de cinco algoritmos distintos, entre ellos Q-learning, Sarsa y
-actor--cr\'itico, mediante votaci\'on y combinaciones de distribuciones
-de Boltzmann. En sus laberintos, el voto mayoritario y la
-multiplicaci\'on de Boltzmann superaron a los algoritmos individuales.
-Los ensambles de esta tesis siguen esa segunda l\'inea, con dos
-diferencias: combinan modelos ya entrenados, sin reentrenarlos, y
-ponderan a cada uno por la entrop\'ia de su distribuci\'on de
-acciones.
+\subsection{Generalizaci\'on bajo variaciones controladas}
 
-\subsection{Generalizaci\'on bajo variaciones controladas del entorno}
-
-Varios trabajos mostraron que evaluar un agente en las mismas
-condiciones del entrenamiento sobreestima la calidad de lo aprendido.
 Henderson \emph{et al.}~\citep{Henderson2018} encontraron que los
-algoritmos habituales son sensibles a la semilla, a los
+algoritmos de RL profundo son sensibles a la semilla, a los
 hiperpar\'ametros y a detalles de implementaci\'on; Cobbe
 \emph{et al.}~\citep{Cobbe2020} mostraron que agentes con buen
-rendimiento en los niveles de entrenamiento de ProcGen fallaban en
-niveles nuevos generados con la misma regla; Packer
-\emph{et al.}~\citep{Packer2018} distinguieron entre interpolaci\'on y
-extrapolaci\'on de los par\'ametros del entorno; y Kirk
+rendimiento en los niveles de entrenamiento no generalizaban
+a niveles nuevos producidos con la misma regla, y Kirk
 \emph{et al.}~\citep{Kirk2023} recomiendan evaluar sobre familias de
-variaciones controladas del entorno.
-
-mPES sigue esa recomendaci\'on: adem\'as de la condici\'on de
-referencia, eval\'ua cada modelo en $21$ escenarios de generalizaci\'on,
-tres de ellos por encima de las cotas del entorno
+variaciones controladas del entorno. Siguiendo esa recomendaci\'on, cada
+modelo se eval\'ua en $21$ escenarios de generalizaci\'on, tres de
+ellos por encima de las cotas del entorno
 (Secci\'on~\ref{sec:scenario-catalogue}).
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

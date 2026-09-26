@@ -83,7 +83,7 @@ El paquete genera artefactos en `inputs/` y `outputs/` con:
 
 ## 6. Referencia rápida
 
-- Teoría: `pes_base_theory.md`
-- Benchmark general: `h1/general/README.md`
+- Teoría: [`pes_base_theory.md`](pes_base_theory.md)
+- Benchmark general: [`h1/general/README.md`](../../../general/README.md)
 
-> Este documento es el archivo canónico del paquete. Los documentos antiguos con nombres alternativos quedan como referencias legacy y no deben usarse como documentación activa.
+> Este documento y `pes_base_theory.md` son la documentación canónica del paquete.

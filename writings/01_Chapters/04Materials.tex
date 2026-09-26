@@ -4,53 +4,53 @@
 
 \label{sec:methods}
 
-Este cap\'itulo describe el entorno, la m\'etrica de desempe\~no, la
-implementaci\'on de los modelos individuales y de los ensambles, la
-optimizaci\'on de hiperpar\'ametros y el protocolo de evaluaci\'on.
-
 \subsection{Implementaci\'on}
 
 Los experimentos se implementaron en el repositorio
-\texttt{mPES}~\citep{mPES2026}, que extiende el repositorio \texttt{PES}
-del BCI-NE Lab~\citep{BCINE2022}, del que hereda el entorno y la
-implementaci\'on tabular de Q-Learning. El c\'odigo est\'a organizado en
-tres grupos de paquetes: \texttt{tabular/} (m\'etodos tabulares),
-\texttt{ml/} (redes neuronales) y \texttt{ens/} (ensambles). Cada
-paquete incluye el entorno, implementado con
-Gymnasium~\citep{Towers2024}, su rutina de entrenamiento y, cuando
-corresponde, su estudio de optimizaci\'on bayesiana. Se us\'o Python 3.12
-con TensorFlow 2.21, Keras 3.13, NumPy 2.4, Optuna 4.7, Gymnasium 1.2 y
-SciPy 1.17. Los comandos para reproducir cada resultado est\'an en el
+\texttt{mPES}~\citep{mPES2026}. Cada paquete (\texttt{tabular},
+\texttt{ml} y \texttt{ens}) incluye el entorno,
+implementado con Gymnasium~\citep{Towers2024}, su entrenamiento y, cuando
+corresponde, su optimizaci\'on bayesiana. Se utiliz\'o Python 3.12 con
+TensorFlow 2.21, Keras 3.13, NumPy 2.4, Optuna 4.7, Gymnasium 1.2 y
+SciPy 1.17; los comandos de reproducci\'on est\'an en el
 Ap\'endice~\ref{ap:repro}.
 
-\subsection{Entorno PES}
+\subsection{Entorno}\label{sec:env-dyn}
 
-\subsubsection{Estados y acciones}
-
-El entorno se implementa como un MDP finito. En cada paso (\emph{trial}) llega una
-ciudad y el agente decide cu\'antas unidades de un recurso escaso le
-asigna. El estado que observa el agente es:
+El entorno se formula como un MDP finito (Secci\'on~\ref{sec:mdp-bg}). En
+cada paso (\emph{trial}) se presenta una ciudad y el agente decide cu\'antas
+unidades de un recurso escaso le asigna. Los estados y las acciones son:
 
 \begin{equation}
-\mathcal{S} \;=\;
-\bigl\{(R, t, S) : R \in \{0, \ldots, 30\},\;
-t \in \{0, \ldots, T_{\max}\},\;
-S \in \{0, \ldots, S_{\max}\}\bigr\}
+\begin{gathered}
+\mathcal{S} = \bigl\{(R, t, S) : R \in \{0, \ldots, 30\},\;
+t \in \{0, \ldots, 10\},\; S \in \{0, \ldots, 9\}\bigr\} \\
+\mathcal{A} = \{0, 1, \ldots, 10\}
+\end{gathered}
 \label{eq:state-space}
 \end{equation}
 
-Donde $R$ son los recursos que quedan, $t$ el n\'umero de paso dentro
-de la secuencia ($T_{\max} = 10$) y $S$ la severidad inicial de la
-ciudad actual ($S_{\max} = 9$); hay $31 \times 11 \times 10 = 3\,410$
-estados. Cada secuencia dispone de $39$ recursos, de los cuales el
-entorno reserva $9$ como preasignados, por lo que el agente administra
-$R \le 30$. Las acciones son $\mathcal{A} = \{0, 1, \ldots, 10\}$; una
-asignaci\'on mayor que $R$ se recorta a los recursos disponibles.
+Donde $R$ son los recursos restantes, $t$ el paso dentro de la secuencia
+y $S$ la severidad inicial de la ciudad actual; hay
+$31 \times 11 \times 10 = 3\,410$ estados. Cada secuencia dispone de $39$
+recursos, $9$ de ellos preasignados por el entorno, por lo que el agente
+administra $30$. Al elegir la acci\'on $a_t$ en el estado
+$s_t = (R_t, t, S_t)$, el estado pasa a:
 
-\subsubsection{Din\'amica y recompensa}\label{sec:env-dyn}
+\begin{equation}
+s_{t+1} \;=\; \bigl(R_t - \min(a_t, R_t),\; t + 1,\; S_{t+1}\bigr)
+\label{eq:state-transition}
+\end{equation}
 
-En cada paso, la severidad de toda ciudad $i$ ya incorporada se
-actualiza con:
+Donde $\min(a_t, R_t)$ es la asignaci\'on efectiva, porque una
+asignaci\'on mayor que los recursos disponibles se recorta, y $S_{t+1}$
+es la severidad inicial de la ciudad siguiente, que proviene de la
+secuencia y no depende de las acciones. La secuencia termina despu\'es de
+$L$ pasos, con $L$ desconocido para el agente. Como $R$ y $t$ evolucionan
+de forma determinista con la acci\'on y $S_{t+1}$ no depende de las
+decisiones, la transici\'on se modela como markoviana
+(Ecuaci\'on~\eqref{eq:markov}). La severidad de toda ciudad $i$ ya
+incorporada evoluciona seg\'un:
 
 \begin{equation}
 S_{i,t+1} \;=\; \max\!\bigl(0,\ \beta\, S_{i,t} - \alpha\, a_{i}\bigr)
@@ -60,67 +60,40 @@ S_{i,t+1} \;=\; \max\!\bigl(0,\ \beta\, S_{i,t} - \alpha\, a_{i}\bigr)
 
 Donde $a_i$ es la asignaci\'on que recibi\'o la ciudad $i$ al
 incorporarse, $\alpha$ la eficacia de cada unidad de recurso y $\beta$
-el factor de crecimiento por paso. La asignaci\'on de una ciudad se fija
-una sola vez, pero su severidad se actualiza en todos los pasos
-siguientes; por eso una asignaci\'on insuficiente se amplifica
-geom\'etricamente. La recompensa de cada paso es la suma, con signo
-negativo, de las severidades de las ciudades activas:
+el factor de crecimiento por paso. Como la asignaci\'on se fija una sola
+vez y la severidad se actualiza en todos los pasos siguientes, una
+asignaci\'on insuficiente se amplifica geom\'etricamente. La recompensa
+de cada paso es la suma, con signo negativo, de las severidades de las
+ciudades activas:
 
 \begin{equation}
-r_t \;=\; -\sum_{i \le t} S_{i,t+1}
+r_{t+1} \;=\; -\sum_{i \le t} S_{i,t+1}
 \label{eq:reward}
 \end{equation}
 
-Maximizar el retorno equivale, por lo tanto, a minimizar la severidad
-acumulada de la secuencia.
+Donde la suma recorre las ciudades incorporadas hasta el paso $t$. Con
+esta recompensa, maximizar el retorno (Ecuaci\'on~\eqref{eq:return})
+equivale a minimizar la severidad acumulada. Quedan as\'i definidos los
+componentes del MDP $\mathcal{M} = (\mathcal{S}, \mathcal{A}, P, r, \gamma)$:
+estados y acciones (Ecuaci\'on~\eqref{eq:state-space}), transici\'on
+(Ecuaciones~\eqref{eq:state-transition} y~\eqref{eq:transicion}) y
+recompensa (Ecuaci\'on~\eqref{eq:reward}); el descuento $\gamma$ es un
+hiperpar\'ametro de cada agente.
 
-El estado que observa el agente no incluye la severidad de las ciudades
-ya incorporadas ni la longitud de la secuencia. Esa severidad forma parte
-de la recompensa, pero no depende de las decisiones posteriores, porque
-la asignaci\'on de cada ciudad se fija al llegar. Por lo tanto no cambia
-qu\'e acci\'on conviene en cada paso, aunque s\'i agrega al retorno una
-parte que el estado actual no explica. En sentido estricto, $(R, t, S)$
-es una observaci\'on parcial del entorno.
-
-\subsubsection{Secuencias de evaluaci\'on}
-
-Cada experimento se organiza en $8$ bloques de $8$ secuencias, de
-$3$ a $10$ pasos cada una, lo que suma $360$ pasos. La evaluaci\'on de
-referencia usa las $n = 64$ secuencias fijas de los archivos
-\texttt{initial\_severity.csv} y \texttt{sequence\_lengths.csv}, id\'enticos
-en todos los paquetes, de modo que todos los modelos enfrentan
-exactamente las mismas secuencias. En esos archivos las severidades
-iniciales van de $2$ a $8$.
-
-El entrenamiento no recorre esas $64$ secuencias en orden: en cada
-episodio sortea una longitud y unas severidades iniciales a partir de
-sus distribuciones emp\'iricas en los mismos archivos. Por eso, durante
-el entrenamiento las severidades s\'olo toman valores de $2$ a $8$,
-aunque el espacio de estados admite de $0$ a $9$.
+Cada experimento tiene $8$ bloques de $8$ secuencias de $3$ a $10$ pasos
+($360$ pasos en total). La referencia usa las $64$ secuencias fijas de
+\texttt{initial\_severity.csv} y \texttt{sequence\_lengths.csv}, id\'enticas
+en todos los paquetes. El entrenamiento sortea longitudes y severidades
+de las distribuciones emp\'iricas de esos mismos archivos.
 
 \subsection{M\'etrica de desempe\~no}\label{sec:metric}
 
-La severidad final acumulada de una secuencia de $T$ pasos es:
-
-\begin{equation}
-S_{\mathrm{cruda}} = \sum_{i=1}^{T} S_i^{\mathrm{final}}
-\label{eq:raw-severity-materials}
-\end{equation}
-
-Donde $S_i^{\mathrm{final}}$ es la severidad de la ciudad $i$ al
-terminar la secuencia; cuanto menor, mejor. Como esta cantidad depende
-de las severidades iniciales y de la longitud de cada secuencia, se
-normaliza con dos referencias: $S_{\mathrm{peor}}$, la severidad
-acumulada si no se asigna ning\'un recurso, y $S_{\mathrm{mejor}}$, la
-m\'inima severidad acumulada que se puede lograr con el presupuesto de
-la secuencia conociendo de antemano todas sus ciudades. Como la
-asignaci\'on de cada ciudad se fija al llegar y su evoluci\'on no depende
-de las dem\'as, $S_{\mathrm{mejor}}$ se calcula de forma exacta por
-programaci\'on din\'amica, como un problema de mochila acotada sobre
-asignaciones enteras de $0$ a $10$ por ciudad que suman a lo sumo $30$.
-Ambas referencias se calculan al terminar la secuencia y no intervienen
-en las decisiones del agente. El \emph{desempe\~no normalizado} de una
-secuencia es:
+Sea $S_{\mathrm{agente}}$ la suma de las severidades finales de las
+ciudades de una secuencia. Se normaliza con dos referencias:
+$S_{\mathrm{peor}}$, la que resulta de no asignar nada, y
+$S_{\mathrm{mejor}}$, la m\'inima alcanzable con el presupuesto conociendo
+de antemano toda la secuencia, que se calcula en forma program\'atica y
+exacta. El desempe\~no normalizado es:
 
 \begin{equation}
 \bar{r} =
@@ -129,133 +102,77 @@ secuencia es:
 \label{eq:normalised-severity-materials}
 \end{equation}
 
-Donde $S_{\mathrm{agente}}$ es la severidad cruda que obtuvo el agente.
-As\'i, $\bar{r}=0$ equivale a no asignar recursos y $\bar{r}=1$ a la
-asignaci\'on \'optima; como ning\'un agente puede gastar m\'as que el
-presupuesto, $\bar r \le 1$. Como referencia se evalu\'o un agente que
-elige acciones al azar sobre las mismas $64$ secuencias
-(Figura~\ref{fig:baseline-random}):
-obtiene $\bar{r} = 0{,}670$ en promedio (desviaci\'on est\'andar
-$0{,}186$, rango $[0{,}164;\,0{,}950]$). Gastar el presupuesto sin
-criterio reduce parte de la severidad, pero queda lejos del \'optimo en
-la mayor\'ia de las secuencias.
+Donde $\bar r = 0$ equivale a no asignar recursos y $\bar r = 1$ a la
+asignaci\'on \'optima. Ambas referencias se calculan al terminar la
+secuencia y no intervienen en las decisiones. Un agente que elige
+acciones al azar obtiene $\bar r = 0{,}670$ en las $64$ secuencias de
+referencia (desviaci\'on est\'andar $0{,}186$, rango
+$[0{,}164;\,0{,}950]$; Figura~\ref{fig:baseline-random}).
 
 \begin{figure}[!htb]
   \centering
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{random_player_sequence_performance.png}
-    \caption[Severidad cruda]{Severidad final acumulada $S_{\mathrm{cruda}}$.}
+    \caption[Severidad cruda]{Severidad final acumulada por secuencia.}
     \label{fig:baseline-random-raw}
   \end{subfigure}
   \hfill
   \begin{subfigure}[t]{0.49\textwidth}
     \centering
     \includegraphics[width=\linewidth]{random_player_normalised_performance.png}
-    \caption[Desempe\~no normalizado]{Desempe\~no normalizado $\bar{r}$;
-    las l\'ineas horizontales marcan $\bar{r}=0$ y $\bar{r}=1$.}
+    \caption[Desempe\~no normalizado]{Desempe\~no normalizado $\bar{r}$ por secuencia.}
     \label{fig:baseline-random-normalised}
   \end{subfigure}
   \caption[Agente aleatorio]{Agente aleatorio (\emph{decisor aleatorio}
-  en la figura) en las $64$ secuencias de evaluaci\'on. La l\'inea
-  punteada indica la media de cada serie.}
+  en la figura) en las $64$ secuencias de referencia; la l\'inea
+  punteada indica la media.}
   \label{fig:baseline-random}
 \end{figure}
 
 \subsection{Modelos individuales}
 
-La Tabla~\ref{tab:packages} lista los modelos individuales, el paquete
-que los implementa y el nombre con que se los menciona en el resto del
-texto; los ensambles se listan en la Tabla~\ref{tab:ens-summary}. Las
-figuras generadas por el c\'odigo usan el nombre del paquete.
+La Tabla~\ref{tab:packages} lista los modelos, su paquete y el nombre
+que se usa en el texto; las figuras usan el nombre del paquete.
 
 \begin{table}[!htb]
 \centering
-\caption[Modelos individuales]{Modelos individuales, paquete que los
-implementa y nombre usado en el texto. Q-Learning base se incluye s\'olo
-como referencia sin optimizaci\'on.}
+\caption[Modelos individuales]{Modelos individuales. Q-Learning base se
+incluye como referencia sin optimizaci\'on.}
 \label{tab:packages}
 \small
 \begin{tabular}{@{}lll@{}}
 \toprule
 \textbf{Paquete} & \textbf{Nombre en el texto} & \textbf{Descripci\'on} \\
 \midrule
-\texttt{pes\_base} & Q-Learning base & Q-Learning tabular sin optimizar.\\
-\texttt{pes\_ql}   & Q-Learning & Q-Learning tabular optimizado.\\
-\texttt{pes\_dql}  & Double Q-Learning & Double Q-Learning tabular con PBRS.\\
-\texttt{pes\_dqn}  & DQN & Double DQN con red densa.\\
-\texttt{pes\_rdqn} & DQN recurrente & Double DQN con codificador LSTM.\\
-\texttt{pes\_a2c}  & A2C & Actor--cr\'itico.\\
-\texttt{pes\_trf}  & Transformer & Double DQN con codificador Transformer causal.\\
+\texttt{pes\_base} & Q-Learning base & Q-Learning tabular sin optimizar\\
+\texttt{pes\_ql}   & Q-Learning & Q-Learning tabular optimizado\\
+\texttt{pes\_dql}  & Double Q-Learning & Double Q-Learning tabular con PBRS\\
+\texttt{pes\_dqn}  & DQN & Double DQN con red densa\\
+\texttt{pes\_rdqn} & DQN recurrente & Double DQN con codificador LSTM\\
+\texttt{pes\_a2c}  & A2C & Actor--cr\'itico\\
+\texttt{pes\_trf}  & Transformer & Double DQN con codificador Transformer causal\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsubsection{Modelos tabulares}\label{sec:tabular}
 
-Los tres modelos tabulares guardan $Q(s,a)$ en una tabla de
-$31\times11\times10\times11=37\,510$ valores, indexada por los enteros
-$(R, t, S)$ y la acci\'on. Las tablas se inicializan con valores de una
-distribuci\'on uniforme $\mathcal{U}(-1,1)$, las acciones que exceden los
-recursos se enmascaran y, durante el entrenamiento, se elige la acci\'on
-con una pol\'itica $\varepsilon$-\emph{greedy}. La actualizaci\'on de
-Q-Learning es:
-
-\begin{equation}
-Q(s,a) \leftarrow Q(s,a) + \alpha
-\left[r + \gamma\max_{a'}Q(s',a') - Q(s,a)\right]
-\label{eq:tabular-update-materials}
-\end{equation}
-
-Salvo en el estado terminal, donde $Q(s,a)\leftarrow r$. En la
-evaluaci\'on se elige la acci\'on factible de mayor valor. La tabla s\'olo
-tiene filas para severidades de $0$ a $9$: si la severidad es mayor, el
-\'indice se recorta a $9$. Como el entrenamiento s\'olo presenta
-severidades de $2$ a $8$, las filas de $S = 0$, $1$ y $9$ nunca se
-actualizan y conservan sus valores iniciales aleatorios en las tres
-tablas entrenadas.
-
-\paragraph{Q-Learning base y Q-Learning} Ambos aplican la
-Ecuaci\'on~\eqref{eq:tabular-update-materials} con una exploraci\'on
-$\varepsilon$ que decrece linealmente desde $\varepsilon_0$ hasta
-$\varepsilon_{\min}$. Q-Learning base usa los valores originales del
-repositorio PES; Q-Learning usa los hiperpar\'ametros elegidos por
-optimizaci\'on bayesiana (Tabla~\ref{tab:tabular-hparams}).
-
-\paragraph{Double Q-Learning} Mantiene dos tablas $Q_A$ y $Q_B$
-(Ecuaci\'on~\eqref{eq:double-q}). En cada paso se actualiza una sola,
-elegida con probabilidad $1/2$, y la pol\'itica final es
-$\arg\max_a[Q_A(s,a)+Q_B(s,a)]$. La exploraci\'on se mantiene en
-$\varepsilon_0$ durante un calentamiento y luego decae
-exponencialmente:
-
-\begin{equation}
-\lambda = \left(\frac{\varepsilon_{\min}}{\varepsilon_0}\right)^{1/((q-w)N)}
-\qquad
-\varepsilon_t = \max\!\left(\varepsilon_{\min},\;
-\varepsilon_0\,\lambda^{\,t-wN}\right) \quad \text{para } t \ge wN
-\label{eq:dql-epsilon-materials}
-\end{equation}
-
-Donde $t$ es el n\'umero de episodio, $N$ el total de episodios, $w$ la
-fracci\'on de episodios de calentamiento, $q$ la fracci\'on en la que se
-alcanza $\varepsilon_{\min}$ y $\lambda$ el factor de decaimiento por
-episodio. Adem\'as usa PBRS con $\Phi(s)=-\sum_i S_i$, la suma de las
-severidades actuales de las ciudades con signo negativo, de modo que la
-recompensa con que se actualiza la tabla es:
-
-\begin{equation}
-\tilde r = r + \kappa\,[\gamma\Phi(s')-\Phi(s)]
-\label{eq:dql-pbrs-materials}
-\end{equation}
-
-Donde $\kappa$ es el coeficiente de PBRS y $s'$ el estado siguiente.
+Los modelos tabulares guardan $Q$ en una tabla de
+$31\times11\times10\times11 = 37\,510$ valores inicializados con
+$\mathcal{U}(-1,1)$ y enmascaran las acciones que exceden los recursos.
+La tabla s\'olo tiene filas para $S \le 9$, por lo que una severidad
+mayor se recorta a $9$. El modelo base usa los hiperpar\'ametros originales de PES y
+Q-Learning, los de la optimizaci\'on bayesiana; ambos reducen
+$\varepsilon$ linealmente. Double Q-Learning mantiene $\varepsilon_0$
+durante una fracci\'on $w$ de los episodios, la reduce exponencialmente
+hasta $\varepsilon_{\min}$ en la fracci\'on $q$, usa PBRS y decide con
+$\arg\max_a[Q_A(s,a)+Q_B(s,a)]$ (Tabla~\ref{tab:tabular-hparams}).
 
 \begin{table}[!htb]
 \centering
 \caption[Hiperpar\'ametros de los modelos tabulares]{Hiperpar\'ametros
-de los modelos tabulares. Los de Q-Learning y Double Q-Learning son los
-del mejor ensayo de su optimizaci\'on bayesiana.}
+de los modelos tabulares.}
 \label{tab:tabular-hparams}
 \small
 \begin{tabular}{@{}lccc@{}}
@@ -265,89 +182,65 @@ del mejor ensayo de su optimizaci\'on bayesiana.}
 Tasa de aprendizaje $\alpha$ & $0{,}2$ & $0{,}2862$ & $0{,}1132$ \\
 Descuento $\gamma$ & $0{,}9$ & $0{,}8587$ & $0{,}9777$ \\
 $\varepsilon_0$ / $\varepsilon_{\min}$ & $0{,}8$ / $0$ & $0{,}6813$ / $0{,}0437$ & $0{,}5998$ / $0{,}0327$ \\
-Decaimiento de $\varepsilon$ & lineal & lineal & exponencial \\
-Calentamiento $w$ & --- & --- & $0{,}0260$ \\
-Fracci\'on $q$ & --- & --- & $0{,}6430$ \\
+Fracciones $w$ / $q$ & --- & --- & $0{,}0260$ / $0{,}6430$ \\
 PBRS $\kappa$ & --- & --- & $0{,}000392$ \\
 Episodios & $1\,000\,000$ & $550\,000$ & $360\,000$ \\
-Ensayos de optimizaci\'on & --- & $100$ & $100$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Modelos profundos}\label{sec:deep}
+\subsubsection{Modelos con redes neuronales}\label{sec:deep}
 
-\paragraph{Entrada y configuraci\'on com\'un} Los cuatro modelos
-profundos reciben el estado escalado por las cotas del entorno,
-$s = [R/30,\; t/10,\; S/9] \in [0,1]^{3}$, para que las tres componentes
-tengan rangos comparables en la entrada de la red. Es una funci\'on fija
-de las cotas del MDP, que se aplica igual en entrenamiento,
-evaluaci\'on y ensambles. Con severidades mayores que $9$, la entrada
-$S/9$ de DQN, DQN recurrente y Transformer simplemente supera $1$; la
-evaluaci\'on de A2C, en cambio, recorta la severidad a $9$ antes de
-escalarla. Todos usan el optimizador
-Adam~\citep{Kingma2015}, inicializaci\'on Glorot
-uniforme~\citep{Glorot2010} y recorte de la norma del gradiente. La
-semilla de entrenamiento de cada modelo es $42 + i + 1$, con $i$ el
-\'indice del mejor ensayo de su optimizaci\'on.
+Las redes reciben el estado escalado por las cotas del entorno,
+$[R/30,\; t/10,\; S/9]$. Todas usan Adam~\citep{Kingma2015},
+inicializaci\'on Glorot uniforme~\citep{Glorot2010}, recorte de la norma
+del gradiente y semilla $42 + i + 1$, con $i$ el \'indice del mejor ensayo
+de su optimizaci\'on. DQN, DQN recurrente y Transformer comparten el
+valor objetivo de Double DQN, la p\'erdida de Huber~\citep{Huber1964}, la exploraci\'on de Double
+Q-Learning y PBRS cuando $\kappa > 0$, y empiezan a aprender cuando el
+\emph{buffer} alcanza una fracci\'on $f$ de su capacidad. Difieren en el
+procesamiento de la entrada; las tres terminan en una capa de salida de
+$11$ valores $Q$:
 
-DQN, DQN recurrente y Transformer comparten adem\'as la regla de aprendizaje. Usan el blanco Double DQN (Ecuaci\'on~\eqref{eq:ddqn-target}) con enmascarado de acciones no factibles y p\'erdida de Huber, y exploran con una pol\'itica $\varepsilon$-\emph{greedy} seg\'un el esquema de la Ecuaci\'on~\eqref{eq:dql-epsilon-materials}. Empiezan a aprender cuando el \emph{buffer} alcanza una fracci\'on $f$ de su capacidad y usan PBRS cuando $\kappa > 0$. Se diferencian en c\'omo procesan la entrada y en
-sus hiperpar\'ametros (Tabla~\ref{tab:deep-hparams}).
+\begin{itemize}
+    \item \textbf{DQN}: dos capas densas de $64$ unidades sobre el estado
+    actual.
+    \item \textbf{DQN recurrente}~\citep{Hausknecht2015}: una LSTM de $64$
+    unidades recorre los \'ultimos $W = 6$ estados,
+    completados con ceros al inicio de cada secuencia, y su \'ultimo
+    estado oculto pasa por dos capas densas de $96$ unidades. El estado
+    oculto no se conserva entre decisiones.
+    \item \textbf{Transformer}: la misma ventana, proyectada a
+    $d_{\mathrm{model}} = 32$ y sumada a un vector de posici\'on fijo, pasa
+    por $2$ bloques \emph{Pre-LN}~\citep{Parisotto2020} con atenci\'on
+    causal de $4$ cabezas de dimensi\'on $16$ y una capa
+    \emph{feed-forward} de $64$ unidades, sin \emph{dropout}; la \'ultima
+    posici\'on pasa por una capa densa de $32$ unidades.
+\end{itemize}
 
-\paragraph{DQN} Red densa
-\texttt{Input}$(3) \!\to\! \texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\!
-\texttt{Dense}(64,\!\mathrm{ReLU}) \!\to\! \texttt{Dense}(11)$, que
-produce un valor $Q$ por acci\'on a partir del estado actual,
-con repetici\'on de experiencia~\citep{Lin1992} y red
-objetivo~\citep{Mnih2015}.
+La arquitectura del DQN recurrente y la del Transformer se eligieron
+mediante exploraciones \emph{ad hoc}, debido al costo computacional de
+incluirlas en la b\'usqueda bayesiana; en ellos la optimizaci\'on
+s\'olo ajust\'o los hiperpar\'ametros de entrenamiento
+(Tabla~\ref{tab:deep-hparams}).
 
-\paragraph{DQN recurrente} Sigue el esquema DRQN~\citep{Hausknecht2015}.
-La red recibe los \'ultimos $W = 6$ estados escalados
-$(s_{t-5}, \ldots, s_t)$, completados con ceros al principio de cada
-secuencia. Una LSTM de $64$ unidades~\citep{Hochreiter1997} recorre la
-ventana y su \'ultimo estado oculto $h_t$ (Ecuaci\'on~\eqref{eq:lstm})
-pasa por dos capas densas de $96$ unidades con ReLU y una salida de
-$11$ valores $Q$. Cada ventana se procesa de forma independiente: el
-estado oculto no se conserva entre decisiones y el \emph{buffer}
-guarda la ventana completa de cada transici\'on.
+A2C~\citep{Mnih2016} usa redes separadas con una capa oculta de $128$ unidades para el
+actor, con salida \emph{softmax} sobre las $11$ acciones, y para el
+cr\'itico. La ventaja se estima con GAE y se estandariza por lote; la
+pol\'itica y su entrop\'ia se calculan sobre las acciones
+factibles (Tabla~\ref{tab:a2c-hparams}).
 
-\paragraph{Transformer} Recibe la misma ventana de $W = 6$ estados. Cada
-estado se proyecta a dimensi\'on $d_{\mathrm{model}} = 32$ y se le suma
-un vector de posici\'on fijo, inicializado con Glorot uniforme a partir
-de la semilla y no entrenado. Cada uno de los $L = 2$ bloques tiene dos
-subcapas: atenci\'on causal (Ecuaci\'on~\eqref{eq:causal-attention}) con
-$h = 4$ cabezas de dimensi\'on $16$ y una capa \emph{feed-forward} de
-$64$ unidades. Cada subcapa tiene conexi\'on residual y va precedida de
-normalizaci\'on de capa (disposici\'on \emph{Pre-LN}~\citep{Parisotto2020}).
-No se usa \emph{dropout}. La representaci\'on de la \'ultima
-posici\'on pasa por una capa densa de $32$ unidades con ReLU y una
-salida de $11$ valores $Q$.
-
-La arquitectura del DQN recurrente y la del Transformer (ventana, LSTM o
-codificador y capas densas) se eligieron mediante exploraciones
-\emph{ad hoc} y est\'an fijadas en la configuraci\'on de cada paquete.
-Optimizarlas con la b\'usqueda bayesiana, junto con los hiperpar\'ametros,
-era demasiado costoso para los recursos de c\'omputo disponibles. En estos
-dos modelos la optimizaci\'on bayesiana s\'olo ajust\'o los hiperpar\'ametros
-de entrenamiento.
-
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
-\caption[Hiperpar\'ametros de los modelos de tipo DQN]{Arquitectura e
-hiperpar\'ametros de DQN, DQN recurrente y Transformer. Los
-hiperpar\'ametros de entrenamiento son los del mejor ensayo de la
-optimizaci\'on bayesiana de cada paquete. La arquitectura de DQN tambi\'en
-proviene de esa optimizaci\'on; la del DQN recurrente y la del Transformer
-(entrada y par\'ametros entrenables) se eligi\'o mediante exploraciones
-\emph{ad hoc} (Secci\'on~\ref{sec:deep}). Entre par\'entesis, el n\'umero de
-transiciones que corresponde a la fracci\'on $f$.}
+\caption[Hiperpar\'ametros de los modelos de tipo DQN]{Hiperpar\'ametros
+de DQN, DQN recurrente y Transformer. Entre par\'entesis, las
+transiciones que corresponden a la fracci\'on $f$.}
 \label{tab:deep-hparams}
 \small
 \begin{tabular}{@{}lccc@{}}
 \toprule
  & \textbf{DQN} & \textbf{DQN recurrente} & \textbf{Transformer} \\
 \midrule
-Entrada & estado actual & ventana de $6$ estados & ventana de $6$ estados \\
 Par\'ametros entrenables & $5\,131$ & $34\,027$ & $27\,019$ \\
 Tasa de aprendizaje & $0{,}001508$ & $0{,}002415$ & $0{,}000215$ \\
 Descuento $\gamma$ & $0{,}9634$ & $0{,}9719$ & $0{,}9234$ \\
@@ -364,30 +257,17 @@ Episodios & $40\,000$ & $30\,000$ & $30\,000$ \\
 \end{tabular}
 \end{table}
 
-\paragraph{A2C} Actor y cr\'itico son redes separadas:
-\texttt{Input}$(3) \!\to\! \texttt{Dense}(128,\!\mathrm{ReLU})
-\!\to\! \texttt{Dense}(11,\!\mathrm{softmax})$ para el actor, que produce
-directamente una distribuci\'on sobre las $11$ acciones, e
-\texttt{Input}$(3) \!\to\! \texttt{Dense}(128,\!\mathrm{ReLU}) \!\to\!
-\texttt{Dense}(1)$ para el cr\'itico. La ventaja se estima con GAE
-(Ecuaci\'on~\eqref{eq:gae}) y se estandariza por lote; el gradiente de
-pol\'itica (Ecuaci\'on~\eqref{eq:pg}) y la entrop\'ia se calculan sobre la
-distribuci\'on restringida a las acciones factibles~\citep{Mnih2016}.
-La Tabla~\ref{tab:a2c-hparams} resume sus hiperpar\'ametros.
-
-\begin{table}[!htb]
+\begin{table}[H]
 \centering
-\caption[Hiperpar\'ametros de A2C]{Hiperpar\'ametros de A2C (mejor ensayo
-de $100$ de la optimizaci\'on bayesiana).}
+\caption[Hiperpar\'ametros de A2C]{Hiperpar\'ametros de A2C.}
 \label{tab:a2c-hparams}
 \small
 \begin{tabular}{@{}ll@{}}
 \toprule
 Tasa de aprendizaje inicial (actor / cr\'itico) & $0{,}000648$ / $0{,}004299$ \\
-Decaimiento de la tasa & coseno, hasta el $23{,}75\,\%$ del valor inicial \\
-Descuento $\gamma$ & $0{,}8545$ \\
+Decaimiento de la tasa & coseno, hasta el $23{,}75\%$ del valor inicial \\
+Descuento $\gamma$ / $\lambda$ de GAE & $0{,}8545$ / $0{,}9135$ \\
 Coeficiente de entrop\'ia $\beta_H$ & $0{,}00528$ \\
-$\lambda$ de GAE & $0{,}9135$ \\
 Recorte del gradiente (ambas redes) & $1{,}200$ \\
 PBRS $\kappa$ & $0{,}1527$ \\
 Penalizaci\'on de gasto & $r \leftarrow r - 0{,}01039\,a$ \\
@@ -400,233 +280,112 @@ Episodios & $125\,000$ \\
 \subsection{Ensambles}\label{sec:ens-methods}
 
 Los ensambles no se entrenan: cargan los modelos ya entrenados de DQN,
-DQN recurrente y Transformer y combinan sus salidas en cada decisi\'on.
-Cinco de las seis variantes suman el actor de A2C como cuarto miembro.
-La Tabla~\ref{tab:ens-summary} resume qu\'e hace cada regla; el resto de
-la secci\'on las define con precisi\'on, con una notaci\'on com\'un.
-
-\begin{table}[!htb]
-\centering
-\caption[Ensambles evaluados]{Ensambles evaluados, paquete que los
-implementa y qu\'e hace cada regla de combinaci\'on.}
-\label{tab:ens-summary}
-\small
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.19\linewidth}l>{\raggedright\arraybackslash}p{0.44\linewidth}@{}}
-\toprule
-\textbf{Ensamble} & \textbf{Paquete} & \textbf{C\'omo decide} \\
-\midrule
-Ensamble ponderado & \texttt{pes\_ens} & Promedia las distribuciones de DQN,
-DQN recurrente y Transformer con pesos que crecen con la confianza; el
-Transformer tiene el mayor peso. Agrega un \emph{prior} de severidad y
-una cota de seguridad.\\
-Voto suave & \texttt{pes\_ens\_sprb} & Promedia las distribuciones de los
-cuatro miembros, ponderadas por peso y confianza.\\
-Voto por acci\'on & \texttt{pes\_ens\_accq} & Cada miembro vota por su
-acci\'on preferida; los empates se resuelven con los valores $Q$.\\
-Consenso & \texttt{pes\_ens\_consensus} & Voto ponderado m\'as un premio
-por acuerdo y una penalizaci\'on por desacuerdo entre miembros
-confiados.\\
-Consenso con prior & \texttt{pes\_ens\_consensus\_prior} & Como el
-consenso, pero sumando distribuciones y mezclando el resultado con un
-\emph{prior} de severidad.\\
-Compuerta del Transformer & \texttt{pes\_ens\_trf\_guard} & Sigue al
-Transformer salvo cuando su confianza es baja; entonces usa un voto suave
-de respaldo.\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsubsection{Notaci\'on com\'un}
-
-En el estado $s$, con $R$ recursos disponibles, para cada miembro $k$ se
-calculan:
-
-\begin{itemize}
-    \item $p_k(a \mid s)$: su distribuci\'on sobre las acciones factibles
-    $a \le R$. Para DQN, DQN recurrente y Transformer se obtiene
-    aplicando a sus valores $Q_k(s,a)$ la \emph{softmax} de
-    temperatura $\tau$ (Ecuaci\'on~\eqref{eq:ens-softmax}) y
-    renormalizando sobre las acciones factibles; para A2C es la salida
-    del actor, renormalizada del mismo modo.
-    \item $a_k = \arg\max_a p_k(a \mid s)$: la acci\'on que prefiere.
-    \item $c_k = 1 - H_{\mathrm{norm}}(p_k)$: su confianza en la decisi\'on
-    (Ecuaci\'on~\eqref{eq:shannon-norm}), entre $0$ y $1$. En esta
-    secci\'on la entrop\'ia se normaliza por el logaritmo del n\'umero de
-    acciones factibles y no por $\log|\mathcal{A}|$; la excepci\'on es el
-    ensamble ponderado, que normaliza por $\log 11$.
-    \item $w_k$: su peso base, un par\'ametro fijo de cada ensamble.
-    \item $\tilde w_k = w_k\, c_k^{\rho}$: su peso efectivo, que combina el
-    peso base con la confianza; el exponente $\rho \ge 0$ regula cu\'anto
-    influye la confianza ($\rho = 0$ la ignora).
-    \item $\hat Q_k(a) = \bigl(Q_k(a)-\overline{Q}_k\bigr)/\mathrm{sd}(Q_k)$:
-    sus valores $Q$ estandarizados, con $\overline{Q}_k$ y
-    $\mathrm{sd}(Q_k)$ la media y la desviaci\'on est\'andar de sus valores
-    sobre las acciones factibles en el estado $s$ (para A2C se
-    estandarizan sus probabilidades). Permiten comparar modelos cuyos
-    valores tienen escalas distintas.
-\end{itemize}
-
-Los par\'ametros de cada ensamble se listan en la
-Tabla~\ref{tab:ens-params}. Los del ensamble ponderado son valores fijos
-de su configuraci\'on. Los de los otros cinco son los del mejor ensayo de
-su estudio de Optuna (TPE) sobre las $64$ secuencias de evaluaci\'on,
-guardados en el archivo \texttt{inputs/best\_params.json} de cada paquete.
-En los cinco, el puntaje registrado por el estudio coincide con la media
-que obtiene el ensamble en la referencia (Tabla~\ref{tab:ensemble-stress}).
-
-\subsubsection{Ensamble ponderado}
-
-Combina DQN, DQN recurrente y Transformer ($K = 3$) con un voto suave
-cuyos pesos crecen con la confianza de cada miembro:
+DQN recurrente y Transformer, y cinco de las seis variantes suman el
+actor de A2C. Para cada miembro $k$, en un estado con $R$ recursos, la
+distribuci\'on sobre las acciones factibles se obtiene de sus valores $Q$
+con una \emph{softmax} de temperatura $\tau$:
 
 \begin{equation}
-  p_{\mathrm{ens}}(a \mid s) \;=\;
-  \frac{\eta(a)\,\sum_{k=1}^{K} w_k\,(0{,}1 + c_k)\, p_k(a \mid s)}
-       {\sum_{a' \le R} \eta(a')\,\sum_{k=1}^{K} w_k\,(0{,}1 + c_k)\, p_k(a' \mid s)}
+p_k(a \mid s) \;=\;
+\frac{\exp\bigl(Q_k(s,a)/\tau\bigr)}
+     {\sum_{a' \le R} \exp\bigl(Q_k(s,a')/\tau\bigr)}
+\qquad a \le R
+\label{eq:ens-softmax}
+\end{equation}
+
+Donde $Q_k(s,a)$ es el valor que el miembro $k$ asigna a la acci\'on $a$;
+en A2C, $p_k$ es la salida del actor renormalizada sobre las acciones
+factibles. De $p_k$ se obtienen la acci\'on preferida del
+miembro, $a_k = \arg\max_a p_k(a \mid s)$, y su confianza:
+
+\begin{equation}
+c_k \;=\; 1 - \frac{H(p_k)}{\log |\mathcal{A}_R|}
+\label{eq:shannon-norm}
+\end{equation}
+
+Donde $H(p_k)$ es la entrop\'ia de Shannon de $p_k$ y $|\mathcal{A}_R|$ el
+n\'umero de acciones factibles; el ensamble ponderado normaliza por
+$\log 11$. El peso efectivo de cada miembro es
+$\tilde w_k = w_k\, c_k^{\rho}$, con $w_k$ un peso base y $\rho \ge 0$ un
+exponente que regula la influencia de la confianza (si $\rho = 0$, la
+ignora). Algunas reglas usan tambi\'en $\hat Q_k(a)$, los valores $Q$
+del miembro estandarizados sobre las acciones factibles (en A2C, sus
+probabilidades).
+
+\textbf{Ensamble ponderado.} Promedia las
+distribuciones de DQN, DQN recurrente y Transformer con pesos que crecen
+con la confianza:
+
+\begin{equation}
+  p_{\mathrm{ens}}(a \mid s) \;\propto\;
+  \eta(a)\sum_{k=1}^{3} w_k\,(0{,}1 + c_k)\, p_k(a \mid s)
   \qquad
   \eta(a) = \begin{cases} 0{,}3 & a = 0,\ R > 0 \\ 1 & \text{en otro caso} \end{cases}
   \label{eq:ens-soft}
 \end{equation}
 
-Donde $w_k$ son los pesos base ($0{,}18$, $0{,}90$ y $5{,}0$ para DQN,
-DQN recurrente y Transformer, normalizados para que sumen $1$). El t\'ermino $0{,}1 + c_k$ hace que el peso crezca con la confianza sin
-anularse cuando $c_k = 0$, y $\eta(a)$ reduce la probabilidad de no
-asignar nada mientras queden recursos. El denominador normaliza la
-distribuci\'on sobre las acciones factibles. Aqu\'i la \emph{softmax} usa
-$\tau = 15$. Luego esa distribuci\'on se mezcla con una distribuci\'on
-previa (\emph{prior}) centrada en la severidad actual:
+Donde $w_k$ son los pesos base ($0{,}18$, $0{,}90$ y $5{,}0$ para DQN, DQN
+recurrente y Transformer, normalizados a suma $1$, de modo que el
+Transformer tiene el $82\%$), la \emph{softmax} usa $\tau = 15$ y
+$\eta(a)$ reduce la probabilidad de no asignar nada mientras queden
+recursos. Esa distribuci\'on se mezcla con un \emph{prior} centrado en la
+severidad actual:
 
 \begin{equation}
+  p'(a\mid s) \;\propto\; (1-w_\pi)\,p_{\mathrm{ens}}(a\mid s)
+  + w_\pi\, \pi_{\mathrm{prior}}(a \mid s)
+  \qquad
   \pi_{\mathrm{prior}}(a\mid s) \propto
   \exp\!\left[-\frac{(a-S)^2}{2\sigma_S^2}\right]
-  \qquad
-  p'(a\mid s) \propto (1-w_\pi)\,p_{\mathrm{ens}}(a\mid s) + w_\pi\,\pi_{\mathrm{prior}}(a\mid s)
   \label{eq:ens-prior}
 \end{equation}
 
-Donde $S$ es la severidad de la ciudad actual, $\sigma_S = 3$ el ancho
-del \emph{prior} y $w_\pi = 0{,}17$ su peso en la mezcla; $p'$ se
-renormaliza sobre las acciones factibles. La acci\'on ejecutada es la
-de mayor probabilidad:
+Donde $S$ es la severidad de la ciudad actual, recortada a $9$,
+$\sigma_S = 3$ el ancho del \emph{prior} y $w_\pi = 0{,}17$ su peso; las
+dos distribuciones se normalizan sobre las acciones factibles. La acci\'on
+ejecutada es la de mayor $p'$, salvo que $S \ge 6$ y esa acci\'on sea
+menor que $\lfloor S/2 \rfloor$: entonces una cota de seguridad la
+reemplaza por $\lfloor S/2 \rfloor$.
 
-\begin{equation}
-  a_{\mathrm{ens}} \;=\; \arg\max_{a \le R}\; p'(a \mid s)
-  \label{eq:ens-action}
-\end{equation}
+\textbf{Voto suave.} Elige la acci\'on de mayor
+$\sum_k \tilde w_k\, p_k(a\mid s)$. Es la \'unica variante optimizable que
+ajusta la temperatura ($\tau = 1{,}219$); las otras cuatro usan $\tau = 1$.
 
-Por \'ultimo, una cota de seguridad reemplaza esa acci\'on por
-$\lfloor S/2 \rfloor$ cuando $S \geq 6$, la acci\'on elegida es menor que
-esa cota y la cota es factible. Como en A2C, la severidad de entrada se
-recorta a $9$ antes de escalarla, tanto para los miembros como para el
-\emph{prior}.
+\textbf{Voto por acci\'on.} Cada miembro vota
+por $a_k$ con peso $\tilde w_k$; los empates se resuelven con la suma de
+los $\hat Q_k$.
 
-\subsubsection{Voto suave}
+\textbf{Consenso.} Al voto ponderado le
+suma $\beta_a$ por la confianza de los miembros que prefieren cada
+acci\'on, le resta $\beta_d$ por la de los que prefieren otra y agrega
+$\sum_k c_k \hat Q_k(a)$.
 
-Promedia las distribuciones de los miembros con sus pesos efectivos y
-elige la acci\'on m\'as probable:
+\textbf{Consenso con \emph{prior}.} 
+Reemplaza el voto por la suma $\sum_k \tilde w_k\, p_k$, aten\'ua la
+acci\'on nula como $\eta$, mezcla el resultado con el \emph{prior} de la
+Ecuaci\'on~\eqref{eq:ens-prior}, con sus propios $w_\pi$ y $\sigma_S$, y
+aplica la misma cota de seguridad. Calcula la confianza aplicando la
+\emph{softmax} a $p_k$, lo que reduce $c_k$.
 
-\begin{equation}
-  p_{\mathrm{vs}}(a\mid s) =
-  \frac{\sum_{k} \tilde w_k\, p_k(a\mid s)}{\sum_{k} \tilde w_k}
-  \qquad
-  a_{\mathrm{vs}} = \arg\max_a p_{\mathrm{vs}}(a\mid s)
-  \label{eq:ens-sprb}
-\end{equation}
+\textbf{Con compuerta para el Transformer.} Ejecuta la acci\'on del
+Transformer cuando su confianza supera el umbral $\tau_g = 0{,}2222$
+(compuerta log\'istica de pendiente $\kappa_g$) y, si no, la de un voto
+suave con todos los miembros. En el resto del texto se lo denomina
+\emph{compuerta del Transformer}.
 
-Donde la suma recorre los cuatro miembros. Es la \'unica variante que
-ajusta la temperatura de la \emph{softmax} ($\tau = 0{,}1044$); en las
-dem\'as $\tau = 1$.
-
-\subsubsection{Voto por acci\'on}
-
-Cada miembro vota por su acci\'on preferida con su peso efectivo; si hay
-empate, gana la acci\'on con mayor suma de valores estandarizados:
-
-\begin{equation}
-  V(a) = \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a]
-  \qquad
-  T(a) = \sum_{k} \hat Q_k(a)
-  \label{eq:ens-accq-vote}
-\end{equation}
-
-\begin{equation}
-  a_{\mathrm{va}} =
-  \arg\max_{a \in \mathcal{V}} T(a)
-  \qquad
-  \mathcal{V} = \{a : V(a)=\textstyle\max_{a'} V(a')\}
-  \label{eq:ens-accq-action}
-\end{equation}
-
-Donde $V(a)$ es el total de votos ponderados que recibe la acci\'on $a$,
-$T(a)$ el criterio de desempate y $\mathcal{V}$ el conjunto de acciones
-m\'as votadas.
-
-\subsubsection{Consenso}
-
-Parte del mismo voto ponderado y le suma un premio por acuerdo, una
-penalizaci\'on por desacuerdo y los valores estandarizados de los
-miembros ponderados por su confianza:
-
-\begin{equation}
-  \begin{gathered}
-  G(a) ={} \sum_{k} \tilde w_k\, \mathbf{1}[a_k=a]
-  \;+\; \beta_a \!\!\sum_{k:\,a_k=a} c_k
-  \;-\; \beta_d \!\!\sum_{k:\,a_k\neq a} c_k
-  \;+\; \sum_{k} \hat Q_k(a)\, c_k \\
-  a_{\mathrm{cons}} ={} \arg\max_a G(a)
-  \end{gathered}
-  \label{eq:ens-consensus}
-\end{equation}
-
-Donde $G(a)$ es el puntaje de la acci\'on $a$. El segundo t\'ermino suma
-la confianza de los miembros que prefieren $a$, multiplicada por el premio $\beta_a$. El tercero resta la confianza de los que prefieren otra
-acci\'on, multiplicada por la penalizaci\'on $\beta_d$. El cuarto agrega
-lo que cada miembro opina de $a$ aunque no sea su preferida.
-
-\subsubsection{Consenso con \emph{prior}}
-
-Reemplaza el voto duro del consenso por una suma de distribuciones,
-\mbox{$\tilde G(a) = \sum_k \tilde w_k\, p_k(a\mid s)$}, a la que suma los
-mismos t\'erminos de acuerdo y desacuerdo de la
-Ecuaci\'on~\eqref{eq:ens-consensus}. Luego multiplica $\tilde G(0)$ por
-$0{,}3$ cuando quedan recursos, normaliza $\tilde G$ como una
-distribuci\'on y la mezcla con el \emph{prior} de severidad de la
-Ecuaci\'on~\eqref{eq:ens-prior}, con sus propios $w_\pi$ y $\sigma_S$. La
-acci\'on es la de mayor valor en esa mezcla, con la misma cota de
-seguridad que el ensamble ponderado. A diferencia de los dem\'as, calcula
-la confianza aplicando la \emph{softmax} a $p_k$ en lugar de a los
-valores $Q$, lo que acerca la distribuci\'on a la uniforme y reduce
-$c_k$. Es la \'unica variante en la que se
-optimiz\'o el peso del actor de A2C; en las dem\'as vale $0{,}10$.
-
-\subsubsection{Compuerta del Transformer}
-
-Sigue al Transformer salvo cuando su confianza es baja. Para decidirlo
-calcula una compuerta log\'istica:
-
-\begin{equation}
-  g = \frac{1}{1+\mathrm{e}^{-\kappa_g\,(c_{\mathrm{trf}}-\tau_g)}}
-  \qquad
-  f(a) = \sum_{k} \tilde w_k\, p_k(a\mid s)
-  \label{eq:ens-guard}
-\end{equation}
-
-Donde $c_{\mathrm{trf}}$ es la confianza del Transformer, $\tau_g$ el
-umbral de confianza, $\kappa_g$ la pendiente de la compuerta y $f(a)$ un
-voto suave de respaldo con todos los miembros. Si $g \geq 0{,}5$ se
-ejecuta la acci\'on del Transformer, $a_{\mathrm{trf}}$; si no, la de
-mayor $f(a)$. Como $g \geq 0{,}5$ equivale a $c_{\mathrm{trf}} \ge
-\tau_g$, el ensamble sigue al Transformer siempre que su confianza
-supere $\tau_g = 0{,}2222$.
+Los par\'ametros del ensamble ponderado son fijos; los de los otros cinco,
+incluido el peso de A2C, son los del mejor ensayo de Optuna sobre las
+$64$ secuencias de referencia (Tabla~\ref{tab:ens-params}). En los cinco,
+el puntaje del estudio coincide con la media del ensamble en la
+referencia. Como las reglas no se entrenan junto con los miembros, las
+diferencias entre ensambles miden el efecto de la regla sobre los mismos
+modelos.
 
 \begin{table}[!htb]
 \centering
-\caption[Par\'ametros de los ensambles]{Par\'ametros de los seis
-ensambles: temperatura $\tau$, exponente de confianza $\rho$ y pesos
-base de DQN ($w_{\mathrm{DQN}}$), DQN recurrente ($w_{\mathrm{rec}}$),
-Transformer ($w_{\mathrm{trf}}$) y A2C ($w_{\mathrm{A2C}}$). En el
-ensamble ponderado los pesos se multiplican por $0{,}1 + c_k$ en lugar de
-$c_k^{\rho}$ y el actor de A2C no participa.}
+\caption[Par\'ametros de los ensambles]{Par\'ametros de los ensambles:
+temperatura $\tau$, exponente de confianza $\rho$ y pesos base de DQN,
+DQN recurrente, Transformer y A2C.}
 \label{tab:ens-params}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -644,83 +403,38 @@ Compuerta Transformer & $1$ & $1{,}452$ & $0{,}837$ & $2{,}561$ & $2{,}601$ & $0
 \end{tabular}
 \end{table}
 
-Como las reglas no se entrenan junto con los miembros, las diferencias
-entre ensambles miden el efecto de la regla de combinaci\'on y de sus
-par\'ametros sobre los mismos modelos ya entrenados.
-
 \subsection{Optimizaci\'on de hiperpar\'ametros}
 
-Cada paquete optimizable tiene un m\'odulo \texttt{optimize\_*.py} que
-ejecuta un estudio de Optuna con TPE~\citep{Bergstra2011,Akiba2019}. En
-cada ensayo se entrena el agente desde cero con una configuraci\'on
-$\boldsymbol{\theta}$ y se calcula el desempe\~no medio $\bar{r}$
-(Ecuaci\'on~\eqref{eq:normalised-severity-materials}) sobre las $64$
-secuencias; el estudio busca
-$\boldsymbol{\theta}^{*}=\arg\max_{\boldsymbol{\theta}} \bar r(\boldsymbol{\theta})$.
-Los ensayos poco prometedores se interrumpen con \texttt{MedianPruner}
-y el estudio se guarda en una base SQLite, lo que permite reanudarlo. El
-modelo final se reentrena desde cero con $\boldsymbol{\theta}^{*}$ y la
-semilla de su ensayo. El n\'umero de episodios forma parte del espacio de
-b\'usqueda, y el entrenamiento final usa el del mejor ensayo. Los episodios
-de cada modelo est\'an en las Tablas~\ref{tab:tabular-hparams},
-\ref{tab:deep-hparams} y~\ref{tab:a2c-hparams}. DQN us\'o $47$ ensayos y A2C
-$100$. En Double Q-Learning, $86$ de los $100$ ensayos se interrumpieron por
-el \texttt{MedianPruner}. En el DQN recurrente y el Transformer, la
-arquitectura no se tom\'o de la optimizaci\'on sino de la configuraci\'on del
-paquete (Secci\'on~\ref{sec:deep}).
-
-En Q-Learning, Double Q-Learning, DQN y A2C, el modelo final reproduce
-el puntaje de su mejor ensayo.
+Cada paquete optimizable ejecuta un estudio de Optuna con
+TPE~\citep{Bergstra2011,Akiba2019} que, en cada ensayo, entrena el agente
+desde cero y maximiza el $\bar r$ medio sobre las $64$ secuencias de
+referencia; los ensayos poco prometedores se interrumpen con
+\texttt{MedianPruner} y el n\'umero de episodios forma parte de la
+b\'usqueda. El modelo final se reentrena con la mejor configuraci\'on y la
+semilla de su ensayo.
 
 \subsection{Escenarios de generalizaci\'on}\label{sec:scenario-catalogue}
 
-Adem\'as de la condici\'on de referencia (\texttt{sev\_base}), que
-reproduce la distribuci\'on de entrenamiento, cada modelo se eval\'ua en
-$21$ escenarios de generalizaci\'on (Tabla~\ref{tab:scenarios}),
-agrupados en cuatro familias:
-
-\begin{itemize}
-  \item \textbf{Severidad ($9$).} Cambian la distribuci\'on de las
-  severidades iniciales (uniforme, gaussianas de media baja, media y
-  alta, Weibull, Beta sesgadas y bimodal). Uno de ellos, la
-  \emph{extrapolaci\'on de severidad} (\texttt{sev\_extrapolate\_high}),
-  usa severidades de $10$ a $12$, por encima de la cota del entorno
-  ($S_{\max} = 9$). Los otros ocho incluyen severidades de $0$, $1$ o
-  $9$, que est\'an dentro del espacio de estados pero no aparecen en el
-  entrenamiento ($2$ a $8$).
-  \item \textbf{Longitud ($5$).} Cambian la longitud de las secuencias
-  (todas de $3$, todas de $10$, geom\'etrica, Poisson). Uno de ellos, el
-  de \emph{secuencias largas} (\texttt{len\_extrapolate\_long}), usa
-  secuencias de $11$ a $20$ pasos, por encima de la cota del entorno
-  ($T_{\max} = 10$).
-  \item \textbf{Conjunta ($4$).} Cambian severidad y longitud a la vez;
-  la \emph{extrapolaci\'on conjunta} (\texttt{joint\_extrap\_both})
-  lleva ambas por encima de sus cotas.
-  \item \textbf{Estructural ($3$).} Cambian s\'olo la partici\'on en
-  bloques o el n\'umero de secuencias ($n = 128$ en uno de ellos), sin
-  cambiar la distribuci\'on. Sirven de control: deben reproducir el
-  resultado de la referencia.
-\end{itemize}
-
-En el resto del texto se usan los nombres en cursiva; los
-identificadores aparecen en la Tabla~\ref{tab:scenarios} y en las
-figuras. Se llama \emph{fuera de rango} a los tres escenarios que superan
-las cotas del entorno.
-
-Los escenarios de generalizaci\'on se generan con la semilla $42$, de
-modo que, dentro de cada escenario, todos los modelos enfrentan las
-mismas secuencias. La
-evaluaci\'on es s\'olo de inferencia: ning\'un modelo se reentrena. Para
-cada modelo y escenario se calcula la \emph{degradaci\'on}
-$\Delta\bar{r} = \bar{r}_{\text{ref}} - \bar{r}_{\text{esc}}$, es decir,
-cu\'anto desempe\~no pierde respecto de la referencia (un valor negativo
-indica que mejora).
+Adem\'as de la referencia, cada modelo se eval\'ua
+en $21$ escenarios de generalizaci\'on (Tabla~\ref{tab:scenarios}): $9$
+cambian la distribuci\'on de severidades, $5$ las longitudes, $4$ ambas
+y $3$ s\'olo la partici\'on en bloques; estos \'ultimos son un control y
+deben reproducir la referencia. Ocho de los escenarios de severidad
+incluyen valores de $0$, $1$ o $9$, que est\'an en el espacio de estados
+pero no en el entrenamiento. Tres escenarios quedan \emph{fuera de
+rango}: la \emph{extrapolaci\'on de severidad} (severidades de $10$ a
+$12$), las \emph{secuencias largas} ($11$ a $20$ pasos) y la
+\emph{extrapolaci\'on conjunta} (ambas). Los escenarios se generan con la
+semilla $42$, de modo que todos los modelos enfrentan las mismas
+secuencias. La \emph{degradaci\'on} de un modelo en un escenario es
+$\bar r_{\mathrm{ref}} - \bar r_{\mathrm{esc}}$ (positiva si pierde
+desempe\~no).
 
 \begin{table}[!htb]
 \centering
-\caption[Escenarios de evaluaci\'on]{Condici\'on de referencia y $21$
-escenarios de generalizaci\'on. Los escenarios con \texttt{extrap} en el
-nombre superan las cotas del entorno ($S \le 9$, $T \le 10$).}
+\caption[Escenarios de evaluaci\'on]{Referencia y $21$ escenarios de
+generalizaci\'on. Los que tienen \texttt{extrap} en el nombre superan las
+cotas del entorno ($S \le 9$, $T \le 10$).}
 \label{tab:scenarios}
 \small
 \begin{tabular}{@{}llp{0.52\linewidth}@{}}
@@ -729,7 +443,7 @@ nombre superan las cotas del entorno ($S \le 9$, $T \le 10$).}
 \midrule
 referencia    & \texttt{sev\_base}             & Distribuci\'on de entrenamiento.\\
 \midrule
-severidad     & \texttt{sev\_uniform}          & $U\{0, \ldots, 9\}$, sin estructura modal.\\
+severidad     & \texttt{sev\_uniform}          & $U\{0, \ldots, 9\}$.\\
 severidad     & \texttt{sev\_gauss\_low}       & $\mathcal{N}(2, 1{,}5)$ truncada, brotes leves.\\
 severidad     & \texttt{sev\_gauss\_mid}       & $\mathcal{N}(4{,}5, 2{,}0)$ truncada, brotes medios.\\
 severidad     & \texttt{sev\_gauss\_high}      & $\mathcal{N}(7, 1{,}5)$ truncada, brotes intensos.\\
@@ -759,24 +473,15 @@ estructural   & \texttt{struct\_more\_total}        & $8$ bloques $\times$ $16$ 
 
 \subsection{Protocolo de evaluaci\'on}
 
-\begin{enumerate}
-\item \textbf{Optimizaci\'on y reentrenamiento.} Cada modelo optimizable
-se ajusta con Optuna y se reentrena desde cero con los mejores
-hiperpar\'ametros; el DQN recurrente y el Transformer usan la arquitectura
-fijada en su configuraci\'on. Q-Learning base se entrena con sus valores fijos.
-\item \textbf{Evaluaci\'on determinista.} Cada modelo se eval\'ua en los
-$22$ escenarios (Ap\'endice~\ref{ap:orchestrator}) eligiendo siempre la acci\'on factible de mayor valor
-($\varepsilon = 0$). Los modelos individuales y los ensambles se
-eval\'uan como dos grupos de seis modelos cada uno; Q-Learning base se
-agrega como referencia.
-\item \textbf{Comparaci\'on estad\'istica} (Secci\'on~\ref{sec:stats-bg}). Para cada modelo y escenario se calculan la media y la desviaci\'on est\'andar de $\bar r$, la degradaci\'on, y el $p$ de Welch y la $d$ de Cohen frente a su propia referencia. Tambi\'en se calcula la divergencia KL entre su distribuci\'on de acciones y la de la referencia. Para cada par de modelos de un mismo grupo se calculan
-la $d$ de Cohen, el $p$ de Welch y la KL simetrizada entre sus
-histogramas de desempe\~no, juntando las secuencias de los $21$
-escenarios de generalizaci\'on. Como todos los
-modelos enfrentan las mismas secuencias, la prueba de Welch se usa como
-contraste de referencia; un contraste estrictamente pareado requerir\'ia
-analizar las diferencias secuencia por secuencia.
-\end{enumerate}
+Cada modelo se eval\'ua en los $22$ escenarios de forma determinista,
+eligiendo siempre la acci\'on factible de mayor valor
+(Ap\'endice~\ref{ap:orchestrator}). Los modelos individuales y los
+ensambles se eval\'uan como dos grupos; Q-Learning base se agrega al
+grupo individual. Para cada modelo y escenario se calculan la media y la
+desviaci\'on est\'andar de $\bar r$ y la degradaci\'on. Las comparaciones
+entre dos modelos juntan las secuencias de los $21$ escenarios de
+generalizaci\'on y se resumen con la $d$ de Cohen y el valor $p$ de
+Welch (Secci\'on~\ref{sec:stats-bg}).
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

@@ -1,11 +1,11 @@
 
-\documentclass[spanish, a4paper, 12pt, twoside]{article} 
+\documentclass[spanish, a4paper, 12pt, twoside]{article}
 
 % -------------- Setup, do not change these ---------------
 % xcolor must load BEFORE any package that pulls it without options
 % (subcaption, hyperref, etc.) to avoid "option clash on xcdraw".
 \usepackage[table,xcdraw]{xcolor}
-\usepackage{subcaption} 
+\usepackage{subcaption}
 \usepackage{textcomp}
 \usepackage[T1]{fontenc, url}
 \usepackage[utf8]{inputenc}
@@ -22,16 +22,16 @@
 \usepackage{amsmath, amssymb, amsthm} % Mathematical packages
 \usepackage{parskip} % Removing indenting in new paragraphs
 \urlstyle{sf}
-\usepackage{subcaption} 
+\usepackage{subcaption}
 \usepackage{appendix}
 \usepackage{chngcntr} % needed for correct table numbering
 \usepackage[hidelinks,hyperfootnotes=false]{hyperref}
-\counterwithin{table}{section} % numbering of tables 
+\counterwithin{table}{section} % numbering of tables
 \counterwithin{figure}{section} % numbering of figures
 \numberwithin{equation}{section} % numbering of equations
 \hyphenpenalty=1000 % allow rare hyphenation for better justification
 \hbadness=10000    % suppress underfull \hbox reports (sloppy handles output quality)
-\sloppy 
+\sloppy
 \raggedbottom
 % Float placement: allow figures/tables at page bottom and denser float pages
 \renewcommand{\bottomfraction}{0.7}   % up to 70 % of page for bottom floats
@@ -58,7 +58,7 @@
 % --------- You can edit from this point on --------
 
 
-% ----- Appearance and language ----- 
+% ----- Appearance and language -----
 \usepackage[english,main=spanish,es-nodecimaldot,es-tabla]{babel} % document language (Spanish); english only for the Abstract
 % Rutas de búsqueda para \includegraphics: todas las figuras están dentro de
 % writings/02_Images/ (ver writings/auxiliar/scripts/sync_figures.py).
@@ -83,14 +83,14 @@
 \titleformat*{\section}{\LARGE\bfseries\raggedright} % \section heading
 \titleformat*{\subsection}{\Large\bfseries\raggedright} % \subsection heading
 \titleformat*{\subsubsection}{\large\bfseries\raggedright} % \subsubsection heading
-% next three lines creates the \paragraph command with correct heading 
+% next three lines creates the \paragraph command with correct heading
 \titleformat{\paragraph}
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}
 {0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 
-% ----- Figures and tables ----- 
+% ----- Figures and tables -----
 \usepackage{fancyhdr}
 \setlength{\headheight}{15pt} % required by fancyhdr to avoid headheight warning
 \usepackage{subfiles}
@@ -124,7 +124,7 @@
 \fancyfoot{} % removes page number on bottom of page
 
 
-% ----- Header of the frontpage ----- 
+% ----- Header of the frontpage -----
 % El logo se inserta directamente en el cuerpo de la portada
 % (000NHH-Frontpage.tex) en lugar de \fancyhead para evitar el
 % warning "\headheight is too small" que requeriría 152pt.
@@ -134,19 +134,19 @@
 	\renewcommand{\footrulewidth}{0pt}
 }
 
-% ----- Document starts here ----- 
+% ----- Document starts here -----
 \begin{document}
 
 \def\biblio{} % resets the biblio command, if not here a new reference list will be produced after every chapter
 
 \hypersetup{pageanchor=false} % avoid duplicate page.N hyperref destinations across pagenumbering resets
+\pagenumbering{Alph} % portada con etiqueta PDF "A" en lugar de un segundo "1"
 \include{../01_Chapters/000NHH-Frontpage}
 \restoregeometry % restores the margins after frontpage
 \hypersetup{pageanchor=true}
-%\nocite{*} % uncomment if you want all sources to be printed in the reference list, including the ones which are not cited in the text 
+%\nocite{*} % uncomment if you want all sources to be printed in the reference list, including the ones which are not cited in the text
 
 \pagenumbering{gobble} % suppress page numbering
-\thispagestyle{plain} % suppress header
 \clearpage
 
 \pagenumbering{roman} % starting roman page numbering
@@ -165,46 +165,38 @@
 }
 
 \newpage
+{\setstretch{1.0}
 \tableofcontents
-
-\newpage
-{\setstretch{1.0} 
-\listoffigures}
- 
-\newpage
-{\setstretch{1.0} 
+\listoffigures
 \listoftables}
 
-\clearpage % cada capítulo empieza en una página nueva
+\clearpage % el cuerpo empieza en una página nueva
 \addtocontents{toc}{\protect\setcounter{tocdepth}{3}} % sets depth of toc to 3, 1.1.1
 \pagenumbering{arabic} % Starting arabic page numbering
 \setcounter{page}{1} % sets pagecounter to 1
 \setcounter{tocdepth}{0}
+\hypersetup{bookmarksdepth=3} % marcadores del PDF independientes de tocdepth
+\addtolength{\intextsep}{0.5\baselineskip} % media l\'inea extra entre figuras/tablas y el texto
+\addtolength{\textfloatsep}{0.5\baselineskip}
 
 \section{Introducción} % section/chapter name
     \subfile{../01_Chapters/01Introduction} % including the subfile for the chapter
 
-\clearpage
 \section{Marco Teórico}
     \subfile{../01_Chapters/02Background}
 
-\clearpage
 \section{Estado de la Cuestión}
     \subfile{../01_Chapters/03StateOfTheArt}
 
-\clearpage
 \section{Materiales y Métodos}
     \subfile{../01_Chapters/04Materials}
 
-\clearpage
 \section{Resultados}
     \subfile{../01_Chapters/05Results}
 
-\clearpage
 \section{Discusión}
     \subfile{../01_Chapters/06Discussion}
 
-\clearpage
 \section{Conclusiones}
     \subfile{../01_Chapters/07Conclusion}
 
@@ -215,6 +207,7 @@
 \clearpage
 \renewcommand\refname{Referencias Bibliográficas} % name for the reference list
 {\setstretch{1.0} % linespacing for the references
+\phantomsection
 \addcontentsline{toc}{section}{Referencias Bibliográficas} % to change the name of the references in the TOC
 \bibliography{References.bib} % adds the references to the document
 }
@@ -222,7 +215,7 @@
 \clearpage
 \renewcommand{\appendixpagename}{Apéndice} % Heading of appendix
 \renewcommand{\appendixtocname}{Apéndice} % name of appendix in TOC
-\appendixpage 
+\appendixpage
 \addappheadtotoc
 
 \begin{appendices}

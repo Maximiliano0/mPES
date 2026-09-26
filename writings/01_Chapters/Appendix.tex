@@ -4,25 +4,22 @@
 
 \section{Comandos de reproducci\'on}\label{ap:repro}
 
-La Tabla~\ref{tab:repro-commands} resume los comandos que regeneran los
-resultados de esta tesis. El entorno virtual (\texttt{win\_mpes\_env}, en
-Windows) se activa desde la ra\'iz del repositorio \texttt{mPES}, y todos
-los comandos se ejecutan desde el directorio \texttt{h1/}, con Python 3.12,
-las dependencias fijadas en \texttt{utils/config/requirements.txt} y las
-variables \texttt{VIRTUAL\_ENV}, \texttt{PYTHONIOENCODING=utf-8} y
-\texttt{TF\_ENABLE\_ONEDNN\_OPTS=0}. El entrenamiento final lee los
-hiperpar\'ametros del archivo \texttt{inputs/best\_params.json} de cada
-paquete. En DQN recurrente y Transformer la arquitectura, elegida mediante
-exploraciones \emph{ad hoc}, sale de \texttt{config/CONFIG.py}. Los valores
-por defecto de \texttt{config/CONFIG.py} (incluido el n\'umero de episodios)
-reproducen los modelos desplegados.
+Todos los comandos se ejecutan desde el directorio \texttt{h1/} del
+repositorio \texttt{mPES}, con el entorno virtual \texttt{win\_mpes\_env}
+activado, Python 3.12, las dependencias de
+\texttt{utils/config/requirements.txt} y las variables
+\texttt{VIRTUAL\_ENV}, \texttt{PYTHONIOENCODING=utf-8} y
+\texttt{TF\_ENABLE\_ONEDNN\_OPTS=0} (Tabla~\ref{tab:repro-commands}). El
+entrenamiento final lee los hiperpar\'ametros de
+\texttt{inputs/best\_params.json}; la arquitectura del DQN recurrente y
+del Transformer, y el n\'umero de episodios de todos los modelos, se
+leen de \texttt{config/CONFIG.py}.
 
 \begin{table}[!ht]
 \centering
 \caption[Comandos de reproducci\'on]{Comandos de optimizaci\'on bayesiana,
-entrenamiento final y evaluaci\'on de cada paquete, ejecutados desde
-\texttt{h1/}. \texttt{<pkg>} es cualquiera de los cinco ensambles
-optimizables.}
+entrenamiento final y evaluaci\'on de cada paquete. \texttt{<pkg>} es
+cualquiera de los cinco ensambles optimizables.}
 \label{tab:repro-commands}
 \small
 \resizebox{\linewidth}{!}{%
@@ -46,127 +43,89 @@ optimizables.}
 
 \section{Ejecuci\'on de la evaluaci\'on}\label{ap:orchestrator}
 
-La evaluaci\'on en los $22$ escenarios se ejecuta con tres comandos desde
-\texttt{h1/}; el primero es reanudable:
+La evaluaci\'on en los $22$ escenarios se ejecuta desde \texttt{h1/}:
 
 \begin{verbatim}
 python -m general.scripts.benchmark run --suite both
 python -m general.scripts.analysis
 python -m general.scripts.figures
+python -m general.scripts.random_baseline
 \end{verbatim}
 
-El primero eval\'ua cada par (modelo, escenario) de los dos grupos de
-modelos (\texttt{individual} y \texttt{ensemble}), reutilizando los
-modelos entrenados y sustituyendo temporalmente sus archivos de entrada
-por los del escenario. El segundo calcula las matrices modelo $\times$
-escenario de media, desviaci\'on est\'andar, m\'inimo, m\'aximo,
-degradaci\'on, $p$ de Welch, $d$ de Cohen y KL de acciones. El tercero
-genera las figuras y las comparaciones entre pares de modelos. Los
-resultados quedan en \texttt{general/results/<grupo>/}:
-\texttt{cells/} (desempe\~no por secuencia y distribuci\'on de acciones
-de cada par modelo--escenario), \texttt{matrices/},
-\texttt{comparison\_metrics.json}, \texttt{figures/} y un resumen
-\texttt{report.md}. Las figuras del agente aleatorio y de la confianza del
-Transformer se generan con \texttt{python -m general.scripts.random\_baseline}
-y \texttt{python -m general.scripts.agent\_internals}.
+El primer comando, reanudable, eval\'ua cada par (modelo, escenario) de
+los dos grupos reemplazando temporalmente los archivos de entrada de
+cada paquete por los del escenario. El segundo calcula las matrices
+modelo $\times$ escenario y las comparaciones entre pares; el tercero
+genera las figuras, y el cuarto, las del agente aleatorio. Los resultados
+se guardan en \texttt{general/results/<grupo>/}.
 
-Las frecuencias de la Tabla~\ref{tab:ens-freq} se obtienen, desde la ra\'iz
-del repositorio, con
-\texttt{python writings/auxiliar/scripts/ensemble\_decisions.py}. El script
+Las frecuencias de la Tabla~\ref{tab:ens-freq} se obtienen, desde la
+ra\'iz del repositorio, con
+\texttt{python writings/auxiliar/scripts/ensemble\_decisions.py}, que
 repite la evaluaci\'on del ensamble ponderado, del consenso con
-\emph{prior} y de la compuerta del Transformer sobre los mismos archivos
-de cada escenario. En cada decisi\'on con recursos disponibles registra la
-acci\'on antes y despu\'es del \emph{prior} y de la cota, y la acci\'on que
-prefiere el Transformer. Tambi\'en comprueba que las medias coincidan con
-las del benchmark.
+\emph{prior} y de la compuerta del Transformer, registra en cada decisi\'on
+la acci\'on antes y despu\'es de cada regla y comprueba que las medias
+coincidan con las de la evaluaci\'on principal.
 
 \section{Mapas estad\'isticos complementarios}\label{ap:stat-maps}
 
-Las Figuras~\ref{fig:heatmap-welch} y~\ref{fig:heatmap-kl} indican, para
-cada modelo individual y cada escenario, si el cambio de desempe\~no
-respecto de la referencia es estad\'isticamente claro (prueba de Welch). Tambi\'en muestran cu\'anto cambia la distribuci\'on de acciones, es decir, la pol\'itica. La
-Figura~\ref{fig:pairwise-cohen} compara todos los pares de modelos
-individuales. Las Figuras~\ref{fig:ensemble-statistical-heatmaps}
-y~\ref{fig:ensemble-pairwise} son las equivalentes para los ensambles.
+Las figuras de este ap\'endice detallan, modelo por modelo, las
+comparaciones estad\'isticas que el texto informa de forma agregada.
 
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
-  \caption[Significancia de Welch por escenario (modelos
-  individuales)]{$\log_{10} p$ de la prueba de Welch entre el desempe\~no
-  de cada escenario y el de la referencia del mismo modelo; valores m\'as
-  negativos indican un cambio m\'as claro.}
+  \caption[Welch por escenario (modelos individuales)]{Modelos
+  individuales: $\log_{10} p$ de Welch de cada escenario frente a la
+  referencia del mismo modelo; los valores menores que $-10$ se muestran
+  como $\le -10$.}
   \label{fig:heatmap-welch}
 \end{figure}
 
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=\linewidth]{ind_04_kl_acciones_por_escenario.png}
-  \caption[Divergencia KL de acciones por escenario (modelos
-  individuales)]{Divergencia KL entre la distribuci\'on de acciones de
-  cada escenario y la de la referencia del mismo modelo: mide cu\'anto
-  cambia la pol\'itica, no el desempe\~no.}
-  \label{fig:heatmap-kl}
-\end{figure}
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.9\linewidth]{ind_13_pares_cohen_d.png}
-  \caption[$d$ de Cohen entre pares de modelos individuales]{$d$ de Cohen
-  entre todos los pares de modelos individuales sobre los $21$
-  escenarios de generalizaci\'on; un valor positivo indica que el modelo
-  de la fila supera al de la columna.}
+  \includegraphics[width=0.85\linewidth]{ind_13_pares_cohen_d.png}
+  \caption[$d$ de Cohen entre pares (modelos individuales)]{Modelos
+  individuales: $d$ de Cohen entre pares de modelos en los $21$ escenarios
+  de generalizaci\'on.}
   \label{fig:pairwise-cohen}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.85\linewidth]{ens_03_welch_logp_por_escenario.png}\\[0.4em]
-  \includegraphics[width=0.85\linewidth]{ens_07_cohen_d_por_escenario.png}\\[0.4em]
-  \includegraphics[width=0.85\linewidth]{ens_04_kl_acciones_por_escenario.png}
-  \caption[Comparaci\'on estad\'istica por escenario (ensambles)]{Ensambles:
-  $\log_{10}p$ de Welch (arriba), $d$ de Cohen (centro) y divergencia KL
-  de acciones (abajo) de cada escenario frente a la referencia del mismo
-  ensamble.}
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{ens_03_welch_logp_por_escenario.png}
+    \caption{$\log_{10} p$ de Welch.}
+  \end{subfigure}
+
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{ens_07_cohen_d_por_escenario.png}
+    \caption{$d$ de Cohen.}
+  \end{subfigure}
+  \caption[Mapas estad\'isticos por escenario (ensambles)]{Ensambles:
+  comparaci\'on de cada escenario con la referencia del mismo ensamble.}
   \label{fig:ensemble-statistical-heatmaps}
 \end{figure}
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.7\linewidth]{ens_13_pares_cohen_d.png}\\[0.4em]
-  \includegraphics[width=0.7\linewidth]{ens_12_pares_welch_logp.png}
-  \caption[Comparaci\'on entre pares de ensambles]{$d$ de Cohen (arriba) y
-  $\log_{10}p$ de Welch (abajo) entre todos los pares de ensambles sobre
-  los $21$ escenarios de generalizaci\'on.}
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=0.85\linewidth]{ens_13_pares_cohen_d.png}
+    \caption{$d$ de Cohen.}
+  \end{subfigure}
+
+  \begin{subfigure}{\linewidth}
+    \centering
+    \includegraphics[width=0.85\linewidth]{ens_12_pares_welch_logp.png}
+    \caption{$\log_{10} p$ de Welch.}
+  \end{subfigure}
+  \caption[Comparaci\'on entre pares (ensambles)]{Ensambles:
+  comparaci\'on entre pares en los $21$ escenarios de generalizaci\'on.}
   \label{fig:ensemble-pairwise}
-\end{figure}
-
-\section{Confianza registrada del Transformer}\label{ap:trf-conf}
-
-La Figura~\ref{fig:trf-internals} muestra la confianza del Transformer en
-cada una de las $258$ decisiones con recursos disponibles, registrada al
-evaluarlo sobre las $64$ secuencias de la referencia. En este registro la
-confianza se calcula de otra forma que en los ensambles
-(Secci\'on~\ref{sec:ens-methods}), por lo que sus valores no son
-comparables con los umbrales de la Tabla~\ref{tab:ens-params}. Los valores $Q$
-de las acciones no factibles se reemplazan por un valor muy negativo, y
-el vector se desplaza a valores no negativos y se normaliza. La
-confianza es $1 - H_{\mathrm{norm}}$ de esa distribuci\'on. Cuando hay
-acciones no factibles, el desplazamiento acerca la distribuci\'on a una
-uniforme sobre las acciones disponibles, de modo que la confianza
-refleja sobre todo cu\'antas acciones quedan y no cu\'anto difieren sus
-valores. En la figura, la mayor\'ia de las decisiones tiene una
-confianza baja (media $0{,}116$), lo que es coherente con esa
-limitaci\'on.
-
-\begin{figure}[!htb]
-  \centering
-  \includegraphics[width=0.8\linewidth]{trf_agent_confidences.png}
-  \caption[Confianza del Transformer en cada decisi\'on]{Confianza
-  $1 - H_{\mathrm{norm}}$ del Transformer en cada una de las $258$
-  decisiones con recursos disponibles; la l\'inea punteada indica la
-  media.}
-  \label{fig:trf-internals}
 \end{figure}
 
 \biblio

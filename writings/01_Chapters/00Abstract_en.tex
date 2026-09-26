@@ -4,51 +4,45 @@
 
 \begin{otherlanguage}{english}
 
-This thesis compares several reinforcement learning methods on a problem
-of allocating limited resources under uncertainty, using a simulated
-pandemic as a test bed. At each step a city arrives with a given
-severity and the agent decides how many resources to assign to it from a
-fixed budget. Severity that is not addressed grows over the following
-steps, so an insufficient allocation early on is paid for later. The
-work was implemented in mPES, an extension of the University of Essex
-pandemic environment.
+This thesis compares reinforcement learning methods on a sequential
+allocation problem with limited resources. A simulated pandemic is used
+as the test scenario: cities are presented sequentially, each with an
+initial severity, and an agent decides how many resources to allocate to
+each one from a fixed budget. Unaddressed severity grows at every step,
+so an insufficient allocation to a city is amplified in the following
+steps.
 
-Six individual models were evaluated, with hyperparameters tuned by Bayesian optimisation. Two are tabular methods (Q-Learning and Double Q-Learning) and four are neural networks: a deep network (DQN), a recurrent variant that
-remembers the most recent states (recurrent DQN, with an LSTM layer), an actor--critic method
-(A2C) and a causal Transformer, which attends to the recent history of
-the sequence. Six ensembles that combine the decisions of several of
-those networks were also evaluated. All models were tested on the same 64 sequences, first under the training conditions and then
-in 21 generalisation scenarios that change the distribution of
-severities, the length of the sequences, or both. Three of them push
-severity or length above the bounds of the environment.
+Six agents were trained: two tabular methods (Q-Learning and Double
+Q-Learning) and four neural networks (a deep Q-network, a recurrent
+variant that processes the most recent states, an actor--critic method
+and a causal Transformer that attends to the recent history). Six rules
+for combining the networks into an ensemble were also evaluated; in all
+of them each network is weighted by its confidence in the decision,
+derived from Shannon entropy. All
+models were evaluated on the same 64 sequences of cities under the
+training conditions and in 21 scenarios with other severities or
+lengths, three of them outside the training range.
 
-Performance is measured as the fraction of the achievable improvement
-that the agent attains in each sequence: 0 means assigning no resources
-at all and 1 means the optimal allocation, computed with full knowledge
-of the sequence in advance. As a reference, an agent that
-decides at random scores 0.670.
+The comparison metric is the normalised performance of each sequence,
+where 0 represents no allocation and 1 the optimal allocation, computed
+with knowledge of the full sequence. The analysis identifies the
+Transformer as the best individual model, both under training
+conditions and in the generalisation scenarios.
 
-The Transformer was the best individual model: it scored 0.927 under the
-training conditions, against 0.887 for Q-Learning, which amounts to
-reducing the distance to the optimum by about 36\%. It kept that level in the
-generalisation scenarios (0.930, against 0.871 for Q-Learning). The best
-system overall was an ensemble that combines DQN, the recurrent network
-and the Transformer and adds two fixed rules (a severity prior and a
-safety bound), with 0.939 in the generalisation scenarios. The
-worst results came from the tabular methods when severity exceeded the
-bound of the environment (0.76 and 0.79, against 0.996 for the Transformer). For most deep networks, the hardest case was sequences longer than those
-seen in training.
-
-The ensembles weight each model by its confidence in each decision,
-measured as one minus the normalised entropy of its action distribution.
-The only one that outperformed the Transformer gives it most of the
-weight, but under the training conditions its final decision differs
-from the Transformer's in 61\% of the cases, mainly because of the
-severity prior; those that only average or vote fell below it.
+Among the ensembles, only the weighted ensemble outperforms the
+individual Transformer, by a small margin, and the one that includes a
+gate regulating the participation of the Transformer reaches an
+equivalent performance, since it executes the Transformer's action in
+almost every decision. The advantage of the weighted
+ensemble is associated with a high temperature and a severity prior
+rather than with confidence weighting. The ensembles that only average
+or vote with weights derived from Shannon entropy fall below the
+individual Transformer, so this confidence is not sufficient on its own
+to outperform the best member in terms of average performance.
 
 \par\vspace{0.5\baselineskip}
-\noindent\textbf{Keywords:} reinforcement learning, sequential resource
-allocation, causal Transformer, model ensembles, Shannon entropy,
+\noindent\textbf{Keywords:} reinforcement learning, sequential
+allocation with limited resources, causal Transformer, model ensembles, Shannon entropy,
 generalisation.
 
 \end{otherlanguage}

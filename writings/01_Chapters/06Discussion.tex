@@ -4,102 +4,63 @@
 
 \label{sec:discussion}
 
-Los resultados respaldan la hip\'otesis H1, y la respuesta a la segunda
-pregunta es afirmativa para una sola de las seis reglas, el ensamble
-ponderado. Este cap\'itulo interpreta ambos resultados.
+Los resultados respaldan la hip\'otesis H1 y no respaldan la H2: s\'olo
+una de las seis reglas, el ensamble ponderado, supera al Transformer, con
+una diferencia de tama\~no despreciable (Secci\'on~\ref{sec:ens-best}).
 
 \subsection{Interpretaci\'on de la ventaja del Transformer}\label{sec:disc-individual}
 
-Los resultados no identifican la causa de la ventaja del Transformer,
-pero descartan que se deba s\'olo a la ventana de estados. El DQN recurrente recibe la misma ventana
-de seis estados y en generalizaci\'on queda por debajo del Transformer
-($0{,}889$ frente a $0{,}930$) y tambi\'en de DQN, que s\'olo ve el
-estado actual ($0{,}899$). Esto es compatible con la estructura del
-entorno: como la asignaci\'on de cada ciudad se fija al llegar, la
-historia no cambia qu\'e acci\'on conviene y s\'olo aporta informaci\'on
-para estimar el retorno (Secci\'on~\ref{sec:env-dyn}). La ventaja del
-Transformer sobre DQN existe, pero es de tama\~no medio ($d = 0{,}51$).
-
-Hausknecht y Stone~\citep{Hausknecht2015} encontraron que la recurrencia ayuda cuando
-el estado observado omite informaci\'on necesaria para decidir. En mPES,
-lo que la ventana puede recuperar, la severidad de las ciudades ya
-atendidas, afecta a la recompensa pero no a la decisi\'on, lo que es
-coherente con que el DQN recurrente no mejore a DQN en
-generalizaci\'on. Parisotto \emph{et al.}~\citep{Parisotto2020}
-encontraron que el Transformer est\'andar es dif\'icil de entrenar en RL.
-El de esta tesis usa una de sus dos modificaciones, la normalizaci\'on
-previa a cada subcapa, sin compuertas, y es peque\~no: dos bloques sobre
-una ventana de seis estados.
-
-Tampoco puede atribuirse la ventaja a una b\'usqueda m\'as completa: la
-arquitectura del Transformer no se optimiz\'o, sino que se eligi\'o mediante
-exploraciones \emph{ad hoc}, y s\'olo sus hiperpar\'ametros de entrenamiento
-se ajustaron por optimizaci\'on bayesiana (Secci\'on~\ref{sec:deep}). Eso no
-descarta que la combinaci\'on de esa arquitectura con los hiperpar\'ametros
-elegidos le resulte especialmente favorable.
-
-En l\'inea con Packer \emph{et al.}~\citep{Packer2018}, que distinguen
-entre interpolaci\'on y extrapolaci\'on, cada familia falla al extrapolar
-un factor distinto. Los modelos tabulares fallan al
-extrapolar la severidad: la recortan a $9$, una fila de la tabla que el
-entrenamiento nunca visit\'o. A2C recibe la misma severidad recortada y,
-sin embargo, mantiene su desempe\~no: una red extiende a $S = 9$ lo
-aprendido para severidades vecinas, mientras que una tabla no generaliza
-entre filas. Las otras redes reciben $S/9$ sin recortar y, salvo el DQN
-recurrente, tambi\'en mantienen su desempe\~no en ese escenario. Su punto d\'ebil
-es extrapolar la longitud: las secuencias m\'as largas que las de
-entrenamiento obligan a administrar el presupuesto durante m\'as pasos
-de los que la pol\'itica aprendi\'o a anticipar. En ese escenario el
-mejor modelo es el DQN recurrente ($0{,}89$ frente a $0{,}86$ del
-Transformer), el \'unico caso fuera de rango en que el Transformer no
-queda primero.
+La ventaja del Transformer no puede atribuirse a la ventana de estados: el
+DQN recurrente recibe la misma ventana de seis estados y en
+generalizaci\'on queda un $4\%$ por debajo del Transformer e incluso un
+$1\%$ por debajo del DQN, que s\'olo observa el estado actual. Tampoco se
+debe al tama\~no, porque el Transformer tiene un $21\%$ menos de
+par\'ametros que el DQN recurrente. Descartados esos dos
+factores, la mejora se atribuye a la atenci\'on causal, que pondera cada
+estado de la ventana seg\'un su relaci\'on con el estado actual en lugar
+de resumirla en un \'unico estado oculto, como hace la LSTM. La ventaja
+se conserva en generalizaci\'on: el Transformer obtiene la mayor media en
+el $73\%$ de los escenarios ($16$ de $22$;
+Figura~\ref{fig:heatmap-global}) y su media all\'i supera en un $0{,}3\%$
+a la de la referencia. Su mayor p\'erdida ocurre con secuencias m\'as largas
+que las de entrenamiento, donde cae un $7\%$ y queda un $3\%$ por debajo
+del DQN recurrente. Como no se evalu\'o una variante sin atenci\'on, su
+efecto no puede separarse del de la normalizaci\'on previa a cada subcapa~\citep{Parisotto2020} ni del de
+los hiperpar\'ametros.
 
 \subsection{Efecto de la regla de combinaci\'on}\label{sec:ens-best}
 
-Los seis ensambles combinan los mismos modelos entrenados y todos
-ponderan a cada miembro por su confianza $c_k = 1-H_{\mathrm{norm}}(p_k)$.
-S\'olo cambia la regla de combinaci\'on, y la Tabla~\ref{tab:ens-freq}
-permite ver qui\'en decide en cada caso:
+Los seis ensambles combinan los mismos modelos y ponderan a cada miembro
+por su confianza; s\'olo cambia la regla (Tabla~\ref{tab:ens-freq}):
 
 \begin{itemize}
-    \item El \textbf{ensamble ponderado} le da al Transformer alrededor
-    del $82\,\%$ del peso base, pero no es el Transformer el que decide.
-    Con $\tau = 15$ las distribuciones de los miembros son casi planas, y
-    el factor que penaliza no asignar nada y el \emph{prior} de severidad
-    pesan tanto como ellas. La acci\'on final difiere de la del
-    Transformer en el $61\,\%$ de las decisiones de la referencia y en el
-    $48\,\%$ de las de generalizaci\'on, y el \emph{prior} cambia la
-    acci\'on votada en el $41\,\%$ y el $33\,\%$, respectivamente; la cota
-    de seguridad casi nunca act\'ua. Su ventaja proviene, por lo tanto, de
-    combinar una preferencia d\'ebil de los modelos con una regla fija que
-    asigna aproximadamente tantos recursos como la severidad de la
-    ciudad.
-    \item La \textbf{compuerta del Transformer} sigue al Transformer en el
-    $97\,\%$ de las decisiones de la referencia y en el $95\,\%$ de las de
-    generalizaci\'on, y cambia su acci\'on en menos del $3\,\%$. Por eso sus
-    resultados son casi id\'enticos a los del
-    Transformer ($0{,}931$ frente a $0{,}930$ en generalizaci\'on).
-    \item El \textbf{voto suave} y el \textbf{voto por acci\'on} usan pesos
-    en los que el DQN recurrente pesa m\'as que el Transformer. En la
-    extrapolaci\'on de severidad quedan por debajo de ambos y s\'olo superan
-    al DQN recurrente: la ponderaci\'on por confianza no alcanz\'o para que el
-    miembro m\'as acertado dominara la decisi\'on.
-    \item El \textbf{consenso} obtiene la referencia m\'as baja. La
-    variante con \emph{prior}, que adem\'as suma distribuciones en lugar
-    de votar, mejora tanto su referencia como su peor escenario, aunque el
-    \emph{prior} s\'olo cambia el $2\,\%$ de sus decisiones en la referencia
-    y el $4\,\%$ en generalizaci\'on.
+    \item En el \textbf{ensamble ponderado} la decisi\'on no la determina
+    el Transformer, pese a que tiene el $82\%$ del peso base: $\tau = 15$ aplana las distribuciones
+    de los miembros y el \emph{prior} cambia la acci\'on votada en el
+    $41\%$ de las decisiones de la referencia y el $33\%$ de las de
+    generalizaci\'on. Su ventaja se asocia a la combinaci\'on de una
+    preferencia d\'ebil de los modelos con una regla fija que asigna
+    aproximadamente seg\'un la severidad.
+    \item La \textbf{compuerta del Transformer} lo sigue en el $97\%$ y el
+    $95\%$ de las decisiones, y por eso alcanza un desempe\~no
+    equivalente.
+    \item En el \textbf{voto suave} y el \textbf{voto por acci\'on} los
+    pesos base favorecen al DQN recurrente sobre el Transformer; en la
+    extrapolaci\'on de severidad, la ponderaci\'on por confianza no
+    produjo que predominara el miembro con mayor desempe\~no individual.
+    \item El \textbf{consenso con \emph{prior}} mejora la referencia y el
+    peor escenario del consenso, aunque su \emph{prior} s\'olo cambia el
+    $2\%$ y el $4\%$ de las decisiones; la mejora no puede atribuirse al
+    \emph{prior}.
 \end{itemize}
 
-El \'unico ensamble que super\'o al Transformer no es el que m\'as lo sigue.
-La compuerta lo sigue casi siempre y lo iguala, mientras que el ensamble
-ponderado se aparta de su acci\'on en la mayor\'ia de las decisiones de la
-referencia y en casi la mitad de las de generalizaci\'on. Los datos son compatibles con que la mejora provenga del
-\emph{prior} de severidad y de la temperatura alta, que suaviza las
-preferencias de los modelos, m\'as que de la ponderaci\'on por confianza.
-Con un solo ensamble ganador no puede separarse el aporte de cada
-componente. Usada como \'unico criterio para promediar, la confianza no
-bast\'o.
+Los datos son compatibles con que la ventaja del ensamble ponderado
+provenga del \emph{prior} y de la temperatura alta m\'as que de la
+ponderaci\'on por confianza; con un \'unico ensamble que supera al Transformer no puede
+separarse el aporte de cada componente. Los datos s\'i muestran que esa
+ponderaci\'on, por s\'i sola, no basta para superar al mejor miembro: los
+dos ensambles que s\'olo promedian o votan con ella quedan por debajo del
+Transformer individual.
 
 \biblio
 \end{document}
