@@ -2,12 +2,15 @@
 Package initialization module for pes_ens (Pandemic Experiment Scenario
 with Ensemble Agent).
 
-The pes_ens variant performs **inference only**: at every trial it loads
-four pre-trained sibling models (``pes_dqn``, ``pes_a2c``, ``pes_rdqn``,
-``pes_trf``) from their canonical ``inputs/`` directories, converts each
-model's output to an action-probability distribution, averages them
-(weighted soft voting), masks infeasible actions and selects the
-allocation via ``argmax``.
+The pes_ens variant performs **inference only**: it loads the enabled
+pre-trained sibling models (``pes_dqn``, ``pes_a2c``, ``pes_rdqn``,
+``pes_trf``; the A2C actor is disabled by default) from their canonical
+``inputs/`` directories and, at every trial, converts each model's
+output to an action-probability distribution, masks infeasible actions,
+mixes the distributions with confidence-weighted soft voting, applies
+the action-0 penalty, the Gaussian severity prior and the severity
+floor, and selects the allocation via ``argmax`` (see
+``ext/ensemble_model.py``).
 
 Handles package setup including:
 - Configuration loading from config/CONFIG.py

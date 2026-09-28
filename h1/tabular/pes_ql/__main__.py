@@ -470,8 +470,8 @@ def main():
                 # (following random resource allocation)
                 numpy.random.seed(3)  # NOTE: In practice, this seed, given an INIT_NO_OF_CITIES of 2, always results in
                 # initial city severities of 4 and 3, and initial resource allocations to those
-                # cities of 3 and 6. Meaning the player always has 40 resources left to allocate to
-                # the remainder of the sequence.
+                # cities of 3 and 6. Meaning the player always has 30 resources left to allocate to
+                # the remainder of the sequence (39 - 9 = 30).
 
                 for c in range(INIT_NO_OF_CITIES):
 

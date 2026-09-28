@@ -110,7 +110,7 @@ mediante exploraciones *ad hoc* (§5).
 
 1. **Carga de configuración**: lee `config/CONFIG.py` y, si existe,
    `inputs/best_params.json`.
-2. **Construcción del entorno**: `PandemicEnv` desde `ext/pandemic.py`.
+2. **Construcción del entorno**: clase `Pandemic` desde `ext/pandemic.py`.
 3. **Construcción del modelo Transformer**: `build_q_network()` en
    `ext/transformer_model.py`.
 4. **Construcción del target network**: copia con pesos sincronizados.
@@ -220,12 +220,18 @@ Contiene:
   inicializada con Glorot uniforme a partir de la semilla y **no se entrena**
   (no forma parte de los 27 019 parámetros entrenables). La variante
   sinusoidal se menciona en el documento teórico pero no está implementada.
-- **Bloques encoder inline**: cada bloque Pre-LN aplica MHA causal + FFN con
-  conexiones residuales, ensamblado dentro de `build_q_network`.
-- **`build_q_network(state_dim, action_dim, history_len, d_model,
-  num_heads, key_dim, ff_dim, num_layers, ...)`**: ensambla
+- **Bloques encoder inline**: cada bloque es **Post-LN**: aplica MHA causal y
+  luego FFN, cada una seguida de conexión residual y `LayerNormalization`
+  (`LayerNorm(x + MHA(x))`, luego `LayerNorm(x + FFN(x))`), ensamblado dentro
+  de `build_q_network`.
+- **`build_q_network(state_dim, action_dim, hidden_units, history_len,
+  d_model, num_heads, key_dim, ff_dim, num_layers, ...)`**: ensambla
   `Input → Masking → Dense(d_model) → + posición → N × bloque encoder (causal)
    → Lambda(last_token) → Dense(32, ReLU) → Dense(11)` (last-token pooling, no global avg).
+- **Capa `Masking` sin efecto**: la máscara de padding que genera `Masking`
+  se pierde en la suma `x + pos_emb`, así que la atención no recibe máscara
+  de padding (sólo la causal) y las filas de ceros del inicio del episodio se
+  atienden como tokens normales. Quitar la capa no cambia las salidas.
 - **`train_step_trf(...)`**: paso Double DQN con Huber loss.
 - **`Lambda` de pooling**: el pooling de último token usa una
   `tf.keras.layers.Lambda` (`name="last_token"`), por lo que al cargar el
@@ -237,8 +243,8 @@ model = tf.keras.models.load_model("trf_model.keras", safe_mode=False)
 
 ### `ext/pandemic.py`
 
-Mismo `PandemicEnv` Gymnasium-compatible (resources=39, severity=...) que
-otros paquetes.
+Misma clase `Pandemic` Gymnasium-compatible que otros paquetes
+(`max_resources` = 39 − 9 preasignados = 30 recursos disponibles).
 
 ### `ext/train_transformer.py`
 

@@ -9,13 +9,14 @@ in :pymod:`pandemic`:
   current episode) to Q-values for every discrete action.  The trunk
   is a stack of **causal Transformer encoder blocks** (multi-head
   self-attention + position-wise feed-forward + residual + layer
-  normalisation) applied to a learned linear projection of the input
-  with additive learned positional embeddings; the Q-head is a small
-  MLP fed by the *last* token of the sequence.
+  normalisation, post-LN) applied to a learned linear projection of the
+  input plus an additive fixed (non-trainable) positional vector; the
+  Q-head is a small MLP fed by the *last* token of the sequence.
 - **normalize_state**:  Scales a raw integer state to ``[0, 1]``.
 - **make_history_window**:  Materialises a deque of past normalised
   states into a ``(history_len, state_dim)`` array, left-padded with
-  zeros and consumable by the ``Masking`` layer.
+  zeros (the pad rows are not masked out of attention; see
+  ``build_q_network``).
 - **HistoryDeque**:  Convenience wrapper that resets at the start of
   every episode and exposes ``append_step`` / ``current_window``.
 - **ReplayBuffer**:  Fixed-size circular buffer storing experience
@@ -31,9 +32,9 @@ Architecture
 ::
 
     Q-Network: Input(history_len, state_dim)
-               -> Masking(0.0)
+               -> Masking(0.0)              (mask is dropped at the '+' below)
                -> Dense(d_model)            (token embedding)
-               -> + learned positional embedding
+               -> + fixed positional vector (non-trainable)
                -> [ MultiHeadAttention(num_heads, key_dim, causal)
                     -> Add & LayerNorm
                     -> FFN(ff_dim, ReLU) -> Dense(d_model)
@@ -41,6 +42,8 @@ Architecture
                -> take last token
                -> Dense(h_0, ReLU) -> ... -> Dense(h_n, ReLU)
                -> Dense(action_dim, linear)
+
+Each encoder block is post-LN: ``x = LayerNorm(x + sublayer(x))``.
 
 Defaults are configurable via ``config/CONFIG.py``:
 ``TRF_HISTORY_LEN``, ``TRF_D_MODEL``, ``TRF_NUM_HEADS``,
@@ -100,7 +103,8 @@ def build_q_network(state_dim: int, action_dim: int,
     The network consumes a left-padded sequence of the last
     ``history_len`` normalised states (zero-padded at the start of an
     episode) and outputs Q-values for every discrete action.  A
-    ``Masking`` layer marks the all-zero pad rows as missing tokens, a
+    ``Masking`` layer computes a mask for the all-zero pad rows (the mask is
+    lost at the positional addition; see Notes), a
     learned linear projection lifts each timestep to ``d_model`` features,
     a fixed positional vector is added (see the note below), and ``num_layers`` causal
     Transformer encoder blocks (multi-head self-attention +
@@ -149,6 +153,15 @@ def build_q_network(state_dim: int, action_dim: int,
     The ``pos_embed`` layer is called on a constant ``tf.range`` tensor, so
     its Glorot-initialised output is folded into the graph as a constant:
     the positional vector is not trainable and not tracked as a model layer.
+
+    The padding mask created by ``Masking`` propagates through
+    ``token_embed`` but is discarded by the ``x + pos_emb`` addition, so the
+    attention layers receive no padding mask: pad rows are attended to as
+    ordinary tokens (only the causal mask applies).  Removing the
+    ``Masking`` layer leaves the outputs unchanged.
+
+    Each encoder block uses post-layer normalisation
+    (``LayerNorm(x + MHA(x))`` and then ``LayerNorm(x + FFN(x))``).
     """
     def _init(layer_idx: int):
         if seed is None:
@@ -157,6 +170,8 @@ def build_q_network(state_dim: int, action_dim: int,
 
     inputs = tf.keras.layers.Input(shape=(int(history_len), int(state_dim)),
                                    name="history_window")
+    # Kept so the graph matches the deployed trf_model.keras; the mask it builds is dropped at the
+    # ``x + pos_emb`` addition, so attention does not mask the zero pad rows (only the causal mask applies).
     x = tf.keras.layers.Masking(mask_value=0.0, name="history_mask")(inputs)
     # Token embedding: lift each (state_dim,) vector to (d_model,).
     x = tf.keras.layers.Dense(int(d_model), kernel_initializer=_init(0),
@@ -250,8 +265,9 @@ def make_history_window(history: "Deque[numpy.ndarray]",
     """Materialise a deque of past states into a fixed-shape array.
 
     The most recent state appears in the *last* row.  Missing prefix
-    rows (beginning of an episode) are filled with zeros so the
-    ``Masking`` layer can ignore them.
+    rows (beginning of an episode) are filled with zeros.  The model's
+    ``Masking`` layer flags them, but the mask does not reach the attention
+    layers (see ``build_q_network``), so they are processed as ordinary tokens.
 
     Parameters
     ----------

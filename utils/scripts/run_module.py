@@ -9,13 +9,18 @@ of a real console.  By redirecting at the Python level the OS process
 keeps a normal (hidden) console window and only Python-level I/O is
 captured.
 
-Usage (called by run_bayesian_opt.ps1):
-    python utils/run_module.py <module> <log_file> <err_file> [args ...]
+Usage (invoked manually or from a detached launcher; no launcher script is
+shipped in the repository).  Run it from the directory that contains the
+target package (e.g. ``h1/``), because the current directory is added to
+``sys.path`` just like ``python -m`` does::
 
-Example:
-    python utils/run_module.py pes_dqn.ext.optimize_dqn ^
-        pes_dqn/inputs/bayesian_opt.log ^
-        pes_dqn/inputs/bayesian_opt_err.log 110
+    python <repo>/utils/scripts/run_module.py <module> <log_file> <err_file> [args ...]
+
+Example (from ``h1/``, Windows cmd)::
+
+    python ../utils/scripts/run_module.py ml.pes_dqn.ext.optimize_dqn ^
+        ml/pes_dqn/inputs/bayesian_opt.log ^
+        ml/pes_dqn/inputs/bayesian_opt_err.log 110
 """
 
 import io
@@ -36,7 +41,7 @@ def main():
 
     if len(sys.argv) < 4:
         print(
-            "Usage: python utils/run_module.py <module> <log_file> <err_file> [args ...]",
+            "Usage: python <repo>/utils/scripts/run_module.py <module> <log_file> <err_file> [args ...]",
             file=sys.stderr,
         )
         sys.exit(2)

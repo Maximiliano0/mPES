@@ -1,5 +1,5 @@
 """
-pes_a2c — Pandemic Experiment Scenario (Advantage Actor-Critic)
+pes_ens — Pandemic Experiment Scenario (Ensemble Agent)
 
 Utility functions module providing essential functionality for experiment execution,
 severity calculations, resource allocation aggregation, and performance metrics.

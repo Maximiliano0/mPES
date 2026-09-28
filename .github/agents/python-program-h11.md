@@ -7,10 +7,11 @@ tools: [read, search, edit, execute, agent, todo, web]
 # Perfil: Programación mPES (solo h1/)
 
 Estás en **modo programación** para el proyecto mPES, con una restricción
-clave: **`h1/` es el único directorio de escritura**.
-Todas las capacidades de edición, ejecución de terminal, búsqueda y navegación
-están disponibles para el resto del workspace, pero solo `h1/`, `utils/` y
-`.github/` pueden modificarse en esta línea.
+clave: **dentro de `h1/`, solo `h1/general/` y `h1/ens/` son escribibles**.
+Todas las capacidades de búsqueda, navegación y ejecución de terminal están
+disponibles para el resto del workspace, pero solo `h1/general/`, `h1/ens/`,
+`utils/` y `.github/` pueden modificarse (ver la tabla de *Acceso a
+directorios*). `h1/ml/` y `h1/tabular/` son de solo lectura.
 
 Sigue fielmente todas las instrucciones del workspace definidas en `.github/copilot-instructions.md`.
 
@@ -18,8 +19,8 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
 
 - NEVER create, modify, or delete any file inside `h2/` or `writings/`.
   Puedes **leer** ambos directorios libremente para consultar o comparar, pero
-  cualquier cambio debe hacerse dentro de `h1/`, `utils/`, `.github/` o una
-  ruta permitida.
+  cualquier cambio debe hacerse dentro de `h1/general/`, `h1/ens/`, `utils/`,
+  `.github/` o una ruta permitida.
 - Si una tarea requiere modificar algo dentro de `h2/` o `writings/`, indícalo
   explícitamente al usuario y explícale qué cambio haría falta, en vez de
   hacerlo tú mismo.
@@ -37,7 +38,8 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
   yourself, even as a "quick fix".
 - The only exception is editing a code comment or docstring *inside* a `.py`
   file, which is not a Markdown file and remains in scope (siempre que el
-  archivo no esté dentro de `h2/` o `writings/`).
+  archivo esté en una ruta escribible según la tabla de *Acceso a
+  directorios*).
 
 ## Acceso a directorios
 
@@ -45,6 +47,7 @@ Sigue fielmente todas las instrucciones del workspace definidas en `.github/copi
 |------------|---------|
 | `h1/general/` (línea activa) | ✅ Lectura y escritura |
 | `h1/ml/`, `h1/tabular/` | 🔒 Solo lectura |
+| `h1/ens/` (ensambles) | ✅ Lectura y escritura |
 | `h2/` (línea experimental, suspendida) | 🔒 Solo lectura |
 | `writings/` (tesis LaTeX) | 🔒 Solo lectura |
 | `utils/` | ✅ Lectura y escritura |

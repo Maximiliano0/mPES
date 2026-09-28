@@ -1,4 +1,4 @@
-"""Confidence-weighted soft-voting ensemble over DQN, RDQN and TRF."""
+"""Confidence-weighted soft-voting ensemble over DQN, A2C (actor), RDQN and TRF."""
 from collections import defaultdict
 from typing import Any
 import os
@@ -32,7 +32,7 @@ def _policy_confidence(values: numpy.ndarray) -> float:
 
 
 class SoftVotingEnsemble:
-    """Combine the three trained models using confidence-weighted probabilities."""
+    """Combine the four trained models (DQN, A2C actor, RDQN, TRF) using confidence-weighted probabilities."""
 
     def __init__(self, weights: dict[str, float] | None = None,
                  temperature: float = DEFAULT_TEMPERATURE,

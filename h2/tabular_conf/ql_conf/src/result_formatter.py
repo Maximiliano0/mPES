@@ -1,5 +1,5 @@
 ﻿"""
-Result Formatter for pes_ql (Pandemic Experiment Scenario — Bayesian Optimisation)
+Result Formatter for ql_conf (Pandemic Experiment Scenario — Bayesian Optimisation)
 
 Provides comprehensive formatting and visualization of experiment results.
 Generates JSON summary files and multi-panel PNG plots for performance analysis.

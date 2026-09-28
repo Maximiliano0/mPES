@@ -45,10 +45,14 @@ El ensemble toma la salida de los modelos activos:
 
 Cada miembro produce una distribución de acción o un vector de valores Q, que se transforma en una probabilidad de acción. Luego se calculan:
 
-- una confianza por miembro basada en la entropía normalizada inversa,
+- una confianza por miembro, $C = 1 - H(p)/\log|\mathcal{A}|$, calculada directamente sobre la distribución factible $p$,
 - un peso por modelo usando la confianza y un exponente configurable,
 - un término de acuerdo y desacuerdo sobre la acción elegida,
-- un prior severidad-adaptado que modula la decisión final según el nivel de riesgo del estado.
+- una atenuación de la acción nula ($\times 0{,}3$ mientras queden recursos),
+- un prior severidad-adaptado que modula la decisión final según el nivel de riesgo del estado,
+- una cota de seguridad: con severidad $s \ge 6$ la acción no baja de $\lfloor s/2 \rfloor$.
+
+> **Corrección 2026-09-28.** La versión anterior aplicaba una segunda *softmax* a $p$ antes de calcular la entropía, lo que dejaba la confianza por debajo de $0{,}03$ en la mayoría de las decisiones. Los parámetros optimizados con esa versión están archivados en `inputs/_legacy_2026-09-04_doble_softmax/`; `evaluate_ens.py` sólo busca en `inputs/best_params.json` e `inputs/*_BAYESIAN_OPT/`, por lo que ya no los usa.
 
 La salida final favorece decisiones consistentes con la mayoría y con los modelos más confiables, pero incorpora un prior que puede orientar la acción hacia niveles de riesgo más adecuados cuando la severidad del caso es alta.
 

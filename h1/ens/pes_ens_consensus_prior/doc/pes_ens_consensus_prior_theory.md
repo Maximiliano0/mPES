@@ -33,6 +33,8 @@ $$
 
 donde $|\mathcal{A}|$ es el número de acciones factibles. Esta métrica queda acotada en $[0,1]$ y aumenta cuando la distribución es más concentrada.
 
+La entropía se calcula directamente sobre $p$, la distribución factible renormalizada: la *softmax* de los valores Q para los miembros Q y las probabilidades del actor para A2C. Hasta el 2026-09-28 la implementación aplicaba una segunda *softmax* a $p$, lo que acotaba $C$ a $0{,}029$ con 11 acciones factibles y dejaba casi inertes los términos de acuerdo y desacuerdo; los parámetros optimizados con esa versión quedan archivados en `inputs/_legacy_2026-09-04_doble_softmax/`.
+
 ---
 
 ## 3. Agregación basada en consenso
@@ -57,6 +59,12 @@ donde:
 
 La idea es que una decisión apoyada por varios modelos confiables reciba una recompensa, mientras que una acción minoritaria y poco acorde con el resto sea penalizada.
 
+Antes de combinarla con el prior, la puntuación se ajusta en tres pasos:
+
+1. si quedan recursos, $S(0)$ se multiplica por $0{,}3$ para atenuar la acción nula,
+2. los valores negativos se recortan a $0$,
+3. $S$ se normaliza para que sume $1$.
+
 ---
 
 ## 4. Prior de severidad
@@ -80,6 +88,8 @@ S_{final}(a) = (1 - \lambda) S(a) + \lambda P_{prior}(a)
 $$
 
 con $\lambda = \text{prior\_weight}$. De este modo, la decisión se sale del mero consenso y incorpora contexto clínico o de riesgo del estado.
+
+La acción elegida es $\arg\max_a S_{final}(a)$, con una cota de seguridad: si $s \ge 6$ y esa acción es menor que $\lfloor s/2 \rfloor$, se reemplaza por $\lfloor s/2 \rfloor$ siempre que sea factible.
 
 ---
 

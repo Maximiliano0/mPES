@@ -113,7 +113,8 @@ Para cualquier otro número, consulta el JSON (`celdas.<paquete>.<escenario>`, `
   nuevos sin incluirlos con `\subfile{../01_Chapters/...}`. Mantén el patrón `{\Huge \textbf{...}}` de la portada,
   porque `audit.py` lo usa para nombrar el PDF.
 - Acentos escapados como en los archivos actuales (`m\'as`, `a\~no`, `` ?` `` para ¿, `` !` `` para ¡). Decimales con coma en modo
-  matemático: `$0{,}927$`; porcentajes `$36\,\%$`; miles `$5\,131$`; negativos `$-0{,}069$`.
+  matemático: `$0{,}927$`; porcentajes `$36\%$` (nunca `$36\,\%$`: con babel-spanish da «Incompatible glue
+  units»); miles `$5\,131$`; negativos `$-0{,}069$`.
 - Anglicismos en `\emph{}` (*prior*, *buffer*, *softmax*, *trial*, *dropout*, *feed-forward*, *Pre-LN*,
   *soft voting*). Los paquetes y escenarios van en `\texttt{pes\_trf}` / `\texttt{sev\_base}`.
 - Ecuaciones con `equation` y `\label{eq:...}`, seguidas de un párrafo «Donde …» que define cada símbolo.
@@ -175,7 +176,10 @@ un criterio.
 
 Escribe primero los `.tex` regenerados en `/tmp/mpes/writings/01_Chapters/` (o en `00_Main/` si es `Main.tex`), o
 ajusta `SRC`. Las imágenes que no estén subidas se crean vacías con su nombre exacto, para que el criterio de
-imágenes siga detectando referencias rotas y huérfanas.
+imágenes siga detectando referencias rotas y huérfanas. `IMAGES` enumera sólo las 21 imágenes que la tesis
+referencia con `\includegraphics`. `ind_04_kl_acciones_por_escenario.png`, `ens_04_kl_acciones_por_escenario.png`
+y `agent_internals/trf_agent_confidences.png` ya no se usan: si siguen en el `02_Images/` local, `audit.py` las
+marca como huérfanas (ver `audit/AUDIT.md`) y hay que borrarlas allí, no agregarlas a esta lista.
 
 ```python
 import pathlib, shutil, subprocess, sys
@@ -195,12 +199,10 @@ IMAGES = {
     'baseline': ['random_player_sequence_performance.png', 'random_player_normalised_performance.png'],
     'per_model': [f'PES_{p}_results.png' for p in ('A2C', 'BASE', 'DQL', 'DQN', 'ENS', 'QL', 'RDQN', 'TRF')],
     'individual': ['ind_01_desempeno_por_escenario.png', 'ind_03_welch_logp_por_escenario.png',
-                   'ind_04_kl_acciones_por_escenario.png', 'ind_05_curvas_por_familia.png',
-                   'ind_13_pares_cohen_d.png'],
+                   'ind_05_curvas_por_familia.png', 'ind_13_pares_cohen_d.png'],
     'ensemble': ['ens_01_desempeno_por_escenario.png', 'ens_03_welch_logp_por_escenario.png',
-                 'ens_04_kl_acciones_por_escenario.png', 'ens_06_curvas_extrapolacion.png',
-                 'ens_07_cohen_d_por_escenario.png', 'ens_12_pares_welch_logp.png', 'ens_13_pares_cohen_d.png'],
-    'agent_internals': ['trf_agent_confidences.png'],
+                 'ens_06_curvas_extrapolacion.png', 'ens_07_cohen_d_por_escenario.png',
+                 'ens_12_pares_welch_logp.png', 'ens_13_pares_cohen_d.png'],
 }
 for sub, names in LAYOUT.items():
     (ROOT / sub).mkdir(parents=True, exist_ok=True)

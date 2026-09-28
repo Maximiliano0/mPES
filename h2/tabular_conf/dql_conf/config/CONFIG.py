@@ -1,5 +1,5 @@
 ﻿"""
-pes_dql — Configuration file.
+dql_conf — Configuration file.
 
 Centralises every tuneable parameter for the Pandemic Experiment Scenario
 (Q-Learning v2).  Values here apply to the experiment loop (__main__.py),

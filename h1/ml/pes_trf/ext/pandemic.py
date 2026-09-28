@@ -18,8 +18,8 @@ Provides the core simulation components:
 Network architecture (built by ``transformer_model.build_q_network``)::
 
     Input(history_len, 3)
-      -> Masking(0.0)
-      -> Dense(d_model)  (token embedding) + learned positional embedding
+      -> Masking(0.0)    (mask is dropped at the positional addition)
+      -> Dense(d_model)  (token embedding) + fixed (non-trainable) positional vector
       -> [ MultiHeadAttention(num_heads, key_dim, causal)
            -> Add & LayerNorm
            -> FFN(ff_dim, ReLU) -> Dense(d_model)
@@ -165,7 +165,7 @@ class Pandemic(Env):
 
         Configures the environment with a predefined sequence length, initial
         severities, and optionally allocations. If allocations are not provided,
-        they are randomly generated.
+        they are set to zero for every trial (no-allocation baseline).
 
         Parameters
         ----------
@@ -174,8 +174,8 @@ class Pandemic(Env):
         init_severities : array-like
             Initial severity values for each trial
         allocs : array-like, optional
-            Resource allocations for each trial. If None, allocations are randomly
-            generated. Default: None
+            Resource allocations for each trial. If None, every allocation is set
+            to 0 (``[0] * length``). Default: None
         """
         self.seq_length = int(length)
         self.set_initial_severities(init_severities)

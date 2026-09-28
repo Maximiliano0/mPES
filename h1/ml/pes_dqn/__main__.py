@@ -634,8 +634,8 @@ def main():
             # one-glance against ``best_params.json['mean_perf']`` (the metric
             # Optuna reports).  Note that on Windows CPU the value can drift
             # ~3% from a Colab-GPU Optuna run because of cuDNN kernel
-            # differences — see pes_dqn/ext/eval_model.py (if present) for a
-            # stand-alone reproducer.
+            # differences.  pes_dqn has no stand-alone evaluation script
+            # (pes_rdqn/ext/eval_model.py is the equivalent for RDQN).
             try:
                 _raw_mean = float(numpy.mean(MyPerformances))
                 _raw_std = float(numpy.std(MyPerformances))

@@ -1,1 +1,1 @@
-"""accQ ensemble extensions."""
+"""Confidence consensus ensemble extensions."""

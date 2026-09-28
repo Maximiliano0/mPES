@@ -20,7 +20,7 @@ reconstruction + two plot variants). It exposes:
 
 This module does NOT modify any training/evaluation code. It only reads
 existing artefacts under each package's ``outputs/<latest>/`` directory
-plus the benchmark raw JSONs in ``general/results/raw/``.
+plus the benchmark cells in ``h1/general/results/<suite>/cells/``.
 
 Pandemic environment recap
 --------------------------
@@ -31,9 +31,9 @@ Per-step reward: :math:`r_t = -\\sum_i s_{i, t}`. Severity update:
 
 Normalisation (1)
 -----------------
-``perf_i = (S_worst_i - S_final_i) / (S_worst_i - S_best_i) âˆˆ [0, 1]``.
+``perf_i = (S_worst_i - S_final_i) / (S_worst_i - S_best_i) ∈ [0, 1]``.
 Already stored as ``per_sequence_perf`` in
-``general/results/raw/<pkg>__sev_base.json``.
+``h1/general/results/<suite>/cells/<pkg>__sev_base.json``.
 
 CLI
 ---
@@ -73,10 +73,12 @@ PACKAGES: List[Tuple[str, str]] = [
     ('ml', 'pes_rdqn'),
     ('ml', 'pes_a2c'),
     ('ml', 'pes_trf'),
-    ('ml', 'pes_ens'),
+    ('ens', 'pes_ens'),
 ]
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-RAW_DIR = os.path.join(REPO_ROOT, 'general', 'results', 'raw')
+H1_ROOT = os.path.join(REPO_ROOT, 'h1')
+CELL_DIRS = [os.path.join(H1_ROOT, 'general', 'results', suite, 'cells')
+             for suite in ('individual', 'ensemble')]
 
 
 ##########################
@@ -108,7 +110,7 @@ class SequenceReward:
 
 
 ##########################
-##  ReconstrucciÃ³n      ##
+##  Reconstrucción      ##
 ##########################
 def _read_responses(path: str) -> List[dict]:
     """Parse ``PES_*_responses_*.txt`` into a list of dicts."""
@@ -267,8 +269,9 @@ def _latest_output_dir(pkg_path: str) -> Optional[str]:
 
 def _load_per_sequence_perf(pkg: str) -> Optional[numpy.ndarray]:
     """Load benchmark ``sev_base`` per-sequence perf if available."""
-    path = os.path.join(RAW_DIR, f'{pkg}__sev_base.json')
-    if not os.path.isfile(path):
+    paths = [os.path.join(cell_dir, f'{pkg}__sev_base.json') for cell_dir in CELL_DIRS]
+    path = next((candidate for candidate in paths if os.path.isfile(candidate)), None)
+    if path is None:
         return None
     try:
         with open(path, 'r', encoding='utf-8') as fh:
@@ -294,7 +297,7 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
       step.
     * **perf**:math:`_i = (S_{\\text{worst}, i} - S_{\\text{final}, i})
       / (S_{\\text{worst}, i} - S_{\\text{best}, i})`, the value already
-      stored in ``general/results/raw/<pkg>__sev_base.json``.
+      stored in ``h1/general/results/<suite>/cells/<pkg>__sev_base.json``.
       Reflects *only the final summed severity*.
 
     The figure has two stacked panels (shared x-axis):
@@ -304,7 +307,7 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
     * **Bottom — cumulative growth**: :math:`\\Sigma_{i \\leq k}` of
       each metric, against the ideal :math:`y = k` line.
     """
-    pkg_path = os.path.join(REPO_ROOT, pkg_group, pkg_name)
+    pkg_path = os.path.join(H1_ROOT, pkg_group, pkg_name)
     out_dir = _latest_output_dir(pkg_path)
     if out_dir is None:
         print(f'[skip] {pkg_name}: no output directory')

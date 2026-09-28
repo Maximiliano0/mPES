@@ -46,15 +46,17 @@ Sampler:
 Outputs (saved to INPUTS_PATH/<date>_BAYESIAN_OPT/):
     - q_best_<date>.npy              : Q-table from the best optimization trial
     - rewards_best_<date>.npy        : Reward history of the best training run
-    - optimization_results_<date>.txt: Full report of the optimization (1-based trial #)
-    - optimization_history_<date>.png: Convergence plot (1-based trial #)
+    - optimization_results_<date>.txt: Full report of the optimization (0-based trial #)
+    - optimization_history_<date>.png: Convergence plot (0-based trial #)
     - hyperparameter_importances_<date>.png: Parameter importance plot
     - optuna_study_<date>.db         : SQLite database for resumable studies
 
 Note:
-    Trial numbering in reports and plots uses 1-based indexing to match
-    the trial_id in the SQLite database.  Optuna internally uses 0-based
-    trial.number; the +1 offset is applied at report-generation time.
+    Trial numbering in reports and plots uses Optuna's 0-based
+    ``trial.number`` directly (no +1 offset), so it matches
+    ``best_trial_number`` in best_params.json.  Note that this differs from
+    the other optimisation scripts (pes_ql, pes_dqn, ...), which report 1-based
+    numbers.
 '''
 
 ##########################
@@ -332,8 +334,8 @@ def _save_report(study, opt_dir, opt_date, best_Q, best_rewards):
 
     Notes
     -----
-    Trial numbers are converted to 1-based indexing (trial.number + 1)
-    so they match the trial_id column in the Optuna SQLite database.
+    Trial numbers are reported with Optuna's 0-based ``trial.number``
+    (no +1 offset), matching ``best_trial_number`` in best_params.json.
     """
 
     best = study.best_trial

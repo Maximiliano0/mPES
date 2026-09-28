@@ -130,7 +130,7 @@ def _write_matrix(path: str, models: list, scenarios: list, getter):
 ###############
 ##  Main
 ###############
-def aggregate(reference_pkg: str = 'pes_dqn') -> str:
+def aggregate(reference_pkg: str = 'ql_conf') -> str:
     """Build matrices + summary JSON from raw per-cell results.
 
     Parameters

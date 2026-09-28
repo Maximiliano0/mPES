@@ -1,5 +1,5 @@
 ﻿"""
-Package initialization module for pes_ql (Pandemic Experiment Scenario
+Package initialization module for ql_conf (Pandemic Experiment Scenario
 with Bayesian Optimisation).
 
 Variant of pes_base that adds Bayesian hyperparameter optimisation (Optuna / TPE)
@@ -21,7 +21,7 @@ Handles package setup including:
 import os
 
 # CUDA / TF env vars kept for parity with sibling packages, even though
-# pes_ql is pure-NumPy tabular Q-Learning and does not import TensorFlow.
+# ql_conf is pure-NumPy tabular Q-Learning and does not import TensorFlow.
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ.setdefault('CUDA_VISIBLE_DEVICES', '-1')
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'

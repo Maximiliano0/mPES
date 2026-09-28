@@ -1,8 +1,8 @@
 ﻿"""
-Configuration file for the pes_ql experiment.
+Configuration file for the ql_conf experiment.
 
 Centralises all tunable experiment parameters in one place.
-Values are imported by pes_ql/__init__.py and re-exported at package level.
+Values are imported by ql_conf/__init__.py and re-exported at package level.
 
 Sections
 --------

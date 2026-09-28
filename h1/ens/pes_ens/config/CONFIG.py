@@ -2,8 +2,9 @@
 Configuration file for the pes_ens experiment.
 
 Centralises all tunable parameters for the *Ensemble* agent that fuses the
-trained policies of pes_dqn, pes_a2c, pes_rdqn and pes_trf via **soft
-voting** (averaging of action-probability distributions).
+trained policies of pes_dqn, pes_a2c, pes_rdqn and pes_trf (A2C disabled
+by default) via **confidence-weighted soft voting** of action-probability
+distributions.
 
 Sections
 --------
@@ -24,17 +25,28 @@ Sections
 
 Notes
 -----
-- pes_ens has **no training or optimisation phase**.  All four member
-  models must already exist as ``.keras`` artefacts in the canonical
-  ``inputs/`` directory of their producing package.
+- pes_ens has **no training or optimisation phase**.  Every enabled
+  member model must already exist as a ``.keras`` artefact in the
+  canonical ``inputs/`` directory of its producing package.
 - ``ENS_MEMBER_MODELS`` paths are resolved at runtime to absolute
   filesystem paths.  Members marked ``enabled=False`` are skipped.
-- Voting strategy is **soft voting**:  each member's raw output is
-  converted to an action-probability distribution (softmax for
-  Q-network members, identity for the A2C actor), the distributions
-  are averaged using ``ENS_MEMBER_MODELS[i]['weight']``, infeasible
-  actions (allocation > resources_left) are masked, the distribution
-  is renormalised, and ``argmax`` selects the final action.
+- Voting strategy is **confidence-weighted soft voting** (see
+  ``EnsembleAgent.predict`` in ``ext/ensemble_model.py``):  each
+  member's raw output is converted to an action-probability
+  distribution (``softmax(Q / ENS_SOFTMAX_TEMPERATURE)`` for Q-network
+  members, renormalised policy for the A2C actor), infeasible actions
+  (allocation > resources_left) are masked and each distribution is
+  renormalised; the distributions are then mixed with the dynamic
+  weight ``w_norm * (0.1 + confidence)``, where ``w_norm`` is
+  ``ENS_MEMBER_MODELS[i]['weight']`` renormalised over the enabled
+  members and ``confidence = 1 - H(p) / log2(11)``.  The mixture's
+  action-0 mass is multiplied by ``0.3`` when resources remain, the
+  result is renormalised and blended with the Gaussian severity prior
+  (``ENS_SEVERITY_PRIOR_WEIGHT``/``ENS_SEVERITY_PRIOR_SIGMA``); if the
+  raw severity is ``>= 6`` and the ``argmax`` falls below
+  ``floor = severity // 2`` (and ``floor`` is feasible), the decision
+  is forced to ``floor``.  Otherwise ``argmax`` selects the final
+  action.
 """
 
 # ==================== RESOURCE ALLOCATION SETTINGS ====================
@@ -140,13 +152,14 @@ ENS_MEMBER_MODELS = [
     },
 ]
 
-# Softmax temperature applied to Q-value members before averaging.
+# Softmax temperature applied to Q-value members before mixing.
 # Lower => sharper distribution, more confident; higher => smoother.
-# 1.0 is a sensible default.
+# 1.0 is the neutral value; 15.0 is used here, which strongly flattens
+# the Q-member distributions (and therefore lowers their confidence).
 ENS_SOFTMAX_TEMPERATURE = 15.0
 # Severity-prior bias.  Mixes the ensemble distribution with a
 # Gaussian prior centred at the current trial's raw severity:
-#   prior[a] = exp(-(a - severity)^2 / (2 * sigma^2))
+#   prior[a] = exp(-(a - severity)^2 / (2 * sigma^2))   (masked to feasible a, renormalised)
 #   final   = (1 - w) * ensemble + w * prior
 # ``ENS_SEVERITY_PRIOR_WEIGHT`` in [0, 1]; 0.0 disables the prior.
 # Smaller ``ENS_SEVERITY_PRIOR_SIGMA`` => sharper bias toward

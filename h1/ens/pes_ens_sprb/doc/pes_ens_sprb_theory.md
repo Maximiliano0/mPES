@@ -7,19 +7,37 @@
 
 ## 1. Idea central
 
-Cada miembro del ensemble produce una distribución sobre las acciones posibles:
+Cada miembro del ensemble produce una distribución sobre las acciones factibles
+$a \le R_t$ (recursos disponibles):
 
 $$
-\pi_m(a \mid s)
+\pi_m(a \mid s) =
+\begin{cases}
+\operatorname{softmax}\bigl(Q_m(s, \cdot)/\tau\bigr)_a & \text{miembros Q (DQN, RDQN, TRF)} \\
+\text{probabilidades del actor A2C, renormalizadas} & \text{miembro de política (A2C)}
+\end{cases}
 $$
 
 La agregación final toma la forma:
 
 $$
-\pi_{ens}(a \mid s) = \frac{\sum_m w_m \pi_m(a \mid s)}{\sum_m w_m}
+S(a) = \sum_m w_m\, C_m^{\,p}\, \pi_m(a \mid s),
+\qquad
+\hat{a} = \arg\max_{a \le R_t} S(a)
 $$
 
-donde $w_m$ es un peso de confianza y/o robustez del miembro.
+donde:
+
+- $w_m \ge 0$ es el peso del miembro,
+- $C_m = 1 - H(\pi_m)/\log |\mathcal{A}_t|$ es su confianza (entropía inversa
+  normalizada sobre las $|\mathcal{A}_t|$ acciones factibles); para los miembros
+  Q se calcula sobre $\operatorname{softmax}(Q_m/\tau)$, por lo que la
+  temperatura $\tau$ afecta tanto a la distribución como a la confianza,
+- $p$ es el exponente de confianza (`confidence_power`) y $\tau$ la temperatura
+  (`temperature`), ambos optimizados con Optuna junto con los pesos.
+
+La normalización por $\sum_m w_m$ no altera el $\arg\max$; solo se usa para la
+confianza reportada del ensemble, $\operatorname{clip}\bigl(\sum_a S(a) / \sum_m w_m,\, 0,\, 1\bigr)$.
 
 ---
 
@@ -35,7 +53,7 @@ La votación dura fuerza una unica acción y puede producir empates o decisiones
 
 ## 3. Factibilidad y regularización
 
-Antes de combinar distribuciones, el paquete suele descartar acciones no factibles por recursos disponibles. Esto evita que la distribución agregada asigne masa a decisiones imposibles y mantiene la decisión dentro del espacio operativo real del escenario.
+Antes de combinar distribuciones, el paquete descarta las acciones no factibles por recursos disponibles. Esto evita que la distribución agregada asigne masa a decisiones imposibles y mantiene la decisión dentro del espacio operativo real del escenario.
 
 ---
 

@@ -26,9 +26,10 @@ Una tabla discretiza ese espacio en celdas y sufre dos problemas graves:
    aprendido.
 
 DQN resuelve ambos: la red interpola en el espacio continuo y comparte
-parámetros entre estados similares. El resultado en este proyecto es un
-salto en desempeño desde valores tabulares (~0.83–0.86) a
-**`raw_mean_perf = 0.8937 ± 0.0552` (n=64)** medido el 2026-04-30.
+parámetros entre estados similares. El resultado en este proyecto es
+**`raw_mean_perf = 0.8937 ± 0.0552` (n=64)** medido el 2026-04-30, dentro
+del rango de los métodos tabulares (0.871–0.896; ver §8): mejora a
+`pes_base` y `pes_ql`, pero no a `pes_dql`.
 
 ---
 
@@ -48,7 +49,7 @@ Luego ejecuta cualquiera de los tres modos:
 |------|---------|
 | Experimento completo (8 bloques × 8 sec.) | `python -m ml.pes_dqn` |
 | Entrenamiento del agente | `python -m ml.pes_dqn.ext.train_dqn [num_episodes]` |
-| Optimización bayesiana | `python -m ml.pes_dqn.ext.optimize_dqn [n_trials]` |
+| Optimización bayesiana | `python -m ml.pes_dqn.ext.optimize_dqn [n_trials]` (60 por defecto) |
 
 Ejemplos:
 
@@ -76,8 +77,9 @@ y la red en [ml/pes_dqn/ext/dqn_model.py](../ext/dqn_model.py).
 
 ### 3.1 Inicialización
 
-1. Se construye el entorno `PandemicEnv` (gymnasium), con
-   `AVAILABLE_RESOURCES_PER_SEQUENCE = 39`, severidades iniciales leídas de
+1. Se construye el entorno `Pandemic` (gymnasium), con
+   `AVAILABLE_RESOURCES_PER_SEQUENCE = 39` (30 disponibles para el agente
+   tras los 9 preasignados), severidades iniciales leídas de
    `inputs/initial_severity.csv` y longitudes de secuencia de
    `inputs/sequence_lengths.csv`.
 2. Se crean **dos** redes Q idénticas: `q_online` y `q_target`, ambas vía
@@ -134,7 +136,7 @@ con el muestreador TPE (Akiba et al., 2019).
 
 La función `objective()` muestrea **16 hiperparámetros** (no 6); los
 principales aparecen abajo — ver [ext/optimize_dqn.py](../ext/optimize_dqn.py)
-líneas ≈268-285 para la lista completa:
+líneas ≈234-259 para la lista completa:
 
 | Hiperparámetro | Tipo | Rango |
 |---|---|---|
@@ -206,7 +208,7 @@ ml/pes_dqn/
 ├── __main__.py            # Carga modelo y corre bloques/secuencias/trials
 ├── config/CONFIG.py       # Constantes DQN_*
 ├── ext/
-│   ├── pandemic.py        # PandemicEnv (gymnasium)
+│   ├── pandemic.py        # Entorno Pandemic (gymnasium)
 │   ├── dqn_model.py       # build_q_network, ReplayBuffer, sync_target_network, normalize_state, train_step_dqn
 │   ├── train_dqn.py       # Bucle de entrenamiento DQNTraining
 │   ├── optimize_dqn.py    # Estudio Optuna
@@ -270,8 +272,8 @@ mínima alcanzable dada la asignación de recursos). Un valor de 0.89
 significa que el agente recupera el **89 %** del margen entre la peor y
 la mejor política sobre las 64 secuencias evaluadas.
 
-La desviación de 0.055 muestra robustez: las peores secuencias siguen
-por encima de 0.83, no hay colapsos catastróficos (típicos de DQN sin
+La desviación de 0.055 muestra robustez: la peor secuencia queda en 0.72
+y el percentil 25 en 0.86, sin colapsos catastróficos (típicos de DQN sin
 *target network*).
 
 ---
@@ -280,15 +282,19 @@ por encima de 0.83, no hay colapsos catastróficos (típicos de DQN sin
 
 | Paquete | Algoritmo | `raw_mean_perf` | Notas |
 |---|---|---|---|
-| `pes_base` | Q-Learning tabular | ~0.83 | Sin generalización; muchos estados no visitados. |
-| `pes_ql` | QL + Optuna | ~0.85 | Hiperparámetros óptimos pero sigue siendo tabla. |
-| `pes_dql` | Double Q-Learning + PBRS | ~0.87 | Reduce sesgo de maximización. |
+| `pes_base` | Q-Learning tabular | 0.8706 | Sin generalización; muchos estados no visitados. |
+| `pes_ql` | QL + Optuna | 0.8866 | Hiperparámetros óptimos pero sigue siendo tabla. |
+| `pes_dql` | Double Q-Learning + PBRS | 0.8963 | Reduce sesgo de maximización. |
 | **`pes_dqn`** | **DQN Double + Replay + Target** | **0.8937** | Generalización en $\mathbb{R}^3$. |
+
+Valores de referencia del benchmark (`h1/general/results/individual/report.md`,
+escenario `sev_base`, n = 64).
 
 Conclusión: para un espacio de estados continuo de baja dimensión pero
 con dinámica no lineal (transición $\sigma' = \max(0,\,1.4\sigma-0.4 a)$),
-DQN ofrece una mejora consistente de 4–6 puntos porcentuales sobre los
-métodos tabulares.
+DQN supera a `pes_base` (+2.3 puntos porcentuales) y a `pes_ql` (+0.7),
+pero queda levemente por debajo de `pes_dql` (−0.3); no hay una mejora
+consistente sobre todos los métodos tabulares.
 
 ---
 

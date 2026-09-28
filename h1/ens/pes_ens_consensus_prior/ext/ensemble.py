@@ -1,4 +1,4 @@
-"""Confidence consensus ensemble with agreement and disagreement terms."""
+"""Confidence consensus ensemble with agreement terms and a severity-informed prior."""
 from collections import defaultdict
 from typing import Any
 import os
@@ -16,11 +16,10 @@ def _softmax(values: numpy.ndarray) -> numpy.ndarray:
     return probabilities / numpy.sum(probabilities)
 
 
-def _confidence(values: numpy.ndarray) -> float:
-    """Calculate normalized inverse entropy confidence from feasible Q-values."""
-    probabilities = _softmax(values)
+def _confidence(probabilities: numpy.ndarray) -> float:
+    """Calculate normalized inverse entropy confidence from a feasible action distribution."""
     entropy = -numpy.sum(probabilities * numpy.log(numpy.maximum(probabilities, 1e-12)))
-    return float(numpy.clip(1.0 - entropy / max(numpy.log(len(values)), 1e-12), 0.0, 1.0))
+    return float(numpy.clip(1.0 - entropy / max(numpy.log(len(probabilities)), 1e-12), 0.0, 1.0))
 
 
 def _normalize(values: numpy.ndarray) -> numpy.ndarray:

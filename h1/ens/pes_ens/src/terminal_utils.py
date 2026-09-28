@@ -1,5 +1,5 @@
 """
-Terminal Utilities for pes_a2c (Pandemic Experiment Scenario — Advantage Actor-Critic)
+Terminal Utilities for pes_ens (Pandemic Experiment Scenario — Ensemble Agent)
 
 Provides styled text formatting and visual elements for enhanced console output.
 Enables creation of formatted headers, sections, progress indicators, and data displays.

@@ -3,19 +3,19 @@ Finalise an interrupted ``pes_trf`` Bayesian-optimisation study **locally**.
 
 Use this when a Colab Optuna run was killed by the runtime timeout and only
 the resumable artifacts (``optuna_study_<date>.db``, ``_best_artifacts.*``)
-were synced to ``pes_trf/inputs/<date>_BAYESIAN_OPT/``.  The script extracts
+were synced to ``h1/ml/pes_trf/inputs/<date>_BAYESIAN_OPT/``.  The script extracts
 the best trial from the SQLite study and writes the lightweight artifacts
 that ``train_transformer.py`` and ``pes_trf.__main__`` need:
 
   - ``best_params_<date>.json``                (dated sidecar)
-  - ``pes_trf/inputs/best_params.json``        (canonical mirror)
+  - ``h1/ml/pes_trf/inputs/best_params.json``  (canonical mirror)
   - ``optimization_results_<date>.txt``        (human-readable report)
   - ``optimization_history_<date>.png``        (convergence plot)
   - ``hyperparameter_importances_<date>.png``  (importance plot)
 
 The model weights (``trf_best_<date>.keras``) and reward curve
 (``rewards_best_<date>.npy``) are intentionally **not** produced — they would
-require a full ``TRF_EPISODES`` retrain.  Generate them later with::
+require a full ``TRF_EPISODES`` retrain.  Generate them later, from ``h1/``, with::
 
     python -m ml.pes_trf.ext.train_transformer --from-best <date>
 
@@ -51,7 +51,8 @@ if _ROOT not in sys.path:
 # directly as a standalone module so we only pull the plain Python constants.
 import importlib.util  # noqa: E402
 
-_CONFIG_PATH = os.path.join(_ROOT, 'ml', 'pes_trf', 'config', 'CONFIG.py')
+_PKG_ROOT = os.path.join(_ROOT, 'h1', 'ml', 'pes_trf')
+_CONFIG_PATH = os.path.join(_PKG_ROOT, 'config', 'CONFIG.py')
 _spec = importlib.util.spec_from_file_location('_pes_trf_config', _CONFIG_PATH)
 assert _spec is not None and _spec.loader is not None
 _cfg = importlib.util.module_from_spec(_spec)
@@ -59,7 +60,7 @@ _spec.loader.exec_module(_cfg)
 SEED: int = _cfg.SEED
 TRF_EPISODES: int = _cfg.TRF_EPISODES
 TRF_HIDDEN_UNITS: list = list(_cfg.TRF_HIDDEN_UNITS)
-_INPUTS_PATH = os.path.join(_ROOT, 'ml', 'pes_trf', 'inputs')
+_INPUTS_PATH = os.path.join(_PKG_ROOT, 'inputs')
 
 _DATE_RE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 
@@ -285,7 +286,7 @@ def main() -> None:
         f"  mean_perf         = {payload['mean_perf']:.6f}\n"
         f"  trial_seed        = {payload['trial_seed']}\n"
         f"  hidden_units      = {payload['hidden_units']}\n"
-        "\nNext step (optional, regenerates the .keras + rewards.npy):\n"
+        "\nNext step (optional, run from h1/; regenerates the .keras + rewards.npy):\n"
         f"  python -m ml.pes_trf.ext.train_transformer --from-best {args.opt_date}\n"
     )
 

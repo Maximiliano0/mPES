@@ -1,7 +1,7 @@
 '''
-pes_a2c - Pandemic Experiment Scenario: Utility Functions
+pes_ens - Pandemic Experiment Scenario: Utility Functions
 
-Small collection of helper functions used across pes_a2c modules:
+Small collection of helper functions used across pes_ens modules:
 
 - **entropy_from_pdf**:  Shannon entropy (bits) of a probability distribution.
 - **convert_globalseq_to_seqs**:  Splits a flat values array into nested

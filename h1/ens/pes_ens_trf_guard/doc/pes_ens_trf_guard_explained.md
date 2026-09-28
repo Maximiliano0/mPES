@@ -7,7 +7,7 @@
 
 ## 1. ¿Qué es este paquete?
 
-`pes_ens_trf_guard` introduce una regla de seguridad para priorizar el modelo Transformer cuando su confianza es suficientemente alta. Si el Transformer no supera el umbral de confianza, el ensemble recurre a los otros miembros para producir la decisión final.
+`pes_ens_trf_guard` introduce una regla de seguridad para priorizar el modelo Transformer cuando su confianza es suficientemente alta. Si el Transformer no alcanza el umbral de confianza, el ensemble recurre a la combinación ponderada por confianza de todos los miembros (el Transformer incluido) para producir la decisión final.
 
 Esta variante intenta combinar la mejor capacidad de generalización del Transformer con la robustez de un respaldo analítico.
 

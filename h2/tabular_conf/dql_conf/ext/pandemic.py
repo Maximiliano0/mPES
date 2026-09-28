@@ -1,5 +1,5 @@
 ﻿'''
-ql_conf — Pandemic Gymnasium Environment and Enhanced Q-Learning.
+dql_conf — Pandemic Gymnasium Environment and Enhanced Q-Learning.
 
 Implements the Pandemic environment as a custom Gymnasium ``Env`` and provides
 four public entry points:

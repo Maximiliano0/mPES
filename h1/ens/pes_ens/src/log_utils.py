@@ -1,5 +1,5 @@
 """
-Logging Utilities for pes_a2c (Pandemic Experiment Scenario — Advantage Actor-Critic)
+Logging Utilities for pes_ens (Pandemic Experiment Scenario — Ensemble Agent)
 
 Provides centralized console logging with simultaneous file and terminal output.
 Enables dual-stream logging where messages are printed to both the console and
@@ -66,8 +66,8 @@ def create_ConsoleLog_filehandle_singleton(SubjectId: str):
 
     Examples
     --------
-    >>> handle = create_ConsoleLog_filehandle_singleton('2026-02-09_A2C_AGENT')
-    >>> # Creates: outputs/PES_log_2026-02-09_A2C_AGENT.txt
+    >>> handle = create_ConsoleLog_filehandle_singleton('2026-02-09_ENS_AGENT')
+    >>> # Creates: outputs/PES_ENS_log_2026-02-09_ENS_AGENT.txt
     """
 
     assert SubjectId is not None

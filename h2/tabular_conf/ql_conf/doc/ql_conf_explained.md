@@ -29,8 +29,9 @@
 `h2/tabular_conf/ql_conf` es una variante experimental de **Q-Learning tabular con búsqueda Bayesiana de
 hiperparámetros** del proyecto mPES. Comparte el mismo entorno de simulación
 (`Pandemic`) y la misma métrica de evaluación que `pes_base`, pero añade una
-fase previa de optimización con **Optuna** que selecciona los cinco
-hiperparámetros principales de Q-Learning antes de entrenar el agente final.
+fase previa de optimización con **Optuna** que selecciona siete
+hiperparámetros (los cinco principales de Q-Learning más los dos de exploración
+por confianza) antes de entrenar el agente final.
 
 El pipeline completo se compone de tres pasos secuenciales:
 

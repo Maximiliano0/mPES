@@ -55,12 +55,8 @@ RAW_RESULTS_DIR = os.path.join(GENERAL_ROOT, 'results', 'raw')
 
 # Group of every benchmarked package.
 PACKAGE_GROUPS = {
-    'pes_ql':   'tabular',
-    'pes_dql':  'tabular',
-    'pes_dqn':  'ml',
-    'pes_rdqn': 'ml',
-    'pes_a2c':  'ml',
-    'pes_trf':  'ml',
+    'ql_conf':  'tabular_conf',
+    'dql_conf': 'tabular_conf',
 }
 ALL_PACKAGES = list(PACKAGE_GROUPS.keys())
 

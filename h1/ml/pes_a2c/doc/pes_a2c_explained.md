@@ -93,12 +93,13 @@ El script `ext/train_a2c.py` ejecuta las siguientes etapas:
 
 1. **Carga de configuración**: lee `config/CONFIG.py` y, si existe,
    sobrescribe valores con `inputs/best_params.json`.
-2. **Inicialización del entorno**: instancia `PandemicEnv` desde
+2. **Inicialización del entorno**: instancia `Pandemic` desde
    `ext/pandemic.py` (Gymnasium-compatible).
 3. **Construcción de redes**: crea las redes Actor y Critic en
    `ext/ac_model.py` mediante `build_actor()` y `build_critic()`.
 4. **Bucle de episodios**: por cada episodio
-   - Se ejecuta una secuencia completa (resources=39, severity inicial dada).
+   - Se ejecuta una secuencia completa (30 recursos disponibles = 39 − 9
+     preasignados; severidad inicial dada).
    - Se acumulan trayectorias $(s_t, a_t, r_t, s_{t+1})$.
    - Al terminar el episodio se llama a `train_step_actor_critic()` con el batch
      completo de la trayectoria (Monte Carlo + bootstrap del crítico).
@@ -162,8 +163,13 @@ Nota: el actor y el crítico tienen **dos optimizadores Adam separados**
 con learning-rates independientes (`AC_ACTOR_LR` y `AC_CRITIC_LR`); la
 búsqueda los muestrea por separado.
 
-Cada trial entrena un agente reducido (menos episodios) y devuelve el
-**rendimiento medio normalizado** sobre 64 evaluaciones independientes.
+Cada trial entrena un agente desde cero con su propio `num_episodes`
+(50 000–250 000) y devuelve el **rendimiento medio normalizado** sobre 8
+réplicas estocásticas de las 64 secuencias fijas (512 episodios): en cada
+paso la acción se **muestrea** del softmax del actor restringido a las
+acciones factibles, con semillas deterministas derivadas de la del trial.
+El agente desplegado (`__main__.py`, `train_a2c.py`) usa en cambio `argmax`
+determinista sobre esas mismas probabilidades.
 
 ### Almacenamiento
 
@@ -204,7 +210,7 @@ def train_step_actor_critic(actor, critic, actor_optimizer, critic_optimizer,
 
 ### `ext/pandemic.py`
 
-Define `PandemicEnv` (Gymnasium):
+Define la clase `Pandemic` (entorno Gymnasium):
 
 - **Estado**: `[resources_left/30, trial_no/10, severity/9]` $\in [0,1]^3$
   (con `max_resources = AVAILABLE_RESOURCES_PER_SEQUENCE − 9 = 30`).

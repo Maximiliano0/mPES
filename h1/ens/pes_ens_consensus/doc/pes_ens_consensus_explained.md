@@ -7,7 +7,7 @@
 
 ## 1. ¿Qué es este paquete?
 
-`pes_ens_consensus` agrega las decisiones de varios modelos activos del proyecto con un criterio de consenso que favorece la agreement entre miembros y penaliza las decisiones que divergen demasiado entre sí.
+`pes_ens_consensus` agrega las decisiones de varios modelos activos del proyecto con un criterio de consenso que favorece el acuerdo entre miembros y penaliza las decisiones que divergen demasiado entre sí.
 
 Este enfoque resulta útil cuando se busca una acción final más estable y menos impulsada por un único miembro con alta confianza pero poca concordancia con el resto del ensemble.
 

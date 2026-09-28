@@ -38,7 +38,8 @@ Los miembros base son los modelos de la línea activa:
 - `pes_a2c`
 - `pes_trf`
 
-La configuración del paquete define pesos y temperaturas de agregación para combinar sus salidas sin acoplar el paquete a un código fuente cruzado entre líneas.
+La configuración del paquete define los pesos, la temperatura y el exponente de confianza por defecto (la
+evaluación usa los valores optimizados en `inputs/best_params.json` si existen) para combinar sus salidas sin acoplar el paquete a un código fuente cruzado entre líneas.
 
 ---
 

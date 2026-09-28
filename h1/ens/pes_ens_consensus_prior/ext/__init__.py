@@ -1,1 +1,1 @@
-"""accQ ensemble extensions."""
+"""Consensus ensemble with severity prior: extensions."""

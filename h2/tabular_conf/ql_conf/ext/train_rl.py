@@ -1,5 +1,5 @@
 '''
-pes_ql - Pandemic Experiment Scenario: RL-Agent Training Pipeline
+ql_conf - Pandemic Experiment Scenario: RL-Agent Training Pipeline
 
 Trains a Q-Learning agent on the Pandemic environment using hyperparameters
 obtained from Bayesian optimisation (ext/optimize_rl.py, trial #40) and
@@ -26,7 +26,7 @@ Usage
 -----
 ::
 
-    python3 -m tabular.pes_ql.ext.train_rl [num_episodes]
+    python3 -m tabular_conf.ql_conf.ext.train_rl [num_episodes]
 '''
 
 ##########################

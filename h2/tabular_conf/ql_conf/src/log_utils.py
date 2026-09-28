@@ -1,5 +1,5 @@
 ﻿"""
-Logging Utilities for pes_ql (Pandemic Experiment Scenario — Bayesian Optimisation)
+Logging Utilities for ql_conf (Pandemic Experiment Scenario — Bayesian Optimisation)
 
 Provides centralized console logging with simultaneous file and terminal output.
 Enables dual-stream logging where messages are printed to both the console and
@@ -241,7 +241,7 @@ def strip_colour(Str):
 
     Examples
     --------
-    >>> from tabular.pes_ql import ANSI
+    >>> from tabular_conf.ql_conf import ANSI
     >>> colored_str = ANSI.BLUE + "Hello World" + ANSI.RESET
     >>> plain_str = strip_colour(colored_str)
     >>> # plain_str is now "Hello World" without escape sequences

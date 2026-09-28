@@ -212,10 +212,15 @@ $11$ valores $Q$:
     oculto no se conserva entre decisiones.
     \item \textbf{Transformer}: la misma ventana, proyectada a
     $d_{\mathrm{model}} = 32$ y sumada a un vector de posici\'on fijo, pasa
-    por $2$ bloques \emph{Pre-LN}~\citep{Parisotto2020} con atenci\'on
-    causal de $4$ cabezas de dimensi\'on $16$ y una capa
-    \emph{feed-forward} de $64$ unidades, sin \emph{dropout}; la \'ultima
-    posici\'on pasa por una capa densa de $32$ unidades.
+    por $2$ bloques con atenci\'on causal de $4$ cabezas de dimensi\'on
+    $16$ y una capa \emph{feed-forward} de $64$ unidades, sin
+    \emph{dropout}. Cada subcapa aplica la normalizaci\'on de capa
+    despu\'es de la conexi\'on residual (\emph{Post-LN},
+    como en~\citep{Vaswani2017}), sin las compuertas de
+    Parisotto \emph{et al.}~\citep{Parisotto2020}; la \'ultima
+    posici\'on pasa por una capa densa de $32$ unidades. La atenci\'on no
+    enmascara las filas de ceros que completan la ventana: s\'olo aplica
+    la m\'ascara causal.
 \end{itemize}
 
 La arquitectura del DQN recurrente y la del Transformer se eligieron
@@ -361,11 +366,11 @@ acci\'on, le resta $\beta_d$ por la de los que prefieren otra y agrega
 $\sum_k c_k \hat Q_k(a)$.
 
 \textbf{Consenso con \emph{prior}.} 
-Reemplaza el voto por la suma $\sum_k \tilde w_k\, p_k$, aten\'ua la
-acci\'on nula como $\eta$, mezcla el resultado con el \emph{prior} de la
-Ecuaci\'on~\eqref{eq:ens-prior}, con sus propios $w_\pi$ y $\sigma_S$, y
-aplica la misma cota de seguridad. Calcula la confianza aplicando la
-\emph{softmax} a $p_k$, lo que reduce $c_k$.
+Conserva los t\'erminos $\beta_a$ y $\beta_d$ del consenso, pero
+reemplaza el voto y los $\hat Q_k$ por la suma $\sum_k \tilde w_k\, p_k$,
+aten\'ua la acci\'on nula como $\eta$, mezcla el resultado con el
+\emph{prior} de la Ecuaci\'on~\eqref{eq:ens-prior}, con sus propios $w_\pi$
+y $\sigma_S$, y aplica la misma cota de seguridad.
 
 \textbf{Con compuerta para el Transformer.} Ejecuta la acci\'on del
 Transformer cuando su confianza supera el umbral $\tau_g = 0{,}2222$
@@ -397,7 +402,7 @@ Ponderado & $15$ & --- & $0{,}18$ & $0{,}90$ & $5{,}0$ & --- & $w_\pi = 0{,}17$,
 Voto suave & $1{,}219$ & $2{,}681$ & $0{,}270$ & $1{,}760$ & $0{,}896$ & $0{,}0070$ & --- \\
 Voto por acci\'on & $1$ & $2{,}197$ & $0{,}468$ & $2{,}599$ & $1{,}803$ & $0{,}174$ & --- \\
 Consenso & $1$ & $0{,}2754$ & $1{,}532$ & $1{,}931$ & $2{,}504$ & $1{,}881$ & $\beta_a = 2{,}074$, $\beta_d = 0{,}1211$ \\
-Consenso con prior & $1$ & $0{,}3253$ & $2{,}558$ & $2{,}942$ & $2{,}996$ & $0{,}432$ & $\beta_a = 1{,}605$, $\beta_d = 0{,}4115$, $w_\pi = 0{,}1186$, $\sigma_S = 1{,}436$ \\
+Consenso con prior & $1$ & $1{,}050$ & $2{,}122$ & $2{,}723$ & $2{,}277$ & $0{,}3366$ & $\beta_a = 0{,}2437$, $\beta_d = 0{,}1146$, $w_\pi = 0{,}1777$, $\sigma_S = 0{,}9097$ \\
 Compuerta Transformer & $1$ & $1{,}452$ & $0{,}837$ & $2{,}561$ & $2{,}601$ & $0{,}0674$ & $\tau_g = 0{,}2222$, $\kappa_g = 2{,}397$ \\
 \bottomrule
 \end{tabular}
@@ -455,7 +460,7 @@ severidad     & \texttt{sev\_extrapolate\_high}& $U\{10, 11, 12\}$, fuera de ran
 \midrule
 longitud      & \texttt{len\_all\_short}       & Todas las secuencias de longitud $3$.\\
 longitud      & \texttt{len\_all\_long}        & Todas las secuencias de longitud $10$.\\
-longitud      & \texttt{len\_geometric}        & $\mathrm{Geom}(p = 0{,}2)$, recortada a $[3, 10]$.\\
+longitud      & \texttt{len\_geometric}        & $2 + \mathrm{Geom}(p = 0{,}2)$, recortada a $[3, 10]$.\\
 longitud      & \texttt{len\_poisson}          & $\mathrm{Poisson}(\lambda = 5)$, recortada a $[3, 10]$.\\
 longitud      & \texttt{len\_extrapolate\_long}& $U\{11, \ldots, 20\}$, fuera de rango.\\
 \midrule

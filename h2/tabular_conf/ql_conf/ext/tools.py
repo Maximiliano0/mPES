@@ -1,7 +1,7 @@
 ﻿'''
-pes_ql - Pandemic Experiment Scenario: Utility Functions
+ql_conf - Pandemic Experiment Scenario: Utility Functions
 
-Small collection of helper functions used across pes_ql modules:
+Small collection of helper functions used across ql_conf modules:
 
 - **entropy_from_pdf**:  Shannon entropy (bits) of a probability distribution.
 - **convert_globalseq_to_seqs**:  Splits a flat values array into nested

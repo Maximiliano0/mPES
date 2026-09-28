@@ -57,7 +57,7 @@ def _objective(trial: optuna.Trial, trials_per_sequence: numpy.ndarray,
 
 
 def main() -> None:
-    """Optimize accQ parameters on the shared fixed experiment sequences."""
+    """Optimize confidence consensus parameters on the shared fixed experiment sequences."""
     parser = argparse.ArgumentParser(description='Optimize the confidence consensus ensemble.')
     parser.add_argument('n_trials', nargs='?', type=int, default=50)
     default_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'inputs'))

@@ -1,5 +1,5 @@
 ﻿"""
-pes_dql — Result Formatter for the Pandemic Experiment Scenario (Q-Learning v2).
+dql_conf — Result Formatter for the Pandemic Experiment Scenario (Q-Learning v2).
 
 Provides comprehensive formatting and visualization of experiment results.
 Generates JSON summary files and multi-panel PNG plots for performance analysis.

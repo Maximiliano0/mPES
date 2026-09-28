@@ -5,7 +5,7 @@
   "autor": "Ing. Maximiliano Leonel Vega",
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
-  "fuente": "h1/general/results/{individual,ensemble}/ (matrices/*.csv, comparison_metrics.json, cells/*.json), inputs/best_params.json y config/CONFIG.py de cada paquete; generado 2026-09-24.",
+  "fuente": "h1/general/results/{individual,ensemble}/ (matrices/*.csv, comparison_metrics.json, cells/*.json), inputs/best_params.json y config/CONFIG.py de cada paquete; generado 2026-09-24. pes_ens_consensus_prior actualizado el 2026-09-28 tras corregir la doble softmax en su confianza (nuevo inputs/best_params.json y re-ejecución de sus 22 celdas); el resto no cambió.",
   "convenciones": {
    "metrica": "rbar = (S_peor - S_agente) / (S_peor - S_mejor); 0 = no asignar, 1 = óptimo (S_mejor por programación dinámica exacta, mochila acotada 0..10 por ciudad, suma <= 30); rbar <= 1.",
    "referencia": "escenario sev_base (distribución de entrenamiento), n = 64 secuencias, 360 pasos.",
@@ -410,38 +410,38 @@
   },
   "pes_ens_consensus_prior": {
    "nombre_en_texto": "Consenso con prior",
-   "referencia_media": 0.916863,
-   "referencia_sd": 0.041098,
+   "referencia_media": 0.9177,
+   "referencia_sd": 0.041031,
    "referencia_min": 0.7995,
    "referencia_max": 0.992443,
-   "generalizacion_media_21": 0.921619,
-   "generalizacion_sd_agrupada_21": 0.04227,
-   "degradacion_media": -0.004755,
-   "mayor_degradacion": 0.046187,
+   "generalizacion_media_21": 0.919364,
+   "generalizacion_sd_agrupada_21": 0.04567,
+   "degradacion_media": -0.001664,
+   "mayor_degradacion": 0.047384,
    "escenario_mayor_degradacion": "len_extrapolate_long",
    "peor_escenario": "len_extrapolate_long",
-   "peor_escenario_media": 0.870676,
+   "peor_escenario_media": 0.870316,
    "mejor_escenario": "joint_extrap_both",
-   "mejor_escenario_media": 0.968438,
-   "degradacion_por_familia": {"conjunta": -0.025309, "longitud": 0.013667, "severidad": -0.00744, "estructural": 0.0},
-   "media_por_familia": {"severidad": 0.924303, "longitud": 0.903196, "conjunta": 0.942172, "estructural": 0.916863},
-   "derivado_media_18_sin_estructurales": 0.922411,
-   "derivado_media_3_fuera_de_rango": 0.931933,
-   "delta_rel_vs_ql_referencia": 0.267,
-   "delta_rel_vs_ql_generalizacion": 0.39,
+   "mejor_escenario_media": 0.968365,
+   "degradacion_por_familia": {"conjunta": -0.020025, "longitud": 0.015232, "severidad": -0.003445, "estructural": 0.0},
+   "media_por_familia": {"severidad": 0.921146, "longitud": 0.902468, "conjunta": 0.937726, "estructural": 0.9177},
+   "derivado_media_18_sin_estructurales": 0.919642,
+   "derivado_media_3_fuera_de_rango": 0.931789,
+   "delta_rel_vs_ql_referencia": 0.274,
+   "delta_rel_vs_ql_generalizacion": 0.373,
    "definicion": {
-    "regla": "Como consenso pero con suma de distribuciones; factor 0,3 a a=0 si R>0; mezcla con prior de severidad; cota de seguridad floor(S/2) si S>=6. Confianza calculada aplicando softmax a p_k (reduce c_k).",
+    "regla": "Como consenso pero con suma de distribuciones; factor 0,3 a a=0 si R>0; mezcla con prior de severidad; cota de seguridad floor(S/2) si S>=6. Confianza c_k = 1 − H_norm(p_k), igual que el resto (corregida el 2026-09-28: antes se aplicaba una segunda softmax a p_k).",
     "miembros": ["dqn", "rdqn", "trf", "a2c"],
-    "parametros": {"beta_a": 1.605238, "beta_d": 0.411452, "rho": 0.325261, "sigma_prior": 1.436415, "tau": 1.0, "w_a2c": 0.432274, "w_dqn": 2.558183, "w_prior": 0.118571, "w_rdqn": 2.941942, "w_trf": 2.995977},
+    "parametros": {"beta_a": 0.2437, "beta_d": 0.114644, "rho": 1.049975, "sigma_prior": 0.909726, "tau": 1.0, "w_a2c": 0.336563, "w_dqn": 2.12233, "w_prior": 0.177653, "w_rdqn": 2.722707, "w_trf": 2.2768},
     "origen_parametros": "mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json)",
-    "score_optuna": 0.916863,
+    "score_optuna": 0.9177,
     "score_optuna_igual_a_referencia_benchmark": true,
     "confianza": "1 - H_norm, normalizada por log(nº de acciones factibles)"
    },
    "referencia_detalle": {
-    "distribucion_acciones_0a10": [0.2, 0.094, 0.033, 0.039, 0.006, 0.208, 0.025, 0.0, 0.056, 0.289, 0.05],
-    "media_por_bloque": [0.913687, 0.893454, 0.888265, 0.930706, 0.924061, 0.924238, 0.928433, 0.932063],
-    "sd_por_bloque": [0.024244, 0.041094, 0.058361, 0.034726, 0.031597, 0.034063, 0.051189, 0.038025]
+    "distribucion_acciones_0a10": [0.203, 0.086, 0.033, 0.05, 0.003, 0.208, 0.017, 0.008, 0.053, 0.289, 0.05],
+    "media_por_bloque": [0.914765, 0.89465, 0.888265, 0.930009, 0.932423, 0.920995, 0.928433, 0.932063],
+    "sd_por_bloque": [0.023317, 0.041825, 0.058361, 0.034069, 0.028622, 0.035205, 0.051189, 0.038025]
    }
   },
   "pes_ens_trf_guard": {
@@ -867,28 +867,28 @@
    "struct_more_total": {"mu": 0.889317, "sd": 0.063718, "min": 0.684205, "max": 0.983233, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0469, "a_media": 5.2167, "n": 64}
   },
   "pes_ens_consensus_prior": {
-   "sev_base": {"mu": 0.916863, "sd": 0.041098, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": null, "log10p": null, "kl_acc": null, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64},
-   "sev_uniform": {"mu": 0.910888, "sd": 0.050609, "min": 0.759416, "max": 1.0, "deg": 0.005975, "d": -0.128593, "log10p": -0.329414, "kl_acc": 0.278249, "f_opt": 0.0312, "f_lt08": 0.0156, "a_media": 5.0056, "n": 64},
-   "sev_gauss_low": {"mu": 0.920227, "sd": 0.066954, "min": 0.748833, "max": 1.0, "deg": -0.003363, "d": 0.060065, "log10p": -0.133888, "kl_acc": 0.433985, "f_opt": 0.1406, "f_lt08": 0.0469, "a_media": 4.9722, "n": 64},
-   "sev_gauss_mid": {"mu": 0.905772, "sd": 0.048513, "min": 0.790432, "max": 0.975944, "deg": 0.011091, "d": -0.244767, "log10p": -0.772924, "kl_acc": 0.059652, "f_opt": 0.0, "f_lt08": 0.0312, "a_media": 5.025, "n": 64},
-   "sev_gauss_high": {"mu": 0.949034, "sd": 0.024681, "min": 0.852865, "max": 0.991973, "deg": -0.03217, "d": 0.94157, "log10p": -6.229359, "kl_acc": 0.277271, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.2056, "n": 64},
-   "sev_weibull": {"mu": 0.913922, "sd": 0.057965, "min": 0.779783, "max": 1.0, "deg": 0.002942, "d": -0.058093, "log10p": -0.128985, "kl_acc": 0.279034, "f_opt": 0.0469, "f_lt08": 0.0312, "a_media": 5.0083, "n": 64},
-   "sev_beta_lowskew": {"mu": 0.898163, "sd": 0.083377, "min": 0.571429, "max": 1.0, "deg": 0.0187, "d": -0.282273, "log10p": -0.944053, "kl_acc": 0.310641, "f_opt": 0.1406, "f_lt08": 0.0625, "a_media": 4.8889, "n": 64},
-   "sev_beta_highskew": {"mu": 0.944733, "sd": 0.029822, "min": 0.833422, "max": 0.989166, "deg": -0.02787, "d": 0.770108, "log10p": -4.5393, "kl_acc": 0.330807, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.1528, "n": 64},
-   "sev_bimodal": {"mu": 0.919303, "sd": 0.056755, "min": 0.688483, "max": 1.0, "deg": -0.00244, "d": 0.048854, "log10p": -0.106366, "kl_acc": 0.47401, "f_opt": 0.0312, "f_lt08": 0.0312, "a_media": 5.0167, "n": 64},
-   "sev_extrapolate_high": {"mu": 0.956685, "sd": 0.011017, "min": 0.935567, "max": 0.972506, "deg": -0.039822, "d": 1.313173, "log10p": -9.749816, "kl_acc": 0.985094, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.1722, "n": 64},
-   "len_all_short": {"mu": 0.932482, "sd": 0.057306, "min": 0.833422, "max": 1.0, "deg": -0.015619, "d": 0.310764, "log10p": -1.089192, "kl_acc": 0.448525, "f_opt": 0.0781, "f_lt08": 0.0, "a_media": 7.7656, "n": 64},
-   "len_all_long": {"mu": 0.885838, "sd": 0.019376, "min": 0.851016, "max": 0.917814, "deg": 0.031025, "d": -0.958072, "log10p": -6.302526, "kl_acc": 0.244892, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 3.0, "n": 64},
-   "len_geometric": {"mu": 0.912396, "sd": 0.045687, "min": 0.807507, "max": 0.993857, "deg": 0.004467, "d": -0.101998, "log10p": -0.247962, "kl_acc": 0.031391, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 4.7842, "n": 64},
-   "len_poisson": {"mu": 0.91459, "sd": 0.041659, "min": 0.806393, "max": 0.986672, "deg": 0.002273, "d": -0.05451, "log10p": -0.120146, "kl_acc": 0.007824, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.3754, "n": 64},
-   "len_extrapolate_long": {"mu": 0.870676, "sd": 0.038947, "min": 0.759182, "max": 0.943827, "deg": 0.046187, "d": -1.144559, "log10p": -8.712506, "kl_acc": 0.551976, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 1.8935, "n": 64},
-   "joint_high_long": {"mu": 0.928428, "sd": 0.020232, "min": 0.87799, "max": 0.979323, "deg": -0.011565, "d": 0.354236, "log10p": -1.318476, "kl_acc": 0.499808, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 3.0, "n": 64},
-   "joint_low_short": {"mu": 0.963945, "sd": 0.04858, "min": 0.843174, "max": 1.0, "deg": -0.047081, "d": 1.038158, "log10p": -7.425012, "kl_acc": 0.714885, "f_opt": 0.4688, "f_lt08": 0.0, "a_media": 6.8385, "n": 64},
-   "joint_uniform_geom": {"mu": 0.907879, "sd": 0.060004, "min": 0.655659, "max": 1.0, "deg": 0.008984, "d": -0.173326, "log10p": -0.482839, "kl_acc": 0.25928, "f_opt": 0.0156, "f_lt08": 0.0469, "a_media": 4.7211, "n": 64},
-   "joint_extrap_both": {"mu": 0.968438, "sd": 0.002885, "min": 0.966106, "max": 0.973745, "deg": -0.051575, "d": 1.756459, "log10p": -13.839518, "kl_acc": 1.034994, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 1.8935, "n": 64},
-   "struct_few_long_blocks": {"mu": 0.916863, "sd": 0.041098, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64},
-   "struct_many_short_blocks": {"mu": 0.916863, "sd": 0.041098, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64},
-   "struct_more_total": {"mu": 0.916863, "sd": 0.041098, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64}
+   "sev_base": {"mu": 0.9177, "sd": 0.041031, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": null, "log10p": null, "kl_acc": null, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64},
+   "sev_uniform": {"mu": 0.906001, "sd": 0.051322, "min": 0.748167, "max": 1.0, "deg": 0.011699, "d": -0.24983, "log10p": -0.795428, "kl_acc": 0.088581, "f_opt": 0.0156, "f_lt08": 0.0156, "a_media": 4.975, "n": 64},
+   "sev_gauss_low": {"mu": 0.916688, "sd": 0.070688, "min": 0.748833, "max": 1.0, "deg": 0.001013, "d": -0.017382, "log10p": -0.035331, "kl_acc": 0.209516, "f_opt": 0.1406, "f_lt08": 0.0938, "a_media": 4.9694, "n": 64},
+   "sev_gauss_mid": {"mu": 0.903572, "sd": 0.049234, "min": 0.790432, "max": 0.975944, "deg": 0.014128, "d": -0.309308, "log10p": -1.082589, "kl_acc": 0.032657, "f_opt": 0.0, "f_lt08": 0.0312, "a_media": 5.0222, "n": 64},
+   "sev_gauss_high": {"mu": 0.951253, "sd": 0.024332, "min": 0.852865, "max": 0.991973, "deg": -0.033553, "d": 0.986908, "log10p": -6.709804, "kl_acc": 0.20622, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.2139, "n": 64},
+   "sev_weibull": {"mu": 0.907889, "sd": 0.060963, "min": 0.779783, "max": 1.0, "deg": 0.009811, "d": -0.187338, "log10p": -0.535248, "kl_acc": 0.028874, "f_opt": 0.0469, "f_lt08": 0.0469, "a_media": 5.0111, "n": 64},
+   "sev_beta_lowskew": {"mu": 0.89559, "sd": 0.08347, "min": 0.571429, "max": 1.0, "deg": 0.02211, "d": -0.333551, "log10p": -1.20522, "kl_acc": 0.14841, "f_opt": 0.125, "f_lt08": 0.0781, "a_media": 4.8667, "n": 64},
+   "sev_beta_highskew": {"mu": 0.946482, "sd": 0.029748, "min": 0.833422, "max": 0.987113, "deg": -0.028781, "d": 0.796835, "log10p": -4.799119, "kl_acc": 0.181278, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.1556, "n": 64},
+   "sev_bimodal": {"mu": 0.90615, "sd": 0.07498, "min": 0.632583, "max": 1.0, "deg": 0.011551, "d": -0.189615, "log10p": -0.543505, "kl_acc": 0.102046, "f_opt": 0.0312, "f_lt08": 0.0781, "a_media": 4.9889, "n": 64},
+   "sev_extrapolate_high": {"mu": 0.956685, "sd": 0.011017, "min": 0.935567, "max": 0.972506, "deg": -0.038985, "d": 1.287546, "log10p": -9.481641, "kl_acc": 1.025626, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.1722, "n": 64},
+   "len_all_short": {"mu": 0.932482, "sd": 0.057306, "min": 0.833422, "max": 1.0, "deg": -0.014782, "d": 0.294277, "log10p": -1.005601, "kl_acc": 0.458715, "f_opt": 0.0781, "f_lt08": 0.0, "a_media": 7.7656, "n": 64},
+   "len_all_long": {"mu": 0.885815, "sd": 0.018676, "min": 0.855181, "max": 0.917814, "deg": 0.031885, "d": -0.992392, "log10p": -6.644293, "kl_acc": 0.257801, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 3.0, "n": 64},
+   "len_geometric": {"mu": 0.913281, "sd": 0.045021, "min": 0.807507, "max": 0.993857, "deg": 0.00442, "d": -0.101804, "log10p": -0.247395, "kl_acc": 0.035743, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 4.7921, "n": 64},
+   "len_poisson": {"mu": 0.910446, "sd": 0.042584, "min": 0.806393, "max": 0.986672, "deg": 0.007254, "d": -0.172126, "log10p": -0.478761, "kl_acc": 0.006917, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 5.3393, "n": 64},
+   "len_extrapolate_long": {"mu": 0.870316, "sd": 0.037142, "min": 0.759182, "max": 0.943827, "deg": 0.047384, "d": -1.201289, "log10p": -9.403159, "kl_acc": 0.568767, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 1.8935, "n": 64},
+   "joint_high_long": {"mu": 0.929076, "sd": 0.020319, "min": 0.87799, "max": 0.979323, "deg": -0.011375, "d": 0.348596, "log10p": -1.287242, "kl_acc": 0.445995, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 3.0, "n": 64},
+   "joint_low_short": {"mu": 0.949149, "sd": 0.098137, "min": 0.285714, "max": 1.0, "deg": -0.031449, "d": 0.414842, "log10p": -1.671949, "kl_acc": 0.535272, "f_opt": 0.4375, "f_lt08": 0.0156, "a_media": 6.776, "n": 64},
+   "joint_uniform_geom": {"mu": 0.904313, "sd": 0.058235, "min": 0.74312, "max": 1.0, "deg": 0.013388, "d": -0.263689, "log10p": -0.858322, "kl_acc": 0.078143, "f_opt": 0.0156, "f_lt08": 0.0781, "a_media": 4.6974, "n": 64},
+   "joint_extrap_both": {"mu": 0.968365, "sd": 0.002809, "min": 0.966106, "max": 0.973745, "deg": -0.050664, "d": 1.7285, "log10p": -13.566833, "kl_acc": 1.027781, "f_opt": 0.0, "f_lt08": 0.0, "a_media": 1.8935, "n": 64},
+   "struct_few_long_blocks": {"mu": 0.9177, "sd": 0.041031, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64},
+   "struct_many_short_blocks": {"mu": 0.9177, "sd": 0.041031, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64},
+   "struct_more_total": {"mu": 0.9177, "sd": 0.041031, "min": 0.7995, "max": 0.992443, "deg": 0.0, "d": 0.0, "log10p": 0.0, "kl_acc": 0.0, "f_opt": 0.0, "f_lt08": 0.0156, "a_media": 5.0361, "n": 64}
   },
   "pes_ens_trf_guard": {
    "sev_base": {"mu": 0.92791, "sd": 0.045703, "min": 0.786056, "max": 1.0, "deg": 0.0, "d": null, "log10p": null, "kl_acc": null, "f_opt": 0.0312, "f_lt08": 0.0156, "a_media": 5.1361, "n": 64},
@@ -929,7 +929,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937312
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.010326, "pes_ens_trf_guard": 0.000721}
+   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.009489, "pes_ens_trf_guard": 0.000721}
   },
   "sev_uniform": {
    "individual": {
@@ -944,7 +944,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937152
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.014293, "pes_ens_sprb": -0.040352, "pes_ens_accq": -0.038728, "pes_ens_consensus": -0.048465, "pes_ens_consensus_prior": -0.011971, "pes_ens_trf_guard": -0.000201}
+   "ensambles_menos_transformer": {"pes_ens": 0.014293, "pes_ens_sprb": -0.040352, "pes_ens_accq": -0.038728, "pes_ens_consensus": -0.048465, "pes_ens_consensus_prior": -0.016858, "pes_ens_trf_guard": -0.000201}
   },
   "sev_gauss_low": {
    "individual": {
@@ -959,7 +959,7 @@
     "ganador": ["pes_ens"],
     "media": 0.938852
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.025285, "pes_ens_sprb": -0.004042, "pes_ens_accq": -0.005964, "pes_ens_consensus": -0.018019, "pes_ens_consensus_prior": 0.00666, "pes_ens_trf_guard": 0.005538}
+   "ensambles_menos_transformer": {"pes_ens": 0.025285, "pes_ens_sprb": -0.004042, "pes_ens_accq": -0.005964, "pes_ens_consensus": -0.018019, "pes_ens_consensus_prior": 0.003121, "pes_ens_trf_guard": 0.005538}
   },
   "sev_gauss_mid": {
    "individual": {
@@ -974,7 +974,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937827
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.017633, "pes_ens_sprb": -0.018282, "pes_ens_accq": -0.020535, "pes_ens_consensus": -0.029895, "pes_ens_consensus_prior": -0.014422, "pes_ens_trf_guard": 0.001166}
+   "ensambles_menos_transformer": {"pes_ens": 0.017633, "pes_ens_sprb": -0.018282, "pes_ens_accq": -0.020535, "pes_ens_consensus": -0.029895, "pes_ens_consensus_prior": -0.016622, "pes_ens_trf_guard": 0.001166}
   },
   "sev_gauss_high": {
    "individual": {
@@ -989,7 +989,7 @@
     "ganador": ["pes_ens"],
     "media": 0.957488
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.008036, "pes_ens_sprb": -0.00715, "pes_ens_accq": -0.007672, "pes_ens_consensus": -0.001823, "pes_ens_consensus_prior": -0.000418, "pes_ens_trf_guard": -0.000208}
+   "ensambles_menos_transformer": {"pes_ens": 0.008036, "pes_ens_sprb": -0.00715, "pes_ens_accq": -0.007672, "pes_ens_consensus": -0.001823, "pes_ens_consensus_prior": 0.001801, "pes_ens_trf_guard": -0.000208}
   },
   "sev_weibull": {
    "individual": {
@@ -1004,7 +1004,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937578
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.008481, "pes_ens_sprb": -0.028056, "pes_ens_accq": -0.031972, "pes_ens_consensus": -0.038728, "pes_ens_consensus_prior": -0.015175, "pes_ens_trf_guard": 0.000319}
+   "ensambles_menos_transformer": {"pes_ens": 0.008481, "pes_ens_sprb": -0.028056, "pes_ens_accq": -0.031972, "pes_ens_consensus": -0.038728, "pes_ens_consensus_prior": -0.021208, "pes_ens_trf_guard": 0.000319}
   },
   "sev_beta_lowskew": {
    "individual": {
@@ -1019,7 +1019,7 @@
     "ganador": ["pes_ens"],
     "media": 0.917264
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.01253, "pes_ens_sprb": -0.010656, "pes_ens_accq": -0.006373, "pes_ens_consensus": -0.017109, "pes_ens_consensus_prior": -0.006571, "pes_ens_trf_guard": 0.001897}
+   "ensambles_menos_transformer": {"pes_ens": 0.01253, "pes_ens_sprb": -0.010656, "pes_ens_accq": -0.006373, "pes_ens_consensus": -0.017109, "pes_ens_consensus_prior": -0.009144, "pes_ens_trf_guard": 0.001897}
   },
   "sev_beta_highskew": {
    "individual": {
@@ -1034,7 +1034,7 @@
     "ganador": ["pes_ens"],
     "media": 0.947452
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.005154, "pes_ens_sprb": -0.008481, "pes_ens_accq": -0.015488, "pes_ens_consensus": 0.004354, "pes_ens_consensus_prior": 0.002435, "pes_ens_trf_guard": 0.000409}
+   "ensambles_menos_transformer": {"pes_ens": 0.005154, "pes_ens_sprb": -0.008481, "pes_ens_accq": -0.015488, "pes_ens_consensus": 0.004354, "pes_ens_consensus_prior": 0.004184, "pes_ens_trf_guard": 0.000409}
   },
   "sev_bimodal": {
    "individual": {
@@ -1049,7 +1049,7 @@
     "ganador": ["pes_ens"],
     "media": 0.938291
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.012835, "pes_ens_sprb": -0.046487, "pes_ens_accq": -0.046729, "pes_ens_consensus": -0.03595, "pes_ens_consensus_prior": -0.006153, "pes_ens_trf_guard": -0.000907}
+   "ensambles_menos_transformer": {"pes_ens": 0.012835, "pes_ens_sprb": -0.046487, "pes_ens_accq": -0.046729, "pes_ens_consensus": -0.03595, "pes_ens_consensus_prior": -0.019306, "pes_ens_trf_guard": -0.000907}
   },
   "sev_extrapolate_high": {
    "individual": {
@@ -1094,7 +1094,7 @@
     "ganador": ["pes_ens"],
     "media": 0.920694
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.045014, "pes_ens_sprb": 0.017038, "pes_ens_accq": 0.016673, "pes_ens_consensus": -0.023017, "pes_ens_consensus_prior": 0.010158, "pes_ens_trf_guard": 0.004862}
+   "ensambles_menos_transformer": {"pes_ens": 0.045014, "pes_ens_sprb": 0.017038, "pes_ens_accq": 0.016673, "pes_ens_consensus": -0.023017, "pes_ens_consensus_prior": 0.010135, "pes_ens_trf_guard": 0.004862}
   },
   "len_geometric": {
    "individual": {
@@ -1109,7 +1109,7 @@
     "ganador": ["pes_ens"],
     "media": 0.92887
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.01239, "pes_ens_sprb": -0.007456, "pes_ens_accq": -0.004416, "pes_ens_consensus": -0.02598, "pes_ens_consensus_prior": -0.004084, "pes_ens_trf_guard": 0.000697}
+   "ensambles_menos_transformer": {"pes_ens": 0.01239, "pes_ens_sprb": -0.007456, "pes_ens_accq": -0.004416, "pes_ens_consensus": -0.02598, "pes_ens_consensus_prior": -0.003199, "pes_ens_trf_guard": 0.000697}
   },
   "len_poisson": {
    "individual": {
@@ -1124,7 +1124,7 @@
     "ganador": ["pes_ens_trf_guard"],
     "media": 0.933416
    },
-   "ensambles_menos_transformer": {"pes_ens": -0.000356, "pes_ens_sprb": -0.023092, "pes_ens_accq": -0.02363, "pes_ens_consensus": -0.029874, "pes_ens_consensus_prior": -0.018538, "pes_ens_trf_guard": 0.000288}
+   "ensambles_menos_transformer": {"pes_ens": -0.000356, "pes_ens_sprb": -0.023092, "pes_ens_accq": -0.02363, "pes_ens_consensus": -0.029874, "pes_ens_consensus_prior": -0.022682, "pes_ens_trf_guard": 0.000288}
   },
   "len_extrapolate_long": {
    "individual": {
@@ -1139,7 +1139,7 @@
     "ganador": ["pes_ens"],
     "media": 0.900017
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.040353, "pes_ens_sprb": 0.018136, "pes_ens_accq": 0.020057, "pes_ens_consensus": -0.033791, "pes_ens_consensus_prior": 0.011012, "pes_ens_trf_guard": 0.001679}
+   "ensambles_menos_transformer": {"pes_ens": 0.040353, "pes_ens_sprb": 0.018136, "pes_ens_accq": 0.020057, "pes_ens_consensus": -0.033791, "pes_ens_consensus_prior": 0.010652, "pes_ens_trf_guard": 0.001679}
   },
   "joint_high_long": {
    "individual": {
@@ -1154,7 +1154,7 @@
     "ganador": ["pes_ens"],
     "media": 0.943436
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.013174, "pes_ens_sprb": -0.00482, "pes_ens_accq": -0.005577, "pes_ens_consensus": -0.012528, "pes_ens_consensus_prior": -0.001834, "pes_ens_trf_guard": 0.000228}
+   "ensambles_menos_transformer": {"pes_ens": 0.013174, "pes_ens_sprb": -0.00482, "pes_ens_accq": -0.005577, "pes_ens_consensus": -0.012528, "pes_ens_consensus_prior": -0.001186, "pes_ens_trf_guard": 0.000228}
   },
   "joint_low_short": {
    "individual": {
@@ -1169,7 +1169,7 @@
     "ganador": ["pes_ens_consensus"],
     "media": 0.987703
    },
-   "ensambles_menos_transformer": {"pes_ens": -0.027725, "pes_ens_sprb": -0.048804, "pes_ens_accq": -0.056673, "pes_ens_consensus": 0.018212, "pes_ens_consensus_prior": -0.005546, "pes_ens_trf_guard": 3e-06}
+   "ensambles_menos_transformer": {"pes_ens": -0.027725, "pes_ens_sprb": -0.048804, "pes_ens_accq": -0.056673, "pes_ens_consensus": 0.018212, "pes_ens_consensus_prior": -0.020342, "pes_ens_trf_guard": 3e-06}
   },
   "joint_uniform_geom": {
    "individual": {
@@ -1184,7 +1184,7 @@
     "ganador": ["pes_ens"],
     "media": 0.928487
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.007959, "pes_ens_sprb": -0.053781, "pes_ens_accq": -0.05835, "pes_ens_consensus": -0.042752, "pes_ens_consensus_prior": -0.012649, "pes_ens_trf_guard": 0.000974}
+   "ensambles_menos_transformer": {"pes_ens": 0.007959, "pes_ens_sprb": -0.053781, "pes_ens_accq": -0.05835, "pes_ens_consensus": -0.042752, "pes_ens_consensus_prior": -0.016215, "pes_ens_trf_guard": 0.000974}
   },
   "joint_extrap_both": {
    "individual": {
@@ -1199,7 +1199,7 @@
     "ganador": ["pes_ens"],
     "media": 1.0
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.003086, "pes_ens_sprb": -0.09686, "pes_ens_accq": -0.099806, "pes_ens_consensus": -0.043917, "pes_ens_consensus_prior": -0.028476, "pes_ens_trf_guard": -5e-06}
+   "ensambles_menos_transformer": {"pes_ens": 0.003086, "pes_ens_sprb": -0.09686, "pes_ens_accq": -0.099806, "pes_ens_consensus": -0.043917, "pes_ens_consensus_prior": -0.028549, "pes_ens_trf_guard": -5e-06}
   },
   "struct_few_long_blocks": {
    "individual": {
@@ -1214,7 +1214,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937312
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.010326, "pes_ens_trf_guard": 0.000721}
+   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.009489, "pes_ens_trf_guard": 0.000721}
   },
   "struct_many_short_blocks": {
    "individual": {
@@ -1229,7 +1229,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937312
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.010326, "pes_ens_trf_guard": 0.000721}
+   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.009489, "pes_ens_trf_guard": 0.000721}
   },
   "struct_more_total": {
    "individual": {
@@ -1244,7 +1244,7 @@
     "ganador": ["pes_ens"],
     "media": 0.937312
    },
-   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.010326, "pes_ens_trf_guard": 0.000721}
+   "ensambles_menos_transformer": {"pes_ens": 0.010123, "pes_ens_sprb": -0.012987, "pes_ens_accq": -0.012956, "pes_ens_consensus": -0.037872, "pes_ens_consensus_prior": -0.009489, "pes_ens_trf_guard": 0.000721}
   }
  },
  "hechos_derivados": {
@@ -1275,8 +1275,8 @@
     "escenarios": ["sev_beta_highskew", "len_all_short", "joint_low_short"]
    },
    "pes_ens_consensus_prior": {
-    "n": 4,
-    "escenarios": ["sev_gauss_low", "sev_beta_highskew", "len_all_long", "len_extrapolate_long"]
+    "n": 5,
+    "escenarios": ["sev_gauss_low", "sev_gauss_high", "sev_beta_highskew", "len_all_long", "len_extrapolate_long"]
    },
    "pes_ens_trf_guard": {
     "n": 15,
@@ -1313,18 +1313,18 @@
    "pes_ens vs pes_ens_sprb": {"d": 0.588871, "log10p": -49.398777, "kl_sym": 0.305992},
    "pes_ens vs pes_ens_accq": {"d": 0.601703, "log10p": -51.382893, "kl_sym": 0.303496},
    "pes_ens vs pes_ens_consensus": {"d": 0.582403, "log10p": -48.608053, "kl_sym": 0.230182},
-   "pes_ens vs pes_ens_consensus_prior": {"d": 0.360805, "log10p": -20.083999, "kl_sym": 0.065822},
+   "pes_ens vs pes_ens_consensus_prior": {"d": 0.387912, "log10p": -22.927748, "kl_sym": 0.087121},
    "pes_ens vs pes_ens_trf_guard": {"d": 0.170641, "log10p": -5.055736, "kl_sym": 0.025161},
    "pes_ens_sprb vs pes_ens_accq": {"d": 0.014421, "log10p": -0.149631, "kl_sym": 0.001427},
    "pes_ens_sprb vs pes_ens_consensus": {"d": -0.02934, "log10p": -0.34972, "kl_sym": 0.081903},
-   "pes_ens_sprb vs pes_ens_consensus_prior": {"d": -0.294418, "log10p": -13.478458, "kl_sym": 0.116795},
+   "pes_ens_sprb vs pes_ens_consensus_prior": {"d": -0.25283, "log10p": -10.168208, "kl_sym": 0.091166},
    "pes_ens_sprb vs pes_ens_trf_guard": {"d": -0.419376, "log10p": -26.197761, "kl_sym": 0.226518},
    "pes_ens_accq vs pes_ens_consensus": {"d": -0.044076, "log10p": -0.596331, "kl_sym": 0.084202},
-   "pes_ens_accq vs pes_ens_consensus_prior": {"d": -0.30903, "log10p": -14.751379, "kl_sym": 0.119249},
+   "pes_ens_accq vs pes_ens_consensus_prior": {"d": -0.2674, "log10p": -11.276708, "kl_sym": 0.092292},
    "pes_ens_accq vs pes_ens_trf_guard": {"d": -0.432767, "log10p": -27.793687, "kl_sym": 0.225085},
-   "pes_ens_consensus vs pes_ens_consensus_prior": {"d": -0.273682, "log10p": -11.772359, "kl_sym": 0.107441},
+   "pes_ens_consensus vs pes_ens_consensus_prior": {"d": -0.230462, "log10p": -8.579456, "kl_sym": 0.094866},
    "pes_ens_consensus vs pes_ens_trf_guard": {"d": -0.404475, "log10p": -24.486561, "kl_sym": 0.128473},
-   "pes_ens_consensus_prior vs pes_ens_trf_guard": {"d": -0.164473, "log10p": -4.681702, "kl_sym": 0.029548}
+   "pes_ens_consensus_prior vs pes_ens_trf_guard": {"d": -0.197907, "log10p": -6.50888, "kl_sym": 0.042629}
   }
  },
  "pares_citados_en_tesis": {
@@ -1342,9 +1342,9 @@
    "accion_final_distinta_del_transformer": {"referencia": 0.8, "generalizacion": 2.7}
   },
   "pes_ens_consensus_prior": {
-   "prior_cambia_accion_votada": {"referencia": 2.4, "generalizacion": 3.6},
-   "cota_cambia_accion": {"referencia": 0.0, "generalizacion": 1.1},
-   "accion_final_distinta_del_transformer": {"referencia": 63.5, "generalizacion": 57.9}
+   "prior_cambia_accion_votada": {"referencia": 4.5, "generalizacion": 4.6},
+   "cota_cambia_accion": {"referencia": 0.3, "generalizacion": 1.5},
+   "accion_final_distinta_del_transformer": {"referencia": 62.4, "generalizacion": 58.6}
   },
   "pes_ens": {
    "prior_cambia_accion_votada": {"referencia": 40.9, "generalizacion": 32.5},
@@ -1356,7 +1356,7 @@
  "confianza_transformer_registro": {"decisiones_con_recursos_referencia": 258, "confianza_media": 0.116, "calculo": "Q no factibles -> valor muy negativo; desplazamiento a valores no negativos; normalización; confianza = 1 - H_norm. NO comparable con la confianza de los ensambles (refleja sobre todo cuántas acciones quedan factibles).", "figura": "fig:trf-internals (trf_agent_confidences.png)", "fuente": "Tesis, Apéndice ap:trf-conf"},
  "degradacion_media_por_familia_promedio_del_grupo": {
   "individual": {"severidad": 0.011898, "longitud": 0.009486, "conjunta": -0.002838, "estructural": 0.0},
-  "ensemble": {"severidad": -0.001822, "longitud": 0.014935, "conjunta": -0.014473, "estructural": 0.0}
+  "ensemble": {"severidad": -0.001157, "longitud": 0.015196, "conjunta": -0.013592, "estructural": 0.0}
  },
  "advertencias_metodologicas": ["Una única semilla (42) por escenario y un único conjunto de 64 secuencias de referencia: no hay intervalos de confianza del ordenamiento; los p de Welch no son independientes ni corregidos por comparaciones múltiples.", "Hiperparámetros de modelos y ensambles ajustados con las mismas 64 secuencias de la referencia: la referencia puede ser optimista; la generalización está menos expuesta a ese sesgo.", "La media de generalización incluye los 3 escenarios estructurales (idénticos a la referencia) y escenarios más fáciles (p. ej. len_all_short, joint_low_short); leerla junto con el peor escenario.", "Entrenamiento sólo con severidades 2..8: filas S = 0, 1, 9 de las tablas Q quedan con valores iniciales aleatorios; parte de la caída tabular refleja falta de cobertura, no sólo capacidad de generalizar.", "Con severidades 10..12 una política que asigna mucho puede acercarse al óptimo: un rbar alto en sev_extrapolate_high no prueba por sí solo mejor generalización (A2C también supera allí su referencia).", "Arquitecturas de DQN recurrente y Transformer elegidas ad hoc (no optimizadas): las conclusiones se refieren a los modelos finales evaluados; los resultados no identifican la causa de la ventaja del Transformer.", "La confianza 1 - H_norm se calcula sobre softmax de valores Q (no probabilidades aprendidas, salvo A2C): es heurística, no calibrada; no se comprobó que sea mayor en decisiones acertadas.", "El registro de confianza del Transformer (media 0,116) usa otro cálculo que los ensambles: no comparar con tau_g ni con otros umbrales.", "La ventaja del ensamble ponderado es compatible con el prior de severidad y tau = 15, no con la ponderación por confianza; con un único ensamble ganador no se puede separar el aporte de cada componente.", "\"Distancia de Lieber\" en documentos previos = divergencia de Kullback-Leibler.", "h2/ es una línea suspendida: no citarla como trabajo realizado. La tesis no usa datos humanos (ds004477 sólo como contexto del entorno PES)."],
  "puntos_de_atencion_borrador_actual": [
@@ -1367,7 +1367,7 @@
    "hallazgo": "El texto dice \"ajusta la temperatura de la softmax (tau = 0,1044)\", pero tab:ens-params y inputs/best_params.json dan tau = 1,219 (temperature = 1.2192).",
    "correccion": "Reemplazar $\\tau = 0{,}1044$ por $\\tau = 1{,}219$."
   },
-  {"severidad": "mayor", "archivo": "04Materials.tex", "lugar": "subsubsection Consenso con prior (último párrafo)", "hallazgo": "\"Es la única variante en la que se optimizó el peso del actor de A2C; en las demás vale 0,10\" es falso: los cinco ensambles optimizables optimizan weight_a2c (rango 0-3) y sus best_params lo contienen (0,0070; 0,174; 1,881; 0,432; 0,0674), como ya muestra tab:ens-params.", "correccion": "Eliminar la oración o reemplazarla por una que diga que los cinco optimizan w_A2C."},
+  {"severidad": "mayor", "archivo": "04Materials.tex", "lugar": "subsubsection Consenso con prior (último párrafo)", "hallazgo": "\"Es la única variante en la que se optimizó el peso del actor de A2C; en las demás vale 0,10\" es falso: los cinco ensambles optimizables optimizan weight_a2c (rango 0-3) y sus best_params lo contienen (0,0070; 0,174; 1,881; 0,337; 0,0674), como ya muestra tab:ens-params.", "correccion": "Eliminar la oración o reemplazarla por una que diga que los cinco optimizan w_A2C."},
   {"severidad": "menor", "archivo": "05Results.tex", "lugar": "sec:res-ensembles, párrafo previo a sec:res-freq", "hallazgo": "\"el voto suave y el voto por acción pierden más con la severidad\": por familia pierden algo más con la longitud (degradación media VS 0,016 vs 0,014 en severidad; VA 0,016 vs 0,015); lo que sí es de severidad es su peor escenario (sev_extrapolate_high).", "correccion": "Precisar que su peor escenario es la extrapolación de severidad."},
   {"severidad": "menor", "archivo": "06Discussion.tex", "lugar": "sec:ens-best, viñeta voto suave / voto por acción", "hallazgo": "\"quedan por debajo de ambos y sólo superan al DQN recurrente\" es ambiguo: en sev_extrapolate_high VS 0,860 y VA 0,859 quedan por debajo de DQN 0,890, A2C 0,929 y Transformer 0,996, y por encima del DQN recurrente 0,831 (y de los tabulares).", "correccion": "Por ejemplo: \"entre sus miembros, sólo superan al DQN recurrente\"."},
   {"severidad": "observación", "archivo": "00Abstract.tex / 00Abstract_en.tex", "lugar": "párrafo de resultados", "hallazgo": "\"Los peores resultados fueron los de los métodos tabulares ... (0,76 y 0,79)\" se refiere a Q-Learning y Double Q-Learning; Q-Learning base llega a 0,627 (peor celda del estudio).", "correccion": "Explicitar \"los métodos tabulares optimizados\" o mencionar Q-Learning base."},

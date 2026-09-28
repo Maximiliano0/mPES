@@ -161,10 +161,12 @@ def write_report(suite: str = 'individual') -> str:
              f'**Models:** {len(models)} — {", ".join(models)}',
              f'**Scenarios:** {len(scenarios)}', '',
              '## 0. Baseline definition', '',
-             f'The **baseline** is the scenario `{reference}`: each package\'s own '
-             'empirical training distribution (unperturbed `initial_severity.csv` '
-             'and `sequence_lengths.csv`), i.e. "normal" conditions. Every stress '
-             'scenario is compared against it.',
+             f'The **baseline** is the scenario `{reference}`: the empirical '
+             'training distribution, i.e. the unperturbed `initial_severity.csv` '
+             'and `sequence_lengths.csv` of the reference package '
+             '(`--reference-pkg`, default `pes_dqn`), copied into every package '
+             'so that all models face the same sequences ("normal" conditions). '
+             'Every stress scenario is compared against it.',
              '',
              '**Mean degradation** is the signed mean drop in normalized '
              'performance relative to that baseline, '

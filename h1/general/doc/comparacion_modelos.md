@@ -300,7 +300,7 @@ bayesiana, registra la mayor caída de toda la suite (0.244).
 |---|---:|---:|---:|---:|---|
 | `pes_ens` | **0.937** | **0.939** | **-0.002** | **0.037** | `len_extrapolate_long` |
 | `pes_ens_trf_guard` | 0.928 | 0.931 | -0.003 | 0.067 | `len_extrapolate_long` |
-| `pes_ens_consensus_prior` | 0.917 | 0.922 | -0.005 | 0.046 | `len_extrapolate_long` |
+| `pes_ens_consensus_prior` | 0.918 | 0.919 | -0.002 | 0.047 | `len_extrapolate_long` |
 | `pes_ens_consensus` | 0.889 | 0.905 | -0.015 | 0.063 | `len_extrapolate_long` |
 | `pes_ens_sprb` | 0.914 | 0.902 | 0.012 | 0.054 | `sev_extrapolate_high` |
 | `pes_ens_accq` | 0.914 | 0.901 | 0.013 | 0.055 | `sev_extrapolate_high` |

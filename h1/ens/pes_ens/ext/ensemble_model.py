@@ -1,13 +1,20 @@
 """Ensemble inference engine for pes_ens.
 
 This module implements an *ensemble agent* that fuses the policies of the
-four sibling RL packages -- ``pes_dqn``, ``pes_a2c``, ``pes_rdqn`` and
-``pes_trf`` -- by **soft voting**.  At every trial each member produces
+enabled sibling RL packages -- ``pes_dqn``, ``pes_a2c``, ``pes_rdqn`` and
+``pes_trf`` (the A2C actor is disabled by default in ``CONFIG``) -- by
+**confidence-weighted soft voting**.  At every trial each member produces
 its own action-probability distribution over the ``11`` discrete
-allocations ``{0, 1, ..., 10}``; the distributions are averaged using
-configurable weights, infeasible actions (allocation > resources_left)
-are masked, the distribution is renormalised and ``argmax`` selects the
-final allocation.
+allocations ``{0, 1, ..., 10}`` (``softmax(Q / T)`` for Q-value members,
+the renormalised policy for the actor).  Each distribution is masked to
+the feasible actions (allocation <= resources_left) and renormalised,
+then mixed with the dynamic weight ``w_norm * (0.1 + confidence)``,
+where ``confidence`` is one minus the entropy of the masked
+distribution normalised by ``log2(11)``.  The mixture is post-processed
+(``p(0) * 0.3`` when resources remain, renormalisation, blending with a
+Gaussian severity prior and a severity-floor override; see
+:meth:`EnsembleAgent.predict`) and ``argmax`` selects the final
+allocation.
 
 Key design points
 -----------------
@@ -32,13 +39,13 @@ Key design points
 - **Soft voting only.**  Hard voting (one-hot per member followed by
   majority) is intentionally not implemented: with four members it
   ties too often and discards uncertainty information that the
-  averaged distribution preserves.
+  weighted mixture of distributions preserves.
 
 Public API
 ----------
 - :class:`EnsembleAgent` -- stateful inference engine with
-  :meth:`EnsembleAgent.predict` returning the averaged feasible
-  distribution.
+  :meth:`EnsembleAgent.predict` returning the final (masked,
+  confidence-weighted, prior-mixed) ensemble distribution.
 - :func:`normalize_state` -- ``[0, 1]^3`` state scaler shared with
   every member's training pipeline.
 - :class:`HistoryDeque` -- fixed-length sliding window of past
@@ -213,7 +220,7 @@ STATE_DIM = 3        # [resources_left, trial_no, severity]
 
 
 class EnsembleAgent:
-    """Soft-voting ensemble over four pre-trained sibling models.
+    """Soft-voting ensemble over the enabled pre-trained sibling models (up to four).
 
     Each member is one of three roles -- ``q_dense`` (DQN-style),
     ``actor`` (A2C policy network) or ``q_recurrent`` (RDQN/TRF) --

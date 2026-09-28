@@ -9,7 +9,7 @@ Usage
 .. code-block:: powershell
 
     python -m general.scripts.orchestrate                # full sweep
-    python -m general.scripts.orchestrate --pkg pes_dqn  # single model
+    python -m general.scripts.orchestrate --pkg ql_conf  # single model
     python -m general.scripts.orchestrate --scenario sev_base  # single scenario
     python -m general.scripts.orchestrate --force        # rerun even if cell exists
 """
@@ -35,9 +35,9 @@ def _main():
                         help='Restrict to one or more scenario IDs (repeatable).')
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--force', action='store_true')
-    parser.add_argument('--reference-pkg', default='pes_dqn',
+    parser.add_argument('--reference-pkg', default='ql_conf',
                         help=('Package whose inputs/ provides the empirical '
-                              'baseline CSVs (defaults to pes_dqn).'))
+                              'baseline CSVs (defaults to ql_conf).'))
     args = parser.parse_args()
 
     sev_path, len_path = _find_baseline_paths(args.reference_pkg)

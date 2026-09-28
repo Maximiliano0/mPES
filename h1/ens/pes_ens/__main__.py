@@ -10,9 +10,13 @@ and result report generation (JSON + PNG).
 pes_ens has no training phase: the four sibling packages (pes_dqn,
 pes_a2c, pes_rdqn, pes_trf) are trained independently and pes_ens loads
 their resulting ``.keras`` artefacts off the filesystem at experiment
-time, fusing their per-step decisions via soft voting (averaged action
-probabilities, infeasible actions masked, ``argmax`` selects the
-allocation).
+time (only members with ``enabled=True`` in ``ENS_MEMBER_MODELS``; the
+A2C actor is disabled by default), fusing their per-step decisions via
+confidence-weighted soft voting: per-member action distributions are
+masked to the feasible actions, mixed with weights
+``w_norm * (0.1 + confidence)``, post-processed (``p(0) * 0.3``,
+Gaussian severity prior, severity floor) and ``argmax`` selects the
+allocation (see ``ext/ensemble_model.py``).
 
 Experiment Structure
 --------------------
@@ -36,7 +40,7 @@ Usage
 -----
 ::
 
-    python3 -m ml.pes_ens
+    python3 -m ens.pes_ens
 
 Configuration
 -------------
@@ -450,7 +454,7 @@ def main():
 
                 MyMessage = numpy.zeros((0, 3))
 
-                # Map initialisation complete; now proceed with A2C Agent trial annotations
+                # Map initialisation complete; now proceed with Ensemble Agent trial annotations
                 for trial_no in range(
                         int(NumTrials__blocks_x_sequences__2darray[CurrentBlockIndex, CurrentSequenceIndex])):
 

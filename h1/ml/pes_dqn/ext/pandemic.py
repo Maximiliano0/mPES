@@ -151,7 +151,7 @@ class Pandemic(Env):
 
         Configures the environment with a predefined sequence length, initial
         severities, and optionally allocations. If allocations are not provided,
-        they are randomly generated.
+        they are set to zero for every trial (no-allocation baseline).
 
         Parameters
         ----------
@@ -160,8 +160,8 @@ class Pandemic(Env):
         init_severities : array-like
             Initial severity values for each trial
         allocs : array-like, optional
-            Resource allocations for each trial. If None, allocations are randomly
-            generated. Default: None
+            Resource allocations for each trial. If None, every allocation is set
+            to 0 (``[0] * length``). Default: None
         """
         self.seq_length = int(length)
         self.set_initial_severities(init_severities)

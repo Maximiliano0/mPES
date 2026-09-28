@@ -1,5 +1,5 @@
 ﻿'''
-pes_ql - Pandemic Experiment Scenario: Gymnasium Environment and RL Algorithms
+ql_conf - Pandemic Experiment Scenario: Gymnasium Environment and RL Algorithms
 
 Provides the core simulation components:
 

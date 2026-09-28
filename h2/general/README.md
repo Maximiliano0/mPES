@@ -46,3 +46,8 @@ The benchmark scripts and comparative reports in this line are retained as
 scaffolding only. They should not be used to report active h2 results until
 that experiment is reactivated and the package catalogue is approved. The
 active harness lives in `h1/general/`.
+
+The package catalogue (`PACKAGE_GROUPS` in `scripts/runner.py`) targets the
+two h2 packages, `tabular_conf.ql_conf` and `tabular_conf.dql_conf`; the
+baseline CSVs default to `ql_conf` (`--reference-pkg`). Run the scripts from
+`h2/`, e.g. `python -m general.scripts.orchestrate --pkg ql_conf`.

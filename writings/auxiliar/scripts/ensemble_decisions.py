@@ -300,7 +300,7 @@ def weighted_rule(agent: EnsembleAgent, counts: dict):
 ###############
 def main() -> None:
     """Command-line entry point."""
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or '').splitlines()[0])
     parser.add_argument('--scenarios', nargs='*', default=None, help='subset of scenario ids')
     parser.add_argument('--output', default=None, help='optional JSON file for the counts')
     args = parser.parse_args()

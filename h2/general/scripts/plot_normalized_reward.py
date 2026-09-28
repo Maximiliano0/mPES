@@ -61,14 +61,10 @@ RAW_DIR = os.path.join(REPO_ROOT, 'general', 'results', 'raw')
 OUT_DIR = os.path.join(REPO_ROOT, 'general', 'results', 'normalized_reward')
 
 # Stable colour mapping for models (matches the project's narrative order)
-MODEL_ORDER = ['pes_ql', 'pes_dql', 'pes_dqn', 'pes_rdqn', 'pes_a2c', 'pes_trf']
+MODEL_ORDER = ['ql_conf', 'dql_conf']
 MODEL_COLORS = {
-    'pes_ql':   '#1f77b4',
-    'pes_dql':  '#ff7f0e',
-    'pes_dqn':  '#2ca02c',
-    'pes_rdqn': '#d62728',
-    'pes_a2c':  '#9467bd',
-    'pes_trf':  '#8c564b',
+    'ql_conf':  '#1f77b4',
+    'dql_conf': '#ff7f0e',
 }
 
 

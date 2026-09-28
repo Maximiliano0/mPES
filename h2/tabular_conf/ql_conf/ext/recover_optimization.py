@@ -1,5 +1,5 @@
 '''
-pes_ql - Recovery script for an interrupted Bayesian optimisation.
+ql_conf - Recovery script for an interrupted Bayesian optimisation.
 
 Use this when ``optimize_rl.py`` reached the final ``_save_report`` step
 but crashed before writing the Q-table, ``best_params.json``,
@@ -19,16 +19,16 @@ The script reads:
     - ``optimization_results_<date>.txt``  (overwritten with COMPLETE-only filter)
     - ``optimization_history_<date>.png``
     - ``hyperparameter_importances_<date>.png``
-    - mirror to ``pes_ql/inputs/{q.npy, rewards.npy, best_params.json}``
+    - mirror to ``ql_conf/inputs/{q.npy, rewards.npy, best_params.json}``
 
 Usage::
 
-    python3 -m tabular.pes_ql.ext.recover_optimization <opt_dir> [--date YYYY-MM-DD]
+    python3 -m tabular_conf.ql_conf.ext.recover_optimization <opt_dir> [--date YYYY-MM-DD]
 
 Example::
 
-    python3 -m tabular.pes_ql.ext.recover_optimization \\
-        pes_ql/inputs/2026-04-22_BAYESIAN_OPT
+    python3 -m tabular_conf.ql_conf.ext.recover_optimization \\
+        tabular_conf/ql_conf/inputs/2026-04-22_BAYESIAN_OPT
 '''
 
 ##########################

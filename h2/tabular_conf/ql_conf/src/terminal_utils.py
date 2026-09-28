@@ -1,5 +1,5 @@
 ﻿"""
-Terminal Utilities for pes_ql (Pandemic Experiment Scenario — Bayesian Optimisation)
+Terminal Utilities for ql_conf (Pandemic Experiment Scenario — Bayesian Optimisation)
 
 Provides styled text formatting and visual elements for enhanced console output.
 Enables creation of formatted headers, sections, progress indicators, and data displays.

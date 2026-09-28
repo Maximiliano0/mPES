@@ -32,13 +32,17 @@ benchmark; `pes_ens` is the best-performing ensemble in the current results.
 | Models evaluated | 13: 7 individual + 6 ensemble models |
 | Scenarios | 22 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural) |
 | Cells | 13 × 22 = **286** |
-| `n` per cell | 64 sequences (single seed = 42) |
+| `n` per cell | 64 sequences (128 in `struct_more_total`; single seed = 42) |
 | Retraining | **None** — pure inference on existing artefacts |
 
 The benchmark **does not modify** any package's source code beyond the
-"BENCHMARK OVERRIDE HOOK" block in each
-`<group>/<pkg>/__init__.py` that lets the harness redirect
-`OUTPUTS_PATH`, `NUM_BLOCKS` and `NUM_SEQUENCES` via env vars.
+"BENCHMARK OVERRIDE HOOK" block in the `<group>/<pkg>/__init__.py` of the
+tabular and ML packages and of `pes_ens`, which lets the harness redirect
+`OUTPUTS_PATH`, `NUM_BLOCKS` and `NUM_SEQUENCES` via env vars. The five
+Optuna ensembles (`pes_ens_sprb`, `pes_ens_accq`, `pes_ens_consensus`,
+`pes_ens_consensus_prior`, `pes_ens_trf_guard`) only read
+`MPES_OUTPUTS_PATH` in `ext/evaluate_ens.py` and evaluate every sequence
+listed in the swapped `sequence_lengths.csv`.
 Input CSVs are swapped in-place under each package's `inputs/`
 directory and atomically restored via `try/finally` (back-up
 files use the `.bench_stash` extension).
@@ -53,7 +57,8 @@ cd h1
 
 # 1. (One-time) ensure every benchmarked model has been trained -- the
 #    harness reads ``<pkg>/inputs/*.keras`` (or ``q.npy`` for tabular)
-#    and the empirical CSV baselines from each package.
+#    and the empirical CSV baselines from the reference package
+#    (``--reference-pkg``, default ``pes_dqn``).
 
 # 2. Run the full sweep for individual and ensemble suites
 #    (resumable; cells whose JSON exists are skipped).
@@ -90,7 +95,7 @@ python -m general.scripts.benchmark run --pkg pes_dqn --force
 
 ## Output layout
 
-```
+```text
 general/
 ├── README.md                        # this file
 ├── __init__.py
@@ -132,14 +137,14 @@ general/
 | severity | `sev_gauss_low` | Truncated N(2, 1.5). |
 | severity | `sev_gauss_mid` | Truncated N(4.5, 2.0). |
 | severity | `sev_gauss_high` | Truncated N(7, 1.5). |
-| severity | `sev_weibull` | Weibull(k=1.5), heavy upper tail. |
+| severity | `sev_weibull` | Weibull(k=1.5, unclipped mean 4.5) clipped [0,9], long upper tail. |
 | severity | `sev_beta_lowskew` | Beta(2, 5)·9 — skewed low. |
 | severity | `sev_beta_highskew` | Beta(5, 2)·9 — skewed high. |
 | severity | `sev_bimodal` | 0.5 N(2,1) + 0.5 N(7,1). |
 | severity | `sev_extrapolate_high` | Under-stress U(10, 12). |
 | length | `len_all_short` | Every sequence length 3. |
 | length | `len_all_long` | Every sequence length 10. |
-| length | `len_geometric` | Geom(p=0.2) clipped [3,10]. |
+| length | `len_geometric` | 2 + Geom(p=0.2) clipped [3,10]. |
 | length | `len_poisson` | Poisson(λ=5) clipped [3,10]. |
 | length | `len_extrapolate_long` | Under-stress U{11..20}. |
 | joint | `joint_high_long` | Gauss(7,1.5) × all-long. |
@@ -157,11 +162,15 @@ general/
 > ensemble suites. Re-run the workflow above to regenerate results after any
 > configuration change.
 
-All four heatmaps are written as **`.png`** (raster, 300 dpi) for direct
-inclusion in papers.
-Cells are normalised to fixed colour-scale limits so figures from
-different sweeps are directly comparable; clipped values are flagged
-in-cell (e.g. `≤-10` in the Welch heatmap).
+All eight heatmaps — five model × scenario heatmaps (01, 02, 03, 04, 07)
+and three model × model pairwise heatmaps (12, 13, 14) — are written as
+**`.png`** (raster, 300 dpi) for direct inclusion in papers.
+Only the Welch heatmaps (03, 12) use fixed colour-scale limits
+(`log10(p)` in `[-10, 0]`), with clipped values flagged in-cell (`≤-10`);
+the other heatmaps derive their limits from the data of each suite
+(symmetric around zero for the diverging maps 02, 07 and 13, and a
+logarithmic scale for the action-KL map 04), so their colours are not
+directly comparable across sweeps.
 
 ### Figure conventions
 
@@ -214,8 +223,8 @@ For each `(model, scenario)`:
   `cohen_d` and `action_kl`, always against the model's own `sev_base`
   reference condition.
 * Pairwise `Welch`, `Cohen d` and symmetric `KL` are calculated by
-  `figures.py` over scenarios common to all models in a suite; KL uses
-  common 20-bin performance histograms in `[0, 1]`.
+  `figures.py` over the non-reference scenarios common to all models in a
+  suite; KL uses common 20-bin performance histograms in `[0, 1]`.
 
 ## Compute notes
 

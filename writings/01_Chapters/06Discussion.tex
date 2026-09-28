@@ -25,8 +25,8 @@ Figura~\ref{fig:heatmap-global}) y su media all\'i supera en un $0{,}3\%$
 a la de la referencia. Su mayor p\'erdida ocurre con secuencias m\'as largas
 que las de entrenamiento, donde cae un $7\%$ y queda un $3\%$ por debajo
 del DQN recurrente. Como no se evalu\'o una variante sin atenci\'on, su
-efecto no puede separarse del de la normalizaci\'on previa a cada subcapa~\citep{Parisotto2020} ni del de
-los hiperpar\'ametros.
+efecto no puede separarse del de las conexiones residuales con
+normalizaci\'on de capa ni del de los hiperpar\'ametros.
 
 \subsection{Efecto de la regla de combinaci\'on}\label{sec:ens-best}
 
@@ -49,8 +49,8 @@ por su confianza; s\'olo cambia la regla (Tabla~\ref{tab:ens-freq}):
     extrapolaci\'on de severidad, la ponderaci\'on por confianza no
     produjo que predominara el miembro con mayor desempe\~no individual.
     \item El \textbf{consenso con \emph{prior}} mejora la referencia y el
-    peor escenario del consenso, aunque su \emph{prior} s\'olo cambia el
-    $2\%$ y el $4\%$ de las decisiones; la mejora no puede atribuirse al
+    peor escenario del consenso, aunque su \emph{prior} cambia menos del
+    $5\%$ de las decisiones; la mejora no puede atribuirse al
     \emph{prior}.
 \end{itemize}
 

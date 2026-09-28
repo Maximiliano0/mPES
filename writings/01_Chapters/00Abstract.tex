@@ -10,10 +10,11 @@ cu\'antos recursos asignarle a partir de un presupuesto fijo. La severidad
 no atendida crece en cada paso, por lo que una asignaci\'on insuficiente
 en una ciudad se ampl\'ia en los pasos siguientes.
 
-Se entrenaron seis agentes: dos tabulares (Q-Learning y Double
-Q-Learning) y cuatro redes neuronales (una red Q profunda, una variante
-recurrente que procesa los \'ultimos estados, un m\'etodo actor--cr\'itico
-y un Transformer causal que atiende a la historia reciente). Se
+Se entrenaron seis agentes con hiperpar\'ametros optimizados: dos
+tabulares (Q-Learning y Double Q-Learning) y cuatro redes neuronales (una
+red Q profunda, una variante recurrente que procesa los \'ultimos estados,
+un m\'etodo actor--cr\'itico y un Transformer causal que atiende a la
+historia reciente), m\'as un Q-Learning sin optimizar como referencia. Se
 evaluaron adem\'as seis reglas para combinar las redes en un ensamble, en
 las que cada red se pondera seg\'un su confianza en la decisi\'on,
 derivada de la entrop\'ia de Shannon. Todos

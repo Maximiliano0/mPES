@@ -148,7 +148,7 @@ def _main() -> None:
     parser.add_argument('--watch', action='store_true',
                         help='Refresh every --interval seconds.')
     parser.add_argument('--interval', type=float, default=30.0)
-    parser.add_argument('--reference-pkg', default='pes_dqn')
+    parser.add_argument('--reference-pkg', default='ql_conf')
     args = parser.parse_args()
 
     sev_path, len_path = _find_baseline_paths(args.reference_pkg)

@@ -248,7 +248,7 @@ ml/pes_rdqn/
 ├── __main__.py
 ├── config/CONFIG.py        # Constantes RDQN_*
 ├── ext/
-│   ├── pandemic.py         # PandemicEnv compartido
+│   ├── pandemic.py         # Entorno Pandemic compartido
 │   ├── rdqn_model.py       # build_q_network, HistoryDeque, ReplayBuffer, train_step_rdqn
 │   ├── train_rdqn.py       # Bucle de entrenamiento RDQNTraining
 │   ├── optimize_rdqn.py    # Estudio Optuna

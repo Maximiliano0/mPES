@@ -127,11 +127,15 @@ sinusoidal se documenta a título teórico pero **no** está implementada.
 Cada capa del encoder Transformer aplica:
 
 ```
-x → LayerNorm → MultiHeadAttention → Dropout → x + residual
-  → LayerNorm → FeedForward(d → ff_dim → d) → Dropout → x + residual
+x → MultiHeadAttention (causal) → x + residual → LayerNorm
+  → FeedForward(d → ff_dim → d) → x + residual → LayerNorm
 ```
 
-(Variante **Pre-LN**, más estable para entrenamiento que Post-LN).
+(Variante **Post-LN**, la del Transformer original: `LayerNorm(x + subcapa(x))`.
+La variante Pre-LN, que normaliza antes de cada subcapa y suele ser más
+estable en redes profundas, no está implementada. El dropout, cuando
+`TRF_DROPOUT > 0`, actúa dentro de la atención y tras la primera capa densa
+del FFN; en el modelo desplegado `TRF_DROPOUT = 0`).
 
 El **feed-forward** aplica una MLP punto-a-punto:
 
@@ -327,11 +331,14 @@ Decision Transformer condicionada al rendimiento objetivo.
 
 1. **Coste cuadrático**: $O(h^2 d)$ por capa. Para $h$ grande, otras
    alternativas (Performer, Linformer) reducirían este coste.
-2. **Dependencia de la longitud máxima**: la codificación posicional
-   aprendida no generaliza a $h$ no vistas en entrenamiento.
+2. **Dependencia de la longitud máxima**: una codificación posicional de
+   tipo tabla (como el vector fijo de `pes_trf`, de tamaño $h$) no
+   generaliza a $h$ no vistas en entrenamiento.
 3. **Sobreajuste con pocos datos**: el Transformer es expresivo y puede
-   sobreajustar el replay buffer si éste es pequeño. Solución en
-   `pes_trf`: dropout + warmup de aprendizaje.
+   sobreajustar el replay buffer si éste es pequeño. Mitigaciones previstas
+   en `pes_trf`: dropout configurable (`TRF_DROPOUT`, que vale 0 en el
+   modelo desplegado) y el retardo `learning_starts` antes de empezar a
+   entrenar.
 4. **Estabilidad**: como todo método off-policy con aproximadores no
    lineales, puede divergir si el target network se actualiza demasiado
    rápido o el LR es muy alto.

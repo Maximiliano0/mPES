@@ -1,6 +1,6 @@
 # mPES Under Stress Experiments — ensemble
 
-Generated: 2026-09-24T23:08:23.540332+00:00
+Generated: 2026-09-28T22:37:05.891313+00:00
 
 **Reference condition:** `sev_base`
 
@@ -9,7 +9,7 @@ Generated: 2026-09-24T23:08:23.540332+00:00
 
 ## 0. Baseline definition
 
-The **baseline** is the scenario `sev_base`: each package's own empirical training distribution (unperturbed `initial_severity.csv` and `sequence_lengths.csv`), i.e. "normal" conditions. Every stress scenario is compared against it.
+The **baseline** is the scenario `sev_base`: the empirical training distribution, i.e. the unperturbed `initial_severity.csv` and `sequence_lengths.csv` of the reference package (`--reference-pkg`, default `pes_dqn`), copied into every package so that all models face the same sequences ("normal" conditions). Every stress scenario is compared against it.
 
 **Mean degradation** is the signed mean drop in normalized performance relative to that baseline, `mean_s(baseline - perf_s)` over the non-reference scenarios. Positive = loss under stress; negative = the model performs better under stress than at baseline.
 
@@ -21,16 +21,16 @@ The **baseline** is the scenario `sev_base`: each package's own empirical traini
 | pes_ens_sprb | 0.9142 | `sev_gauss_high` | 0.9423 | `sev_extrapolate_high` | 0.8604 | +0.0118 |
 | pes_ens_accq | 0.9142 | `sev_gauss_high` | 0.9418 | `sev_extrapolate_high` | 0.8591 | +0.0130 |
 | pes_ens_consensus | 0.8893 | `joint_low_short` | 0.9877 | `len_extrapolate_long` | 0.8259 | -0.0152 |
-| pes_ens_consensus_prior | 0.9169 | `joint_extrap_both` | 0.9684 | `len_extrapolate_long` | 0.8707 | -0.0048 |
+| pes_ens_consensus_prior | 0.9177 | `joint_extrap_both` | 0.9684 | `len_extrapolate_long` | 0.8703 | -0.0017 |
 | pes_ens_trf_guard | 0.9279 | `joint_extrap_both` | 0.9969 | `len_extrapolate_long` | 0.8613 | -0.0026 |
 
 ## 2. Mean degradation by scenario family
 
 | Family | # scenarios | Mean degradation |
 |---|---:|---:|
-| Severidad | 9 | -0.0018 |
-| Longitud | 5 | +0.0149 |
-| Conjunta | 4 | -0.0145 |
+| Severidad | 9 | -0.0012 |
+| Longitud | 5 | +0.0152 |
+| Conjunta | 4 | -0.0136 |
 | Estructura | 3 | +0.0000 |
 
 ## 3. Most degraded cells

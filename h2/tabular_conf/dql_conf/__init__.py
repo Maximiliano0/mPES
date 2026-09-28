@@ -1,7 +1,7 @@
 """
-ql_conf — Pandemic Experiment Scenario (Double Q-Learning)
+dql_conf — Pandemic Experiment Scenario (Double Q-Learning)
 
-Package initialization module for the pes_dql project, an enhanced variant
+Package initialization module for the dql_conf package, an enhanced variant
 of pes_base featuring Double Q-Learning, exponential ε-decay with warm-up, and
 Potential-Based Reward Shaping (PBRS).  A Bayesian optimisation pipeline
 (Optuna / TPE) searches over 10 numeric hyperparameters.
@@ -15,9 +15,9 @@ Handles package setup including:
 
 Usage
 -----
-Run experiment:          ``python3 -m tabular_conf.ql_conf``
-Train RL-Agent:          ``python3 -m tabular_conf.ql_conf.ext.train_rl``
-Bayesian optimisation:   ``python3 -m tabular_conf.ql_conf.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]``
+Run experiment:          ``python3 -m tabular_conf.dql_conf``
+Train RL-Agent:          ``python3 -m tabular_conf.dql_conf.ext.train_rl``
+Bayesian optimisation:   ``python3 -m tabular_conf.dql_conf.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]``
 """
 ######################
 ## External Imports ##
@@ -38,7 +38,7 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 # subsequent ``import tensorflow`` calls in the package are free.
 #
 # This import is purely precautionary (warm the module cache + capture
-# initialisation noise).  ``pes_dql`` is a tabular Q-Learning package and
+# initialisation noise).  ``dql_conf`` is a tabular Q-Learning package and
 # only ``src/pygameMediator.py`` (interactive RL_AGENT runs via __main__)
 # touches TF at all; ``optimize_rl`` and ``train_rl`` never need it.  On
 # environments with a broken TF install (e.g. Colab transitive
@@ -56,8 +56,8 @@ except Exception as _tf_exc:  # pylint: disable=broad-exception-caught
     os.close(_old_stderr_fd)
     warnings.warn(
         f"TensorFlow import failed ({type(_tf_exc).__name__}: {_tf_exc}). "
-        "pes_dql will continue without TF — only interactive RL_AGENT runs "
-        "via `python -m tabular_conf.ql_conf` need it.",
+        "dql_conf will continue without TF — only interactive RL_AGENT runs "
+        "via `python -m tabular_conf.dql_conf` need it.",
         stacklevel=1,
     )
 else:

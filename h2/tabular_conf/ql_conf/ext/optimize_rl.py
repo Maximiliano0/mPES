@@ -1,5 +1,5 @@
 '''
-pes_ql - Pandemic Experiment Scenario
+ql_conf - Pandemic Experiment Scenario
 
 Bayesian Optimization of Q-Learning hyperparameters using Optuna.
 
@@ -13,7 +13,7 @@ in __main__.py.  The best Q-table found during the search is preserved in memory
 and saved directly, avoiding a lossy re-training step.
 
 Usage:
-    python3 -m tabular.pes_ql.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
+    python3 -m tabular_conf.ql_conf.ext.optimize_rl [n_trials] [--resume YYYY-MM-DD]
 
     n_trials : int, optional
         Number of Bayesian optimization trials (default: 100).

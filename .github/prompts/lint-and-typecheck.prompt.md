@@ -1,6 +1,6 @@
 # Lint & Type-Check (Fix Loop)
 
-> Last updated: 2026-09-11
+> Last updated: 2026-09-28
 
 Run the mandatory quality gates on a package and **iteratively fix every
 issue in source code** until both tools report zero problems. This prompt
@@ -54,10 +54,20 @@ that already includes the `h1\` or `h2\` prefix from the workspace root —
 do **not** `cd` into `h1/`/`h2/` for this prompt, since `utils/config/*`
 is resolved relative to the workspace root.
 
+In the commands below, `$TARGET_PATH` is the workspace-relative path of the
+target, built from `$PACKAGE_DIR` as follows:
+
+| Target | `$TARGET_PATH` |
+|--------|----------------|
+| `h1` package or harness | `h1\$PACKAGE_DIR\` (e.g. `h1\ml\pes_dqn\`) |
+| `h2` package | `h2\$PACKAGE_DIR\` (e.g. `h2\tabular_conf\ql_conf\`) |
+| Shared helpers | `utils\` |
+| Thesis audit script | `writings\audit\audit.py` |
+
 ### Step 1 — Pyright (static type checking)
 
 ```powershell
-pyright --project utils\config\pyrightconfig.json h1\$PACKAGE_DIR\
+pyright --project utils\config\pyrightconfig.json $TARGET_PATH
 ```
 
 - Read the full output. For **each** error, warning, or information:
@@ -70,7 +80,7 @@ pyright --project utils\config\pyrightconfig.json h1\$PACKAGE_DIR\
 ### Step 2 — Pylint (linting with project standard)
 
 ```powershell
-pylint --rcfile=utils\config\.pylintrc h1\$PACKAGE_DIR\
+pylint --rcfile=utils\config\.pylintrc $TARGET_PATH
 ```
 
 - Read the full output. For **each** reported message:

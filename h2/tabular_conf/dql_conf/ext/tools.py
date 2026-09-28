@@ -1,5 +1,5 @@
 ﻿'''
-ql_conf — Utility functions for the Pandemic Experiment Scenario.
+dql_conf — Utility functions for the Pandemic Experiment Scenario.
 
 Provides helper functions shared by the training and evaluation pipelines:
 

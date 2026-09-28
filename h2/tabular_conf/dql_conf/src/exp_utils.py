@@ -1,5 +1,5 @@
 ﻿"""
-pes_dql — Utility functions for the Pandemic Experiment Scenario (Q-Learning v2).
+dql_conf — Utility functions for the Pandemic Experiment Scenario (Q-Learning v2).
 
 Provides essential functionality for experiment execution, severity calculations,
 resource allocation aggregation, and performance metrics.

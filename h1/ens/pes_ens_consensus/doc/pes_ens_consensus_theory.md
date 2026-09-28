@@ -30,11 +30,18 @@ $$
 Donde:
 
 - $a_m$ es la acción propuesta por el miembro $m$ y $w_m$ su peso,
-- $C_m$ es la confianza del miembro (con exponente `confidence_power`),
+- $C_m$ es la confianza del miembro (entropía inversa normalizada); el
+  exponente $p$ (`confidence_power`) solo afecta al primer término (voto
+  ponderado), mientras que los demás términos usan $C_m$ sin exponente,
 - $\beta_a$ es el bono por acuerdo (`agreement_bonus`, por defecto $0.5$),
 - $\beta_d$ es la penalización por desacuerdo (`disagreement_penalty`, por
   defecto $0.1$); ambos ponderan **confianza**, no un conteo de pares,
-- $\tilde{Q}_m(a)$ es el Q normalizado del miembro $m$.
+- $\tilde{Q}_m(a)$ es el Q normalizado (z-score sobre las acciones factibles)
+  del miembro $m$; para el actor A2C se normalizan sus probabilidades de
+  política.
+
+La acción elegida es $\hat{a} = \arg\max_{a \le R_t} S(a)$, con $R_t$ los
+recursos disponibles.
 
 ---
 

@@ -1,5 +1,5 @@
 ﻿"""
-pes_dql — Logging Utilities for the Pandemic Experiment Scenario (Q-Learning v2).
+dql_conf — Logging Utilities for the Pandemic Experiment Scenario (Q-Learning v2).
 
 Provides centralized console logging with simultaneous file and terminal output.
 Enables dual-stream logging where messages are printed to both the console and
@@ -238,7 +238,7 @@ def strip_colour( Str ):
 
     Examples
     --------
-    >>> from tabular_conf.ql_conf import ANSI
+    >>> from tabular_conf.dql_conf import ANSI
     >>> colored_str = ANSI.BLUE + "Hello World" + ANSI.RESET
     >>> plain_str = strip_colour(colored_str)
     >>> # plain_str is now "Hello World" without escape sequences

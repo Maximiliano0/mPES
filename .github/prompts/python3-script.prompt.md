@@ -1,12 +1,15 @@
 # Python 3 Script Template
 
-> Last updated: 2026-05-04
+> Last updated: 2026-09-28
 
 Generate a new Python 3 script following the mPES project conventions.
 
 ## Packages
 
-Packages are grouped under two top-level directories by algorithm family:
+The active benchmark packages live under `h1/`, grouped in three directories
+by algorithm family (`tabular/`, `ml/`, `ens/`). `h2/` is a suspended staging
+line (`h2/tabular_conf/ql_conf`, `h2/tabular_conf/dql_conf`) and `utils/` sits
+at the repository root:
 
 | Group | Package | Description |
 |-------|---------|-------------|
@@ -19,10 +22,16 @@ Packages are grouped under two top-level directories by algorithm family:
 | `ml` | `pes_trf` | Causal Transformer encoder + DQN |
 | `ens` | `pes_ens_sprb` | Confidence-weighted soft voting ensemble |
 | `ens` | `pes_ens_accq` | Confidence-weighted action/Q-value ensemble |
-| — | `utils` | Shared helpers |
+| `ens` | `pes_ens_trf_guard` | Transformer-first confidence-gated ensemble |
+| `ens` | `pes_ens_consensus` | Agreement/disagreement confidence consensus |
+| `ens` | `pes_ens_consensus_prior` | Confidence consensus with severity-informed prior |
+| `ens` | `pes_ens` | Weighted soft-voting ensemble, inference-only |
+| — | `utils` | Shared helpers (repository root, not under `h1/`) |
 
 When referencing a package in module imports or run commands, always
-include the group prefix (`tabular.pes_base`, `ml.pes_dqn`, etc.).
+include the group prefix (`tabular.pes_base`, `ml.pes_dqn`, `ens.pes_ens`, etc.)
+and run the command from inside `h1/` (for `h2/` packages, from inside `h2/`,
+e.g. `tabular_conf.ql_conf`).
 
 ## Structure
 
@@ -71,6 +80,9 @@ win_mpes_env\Scripts\Activate.ps1
 pyright <PACKAGE_DIR>/
 pylint --rcfile=utils/config/.pylintrc <PACKAGE_DIR>/
 ```
+
+`<PACKAGE_DIR>` is the path from the repository root (e.g. `h1/ml/pes_dqn`,
+`h1/ens/pes_ens_sprb`, `h2/tabular_conf/ql_conf`).
 
 Targets: pyright → 0 errors, pylint → 10.00/10.
 
@@ -127,25 +139,25 @@ if __name__ == '__main__':
 
 ## Workflow
 
-1. **Use `tabular/pes_ql` as reference** — Before writing any new script,
-   study the corresponding modules in `tabular/pes_ql/` (environment,
+1. **Use `h1/tabular/pes_ql` as reference** — Before writing any new script,
+   study the corresponding modules in `h1/tabular/pes_ql/` (environment,
    training loop, optimisation, config, `__init__.py`, `__main__.py`)
    as the canonical implementation example. Mirror its patterns,
    naming, and structure unless the target package explicitly requires
-   a different approach. For deep-learning targets, use `ml/pes_dqn`
+   a different approach. For deep-learning targets, use `h1/ml/pes_dqn`
    as a secondary reference.
 
 2. **Write the documentation** — After finishing the code, create a
    Markdown file inside the target package's `doc/` directory (e.g.,
-   `tabular/pes_dql/doc/pes_dql_explained.md` or
-   `ml/pes_dqn/doc/pes_dqn_explained.md`). The document must:
+   `h1/tabular/pes_dql/doc/pes_dql_explained.md` or
+   `h1/ml/pes_dqn/doc/pes_dqn_explained.md`). The document must:
    - Explain the **theoretical foundations** behind the algorithm or
      feature implemented (or place these in a sibling
      `<pkg>_theory.md`).
    - Map each theoretical concept to the **specific functions, classes,
      or code sections** where it is applied (include module paths and
      function names).
-   - Follow the style of existing docs in `tabular/pes_base/doc/`
+   - Follow the style of existing docs in `h1/tabular/pes_base/doc/`
      (title, sections, equations where appropriate, code references).
 
 ## Rules
@@ -153,10 +165,11 @@ if __name__ == '__main__':
 - Adapt the package name to its full grouped path
   (`tabular.pes_base`, `tabular.pes_ql`, `tabular.pes_dql`,
   `ml.pes_dqn`, `ml.pes_rdqn`, `ml.pes_a2c`, `ml.pes_trf`,
-  `ens.pes_ens_sprb` or `ens.pes_ens_accq`) based on where the user wants to place the script.
+  `ens.pes_ens`, `ens.pes_ens_sprb`, `ens.pes_ens_accq`,
+  `ens.pes_ens_trf_guard`, `ens.pes_ens_consensus` or
+  `ens.pes_ens_consensus_prior`) based on where the user wants to place the script.
 - Do NOT cross-reference between packages — each package is
-  self-contained. The intentional exceptions are `ens/pes_ens_sprb` and
-  `ens/pes_ens_accq`,
-  which loads pre-trained `.keras` artefacts from sibling packages
+  self-contained. The intentional exceptions are the six `ens/` packages,
+  which load pre-trained `.keras` artefacts from sibling packages
   under `ml/` via filesystem paths (no Python import).
 - Ask the user for the script's purpose if not specified.

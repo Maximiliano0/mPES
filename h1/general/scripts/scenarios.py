@@ -208,7 +208,10 @@ def _len_extrapolate_long(low: int = LEN_MAX + 1, high: int = 20) -> Callable:
 ###############
 def build_scenarios(empirical_severity_path: str,
                     empirical_lengths_path: str) -> "list[Scenario]":
-    """Construct the canonical 24-scenario benchmark catalogue.
+    """Construct the canonical 22-scenario benchmark catalogue.
+
+    The catalogue contains the baseline cell (``sev_base``) plus 21 stress
+    scenarios: 9 severity, 5 length, 4 joint and 3 structural.
 
     Parameters
     ----------
@@ -255,7 +258,7 @@ def build_scenarios(empirical_severity_path: str,
     ))
     scenarios.append(Scenario(
         'sev_weibull', 'severity',
-        'Weibull(k=1.5) clipped to [0,9], heavy upper tail.',
+        'Weibull(k=1.5, scale ~4.99, unclipped mean 4.5) rounded and clipped to [0,9], long upper tail.',
         _sev_weibull(1.5, 4.5), len_emp,
     ))
     scenarios.append(Scenario(
@@ -299,7 +302,7 @@ def build_scenarios(empirical_severity_path: str,
     ))
     scenarios.append(Scenario(
         'len_geometric', 'length',
-        'Lengths ~ Geometric(p=0.2) clipped to [3, 10].',
+        'Lengths ~ 2 + Geometric(p=0.2) (support >= 3) clipped to [3, 10].',
         sev_emp, _len_geometric(0.2),
     ))
     scenarios.append(Scenario(
@@ -326,7 +329,7 @@ def build_scenarios(empirical_severity_path: str,
     ))
     scenarios.append(Scenario(
         'joint_uniform_geom', 'joint',
-        'Uniform severity x geometric lengths.',
+        'Uniform severity U(0, 9) x lengths 2 + Geometric(p=0.2) clipped to [3, 10].',
         _sev_uniform(), _len_geometric(0.2),
     ))
     scenarios.append(Scenario(

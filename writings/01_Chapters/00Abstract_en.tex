@@ -12,10 +12,11 @@ each one from a fixed budget. Unaddressed severity grows at every step,
 so an insufficient allocation to a city is amplified in the following
 steps.
 
-Six agents were trained: two tabular methods (Q-Learning and Double
-Q-Learning) and four neural networks (a deep Q-network, a recurrent
-variant that processes the most recent states, an actor--critic method
-and a causal Transformer that attends to the recent history). Six rules
+Six agents with optimised hyperparameters were trained: two tabular
+methods (Q-Learning and Double Q-Learning) and four neural networks (a
+deep Q-network, a recurrent variant that processes the most recent
+states, an actor--critic method and a causal Transformer that attends to
+the recent history), plus a non-optimised Q-Learning as a reference. Six rules
 for combining the networks into an ensemble were also evaluated; in all
 of them each network is weighted by its confidence in the decision,
 derived from Shannon entropy. All

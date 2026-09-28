@@ -19,7 +19,7 @@ def _load_evaluation_helpers() -> tuple[Any, Any, Any, Any]:
 
 def _objective(trial: optuna.Trial, trials_per_sequence: numpy.ndarray,
                severities: list[numpy.ndarray]) -> float:
-    """Score one confidence consensus configuration in the environment."""
+    """Score one confidence consensus configuration (with severity prior) in the environment."""
     normalize_state, pandemic_class, run_experiment, _ = _load_evaluation_helpers()
     params = {f'weight_{name}': trial.suggest_float(f'weight_{name}', 0.0, 3.0)
               for name in ('dqn', 'a2c', 'rdqn', 'trf')}
@@ -60,7 +60,7 @@ def _objective(trial: optuna.Trial, trials_per_sequence: numpy.ndarray,
 
 
 def main() -> None:
-    """Optimize accQ parameters on the shared fixed experiment sequences."""
+    """Optimize consensus-with-prior parameters on the shared fixed experiment sequences."""
     parser = argparse.ArgumentParser(description='Optimize the confidence consensus ensemble.')
     parser.add_argument('n_trials', nargs='?', type=int, default=50)
     default_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'inputs'))

@@ -152,8 +152,9 @@ delimitada en el log con cabeceras de `terminal_utils`):
 
 ### 3.2 Hiperparámetros del modelo desplegado
 
-Valores de `inputs/best_params.json` (mejor ensayo #3 de la optimización
-bayesiana del 2026-04-21), que `train_rl.py` carga por defecto:
+Valores de `inputs/best_params.json` (mejor ensayo #3, índice 0-based de
+Optuna, de la optimización bayesiana del 2026-04-21), que `train_rl.py`
+carga por defecto:
 
 | Parámetro | Valor | Descripción |
 |---|---|---|
@@ -264,7 +265,7 @@ Bajo `tabular/pes_dql/inputs/<YYYY-MM-DD>_BAYESIAN_OPT/`:
 | `q_best_<date>.npy` | Q-table del mejor trial |
 | `rewards_best_<date>.npy` | Recompensas del mejor trial |
 | `best_params_<date>.json` | Hiperparámetros + `trial_seed` + `mean_perf` |
-| `optimization_results_<date>.txt` | Reporte completo (índices 1-based) |
+| `optimization_results_<date>.txt` | Reporte completo (índices 0-based, `trial.number` de Optuna) |
 | `optimization_history_<date>.png` | Curva de convergencia |
 | `hyperparameter_importances_<date>.png` | Importancia de parámetros |
 

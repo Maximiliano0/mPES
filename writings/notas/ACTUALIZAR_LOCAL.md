@@ -1,5 +1,23 @@
 # Actualización local de la tesis mPES (versión del 2026-09-26)
 
+> **Estado al 2026-09-28** (nota agregada después; el resto del documento se
+> conserva tal como se escribió el 2026-09-26). Comparado con el repositorio:
+>
+> - **Paso 3 (y 4) sin reflejar:** siguen en `02_Images/` las tres imágenes que
+>   debían borrarse (`individual/ind_04_kl_acciones_por_escenario.png`,
+>   `ensemble/ens_04_kl_acciones_por_escenario.png` y
+>   `agent_internals/trf_agent_confidences.png`). `audit/AUDIT.md` las informa
+>   como huérfanas (3, no 0).
+> - **Referencias:** los `.tex` tienen 50 `\ref`/`\eqref`/`\autoref`, no 48
+>   (varios capítulos cambiaron después de esta nota). Páginas (37) y
+>   figuras/tablas con label (19/12) siguen coincidiendo con la tabla esperada.
+> - **Sumas SHA-256:** ya no coinciden `Main.tex`, `References.bib`,
+>   `00Abstract.tex`, `00Abstract_en.tex`, `01Introduction.tex`,
+>   `02Background.tex`, `04Materials.tex`, `05Results.tex`, `06Discussion.tex`,
+>   `audit/audit.py`, `audit/AUDIT.md` y `auxiliar/scripts/rebuild_thesis.py`
+>   (este último sólo por cambios de docstring/ayuda). El resto de los archivos
+>   listados coincide.
+
 Este paquete trae la versión revisada de `writings/` (37 páginas). Está pensado
 para que Claude local (o el autor) actualice el repositorio y recompile.
 

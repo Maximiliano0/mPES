@@ -1,7 +1,9 @@
 """Auditoría programática de la tesis LaTeX.
 
-Ejecuta 6 criterios programáticos y, salvo --no-tex, compila el
-documento con pdflatex/bibtex. Los artefactos de compilación
+Ejecuta los criterios programáticos que forman las 7 secciones del
+informe (sintaxis/capítulos huérfanos, figuras e imágenes, citas,
+coherencia, idioma, cobertura de ``doc/`` y marcadores) y, salvo
+--no-tex, compila el documento con pdflatex/bibtex. Los artefactos de compilación
 (aux, log, bbl, pdf …) se guardan en ``writings/out/``. El PDF se
 renombra con el título de la tesis. El informe se escribe en
 ``writings/audit/AUDIT.md`` y también se imprime en stdout.
@@ -10,6 +12,7 @@ Uso
 ---
     python audit/audit.py             # audita + compila
     python audit/audit.py --no-tex    # solo audita (sin pdflatex)
+    python audit/audit.py --clean     # solo borra artefactos y sale
 """
 
 ##########################
@@ -42,7 +45,10 @@ FRONTPAGE_TEX = CHAPTERS_DIR / "000NHH-Frontpage.tex"
 #: Extensiones de imagen reconocidas por pdflatex (orden = preferencia).
 _IMAGE_EXTS = (".pdf", ".png", ".jpg", ".jpeg")
 
-# Figuras compuestas que reúnen paneles generados como archivos individuales.
+# Figuras compuestas que reúnen paneles generados como archivos individuales:
+# si la tesis referencia la compuesta, sus paneles no cuentan como huérfanos.
+# La versión actual de la tesis no referencia ninguna de estas compuestas, así
+# que hoy la tabla no tiene efecto.
 _COMPOSITE_COMPONENTS = {
     "per_sequence_extra_6panel": {
         "sev_bimodal", "sev_gauss_high", "sev_beta_highskew",
@@ -54,8 +60,9 @@ _COMPOSITE_COMPONENTS = {
     },
 }
 
-# Slug de respaldo si no se puede extraer el título del .tex
-_FALLBACK_SLUG = "mPES-Inteligencia-Artificial-para-la-Gestion-de-Crisis-Pandemicas"
+# Slug de respaldo si no se puede extraer el título del .tex; coincide con el
+# slug de la portada actual.
+_FALLBACK_SLUG = "mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-Secuenciales"
 
 ##########################
 ##  Helpers             ##
@@ -335,6 +342,15 @@ _GARBAGE_EXTS = {
 }
 
 
+def _has_ext(path: Path, extensions: set[str]) -> bool:
+    """Indica si el nombre de ``path`` termina en alguna de ``extensions``.
+
+    A diferencia de ``Path.suffix``, reconoce extensiones compuestas como
+    ``.synctex.gz``.
+    """
+    return path.name.lower().endswith(tuple(extensions))
+
+
 def clean_artifacts() -> list[str]:
     """Elimina todos los archivos prescindibles dentro de ``writings/``.
 
@@ -359,10 +375,9 @@ def clean_artifacts() -> list[str]:
     for f in WRITINGS_DIR.rglob("*"):
         if not f.is_file():
             continue
-        suffix = f.suffix.lower()
         name   = f.name
-        if (suffix in _ARTIFACT_EXTS
-                or suffix in _GARBAGE_EXTS
+        if (_has_ext(f, _ARTIFACT_EXTS)
+                or _has_ext(f, _GARBAGE_EXTS)
                 or name in _GARBAGE_NAMES
                 or name.endswith(".synctex(busy)")):
             try:
@@ -479,7 +494,7 @@ def compile_latex() -> dict:
 
     # Mover artefactos de compilación a OUT_DIR
     for f in MAIN_DIR.iterdir():
-        if f.suffix.lower() in _ARTIFACT_EXTS:
+        if f.is_file() and _has_ext(f, _ARTIFACT_EXTS):
             dest = OUT_DIR / f.name
             if dest.exists():
                 dest.unlink()
@@ -695,7 +710,7 @@ def build_report(tex_result: dict | None) -> str:
 ##########################
 
 def main() -> int:
-    """CLI: python audit/audit.py [--no-tex]."""
+    """CLI: python audit/audit.py [--no-tex | --clean]."""
     parser = argparse.ArgumentParser(
         description="Auditoría programática de la tesis LaTeX.")
     parser.add_argument("--no-tex", action="store_true",

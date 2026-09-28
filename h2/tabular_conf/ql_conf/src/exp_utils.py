@@ -1,5 +1,5 @@
 ﻿"""
-pes_ql — Pandemic Experiment Scenario (Bayesian Optimisation)
+ql_conf — Pandemic Experiment Scenario (Bayesian Optimisation)
 
 Utility functions module providing essential functionality for experiment execution,
 severity calculations, resource allocation aggregation, and performance metrics.

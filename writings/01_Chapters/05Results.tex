@@ -20,8 +20,8 @@ El Transformer demuestra ser el mejor modelo individual
 generalizaci\'on, frente a $0{,}871$--$0{,}899$ del resto de los modelos
 optimizados, con la menor dispersi\'on entre secuencias y la mayor media
 en $16$ de los $22$ escenarios (Figura~\ref{fig:heatmap-global}). Su
-ventaja es de tama\~no medio frente a DQN ($d = 0{,}51$) y al DQN
-recurrente ($d = 0{,}57$), y medio frente a Q-Learning ($d = 0{,}78$).
+ventaja es de tama\~no medio frente a DQN ($d = 0{,}51$), al DQN
+recurrente ($d = 0{,}57$) y a Q-Learning ($d = 0{,}78$).
 
 \begin{table}[H]
 \centering
@@ -165,7 +165,7 @@ referencia.}
 \midrule
 Ensamble ponderado        & $0{,}937$ & $0{,}939$ & Secuencias largas ($0{,}900$) & $0{,}037$ \\
 Compuerta del Transformer & $0{,}928$ & $0{,}931$ & Secuencias largas ($0{,}861$) & $0{,}067$ \\
-Consenso con prior        & $0{,}917$ & $0{,}922$ & Secuencias largas ($0{,}871$) & $0{,}046$ \\
+Consenso con prior        & $0{,}918$ & $0{,}919$ & Secuencias largas ($0{,}870$) & $0{,}047$ \\
 Consenso                  & $0{,}889$ & $0{,}905$ & Secuencias largas ($0{,}826$) & $0{,}063$ \\
 Voto suave                & $0{,}914$ & $0{,}902$ & Extrap.\ de severidad ($0{,}860$) & $0{,}054$ \\
 Voto por acci\'on         & $0{,}914$ & $0{,}901$ & Extrap.\ de severidad ($0{,}859$) & $0{,}055$ \\
@@ -187,7 +187,7 @@ positivos indican ventaja del ensamble.}
 \midrule
 Ensamble ponderado        & $+0{,}010$ & $0{,}19$  & despreciable & $< 10^{-6}$  & $18$ de $21$ \\
 Compuerta del Transformer & $+0{,}001$ & $0{,}02$  & despreciable & $0{,}64$     & $15$ de $21$ \\
-Consenso con prior        & $-0{,}008$ & $-0{,}15$ & despreciable & $< 10^{-3}$  & $4$ de $21$ \\
+Consenso con prior        & $-0{,}010$ & $-0{,}18$ & despreciable & $< 10^{-5}$  & $5$ de $21$ \\
 Consenso                  & $-0{,}025$ & $-0{,}39$ & peque\~no    & $< 10^{-23}$ & $3$ de $21$ \\
 Voto suave                & $-0{,}027$ & $-0{,}41$ & peque\~no    & $< 10^{-24}$ & $2$ de $21$ \\
 Voto por acci\'on         & $-0{,}028$ & $-0{,}42$ & peque\~no    & $< 10^{-26}$ & $2$ de $21$ \\
@@ -240,8 +240,8 @@ la evaluaci\'on principal con diferencias menores que el $0{,}01\%$ de la
 escala de $\bar r$ (Tabla~\ref{tab:ens-freq}).
 
 En el consenso con \emph{prior} decide el voto: el \emph{prior} cambia la
-acci\'on votada en el $2\%$ de las decisiones de la referencia y en el
-$4\%$ de las de generalizaci\'on, y el ensamble queda por debajo del
+acci\'on votada en menos del $5\%$ de las decisiones, tanto en la
+referencia como en generalizaci\'on, y el ensamble queda por debajo del
 Transformer. En la compuerta decide el Transformer: su acci\'on se ejecuta
 en el $97\%$ y el $95\%$ de las decisiones, lo que explica la equivalencia
 de sus desempe\~nos. En el ensamble ponderado deciden el voto y el
@@ -268,9 +268,9 @@ de las decisiones con recursos disponibles en que ocurre cada evento.}
 Compuerta del Transformer & Sigue al Transformer ($g \ge 0{,}5$) & $96{,}9\%$ & $95{,}0\%$ \\
                           & Acci\'on final distinta de la del Transformer & $0{,}8\%$ & $2{,}7\%$ \\
 \midrule
-Consenso con prior & El \emph{prior} cambia la acci\'on votada & $2{,}4\%$ & $3{,}6\%$ \\
-                   & La cota cambia la acci\'on & $0{,}0\%$ & $1{,}1\%$ \\
-                   & Acci\'on final distinta de la del Transformer & $63{,}5\%$ & $57{,}9\%$ \\
+Consenso con prior & El \emph{prior} cambia la acci\'on votada & $4{,}5\%$ & $4{,}6\%$ \\
+                   & La cota cambia la acci\'on & $0{,}3\%$ & $1{,}5\%$ \\
+                   & Acci\'on final distinta de la del Transformer & $62{,}4\%$ & $58{,}6\%$ \\
 \midrule
 Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9\%$ & $32{,}5\%$ \\
                    & La cota cambia la acci\'on & $0{,}0\%$ & $0{,}3\%$ \\

@@ -1,5 +1,5 @@
 """
-Result Formatter for pes_a2c (Pandemic Experiment Scenario — Advantage Actor-Critic)
+Result Formatter for pes_ens (Pandemic Experiment Scenario — Ensemble Agent)
 
 Provides comprehensive formatting and visualization of experiment results.
 Generates JSON summary files and multi-panel PNG plots for performance analysis.
@@ -311,7 +311,7 @@ def _save_png_plots(subject_id, outputs_path, performances, all_performances, st
                 if i % 2 == 0:
                     table[(i, j)].set_facecolor('#f0f0f0')
 
-        fig.suptitle(f'PES Experiment Results - Subject {subject_id}\nA2C-Agent Performance Analysis',
+        fig.suptitle(f'PES Experiment Results - Subject {subject_id}\nEnsemble-Agent Performance Analysis',
                      fontsize=16, fontweight='bold', y=0.995)
 
         png_filename = f'{OUTPUT_FILE_PREFIX}results_{subject_id}.png'

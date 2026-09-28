@@ -29,8 +29,10 @@ donde:
   normalizada), con exponente $p$ (`confidence_power`),
 - $\mathcal{C} = \arg\max_a \text{score}(a)$ es el conjunto de acciones más
   votadas,
-- $\tilde{Q}_m(a)$ es el Q normalizado del miembro $m$, usado **solo para
-  desempatar** dentro de $\mathcal{C}$.
+- $\tilde{Q}_m(a)$ es el Q normalizado (z-score sobre las acciones
+  factibles) del miembro $m$ (para el actor A2C, sus probabilidades de
+  política normalizadas), usado **solo para desempatar** dentro de
+  $\mathcal{C}$.
 
 No existe un coeficiente $\lambda$: el Q normalizado no se suma al puntaje de
 votos, solo resuelve empates entre las acciones más votadas.

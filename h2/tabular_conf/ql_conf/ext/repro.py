@@ -1,5 +1,5 @@
 '''
-pes_ql - Pandemic Experiment Scenario
+ql_conf - Pandemic Experiment Scenario
 
 Reproducibility utilities: capture the runtime fingerprint that determines
 the outcome of Q-Learning training (numpy/python versions, CSV hashes,

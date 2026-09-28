@@ -1,1 +1,1 @@
-"""accQ ensemble extensions."""
+"""Transformer-Guard ensemble extensions."""

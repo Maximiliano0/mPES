@@ -1,5 +1,5 @@
 '''
-ql_conf — Standalone Double Q-Learning training script.
+dql_conf — Standalone Double Q-Learning training script.
 
 Trains a Q-Learning agent on the Pandemic environment using Bayesian-optimised
 hyperparameters and three algorithmic improvements:
@@ -30,7 +30,7 @@ Optimised hyperparameters (from Bayesian optimisation)::
 
 Usage::
 
-    python3 -m tabular_conf.ql_conf.ext.train_rl
+    python3 -m tabular_conf.dql_conf.ext.train_rl
 '''
 
 ##########################
@@ -278,7 +278,7 @@ def main():
     epsilon_initial           = float(hp['epsilon_initial'])
     epsilon_min               = float(hp['epsilon_min'])
 
-    # CLI override: `python -m tabular_conf.ql_conf.ext.train_rl <num_episodes>`.
+    # CLI override: `python -m tabular_conf.dql_conf.ext.train_rl <num_episodes>`.
     # Defaults to the value from best_params.json so the resulting Q-table
     # matches the one produced by the best trial.
     num_episodes = int(sys.argv[1]) if len(sys.argv) > 1 else int(hp['num_episodes'])

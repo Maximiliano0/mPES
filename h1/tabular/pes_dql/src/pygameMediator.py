@@ -116,7 +116,7 @@ def provide_rl_agent_response(
     - Requires first_severity initialized: call before using this function
     - Q-table dimensions: [resources (31) × trials (11) × severity (10) × actions (11)]
     - State indices automatically clamped to valid ranges
-    - All Q-table values converted to integers for safe array indexing
+    - State components converted to integers for safe Q-table indexing
     - Uses VERBOSE flag to enable debug output during execution
 
     Examples

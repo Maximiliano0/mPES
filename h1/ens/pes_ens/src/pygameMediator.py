@@ -1,7 +1,8 @@
 """Ensemble Agent Game Display Mediator and Response Handler.
 
-Bridges the Pygame interface with the ensemble agent (pes_dqn +
-pes_a2c + pes_rdqn + pes_trf), handling per-trial inference, response
+Bridges the Pygame interface with the ensemble agent (enabled members
+among pes_dqn, pes_a2c, pes_rdqn and pes_trf; A2C is disabled by
+default), handling per-trial inference, response
 timing and entropy-based confidence calculation.
 
 Key Functions
@@ -20,7 +21,7 @@ Module Globals
 (``__main__``) before the first trial.
 
 A single :class:`EnsembleAgent` instance is created lazily on first use
-and cached at module level so the four member models are loaded only
+and cached at module level so the enabled member models are loaded only
 once per experiment session.
 """
 

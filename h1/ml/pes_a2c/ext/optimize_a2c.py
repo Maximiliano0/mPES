@@ -10,12 +10,15 @@ Optimizes (configurable via AC_OPTIMIZE_MODE or --mode flag):
       now pure on-policy (softmax sampling).
     - **improvements_only**: 6 improvement params only (8 base params fixed
       at the CONFIG.py values that come from trial #90).
-Objective: maximize mean normalised performance over the 64 evaluation sequences.
+Objective: maximize mean normalised performance over 8 stochastic replicates of the
+64 evaluation sequences (512 episodes in total).
 
-The evaluation uses infeasible-action masking (actions > available resources are
-suppressed before argmax) so that the metric matches the behaviour of the A2C
-agent in ``__main__.py``.  The best Actor model found during the search is
-preserved in memory and saved directly, avoiding a lossy re-training step.
+The evaluation uses infeasible-action masking (actions > available resources get
+zero probability) and then *samples* each action from the renormalised softmax,
+with deterministic per-replicate seeds derived from the trial seed.  This differs
+from the deterministic ``argmax`` policy used by ``__main__.py`` and ``train_a2c.py``.
+The best Actor model found during the search is preserved in memory and saved
+directly, avoiding a lossy re-training step.
 
 Usage:
     python3 -m ml.pes_a2c.ext.optimize_a2c [n_trials] [--resume YYYY-MM-DD] [--mode full|improvements_only]
@@ -220,12 +223,13 @@ def _load_evaluation_data():
 def objective(trial: optuna.Trial) -> float:
     """Train an A2C agent with sampled hyperparameters and return mean normalised performance.
 
-    Called by Optuna on each trial.  In ``'full'`` mode, samples all 16
-    hyperparameters; in ``'improvements_only'`` mode, fixes the 8 base
-    hyperparameters at CONFIG values and samples only the 6 improvement
-    parameters.  Trains a fresh A2C agent via :func:`A2CTraining`, evaluates
-    it on the 64 fixed sequences with infeasible-action masking, and returns
-    the mean normalised performance.
+    Called by Optuna on each trial.  In ``'full'`` mode, samples all 14
+    hyperparameters (8 base + 6 improvement); in ``'improvements_only'`` mode,
+    fixes the 8 base hyperparameters at CONFIG values and samples only the 6
+    improvement parameters.  Trains a fresh A2C agent via :func:`A2CTraining`,
+    evaluates it on 8 replicates of the 64 fixed sequences, sampling each action
+    from the feasibility-masked softmax, and returns the mean normalised
+    performance over those 512 episodes.
 
     The best model weights are cached in ``_best_artifacts`` to avoid a lossy
     retraining step at the end of the study.
@@ -707,7 +711,7 @@ def _export_best_params(opt_dir: str, opt_date: str, storage_override: str | Non
     success(f"Mirrored: {std_file}")
 
     info(f"  Study: {study_name}")
-    info(f"  Best trial: #{best.number}  mean_perf={payload['mean_perf']:.6f}")
+    info(f"  Best trial: #{best.number} (0-based)  mean_perf={payload['mean_perf']:.6f}")
     info(f"  trial_seed: {trial_seed}")
 
 

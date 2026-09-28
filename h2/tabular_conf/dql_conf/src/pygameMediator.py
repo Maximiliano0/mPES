@@ -1,4 +1,4 @@
-"""pes_dql — RL Agent Response Handler and Confidence Estimator.
+"""dql_conf — RL Agent Response Handler and Confidence Estimator.
 
 Bridges the experiment loop (__main__.py) with the trained Q-Learning model,
 handling agent decision-making, response timing, and entropy-based confidence
@@ -112,7 +112,7 @@ def provide_rl_agent_response(
 
     Notes
     -----
-    - Requires Q-table pre-training via: python3 -m tabular_conf.ql_conf.ext.train_rl
+    - Requires Q-table pre-training via: python3 -m tabular_conf.dql_conf.ext.train_rl
     - Requires first_severity initialized: call before using this function
     - Q-table dimensions: [resources (31) × trials (11) × severity (10) × actions (11)]
     - State indices automatically clamped to valid ranges
@@ -144,13 +144,13 @@ def provide_rl_agent_response(
     if not os.path.isfile(q_file):
         raise FileNotFoundError(
             f"\nFATAL ERROR: Q-Table file not found at {q_file}\n"
-            f"Please train the RL-Agent first by running: python3 -m tabular_conf.ql_conf.ext.train_rl\n"
+            f"Please train the RL-Agent first by running: python3 -m tabular_conf.dql_conf.ext.train_rl\n"
         )
 
     if not os.path.isfile(rewards_file):
         raise FileNotFoundError(
             f"\nFATAL ERROR: Rewards file not found at {rewards_file}\n"
-            f"Please train the RL-Agent first by running: python3 -m tabular_conf.ql_conf.ext.train_rl\n"
+            f"Please train the RL-Agent first by running: python3 -m tabular_conf.dql_conf.ext.train_rl\n"
         )
 
     try:
@@ -160,7 +160,7 @@ def provide_rl_agent_response(
         raise RuntimeError(
             f"\nFATAL ERROR: Failed to load training files!\n"
             f"Error: {str(e)}\n"
-            f"Files may be corrupted. Please retrain by running: python3 -m tabular_conf.ql_conf.ext.train_rl\n"
+            f"Files may be corrupted. Please retrain by running: python3 -m tabular_conf.dql_conf.ext.train_rl\n"
         ) from e
 
     if VERBOSE:

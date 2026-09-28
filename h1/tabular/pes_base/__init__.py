@@ -8,7 +8,7 @@ Handles package setup including:
 - Virtual environment validation with user prompt
 - NumPy print/error configuration and TensorFlow log suppression
 - Pandemic dynamic parameters (RESPONSE_MULTIPLIER α, SEVERITY_MULTIPLIER β)
-- Package exports via __all__ (36 symbols)
+- Package exports via __all__ (37 symbols)
 
 Usage
 -----

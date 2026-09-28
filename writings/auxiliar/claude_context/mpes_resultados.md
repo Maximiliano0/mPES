@@ -1,6 +1,6 @@
 # mPES — Síntesis de métricas, salidas y resultados (contexto para la tesis)
 
-> Generado el 2026-09-24 a partir de `h1/general/results/` (matrices, `comparison_metrics.json`, `cells/`), los `inputs/best_params.json` y `config/CONFIG.py` de cada paquete. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda.
+> Generado el 2026-09-24 a partir de `h1/general/results/` (matrices, `comparison_metrics.json`, `cells/`), los `inputs/best_params.json` y `config/CONFIG.py` de cada paquete. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. **Actualización 2026-09-28:** todos los valores de `pes_ens_consensus_prior` (Consenso con prior) se recalcularon tras corregir la doble softmax en su confianza (nuevo `inputs/best_params.json`, re-optimizado con Optuna, y re-ejecución de sus 22 celdas del benchmark); los demás modelos no cambiaron.
 
 ## 0. Resumen ejecutivo (hallazgos verificados)
 
@@ -14,7 +14,7 @@
 8. **Pero su acción final difiere de la del Transformer en el 61,2 % (referencia) / 48,1 % (generalización)** de las decisiones; el prior de severidad cambia la acción votada en el 40,9 % / 32,5 %; la cota casi nunca actúa. Con τ = 15 las distribuciones de los miembros son casi planas. La mejora es compatible con prior + temperatura, no con la ponderación por confianza.
 9. **Compuerta del Transformer ≈ Transformer**: generalización 0.931 vs 0.930; sigue al Transformer en el 96,9 % / 95,0 % de las decisiones.
 10. **Voto suave y voto por acción**: generalización más baja (0.902 / 0.901), peor escenario `sev_extrapolate_high` (0.860 / 0.859), con 41 % / 42 % de secuencias bajo 0,8. Sus pesos dan más peso al DQN recurrente que al Transformer.
-11. **Consenso** tiene la referencia más baja de los ensambles (0.889); la variante con prior mejora referencia (0.917) y peor escenario (0.826 → 0.871), aunque su prior sólo cambia el 2,4 % / 3,6 % de las decisiones.
+11. **Consenso** tiene la referencia más baja de los ensambles (0.889); la variante con prior mejora referencia (0.918) y peor escenario (0.826 → 0.870), aunque su prior sólo cambia el 4,5 % / 4,6 % de las decisiones.
 12. **Agente aleatorio**: 0.670 (cota inferior de referencia).
 
 ## 1. Definiciones
@@ -125,7 +125,7 @@ Promedio del grupo individual: severidad +0.0119, longitud +0.0095, conjunta -0.
 | `pes_ens_sprb` | Voto suave | Voto suave: promedio de p_k con pesos efectivos w_k·c_k^rho; argmax. | dqn, rdqn, trf, a2c | rho = 2.68075, tau = 1.219194, w_a2c = 0.007027, w_dqn = 0.270032, w_rdqn = 1.759607, w_trf = 0.895639 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
 | `pes_ens_accq` | Voto por acción | Voto por acción: cada miembro vota su argmax con peso w_k·c_k^rho; desempate por suma de Q estandarizados. | dqn, rdqn, trf, a2c | rho = 2.1972, tau = 1.0, w_a2c = 0.174251, w_dqn = 0.467984, w_rdqn = 2.598528, w_trf = 1.803345 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
 | `pes_ens_consensus` | Consenso | Voto ponderado + beta_a·(confianza de quienes coinciden) - beta_d·(confianza de quienes discrepan) + sum_k Qhat_k(a)·c_k; argmax. | dqn, rdqn, trf, a2c | beta_a = 2.074141, beta_d = 0.121143, rho = 0.275376, tau = 1.0, w_a2c = 1.880651, w_dqn = 1.531684, w_rdqn = 1.931138, w_trf = 2.503556 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
-| `pes_ens_consensus_prior` | Consenso con prior | Como consenso pero con suma de distribuciones; factor 0,3 a a=0 si R>0; mezcla con prior de severidad; cota de seguridad floor(S/2) si S>=6. Confianza calculada aplicando softmax a p_k (reduce c_k). | dqn, rdqn, trf, a2c | beta_a = 1.605238, beta_d = 0.411452, rho = 0.325261, sigma_prior = 1.436415, tau = 1.0, w_a2c = 0.432274, w_dqn = 2.558183, w_prior = 0.118571, w_rdqn = 2.941942, w_trf = 2.995977 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
+| `pes_ens_consensus_prior` | Consenso con prior | Como consenso pero con suma de distribuciones; factor 0,3 a a=0 si R>0; mezcla con prior de severidad; cota de seguridad floor(S/2) si S>=6. Confianza c_k = 1 − H_norm(p_k), igual que el resto (corregida el 2026-09-28: antes se aplicaba una segunda softmax a p_k). | dqn, rdqn, trf, a2c | beta_a = 0.2437, beta_d = 0.114644, rho = 1.049975, sigma_prior = 0.909726, tau = 1.0, w_a2c = 0.336563, w_dqn = 2.12233, w_prior = 0.177653, w_rdqn = 2.722707, w_trf = 2.2768 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
 | `pes_ens_trf_guard` | Compuerta del Transformer | Compuerta logística g = sigmoid(kappa_g·(c_trf - tau_g)); si g>=0,5 ejecuta la acción del Transformer, si no un voto suave de respaldo. | dqn, rdqn, trf, a2c | kappa_g = 2.397349, rho = 1.451819, tau = 1.0, tau_g = 0.222186, w_a2c = 0.067448, w_dqn = 0.83668, w_rdqn = 2.561269, w_trf = 2.601263 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
 
 - Todos: $p_k$ = softmax de temperatura τ de los Q (o salida del actor de A2C), renormalizada sobre acciones factibles; confianza $c_k = 1 - H_{norm}(p_k)$; peso efectivo $\tilde w_k = w_k c_k^{\rho}$ (salvo `pes_ens`, que usa $w_k(0{,}1 + c_k)$).
@@ -138,7 +138,7 @@ Promedio del grupo individual: severidad +0.0119, longitud +0.0095, conjunta -0.
 |---|---|---:|---:|---:|---:|---|---:|---:|
 | `pes_ens` | Ensamble ponderado | 0.937 | 0.035 | 0.939 | -0.0021 | `len_extrapolate_long` (0.900) | 0.037 | 44.7 % |
 | `pes_ens_trf_guard` | Compuerta del Transformer | 0.928 | 0.046 | 0.931 | -0.0026 | `len_extrapolate_long` (0.861) | 0.067 | 36.4 % |
-| `pes_ens_consensus_prior` | Consenso con prior | 0.917 | 0.041 | 0.922 | -0.0048 | `len_extrapolate_long` (0.871) | 0.046 | 26.7 % |
+| `pes_ens_consensus_prior` | Consenso con prior | 0.918 | 0.041 | 0.919 | -0.0017 | `len_extrapolate_long` (0.870) | 0.047 | 27.4 % |
 | `pes_ens_consensus` | Consenso | 0.889 | 0.064 | 0.905 | -0.0152 | `len_extrapolate_long` (0.826) | 0.063 | 2.4 % |
 | `pes_ens_sprb` | Voto suave | 0.914 | 0.045 | 0.902 | +0.0118 | `sev_extrapolate_high` (0.860) | 0.054 | 24.3 % |
 | `pes_ens_accq` | Voto por acción | 0.914 | 0.044 | 0.901 | +0.0130 | `sev_extrapolate_high` (0.859) | 0.055 | 24.3 % |
@@ -151,10 +151,10 @@ Promedio del grupo individual: severidad +0.0119, longitud +0.0095, conjunta -0.
 | `pes_ens_sprb` | +0.0137 | +0.0163 | +0.0110 | 0.0000 | 0.900 | 0.879 |
 | `pes_ens_accq` | +0.0150 | +0.0156 | +0.0150 | 0.0000 | 0.899 | 0.879 |
 | `pes_ens_consensus` | -0.0170 | +0.0026 | -0.0447 | 0.0000 | 0.907 | 0.905 |
-| `pes_ens_consensus_prior` | -0.0074 | +0.0137 | -0.0253 | 0.0000 | 0.922 | 0.932 |
+| `pes_ens_consensus_prior` | -0.0034 | +0.0152 | -0.0200 | 0.0000 | 0.920 | 0.932 |
 | `pes_ens_trf_guard` | -0.0067 | +0.0223 | -0.0267 | 0.0000 | 0.931 | 0.951 |
 
-Promedio del grupo de ensambles: severidad -0.0018, longitud +0.0149, conjunta -0.0145, estructural 0.0000.
+Promedio del grupo de ensambles: severidad -0.0012, longitud +0.0152, conjunta -0.0136, estructural 0.0000.
 
 ### 5.4 Frecuencia con que las reglas fijas cambian la decisión (Tabla `tab:ens-freq`)
 
@@ -164,9 +164,9 @@ _Tesis, Tabla tab:ens-freq; generado con writings/auxiliar/scripts/ensemble_deci
 |---|---|---:|---:|
 | Compuerta del Transformer | Sigue al Transformer (g ≥ 0,5) | 96.9 | 95.0 |
 | Compuerta del Transformer | Acción final distinta de la del Transformer | 0.8 | 2.7 |
-| Consenso con prior | El prior cambia la acción votada | 2.4 | 3.6 |
-| Consenso con prior | La cota cambia la acción | 0.0 | 1.1 |
-| Consenso con prior | Acción final distinta de la del Transformer | 63.5 | 57.9 |
+| Consenso con prior | El prior cambia la acción votada | 4.5 | 4.6 |
+| Consenso con prior | La cota cambia la acción | 0.3 | 1.5 |
+| Consenso con prior | Acción final distinta de la del Transformer | 62.4 | 58.6 |
 | Ensamble ponderado | El prior cambia la acción votada | 40.9 | 32.5 |
 | Ensamble ponderado | La cota cambia la acción | 0.0 | 0.3 |
 | Ensamble ponderado | Acción final distinta de la del Transformer | 61.2 | 48.1 |
@@ -240,28 +240,28 @@ Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Le
 
 | Escenario | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
-| `sev_base` | **0.937** | 0.914 | 0.914 | 0.889 | 0.917 | 0.928 |
-| `sev_uniform` | **0.937** | 0.883 | 0.884 | 0.874 | 0.911 | 0.923 |
-| `sev_gauss_low` | **0.939** | 0.910 | 0.908 | 0.896 | 0.920 | 0.919 |
-| `sev_gauss_mid` | **0.938** | 0.902 | 0.900 | 0.890 | 0.906 | 0.921 |
-| `sev_gauss_high` | **0.957** | 0.942 | 0.942 | 0.948 | 0.949 | 0.949 |
-| `sev_weibull` | **0.938** | 0.901 | 0.897 | 0.890 | 0.914 | 0.929 |
-| `sev_beta_lowskew` | **0.917** | 0.894 | 0.898 | 0.888 | 0.898 | 0.907 |
-| `sev_beta_highskew` | **0.947** | 0.934 | 0.927 | 0.947 | 0.945 | 0.943 |
-| `sev_bimodal` | **0.938** | 0.879 | 0.879 | 0.890 | 0.919 | 0.925 |
+| `sev_base` | **0.937** | 0.914 | 0.914 | 0.889 | 0.918 | 0.928 |
+| `sev_uniform` | **0.937** | 0.883 | 0.884 | 0.874 | 0.906 | 0.923 |
+| `sev_gauss_low` | **0.939** | 0.910 | 0.908 | 0.896 | 0.917 | 0.919 |
+| `sev_gauss_mid` | **0.938** | 0.902 | 0.900 | 0.890 | 0.904 | 0.921 |
+| `sev_gauss_high` | **0.957** | 0.942 | 0.942 | 0.948 | 0.951 | 0.949 |
+| `sev_weibull` | **0.938** | 0.901 | 0.897 | 0.890 | 0.908 | 0.929 |
+| `sev_beta_lowskew` | **0.917** | 0.894 | 0.898 | 0.888 | 0.896 | 0.907 |
+| `sev_beta_highskew` | **0.947** | 0.934 | 0.927 | 0.947 | 0.946 | 0.943 |
+| `sev_bimodal` | **0.938** | 0.879 | 0.879 | 0.890 | 0.906 | 0.925 |
 | `sev_extrapolate_high` ⚠ | **1.000** | 0.860 | 0.859 | 0.935 | 0.957 | 0.996 |
 | `len_all_short` | 0.908 | 0.900 | 0.900 | **0.961** | 0.932 | 0.936 |
 | `len_all_long` | **0.921** | 0.893 | 0.892 | 0.853 | 0.886 | 0.881 |
-| `len_geometric` | **0.929** | 0.909 | 0.912 | 0.890 | 0.912 | 0.917 |
-| `len_poisson` | 0.933 | 0.910 | 0.909 | 0.903 | 0.915 | **0.933** |
-| `len_extrapolate_long` ⚠ | **0.900** | 0.878 | 0.880 | 0.826 | 0.871 | 0.861 |
-| `joint_high_long` | **0.943** | 0.925 | 0.925 | 0.918 | 0.928 | 0.930 |
-| `joint_low_short` | 0.942 | 0.921 | 0.913 | **0.988** | 0.964 | 0.969 |
-| `joint_uniform_geom` | **0.928** | 0.867 | 0.862 | 0.878 | 0.908 | 0.922 |
+| `len_geometric` | **0.929** | 0.909 | 0.912 | 0.890 | 0.913 | 0.917 |
+| `len_poisson` | 0.933 | 0.910 | 0.909 | 0.903 | 0.910 | **0.933** |
+| `len_extrapolate_long` ⚠ | **0.900** | 0.878 | 0.880 | 0.826 | 0.870 | 0.861 |
+| `joint_high_long` | **0.943** | 0.925 | 0.925 | 0.918 | 0.929 | 0.930 |
+| `joint_low_short` | 0.942 | 0.921 | 0.913 | **0.988** | 0.949 | 0.969 |
+| `joint_uniform_geom` | **0.928** | 0.867 | 0.862 | 0.878 | 0.904 | 0.922 |
 | `joint_extrap_both` ⚠ | **1.000** | 0.900 | 0.897 | 0.953 | 0.968 | 0.997 |
-| `struct_few_long_blocks` | **0.937** | 0.914 | 0.914 | 0.889 | 0.917 | 0.928 |
-| `struct_many_short_blocks` | **0.937** | 0.914 | 0.914 | 0.889 | 0.917 | 0.928 |
-| `struct_more_total` | **0.937** | 0.914 | 0.914 | 0.889 | 0.917 | 0.928 |
+| `struct_few_long_blocks` | **0.937** | 0.914 | 0.914 | 0.889 | 0.918 | 0.928 |
+| `struct_many_short_blocks` | **0.937** | 0.914 | 0.914 | 0.889 | 0.918 | 0.928 |
+| `struct_more_total` | **0.937** | 0.914 | 0.914 | 0.889 | 0.918 | 0.928 |
 
 ### 7.3 Desviación estándar entre secuencias — individuales
 
@@ -296,22 +296,22 @@ Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Le
 |---|---:|---:|---:|---:|---:|---:|
 | `sev_base` | 0.035 | 0.045 | 0.044 | 0.064 | 0.041 | 0.046 |
 | `sev_uniform` | 0.046 | 0.095 | 0.095 | 0.084 | 0.051 | 0.056 |
-| `sev_gauss_low` | 0.042 | 0.074 | 0.075 | 0.085 | 0.067 | 0.070 |
+| `sev_gauss_low` | 0.042 | 0.074 | 0.075 | 0.085 | 0.071 | 0.070 |
 | `sev_gauss_mid` | 0.039 | 0.059 | 0.060 | 0.067 | 0.049 | 0.052 |
-| `sev_gauss_high` | 0.018 | 0.037 | 0.038 | 0.029 | 0.025 | 0.024 |
-| `sev_weibull` | 0.042 | 0.080 | 0.082 | 0.077 | 0.058 | 0.051 |
+| `sev_gauss_high` | 0.018 | 0.037 | 0.038 | 0.029 | 0.024 | 0.024 |
+| `sev_weibull` | 0.042 | 0.080 | 0.082 | 0.077 | 0.061 | 0.051 |
 | `sev_beta_lowskew` | 0.063 | 0.093 | 0.088 | 0.086 | 0.083 | 0.068 |
 | `sev_beta_highskew` | 0.032 | 0.045 | 0.058 | 0.026 | 0.030 | 0.031 |
-| `sev_bimodal` | 0.043 | 0.130 | 0.131 | 0.084 | 0.057 | 0.054 |
+| `sev_bimodal` | 0.043 | 0.130 | 0.131 | 0.084 | 0.075 | 0.054 |
 | `sev_extrapolate_high` ⚠ | 0.000 | 0.112 | 0.113 | 0.019 | 0.011 | 0.008 |
 | `len_all_short` | 0.064 | 0.059 | 0.059 | 0.021 | 0.057 | 0.063 |
 | `len_all_long` | 0.032 | 0.030 | 0.031 | 0.043 | 0.019 | 0.038 |
-| `len_geometric` | 0.038 | 0.044 | 0.042 | 0.067 | 0.046 | 0.049 |
-| `len_poisson` | 0.041 | 0.042 | 0.044 | 0.065 | 0.042 | 0.048 |
-| `len_extrapolate_long` ⚠ | 0.034 | 0.035 | 0.042 | 0.048 | 0.039 | 0.048 |
+| `len_geometric` | 0.038 | 0.044 | 0.042 | 0.067 | 0.045 | 0.049 |
+| `len_poisson` | 0.041 | 0.042 | 0.044 | 0.065 | 0.043 | 0.048 |
+| `len_extrapolate_long` ⚠ | 0.034 | 0.035 | 0.042 | 0.048 | 0.037 | 0.048 |
 | `joint_high_long` | 0.018 | 0.023 | 0.025 | 0.038 | 0.020 | 0.023 |
-| `joint_low_short` | 0.056 | 0.107 | 0.116 | 0.018 | 0.049 | 0.041 |
-| `joint_uniform_geom` | 0.056 | 0.119 | 0.114 | 0.094 | 0.060 | 0.067 |
+| `joint_low_short` | 0.056 | 0.107 | 0.116 | 0.018 | 0.098 | 0.041 |
+| `joint_uniform_geom` | 0.056 | 0.119 | 0.114 | 0.094 | 0.058 | 0.067 |
 | `joint_extrap_both` ⚠ | 0.000 | 0.081 | 0.084 | 0.012 | 0.003 | 0.006 |
 | `struct_few_long_blocks` | 0.035 | 0.045 | 0.044 | 0.064 | 0.041 | 0.046 |
 | `struct_many_short_blocks` | 0.035 | 0.045 | 0.044 | 0.064 | 0.041 | 0.046 |
@@ -349,24 +349,24 @@ Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Le
 | Escenario | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
 | `sev_base` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| `sev_uniform` | 0.000 | +0.032 | +0.030 | +0.015 | +0.006 | +0.005 |
-| `sev_gauss_low` | -0.002 | +0.005 | +0.007 | -0.006 | -0.003 | +0.009 |
-| `sev_gauss_mid` | -0.001 | +0.012 | +0.015 | -0.001 | +0.011 | +0.007 |
-| `sev_gauss_high` | -0.020 | -0.028 | -0.028 | -0.058 | -0.032 | -0.021 |
-| `sev_weibull` | 0.000 | +0.013 | +0.017 | -0.001 | +0.003 | -0.002 |
-| `sev_beta_lowskew` | +0.020 | +0.020 | +0.016 | +0.002 | +0.019 | +0.021 |
-| `sev_beta_highskew` | -0.010 | -0.020 | -0.013 | -0.057 | -0.028 | -0.015 |
-| `sev_bimodal` | -0.001 | +0.035 | +0.036 | 0.000 | -0.002 | +0.003 |
-| `sev_extrapolate_high` ⚠ | -0.063 | +0.054 | +0.055 | -0.046 | -0.040 | -0.068 |
-| `len_all_short` | +0.029 | +0.014 | +0.014 | -0.072 | -0.016 | -0.008 |
-| `len_all_long` | +0.017 | +0.021 | +0.022 | +0.037 | +0.031 | +0.047 |
+| `sev_uniform` | 0.000 | +0.032 | +0.030 | +0.015 | +0.012 | +0.005 |
+| `sev_gauss_low` | -0.002 | +0.005 | +0.007 | -0.006 | +0.001 | +0.009 |
+| `sev_gauss_mid` | -0.001 | +0.012 | +0.015 | -0.001 | +0.014 | +0.007 |
+| `sev_gauss_high` | -0.020 | -0.028 | -0.028 | -0.058 | -0.034 | -0.021 |
+| `sev_weibull` | 0.000 | +0.013 | +0.017 | -0.001 | +0.010 | -0.002 |
+| `sev_beta_lowskew` | +0.020 | +0.020 | +0.016 | +0.002 | +0.022 | +0.021 |
+| `sev_beta_highskew` | -0.010 | -0.020 | -0.013 | -0.057 | -0.029 | -0.015 |
+| `sev_bimodal` | -0.001 | +0.035 | +0.036 | 0.000 | +0.012 | +0.003 |
+| `sev_extrapolate_high` ⚠ | -0.063 | +0.054 | +0.055 | -0.046 | -0.039 | -0.068 |
+| `len_all_short` | +0.029 | +0.014 | +0.014 | -0.072 | -0.015 | -0.008 |
+| `len_all_long` | +0.017 | +0.021 | +0.022 | +0.037 | +0.032 | +0.047 |
 | `len_geometric` | +0.008 | +0.005 | +0.002 | -0.001 | +0.004 | +0.011 |
-| `len_poisson` | +0.005 | +0.004 | +0.005 | -0.014 | +0.002 | -0.006 |
-| `len_extrapolate_long` ⚠ | +0.037 | +0.036 | +0.035 | +0.063 | +0.046 | +0.067 |
-| `joint_high_long` | -0.006 | -0.011 | -0.010 | -0.028 | -0.012 | -0.003 |
-| `joint_low_short` | -0.004 | -0.006 | +0.001 | -0.098 | -0.047 | -0.042 |
-| `joint_uniform_geom` | +0.009 | +0.047 | +0.052 | +0.012 | +0.009 | +0.006 |
-| `joint_extrap_both` ⚠ | -0.063 | +0.014 | +0.017 | -0.064 | -0.052 | -0.069 |
+| `len_poisson` | +0.005 | +0.004 | +0.005 | -0.014 | +0.007 | -0.006 |
+| `len_extrapolate_long` ⚠ | +0.037 | +0.036 | +0.035 | +0.063 | +0.047 | +0.067 |
+| `joint_high_long` | -0.006 | -0.011 | -0.010 | -0.028 | -0.011 | -0.003 |
+| `joint_low_short` | -0.004 | -0.006 | +0.001 | -0.098 | -0.031 | -0.042 |
+| `joint_uniform_geom` | +0.009 | +0.047 | +0.052 | +0.012 | +0.013 | +0.006 |
+| `joint_extrap_both` ⚠ | -0.063 | +0.014 | +0.017 | -0.064 | -0.051 | -0.069 |
 | `struct_few_long_blocks` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | `struct_many_short_blocks` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | `struct_more_total` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
@@ -403,24 +403,24 @@ Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Le
 | Escenario | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
 | `sev_base` | — | — | — | — | — | — |
-| `sev_uniform` | 0.00 | -0.42 | -0.40 | -0.20 | -0.13 | -0.10 |
-| `sev_gauss_low` | +0.04 | -0.08 | -0.11 | +0.08 | +0.06 | -0.15 |
-| `sev_gauss_mid` | +0.01 | -0.23 | -0.28 | +0.01 | -0.24 | -0.13 |
-| `sev_gauss_high` | +0.72 | +0.68 | +0.67 | +1.17 | +0.94 | +0.58 |
-| `sev_weibull` | +0.01 | -0.20 | -0.26 | +0.01 | -0.06 | +0.03 |
-| `sev_beta_lowskew` | -0.39 | -0.27 | -0.23 | -0.02 | -0.28 | -0.37 |
-| `sev_beta_highskew` | +0.30 | +0.43 | +0.24 | +1.17 | +0.77 | +0.37 |
-| `sev_bimodal` | +0.02 | -0.36 | -0.36 | 0.00 | +0.05 | -0.07 |
-| `sev_extrapolate_high` ⚠ | +2.52 | -0.62 | -0.64 | +0.97 | +1.31 | +2.05 |
-| `len_all_short` | -0.56 | -0.27 | -0.27 | +1.51 | +0.31 | +0.14 |
-| `len_all_long` | -0.49 | -0.56 | -0.57 | -0.67 | -0.96 | -1.11 |
+| `sev_uniform` | 0.00 | -0.42 | -0.40 | -0.20 | -0.25 | -0.10 |
+| `sev_gauss_low` | +0.04 | -0.08 | -0.11 | +0.08 | -0.02 | -0.15 |
+| `sev_gauss_mid` | +0.01 | -0.23 | -0.28 | +0.01 | -0.31 | -0.13 |
+| `sev_gauss_high` | +0.72 | +0.68 | +0.67 | +1.17 | +0.99 | +0.58 |
+| `sev_weibull` | +0.01 | -0.20 | -0.26 | +0.01 | -0.19 | +0.03 |
+| `sev_beta_lowskew` | -0.39 | -0.27 | -0.23 | -0.02 | -0.33 | -0.37 |
+| `sev_beta_highskew` | +0.30 | +0.43 | +0.24 | +1.17 | +0.80 | +0.37 |
+| `sev_bimodal` | +0.02 | -0.36 | -0.36 | 0.00 | -0.19 | -0.07 |
+| `sev_extrapolate_high` ⚠ | +2.52 | -0.62 | -0.64 | +0.97 | +1.29 | +2.05 |
+| `len_all_short` | -0.56 | -0.27 | -0.27 | +1.51 | +0.29 | +0.14 |
+| `len_all_long` | -0.49 | -0.56 | -0.57 | -0.67 | -0.99 | -1.11 |
 | `len_geometric` | -0.23 | -0.12 | -0.05 | +0.02 | -0.10 | -0.22 |
-| `len_poisson` | -0.12 | -0.09 | -0.11 | +0.21 | -0.05 | +0.12 |
-| `len_extrapolate_long` ⚠ | -1.07 | -0.89 | -0.79 | -1.12 | -1.14 | -1.41 |
+| `len_poisson` | -0.12 | -0.09 | -0.11 | +0.21 | -0.17 | +0.12 |
+| `len_extrapolate_long` ⚠ | -1.07 | -0.89 | -0.79 | -1.12 | -1.20 | -1.41 |
 | `joint_high_long` | +0.22 | +0.31 | +0.29 | +0.54 | +0.35 | +0.07 |
-| `joint_low_short` | +0.09 | +0.08 | -0.02 | +2.09 | +1.04 | +0.95 |
-| `joint_uniform_geom` | -0.19 | -0.53 | -0.60 | -0.14 | -0.17 | -0.11 |
-| `joint_extrap_both` ⚠ | +2.52 | -0.21 | -0.25 | +1.38 | +1.76 | +2.10 |
+| `joint_low_short` | +0.09 | +0.08 | -0.02 | +2.09 | +0.41 | +0.95 |
+| `joint_uniform_geom` | -0.19 | -0.53 | -0.60 | -0.14 | -0.26 | -0.11 |
+| `joint_extrap_both` ⚠ | +2.52 | -0.21 | -0.25 | +1.38 | +1.73 | +2.10 |
 | `struct_few_long_blocks` | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
 | `struct_many_short_blocks` | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
 | `struct_more_total` | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 | 0.00 |
@@ -457,24 +457,24 @@ Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Le
 | Escenario | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
 | `sev_base` | — | — | — | — | — | — |
-| `sev_uniform` | 0.0 | -1.7 | -1.6 | -0.6 | -0.3 | -0.2 |
-| `sev_gauss_low` | -0.1 | -0.2 | -0.3 | -0.2 | -0.1 | -0.4 |
-| `sev_gauss_mid` | 0.0 | -0.7 | -0.9 | 0.0 | -0.8 | -0.3 |
-| `sev_gauss_high` | -4.0 | -3.7 | -3.6 | -8.6 | -6.2 | -2.9 |
-| `sev_weibull` | 0.0 | -0.6 | -0.8 | 0.0 | -0.1 | -0.1 |
-| `sev_beta_lowskew` | -1.5 | -0.9 | -0.7 | 0.0 | -0.9 | -1.4 |
-| `sev_beta_highskew` | -1.0 | -1.8 | -0.8 | -8.5 | -4.5 | -1.4 |
-| `sev_bimodal` | -0.1 | -1.3 | -1.4 | 0.0 | -0.1 | -0.2 |
-| `sev_extrapolate_high` ⚠ | -20.6 | -3.2 | -3.3 | -6.2 | -9.7 | -16.9 |
-| `len_all_short` | -2.7 | -0.9 | -0.9 | -12.0 | -1.1 | -0.4 |
-| `len_all_long` | -2.2 | -2.7 | -2.8 | -3.6 | -6.3 | -8.3 |
+| `sev_uniform` | 0.0 | -1.7 | -1.6 | -0.6 | -0.8 | -0.2 |
+| `sev_gauss_low` | -0.1 | -0.2 | -0.3 | -0.2 | 0.0 | -0.4 |
+| `sev_gauss_mid` | 0.0 | -0.7 | -0.9 | 0.0 | -1.1 | -0.3 |
+| `sev_gauss_high` | -4.0 | -3.7 | -3.6 | -8.6 | -6.7 | -2.9 |
+| `sev_weibull` | 0.0 | -0.6 | -0.8 | 0.0 | -0.5 | -0.1 |
+| `sev_beta_lowskew` | -1.5 | -0.9 | -0.7 | 0.0 | -1.2 | -1.4 |
+| `sev_beta_highskew` | -1.0 | -1.8 | -0.8 | -8.5 | -4.8 | -1.4 |
+| `sev_bimodal` | -0.1 | -1.3 | -1.4 | 0.0 | -0.5 | -0.2 |
+| `sev_extrapolate_high` ⚠ | -20.6 | -3.2 | -3.3 | -6.2 | -9.5 | -16.9 |
+| `len_all_short` | -2.7 | -0.9 | -0.9 | -12.0 | -1.0 | -0.4 |
+| `len_all_long` | -2.2 | -2.7 | -2.8 | -3.6 | -6.6 | -8.3 |
 | `len_geometric` | -0.7 | -0.3 | -0.1 | 0.0 | -0.2 | -0.7 |
-| `len_poisson` | -0.3 | -0.2 | -0.3 | -0.6 | -0.1 | -0.3 |
-| `len_extrapolate_long` ⚠ | -7.8 | -5.8 | -4.8 | -8.3 | -8.7 | -12.1 |
+| `len_poisson` | -0.3 | -0.2 | -0.3 | -0.6 | -0.5 | -0.3 |
+| `len_extrapolate_long` ⚠ | -7.8 | -5.8 | -4.8 | -8.3 | -9.4 | -12.1 |
 | `joint_high_long` | -0.7 | -1.1 | -1.0 | -2.5 | -1.3 | -0.2 |
-| `joint_low_short` | -0.2 | -0.2 | 0.0 | -17.8 | -7.4 | -6.4 |
-| `joint_uniform_geom` | -0.5 | -2.4 | -2.9 | -0.4 | -0.5 | -0.3 |
-| `joint_extrap_both` ⚠ | -20.6 | -0.6 | -0.8 | -10.3 | -13.8 | -17.2 |
+| `joint_low_short` | -0.2 | -0.2 | 0.0 | -17.8 | -1.7 | -6.4 |
+| `joint_uniform_geom` | -0.5 | -2.4 | -2.9 | -0.4 | -0.9 | -0.3 |
+| `joint_extrap_both` ⚠ | -20.6 | -0.6 | -0.8 | -10.3 | -13.6 | -17.2 |
 | `struct_few_long_blocks` | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | `struct_many_short_blocks` | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | `struct_more_total` | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
@@ -511,24 +511,24 @@ Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Le
 | Escenario | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
 | `sev_base` | — | — | — | — | — | — |
-| `sev_uniform` | 0.096 | 0.190 | 0.122 | 0.127 | 0.278 | 0.309 |
-| `sev_gauss_low` | 0.349 | 0.449 | 0.409 | 0.470 | 0.434 | 0.359 |
-| `sev_gauss_mid` | 0.041 | 0.028 | 0.035 | 0.070 | 0.060 | 0.171 |
-| `sev_gauss_high` | 0.332 | 0.334 | 0.332 | 0.051 | 0.277 | 0.292 |
-| `sev_weibull` | 0.047 | 0.097 | 0.065 | 0.150 | 0.279 | 0.159 |
-| `sev_beta_lowskew` | 0.204 | 0.275 | 0.227 | 0.416 | 0.311 | 0.319 |
-| `sev_beta_highskew` | 0.306 | 0.277 | 0.270 | 0.035 | 0.331 | 0.316 |
-| `sev_bimodal` | 0.127 | 0.208 | 0.150 | 0.294 | 0.474 | 0.361 |
-| `sev_extrapolate_high` ⚠ | 1.524 | 0.718 | 0.699 | 1.873 | 0.985 | 1.062 |
-| `len_all_short` | 0.543 | 0.404 | 0.406 | 0.655 | 0.449 | 0.472 |
-| `len_all_long` | 0.234 | 0.279 | 0.257 | 0.169 | 0.245 | 0.194 |
-| `len_geometric` | 0.055 | 0.047 | 0.042 | 0.010 | 0.031 | 0.021 |
-| `len_poisson` | 0.038 | 0.013 | 0.019 | 0.023 | 0.008 | 0.026 |
-| `len_extrapolate_long` ⚠ | 0.595 | 0.558 | 0.532 | 0.388 | 0.552 | 0.416 |
-| `joint_high_long` | 0.497 | 0.462 | 0.443 | 0.187 | 0.500 | 0.398 |
-| `joint_low_short` | 0.663 | 0.759 | 0.753 | 1.166 | 0.715 | 1.025 |
-| `joint_uniform_geom` | 0.070 | 0.167 | 0.146 | 0.171 | 0.259 | 0.255 |
-| `joint_extrap_both` ⚠ | 1.367 | 0.812 | 0.761 | 1.082 | 1.035 | 0.905 |
+| `sev_uniform` | 0.096 | 0.190 | 0.122 | 0.127 | 0.089 | 0.309 |
+| `sev_gauss_low` | 0.349 | 0.449 | 0.409 | 0.470 | 0.210 | 0.359 |
+| `sev_gauss_mid` | 0.041 | 0.028 | 0.035 | 0.070 | 0.033 | 0.171 |
+| `sev_gauss_high` | 0.332 | 0.334 | 0.332 | 0.051 | 0.206 | 0.292 |
+| `sev_weibull` | 0.047 | 0.097 | 0.065 | 0.150 | 0.029 | 0.159 |
+| `sev_beta_lowskew` | 0.204 | 0.275 | 0.227 | 0.416 | 0.148 | 0.319 |
+| `sev_beta_highskew` | 0.306 | 0.277 | 0.270 | 0.035 | 0.181 | 0.316 |
+| `sev_bimodal` | 0.127 | 0.208 | 0.150 | 0.294 | 0.102 | 0.361 |
+| `sev_extrapolate_high` ⚠ | 1.524 | 0.718 | 0.699 | 1.873 | 1.026 | 1.062 |
+| `len_all_short` | 0.543 | 0.404 | 0.406 | 0.655 | 0.459 | 0.472 |
+| `len_all_long` | 0.234 | 0.279 | 0.257 | 0.169 | 0.258 | 0.194 |
+| `len_geometric` | 0.055 | 0.047 | 0.042 | 0.010 | 0.036 | 0.021 |
+| `len_poisson` | 0.038 | 0.013 | 0.019 | 0.023 | 0.007 | 0.026 |
+| `len_extrapolate_long` ⚠ | 0.595 | 0.558 | 0.532 | 0.388 | 0.569 | 0.416 |
+| `joint_high_long` | 0.497 | 0.462 | 0.443 | 0.187 | 0.446 | 0.398 |
+| `joint_low_short` | 0.663 | 0.759 | 0.753 | 1.166 | 0.535 | 1.025 |
+| `joint_uniform_geom` | 0.070 | 0.167 | 0.146 | 0.171 | 0.078 | 0.255 |
+| `joint_extrap_both` ⚠ | 1.367 | 0.812 | 0.761 | 1.082 | 1.028 | 0.905 |
 | `struct_few_long_blocks` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | `struct_many_short_blocks` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
 | `struct_more_total` | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
@@ -539,28 +539,28 @@ _Mínimo, máximo, fracción de secuencias en el óptimo (`f_opt`), fracción ba
 
 | Escenario | Mejor individual | Mejor ensamble | Mejor global | ENS − TRF | VS − TRF | VA − TRF | CONS − TRF | CONS+P − TRF | GUARD − TRF |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|
-| `sev_base` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.010 | +0.001 |
-| `sev_uniform` | TRF (0.923) | ENS (0.937) | ENS (0.937) | +0.014 | -0.040 | -0.039 | -0.048 | -0.012 | 0.000 |
-| `sev_gauss_low` | TRF (0.914) | ENS (0.939) | ENS (0.939) | +0.025 | -0.004 | -0.006 | -0.018 | +0.007 | +0.006 |
-| `sev_gauss_mid` | TRF (0.920) | ENS (0.938) | ENS (0.938) | +0.018 | -0.018 | -0.021 | -0.030 | -0.014 | +0.001 |
-| `sev_gauss_high` | TRF (0.949) | ENS (0.957) | ENS (0.957) | +0.008 | -0.007 | -0.008 | -0.002 | 0.000 | 0.000 |
-| `sev_weibull` | TRF (0.929) | ENS (0.938) | ENS (0.938) | +0.008 | -0.028 | -0.032 | -0.039 | -0.015 | 0.000 |
-| `sev_beta_lowskew` | TRF (0.905) | ENS (0.917) | ENS (0.917) | +0.013 | -0.011 | -0.006 | -0.017 | -0.007 | +0.002 |
-| `sev_beta_highskew` | A2C (0.944) | ENS (0.947) | ENS (0.947) | +0.005 | -0.008 | -0.015 | +0.004 | +0.002 | 0.000 |
-| `sev_bimodal` | TRF (0.925) | ENS (0.938) | ENS (0.938) | +0.013 | -0.046 | -0.047 | -0.036 | -0.006 | -0.001 |
+| `sev_base` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.009 | +0.001 |
+| `sev_uniform` | TRF (0.923) | ENS (0.937) | ENS (0.937) | +0.014 | -0.040 | -0.039 | -0.048 | -0.017 | 0.000 |
+| `sev_gauss_low` | TRF (0.914) | ENS (0.939) | ENS (0.939) | +0.025 | -0.004 | -0.006 | -0.018 | +0.003 | +0.006 |
+| `sev_gauss_mid` | TRF (0.920) | ENS (0.938) | ENS (0.938) | +0.018 | -0.018 | -0.021 | -0.030 | -0.017 | +0.001 |
+| `sev_gauss_high` | TRF (0.949) | ENS (0.957) | ENS (0.957) | +0.008 | -0.007 | -0.008 | -0.002 | +0.002 | 0.000 |
+| `sev_weibull` | TRF (0.929) | ENS (0.938) | ENS (0.938) | +0.008 | -0.028 | -0.032 | -0.039 | -0.021 | 0.000 |
+| `sev_beta_lowskew` | TRF (0.905) | ENS (0.917) | ENS (0.917) | +0.013 | -0.011 | -0.006 | -0.017 | -0.009 | +0.002 |
+| `sev_beta_highskew` | A2C (0.944) | ENS (0.947) | ENS (0.947) | +0.005 | -0.008 | -0.015 | +0.004 | +0.004 | 0.000 |
+| `sev_bimodal` | TRF (0.925) | ENS (0.938) | ENS (0.938) | +0.013 | -0.046 | -0.047 | -0.036 | -0.019 | -0.001 |
 | `sev_extrapolate_high` | TRF (0.996) | ENS (1.000) | ENS (1.000) | +0.004 | -0.135 | -0.137 | -0.061 | -0.039 | 0.000 |
 | `len_all_short` | A2C (0.958) | CONS (0.961) | CONS (0.961) | -0.028 | -0.036 | -0.036 | +0.026 | -0.003 | 0.000 |
 | `len_all_long` | RDQN (0.901) | ENS (0.921) | ENS (0.921) | +0.045 | +0.017 | +0.017 | -0.023 | +0.010 | +0.005 |
-| `len_geometric` | TRF (0.916) | ENS (0.929) | ENS (0.929) | +0.012 | -0.007 | -0.004 | -0.026 | -0.004 | +0.001 |
-| `len_poisson` | TRF (0.933) | GUARD (0.933) | GUARD (0.933) | 0.000 | -0.023 | -0.024 | -0.030 | -0.019 | 0.000 |
+| `len_geometric` | TRF (0.916) | ENS (0.929) | ENS (0.929) | +0.012 | -0.007 | -0.004 | -0.026 | -0.003 | +0.001 |
+| `len_poisson` | TRF (0.933) | GUARD (0.933) | GUARD (0.933) | 0.000 | -0.023 | -0.024 | -0.030 | -0.023 | 0.000 |
 | `len_extrapolate_long` | RDQN (0.889) | ENS (0.900) | ENS (0.900) | +0.040 | +0.018 | +0.020 | -0.034 | +0.011 | +0.002 |
-| `joint_high_long` | DQN (0.935) | ENS (0.943) | ENS (0.943) | +0.013 | -0.005 | -0.006 | -0.013 | -0.002 | 0.000 |
-| `joint_low_short` | DQN, A2C (0.988) | CONS (0.988) | CONS (0.988) | -0.028 | -0.049 | -0.057 | +0.018 | -0.006 | 0.000 |
-| `joint_uniform_geom` | TRF (0.921) | ENS (0.928) | ENS (0.928) | +0.008 | -0.054 | -0.058 | -0.043 | -0.013 | +0.001 |
-| `joint_extrap_both` | TRF (0.997) | ENS (1.000) | ENS (1.000) | +0.003 | -0.097 | -0.100 | -0.044 | -0.028 | 0.000 |
-| `struct_few_long_blocks` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.010 | +0.001 |
-| `struct_many_short_blocks` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.010 | +0.001 |
-| `struct_more_total` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.010 | +0.001 |
+| `joint_high_long` | DQN (0.935) | ENS (0.943) | ENS (0.943) | +0.013 | -0.005 | -0.006 | -0.013 | -0.001 | 0.000 |
+| `joint_low_short` | DQN, A2C (0.988) | CONS (0.988) | CONS (0.988) | -0.028 | -0.049 | -0.057 | +0.018 | -0.020 | 0.000 |
+| `joint_uniform_geom` | TRF (0.921) | ENS (0.928) | ENS (0.928) | +0.008 | -0.054 | -0.058 | -0.043 | -0.016 | +0.001 |
+| `joint_extrap_both` | TRF (0.997) | ENS (1.000) | ENS (1.000) | +0.003 | -0.097 | -0.100 | -0.044 | -0.029 | 0.000 |
+| `struct_few_long_blocks` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.009 | +0.001 |
+| `struct_many_short_blocks` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.009 | +0.001 |
+| `struct_more_total` | TRF (0.927) | ENS (0.937) | ENS (0.937) | +0.010 | -0.013 | -0.013 | -0.038 | -0.009 | +0.001 |
 
 - El Transformer tiene la mayor media individual (exacta) en **16** de 22 escenarios; con dos decimales queda primero o empatado en 17 (empates a 2 decimales: `sev_gauss_low`, `sev_beta_highskew`).
 - Escenarios donde el mejor individual no es el Transformer (exacto): `sev_beta_highskew` (A2C), `len_all_short` (A2C), `len_all_long` (RDQN), `len_extrapolate_long` (RDQN), `joint_high_long` (DQN), `joint_low_short` (DQN, A2C).
@@ -568,7 +568,7 @@ _Mínimo, máximo, fracción de secuencias en el óptimo (`f_opt`), fracción ba
 - Voto suave supera al Transformer en 2 de 21 escenarios de generalización (margen máximo +0.018).
 - Voto por acción supera al Transformer en 2 de 21 escenarios de generalización (margen máximo +0.020).
 - Consenso supera al Transformer en 3 de 21 escenarios de generalización (margen máximo +0.026).
-- Consenso con prior supera al Transformer en 4 de 21 escenarios de generalización (margen máximo +0.011).
+- Consenso con prior supera al Transformer en 5 de 21 escenarios de generalización (margen máximo +0.011).
 - Compuerta del Transformer supera al Transformer en 15 de 21 escenarios de generalización (margen máximo +0.006).
 - Peor escenario del ensamble ponderado − peor escenario del Transformer = +0.040.
 
@@ -628,34 +628,34 @@ _Mínimo, máximo, fracción de secuencias en el óptimo (`f_opt`), fracción ba
 
 | fila \ columna | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
-| ENS | — | 0.59 | 0.60 | 0.58 | 0.36 | 0.17 |
-| VS | -0.59 | — | 0.01 | -0.03 | -0.29 | -0.42 |
-| VA | -0.60 | -0.01 | — | -0.04 | -0.31 | -0.43 |
-| CONS | -0.58 | 0.03 | 0.04 | — | -0.27 | -0.40 |
-| CONS+P | -0.36 | 0.29 | 0.31 | 0.27 | — | -0.16 |
-| GUARD | -0.17 | 0.42 | 0.43 | 0.40 | 0.16 | — |
+| ENS | — | 0.59 | 0.60 | 0.58 | 0.39 | 0.17 |
+| VS | -0.59 | — | 0.01 | -0.03 | -0.25 | -0.42 |
+| VA | -0.60 | -0.01 | — | -0.04 | -0.27 | -0.43 |
+| CONS | -0.58 | 0.03 | 0.04 | — | -0.23 | -0.40 |
+| CONS+P | -0.39 | 0.25 | 0.27 | 0.23 | — | -0.20 |
+| GUARD | -0.17 | 0.42 | 0.43 | 0.40 | 0.20 | — |
 
 **$\log_{10} p$ de Welch**:
 
 | fila \ columna | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
-| ENS | — | -49.4 | -51.4 | -48.6 | -20.1 | -5.1 |
-| VS | -49.4 | — | -0.1 | -0.3 | -13.5 | -26.2 |
-| VA | -51.4 | -0.1 | — | -0.6 | -14.8 | -27.8 |
-| CONS | -48.6 | -0.3 | -0.6 | — | -11.8 | -24.5 |
-| CONS+P | -20.1 | -13.5 | -14.8 | -11.8 | — | -4.7 |
-| GUARD | -5.1 | -26.2 | -27.8 | -24.5 | -4.7 | — |
+| ENS | — | -49.4 | -51.4 | -48.6 | -22.9 | -5.1 |
+| VS | -49.4 | — | -0.1 | -0.3 | -10.2 | -26.2 |
+| VA | -51.4 | -0.1 | — | -0.6 | -11.3 | -27.8 |
+| CONS | -48.6 | -0.3 | -0.6 | — | -8.6 | -24.5 |
+| CONS+P | -22.9 | -10.2 | -11.3 | -8.6 | — | -6.5 |
+| GUARD | -5.1 | -26.2 | -27.8 | -24.5 | -6.5 | — |
 
 **KL simetrizada entre histogramas de desempeño**:
 
 | fila \ columna | ENS | VS | VA | CONS | CONS+P | GUARD |
 |---|---:|---:|---:|---:|---:|---:|
-| ENS | — | 0.306 | 0.303 | 0.230 | 0.066 | 0.025 |
-| VS | 0.306 | — | 0.001 | 0.082 | 0.117 | 0.227 |
-| VA | 0.303 | 0.001 | — | 0.084 | 0.119 | 0.225 |
-| CONS | 0.230 | 0.082 | 0.084 | — | 0.107 | 0.128 |
-| CONS+P | 0.066 | 0.117 | 0.119 | 0.107 | — | 0.030 |
-| GUARD | 0.025 | 0.227 | 0.225 | 0.128 | 0.030 | — |
+| ENS | — | 0.306 | 0.303 | 0.230 | 0.087 | 0.025 |
+| VS | 0.306 | — | 0.001 | 0.082 | 0.091 | 0.227 |
+| VA | 0.303 | 0.001 | — | 0.084 | 0.092 | 0.225 |
+| CONS | 0.230 | 0.082 | 0.084 | — | 0.095 | 0.128 |
+| CONS+P | 0.087 | 0.091 | 0.092 | 0.095 | — | 0.043 |
+| GUARD | 0.025 | 0.227 | 0.225 | 0.128 | 0.043 | — |
 
 ## 10. Detalle en la referencia (`sev_base`)
 
@@ -674,7 +674,7 @@ _Mínimo, máximo, fracción de secuencias en el óptimo (`f_opt`), fracción ba
 | `pes_ens_sprb` | 0.932 | 0.907 | 0.881 | 0.911 | 0.922 | 0.907 | 0.933 | 0.922 |
 | `pes_ens_accq` | 0.924 | 0.904 | 0.881 | 0.919 | 0.925 | 0.907 | 0.932 | 0.922 |
 | `pes_ens_consensus` | 0.874 | 0.875 | 0.880 | 0.892 | 0.897 | 0.894 | 0.900 | 0.903 |
-| `pes_ens_consensus_prior` | 0.914 | 0.893 | 0.888 | 0.931 | 0.924 | 0.924 | 0.928 | 0.932 |
+| `pes_ens_consensus_prior` | 0.915 | 0.895 | 0.888 | 0.930 | 0.932 | 0.921 | 0.928 | 0.932 |
 | `pes_ens_trf_guard` | 0.929 | 0.912 | 0.902 | 0.938 | 0.953 | 0.920 | 0.935 | 0.935 |
 
 ### 10.2 Distribución de acciones en la referencia (fracción de pasos con cada asignación 0..10)
@@ -692,7 +692,7 @@ _Mínimo, máximo, fracción de secuencias en el óptimo (`f_opt`), fracción ba
 | `pes_ens_sprb` | 0.194 | 0.081 | 0.008 | 0.083 | 0.006 | 0.194 | 0.053 | 0.089 | 0.061 | 0.158 | 0.072 | 4.92 |
 | `pes_ens_accq` | 0.208 | 0.067 | 0.014 | 0.081 | 0.008 | 0.175 | 0.056 | 0.094 | 0.061 | 0.164 | 0.072 | 4.92 |
 | `pes_ens_consensus` | 0.317 | 0.003 | 0.017 | 0.131 | 0.000 | 0.008 | 0.000 | 0.000 | 0.000 | 0.503 | 0.022 | 5.22 |
-| `pes_ens_consensus_prior` | 0.200 | 0.094 | 0.033 | 0.039 | 0.006 | 0.208 | 0.025 | 0.000 | 0.056 | 0.289 | 0.050 | 5.04 |
+| `pes_ens_consensus_prior` | 0.203 | 0.086 | 0.033 | 0.050 | 0.003 | 0.208 | 0.017 | 0.008 | 0.053 | 0.289 | 0.050 | 5.04 |
 | `pes_ens_trf_guard` | 0.294 | 0.017 | 0.017 | 0.000 | 0.036 | 0.033 | 0.042 | 0.258 | 0.086 | 0.139 | 0.078 | 5.14 |
 
 _Las distribuciones incluyen los pasos sin recursos (acción forzada 0)._
@@ -722,7 +722,7 @@ Contrastados contra los datos de este archivo (2026-09-24). Corregirlos cuando s
 | # | Severidad | Archivo | Lugar | Hallazgo | Corrección sugerida |
 |---:|---|---|---|---|---|
 | 1 | mayor | `04Materials.tex` | subsubsection Voto suave (tras eq:ens-sprb) | El texto dice "ajusta la temperatura de la softmax (tau = 0,1044)", pero tab:ens-params y inputs/best_params.json dan tau = 1,219 (temperature = 1.2192). | Reemplazar $\tau = 0{,}1044$ por $\tau = 1{,}219$. |
-| 2 | mayor | `04Materials.tex` | subsubsection Consenso con prior (último párrafo) | "Es la única variante en la que se optimizó el peso del actor de A2C; en las demás vale 0,10" es falso: los cinco ensambles optimizables optimizan weight_a2c (rango 0-3) y sus best_params lo contienen (0,0070; 0,174; 1,881; 0,432; 0,0674), como ya muestra tab:ens-params. | Eliminar la oración o reemplazarla por una que diga que los cinco optimizan w_A2C. |
+| 2 | mayor | `04Materials.tex` | subsubsection Consenso con prior (último párrafo) | "Es la única variante en la que se optimizó el peso del actor de A2C; en las demás vale 0,10" es falso: los cinco ensambles optimizables optimizan weight_a2c (rango 0-3) y sus best_params lo contienen (0,0070; 0,174; 1,881; 0,337; 0,0674), como ya muestra tab:ens-params. | Eliminar la oración o reemplazarla por una que diga que los cinco optimizan w_A2C. |
 | 3 | menor | `05Results.tex` | sec:res-ensembles, párrafo previo a sec:res-freq | "el voto suave y el voto por acción pierden más con la severidad": por familia pierden algo más con la longitud (degradación media VS 0,016 vs 0,014 en severidad; VA 0,016 vs 0,015); lo que sí es de severidad es su peor escenario (sev_extrapolate_high). | Precisar que su peor escenario es la extrapolación de severidad. |
 | 4 | menor | `06Discussion.tex` | sec:ens-best, viñeta voto suave / voto por acción | "quedan por debajo de ambos y sólo superan al DQN recurrente" es ambiguo: en sev_extrapolate_high VS 0,860 y VA 0,859 quedan por debajo de DQN 0,890, A2C 0,929 y Transformer 0,996, y por encima del DQN recurrente 0,831 (y de los tabulares). | Por ejemplo: "entre sus miembros, sólo superan al DQN recurrente". |
 | 5 | observación | `00Abstract.tex / 00Abstract_en.tex` | párrafo de resultados | "Los peores resultados fueron los de los métodos tabulares ... (0,76 y 0,79)" se refiere a Q-Learning y Double Q-Learning; Q-Learning base llega a 0,627 (peor celda del estudio). | Explicitar "los métodos tabulares optimizados" o mencionar Q-Learning base. |

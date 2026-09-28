@@ -1,5 +1,5 @@
 '''
-ql_conf - Pandemic Experiment Scenario (Double Q-Learning)
+dql_conf - Pandemic Experiment Scenario (Double Q-Learning)
 
 Reproducibility utilities: capture the runtime fingerprint that determines
 the outcome of Double Q-Learning training (numpy/python versions, CSV

@@ -3,12 +3,12 @@ pes_rdqn - Pandemic Experiment Scenario: RDQN-Agent Training Pipeline
 
 Trains a Recurrent Deep Q-Network agent on the Pandemic environment using
 hyperparameters from config/CONFIG.py and evaluates it against a
-random-player baseline.
+no-allocation baseline (0 resources in every trial).
 
 Pipeline stages
 ---------------
 1. Load training data (initial_severity.csv, sequence_lengths.csv)
-2. Run random-player baseline and save performance plots
+2. Run no-allocation baseline (0 resources per trial) and save performance plots
 3. Train RDQN agent (default 30 000 episodes, configurable via CLI)
 4. Save trained model, rewards history, and training config to a dated directory
 5. Evaluate trained agent on the same sequences and generate
@@ -329,19 +329,23 @@ def main():
     env = Pandemic()
 
     def random_qf(_env, _state, _seqid):
-        """Return a random action from the environment's action space."""
+        """Return the pre-set allocation for the current trial (always 0: no-allocation baseline).
+
+        With ``set_fixed_sequence(..., allocs=None)`` the environment stores ``[0] * length``, so
+        ``env.sample()`` returns 0; despite its name this is not a random player.
+        """
         return env.sample()
 
-    section("Random Player Baseline", width=80)
-    info("Training random agent for comparison...")
+    section("No-Allocation Baseline", width=80)
+    info("Running no-allocation baseline (0 resources per trial) for comparison...")
     seqs1, perfs1, _ = run_experiment(env, random_qf, False, trials_per_sequence, sevs)
-    success("Random player experiment completed")
+    success("No-allocation baseline experiment completed")
 
     __fig, ax = plt.subplots(figsize=(12, 6))
-    ax.plot(seqs1, color='#1f77b4', linewidth=2.5, marker='o', markersize=5, label='Random Player')
+    ax.plot(seqs1, color='#1f77b4', linewidth=2.5, marker='o', markersize=5, label='No-Allocation Baseline')
     ax.set_xlabel('Trial', fontsize=12, fontweight='bold')
     ax.set_ylabel('Final Severity Achieved', fontsize=12, fontweight='bold')
-    ax.set_title('Random Player Baseline: Severity per Sequence', fontsize=14, fontweight='bold', pad=20)
+    ax.set_title('No-Allocation Baseline: Severity per Sequence', fontsize=14, fontweight='bold', pad=20)
     ax.grid(True, alpha=0.3)
     ax.legend(loc='best')
     plt.tight_layout()
@@ -355,10 +359,10 @@ def main():
     list_item("Saved: random_player_sequence_performance.png")
 
     __fig, ax = plt.subplots(figsize=(12, 6))
-    ax.plot(perfs1, color='#ff7f0e', linewidth=2.5, marker='s', markersize=5, label='Random Player')
+    ax.plot(perfs1, color='#ff7f0e', linewidth=2.5, marker='s', markersize=5, label='No-Allocation Baseline')
     ax.set_ylabel('Normalised Performance (0-1)', fontsize=12, fontweight='bold')
     ax.set_xlabel('Trial', fontsize=12, fontweight='bold')
-    ax.set_title('Random Player Baseline: Normalised Performance per Sequence', fontsize=14, fontweight='bold', pad=20)
+    ax.set_title('No-Allocation Baseline: Normalised Performance per Sequence', fontsize=14, fontweight='bold', pad=20)
     ax.set_ylim(0, 1.05)
     ax.grid(True, alpha=0.3)
     ax.legend(loc='best')
@@ -471,7 +475,7 @@ def main():
         num_episodes     = cli_num_episodes if cli_num_episodes is not None else RDQN_EPISODES
 
     info(f"Starting RDQN training ({num_episodes:,} episodes)...")
-    info(f"Network: Input({RDQN_HISTORY_LEN}, 3) -> Masking -> LSTM({RDQN_LSTM_UNITS}) -> "
+    info(f"Network: Input({RDQN_HISTORY_LEN}, 3) -> LSTM({RDQN_LSTM_UNITS}) -> "
          f"{' -> '.join(f'Dense({u}, ReLU)' for u in hidden_units)} -> Dense(11, linear)")
     info(f"Replay buffer: {buffer_size:,}  |  Batch size: {batch_size}  |  Target sync: {target_sync_freq:,}")
     info(f"Seed:          {train_seed}")
@@ -587,7 +591,7 @@ def main():
         section("RDQN-Agent Evaluation", width=80)
 
         # Re-seed all RNGs so the evaluation is isolated from the
-        # random-baseline experiment that consumed RNG state above.
+        # no-allocation baseline experiment (and any other RNG use) above.
         tf.keras.utils.set_random_seed(SEED)
         env.action_space.seed(SEED)
 

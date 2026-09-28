@@ -17,21 +17,23 @@ coherencia y cohesión entre capítulos.
 
 ## Las dos aristas fundamentales de la tesis
 
-Toda la argumentación debe converger en estas dos hipótesis:
+Toda la argumentación debe converger en estas dos hipótesis, tal como se
+formulan en `writings/01_Chapters/01Introduction.tex` (`\label{sec:hypothesis}`):
 
-1. **Generalización del Transformer causal**: en escenarios de toma de
-   decisión ante incertidumbre — usando una pandemia como caso de estudio —
-   el Transformer causal (`h1/ml/pes_trf`) es el modelo individual que mejor
-   generaliza y performa, validado frente a las variantes tabulares
-   (Q-Learning, Double Q-Learning), profundas (DQN, RDQN, A2C) y los
-   ensambles de `h1/ens/`.
-2. **Confianza vía entropía**: en esos mismos escenarios, $1 - H$ (siendo
-   $H$ la entropía normalizada de la distribución de acciones) puede
-   emplearse como estimador de confianza/incerteza del agente, alineado con
-   los marcadores fisiológicos de los estudios de *joint decision making*
-   del BCI-NE Lab de la Universidad de Essex
-   (<https://www.essex.ac.uk/research-projects/adaptive-joint-cognitive-systems>)
-   y trabajos afines en *adaptive joint cognitive systems*.
+1. **H1 — Transformer causal como mejor modelo individual**: entre los modelos
+   individuales evaluados — variantes tabulares (Q-Learning, Double
+   Q-Learning) y profundas (DQN, RDQN, A2C) — el Transformer causal
+   (`h1/ml/pes_trf`) alcanza el mayor desempeño medio y lo conserva en los
+   escenarios de generalización (cambios de severidad y de longitud de las
+   secuencias), usando una pandemia como caso de estudio de toma de decisión
+   ante incertidumbre.
+2. **H2 — Ensambles con votación por confianza**: los ensambles de redes
+   neuronales de `h1/ens/` con votación basada en la confianza derivada de la
+   entropía de Shannon ($1 - H$, siendo $H$ la entropía normalizada de la
+   distribución de acciones) superan el desempeño del mejor modelo individual.
+   El entorno de partida (PES) proviene del BCI-NE Lab de la Universidad de
+   Essex (`\citep{BCINE2022}`); la tesis no afirma una alineación de $1 - H$
+   con marcadores fisiológicos, así que no la introduzcas.
 
 ## Hard constraints
 
