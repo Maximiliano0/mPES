@@ -21,7 +21,6 @@ El entorno se formula como un MDP finito (Secci\'on~\ref{sec:mdp-bg}). En
 cada paso (\emph{trial}) se presenta una ciudad y el agente decide cu\'antas
 unidades de un recurso escaso le asigna. Los estados y las acciones se
 definen como sigue.
-
 \begin{equation}
 \begin{gathered}
 \mathcal{S} = \bigl\{(R, t, S) : R \in \{0, \ldots, 30\},\;
@@ -37,7 +36,6 @@ $31 \times 11 \times 10 = 3\,410$ estados. Cada secuencia dispone de $39$
 recursos, $9$ de ellos preasignados por el entorno, por lo que el agente
 administra $30$. Al elegir la acci\'on $a_t$ en el estado
 $s_t = (R_t, t, S_t)$, el entorno pasa al estado siguiente.
-
 \begin{equation}
 s_{t+1} \;=\; \bigl(R_t - \min(a_t, R_t),\; t + 1,\; S_{t+1}\bigr)
 \label{eq:state-transition}
@@ -51,7 +49,6 @@ $L$ pasos, con $L$ desconocido para el agente. Como $R$ y $t$ evolucionan
 de forma determinista con la acci\'on, la transici\'on se modela como markoviana
 (Ecuaci\'on~\eqref{eq:markov}). La severidad de toda ciudad $i$ ya
 incorporada evoluciona en cada paso.
-
 \begin{equation}
 S_{i,t+1} \;=\; \max\!\bigl(0,\ \beta\, S_{i,t} - \alpha\, a_{i}\bigr)
 \qquad \alpha = 0{,}4 \quad \beta = 1 + \alpha = 1{,}4
@@ -65,7 +62,6 @@ vez y la severidad se actualiza en todos los pasos siguientes, el
 efecto de una asignaci\'on insuficiente se amplifica geom\'etricamente. La recompensa
 de cada paso es la suma, con signo negativo, de las severidades de las
 ciudades activas.
-
 \begin{equation}
 r_{t+1} \;=\; -\sum_{i \le t} S_{i,t+1}
 \label{eq:reward}
@@ -97,7 +93,6 @@ ciudades de una secuencia. Se normaliza entre dos cotas:
 $S_{\mathrm{peor}}$, la que resulta de no asignar nada, y
 $S_{\mathrm{mejor}}$, la m\'inima alcanzable con el presupuesto si se conoce
 de antemano toda la secuencia. Con ellas se define el desempe\~no normalizado.
-
 \begin{equation}
 \bar{r} =
 \frac{S_{\mathrm{peor}} - S_{\mathrm{agente}}}
@@ -118,7 +113,6 @@ minimiza $\sum_c f_c(a_c)$ con asignaciones enteras $0 \le a_c \le 10$ cuya
 suma no supera el presupuesto $B = 30$. Es un problema de mochila acotada
 que se resuelve en forma exacta por programaci\'on din\'amica sobre las
 ciudades y los recursos restantes $r$.
-
 \begin{equation}
 V_c(r) \;=\; \min_{0 \le a \le \min(10,\, r)} \bigl[f_c(a) + V_{c+1}(r - a)\bigr]
 \qquad V_L(r) = 0 \qquad S_{\mathrm{mejor}} = V_0(B)
@@ -328,7 +322,6 @@ actor de A2C. Para cada miembro $k$, en un estado con $R$ recursos, la
 distribuci\'on sobre las acciones factibles se obtiene de sus valores $Q$
 con una \emph{softmax} de temperatura $\tau$
 (Secci\'on~\ref{sec:ensembles-bg}).
-
 \begin{equation}
 p_k(a \mid s) \;=\;
 \frac{\exp\bigl(Q_k(s,a)/\tau\bigr)}
@@ -341,7 +334,6 @@ Donde $Q_k(s,a)$ es el valor que el miembro $k$ asigna a la acci\'on $a$;
 en A2C, $p_k$ es la salida del actor renormalizada sobre las acciones
 factibles. De $p_k$ se obtienen la acci\'on preferida del
 miembro, $a_k = \arg\max_a p_k(a \mid s)$, y su confianza.
-
 \begin{equation}
 c_k \;=\; 1 - \frac{H(p_k)}{\log |\mathcal{A}_R|}
 \label{eq:shannon-norm}

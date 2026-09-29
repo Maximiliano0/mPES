@@ -75,7 +75,7 @@ FAMILY_LABELS = {'severity': 'Severidad', 'length': 'Longitud',
 SCENARIO_PANEL_TITLES = ('Referencia, severidad y longitud',
                          'Conjunta, estructura y réplicas held-out')
 #: Printed size of the model x model heatmaps (full text width).
-PAIRWISE_HEATMAP_SIZE = (PAGE_WIDTH_IN, 4.3)
+PAIRWISE_HEATMAP_SIZE = (PAGE_WIDTH_IN, 2.4)
 CURVE_SCENARIOS = ('sev_bimodal', 'sev_gauss_high', 'sev_beta_highskew',
                    'len_poisson', 'len_extrapolate_long', 'joint_high_long')
 UNIVERSAL_SCENARIOS = ('sev_extrapolate_high', 'joint_extrap_both',
@@ -587,25 +587,26 @@ def _plot_pairwise(suite: str, summary: dict, models: "list[str]",
 
     heatmap(log_p, models, models, os.path.join(output, '12_pares_welch_logp'),
             HeatmapSpec(title=f'{SUITE_TITLES.get(suite, suite)}: evidencia estadística entre modelos',
-                        cbar_label='log10(p); más bajo = evidencia más fuerte',
+                        cbar_label='log10(p)',
                         cmap='mpes_pval', vmin=-10.0, vmax=0.0, fmt='{:.1f}',
                         clip_low_label='≤-10', xlabel='Modelo de referencia',
                         ylabel='Modelo comparado', figsize=PAIRWISE_HEATMAP_SIZE,
-                        annot_fontsize=8))
+                        annot_fontsize=8, xtick_rotation=25.0))
     bound = max(float(numpy.nanmax(numpy.abs(effect))), 1e-3)
     heatmap(effect, models, models, os.path.join(output, '13_pares_cohen_d'),
             HeatmapSpec(title=f'{SUITE_TITLES.get(suite, suite)}: tamaño de efecto entre modelos',
                         cbar_label='d de Cohen', cmap='mpes_div',
                         vmin=-bound, vmax=bound, fmt='{:+.2f}',
                         xlabel='Modelo de referencia', ylabel='Modelo comparado',
-                        figsize=PAIRWISE_HEATMAP_SIZE, annot_fontsize=8))
+                        figsize=PAIRWISE_HEATMAP_SIZE, annot_fontsize=8,
+                        xtick_rotation=25.0))
     heatmap(divergence, models, models, os.path.join(output, '14_pares_kl'),
             HeatmapSpec(title=f'{SUITE_TITLES.get(suite, suite)}: divergencia entre distribuciones',
                         cbar_label='KL simétrica del desempeño', cmap='mpes_kl',
                         vmin=0.0, vmax=float(numpy.nanmax(divergence)) or 1.0,
                         fmt='{:.2f}', xlabel='Modelo de referencia',
                         ylabel='Modelo comparado', figsize=PAIRWISE_HEATMAP_SIZE,
-                        annot_fontsize=8))
+                        annot_fontsize=8, xtick_rotation=25.0))
     return {'scenarios_used': common, 'models': models,
             'welch_log10_p': log_p.tolist(), 'cohen_d': effect.tolist(),
             'symmetric_kl': divergence.tolist()}
@@ -715,7 +716,7 @@ def render_distribution_figures(suite: str, cells: dict) -> None:
 ##  Per-model panels
 ###############
 #: Printed size of the per-model reference figure (full text width, two per page).
-MODEL_PANEL_SIZE = (PAGE_WIDTH_IN, 3.4)
+MODEL_PANEL_SIZE = (PAGE_WIDTH_IN, 2.55)
 #: Names used in the thesis text, shown in the title of each per-model figure.
 MODEL_DISPLAY_NAMES = {
     'pes_base': 'Q-Learning base', 'pes_ql': 'Q-Learning', 'pes_dql': 'Double Q-Learning',
@@ -807,12 +808,12 @@ def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]"
                       stats: dict, title: str, out_base: str) -> None:
     """Draw one six-panel reference figure (layout of ``result_formatter``).
 
-    The figure is drawn at full text width and at a height that lets two of
+    The figure is drawn at full text width and at a height that lets three of
     them share an A4 page, so its fonts are the printed sizes.
     """
     figure = pyplot.figure(figsize=MODEL_PANEL_SIZE,
                            layout=ConstrainedLayoutEngine(h_pad=0.02, w_pad=0.03,
-                                                          hspace=0.04, wspace=0.03))
+                                                          hspace=0.06, wspace=0.03))
     grid = figure.add_gridspec(3, 3, height_ratios=[1.0, 1.0, 0.72])
     steps = numpy.arange(1, performances.size + 1)
     mean, std = stats['overall_mean'], stats['overall_std']
@@ -822,7 +823,7 @@ def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]"
     trend.axhline(y=mean, color=PALETTE['coral'], linestyle='--', linewidth=1.0, label=f'Media: {mean:.3f}')
     trend.fill_between(steps, mean - std, mean + std, alpha=0.6, color=PALETTE['coral_light'],
                        linewidth=0)
-    trend.set(xlabel='Secuencia', ylabel='Desempeño',
+    trend.set(ylabel='Desempeño',
               title='Desempeño por secuencia', ylim=(0, 1.05))
     trend.legend(loc='lower left')
 
@@ -832,7 +833,7 @@ def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]"
     histogram.axvline(x=mean, color=PALETTE['coral'], linestyle='--', linewidth=1.0, label='Media')
     histogram.axvline(x=stats['overall_median'], color=PALETTE['blue_dark'], linestyle=':',
                       linewidth=1.0, label='Mediana')
-    histogram.set(xlabel='Desempeño', ylabel='Frecuencia', title='Distribución')
+    histogram.set(ylabel='Frecuencia', title='Distribución del desempeño')
     histogram.legend(loc='upper left')
 
     boxes = figure.add_subplot(grid[1, 0])
@@ -849,7 +850,7 @@ def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]"
     cumulative = figure.add_subplot(grid[1, 1])
     cumulative.plot(steps, numpy.cumsum(performances) / steps, '-o', color=PALETTE['teal'],
                     linewidth=1.0, markersize=2)
-    cumulative.set(xlabel='Secuencia', ylabel='Media acumulada',
+    cumulative.set(xlabel='Secuencia', ylabel='Media',
                    title='Media acumulada', ylim=(0, 1.05))
 
     block_means = figure.add_subplot(grid[1, 2])

@@ -36,7 +36,7 @@ import numpy
 ##  Imports internos    ##
 ##########################
 from .benchmark import PACKAGE_GROUPS, RESULTS_ROOT, WORKSPACE_ROOT, find_baseline_paths
-from .plotting import (MEAN_LINESTYLE, MEAN_LINEWIDTH, PUB_RC, REFERENCE_COLOURS,
+from .plotting import (MEAN_LINESTYLE, MEAN_LINEWIDTH, PALETTE, PUB_RC, REFERENCE_COLOURS,
                        save_figure, style_axes)
 
 
@@ -291,7 +291,7 @@ def plot_raw(raw: numpy.ndarray, colour: str) -> None:
     x = numpy.arange(len(raw))
     axis.plot(x, raw, color=colour, marker='o', markersize=3.5, linewidth=1.6,
               label='Agente aleatorio')
-    axis.axhline(float(raw.mean()), color=colour, linestyle=MEAN_LINESTYLE,
+    axis.axhline(float(raw.mean()), color=PALETTE['coral'], linestyle=MEAN_LINESTYLE,
                  linewidth=MEAN_LINEWIDTH, label=f'Media = {raw.mean():.1f}')
     axis.set_ylabel(r'Severidad final acumulada $S_{\mathrm{cruda}}$')
     axis.set_ylim(bottom=0)
@@ -306,7 +306,7 @@ def plot_normalised(normalised: numpy.ndarray, colour: str) -> None:
     x = numpy.arange(len(normalised))
     axis.plot(x, normalised, color=colour, marker='s', markersize=3.5, linewidth=1.6,
               label='Agente aleatorio')
-    axis.axhline(float(normalised.mean()), color=colour, linestyle=MEAN_LINESTYLE,
+    axis.axhline(float(normalised.mean()), color=PALETTE['coral'], linestyle=MEAN_LINESTYLE,
                  linewidth=MEAN_LINEWIDTH, label=f'Media = {normalised.mean():.3f}')
     _bounds(axis, len(normalised))
     axis.set_ylabel(r'Desempeño normalizado $\bar{r}$')

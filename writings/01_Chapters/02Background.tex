@@ -16,7 +16,6 @@ $\mathcal{A}$, probabilidades de transici\'on $P(s' \mid s, a)$, una
 funci\'on de recompensa $r$ y un factor de descuento $\gamma \in [0, 1)$.
 Su rasgo definitorio es la propiedad de Markov: el estado siguiente
 depende s\'olo del estado y de la acci\'on actuales.
-
 \begin{equation}
 P(s_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots, s_0)
 \;=\; P(s_{t+1} \mid s_t, a_t)
@@ -26,7 +25,6 @@ P(s_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots, s_0)
 Donde $s_t$ y $a_t$ son el estado y la acci\'on en el paso $t$. El
 agente busca la pol\'itica $\pi(a \mid s)$ que maximiza el retorno
 descontado esperado.
-
 \begin{equation}
 G_t \;=\; \sum_{k=0}^{T-t-1} \gamma^{k}\, r_{t+k+1}
 \label{eq:return}
@@ -37,7 +35,6 @@ $T$ el \'ultimo paso del episodio. El valor de una acci\'on bajo la
 pol\'itica $\pi$ es $Q^{\pi}(s,a) = \mathbb{E}_{\pi}[G_t \mid s_t = s,
 a_t = a]$, y el de la pol\'itica \'optima satisface la ecuaci\'on de
 Bellman.
-
 \begin{equation}
 Q^{*}(s, a) \;=\; \mathbb{E}\!\left[r_{t+1} + \gamma \max_{a'}
 Q^{*}(s_{t+1}, a') \,\middle|\, s_t = s,\, a_t = a\right]
@@ -149,7 +146,6 @@ primeras arquitecturas:
 
 La entrop\'ia de Shannon~\citep{Shannon1948} se define para una
 distribuci\'on $p$ sobre las acciones.
-
 \begin{equation}
 H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a)\,\log p(a)
 \label{eq:shannon}

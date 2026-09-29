@@ -74,6 +74,7 @@ PALETTE = {
     'blue_pale':  '#e6eef7',  # backgrounds, box fills, striped rows
     'coral':      '#d87069',  # warm accent: mean lines, the highlighted model
     'coral_light': '#f2cfc1',  # pastel warm fill (dispersion bands)
+    'sand':       '#cdb07a',  # negative side of the diverging maps
     'teal':       '#1ba6ae',  # secondary line (medians, cumulative mean)
     'grey':       '#a0a8b3',  # references and de-emphasised marks
     'ink':        '#2b3440',  # text and outlines
@@ -81,16 +82,18 @@ PALETTE = {
 
 # Soft sequential/diverging ramps shared by every heatmap in the benchmark.
 # Sequential maps use one hue from pastel to a medium-dark step (never black);
-# the diverging map uses the blue family and the coral accent around a
-# neutral light grey.
+# the diverging map puts the ITBA blue on the positive side and a muted sand
+# (the warm hue of the model palette) on the negative side, around a neutral
+# light grey; sand separates from blue under every CVD type (OKLab dE >= 19
+# at the poles), unlike teal or slate.
 _PALETTE_ANCHORS = {
     # Positioned anchors: most of the lightness range is spent on the upper
     # part of the scale, where the model means concentrate.
     'mpes_perf': [(0.0, '#f5f8fb'), (0.3, '#dde8f3'), (0.5, '#bcd3e8'),
                   (0.65, '#94b8da'), (0.78, '#6c9cca'), (0.9, '#4677ad'),
                   (1.0, '#285384')],
-    'mpes_div':  ['#3f73a8', '#7ea3cc', '#bed2e7', '#f3f3f1',
-                  '#f2cfc1', '#e09a84', '#c0624c'],
+    'mpes_div':  ['#a4844a', '#d2ba8a', '#ebe0c8', '#f4f4f2',
+                  '#c3d6ea', '#81a9d2', '#2f6399'],
     'mpes_pval': ['#3b4a86', '#5a68a3', '#7f8bbf', '#a6afd6', '#c9cfe7',
                   '#e2e6f3', '#f8f9fc'],
     'mpes_kl':   ['#f5f8fb', '#d3e2f0', '#b0cae4', '#8db3d8', '#6c9cca',
@@ -120,7 +123,7 @@ BASE_LINEWIDTH = 1.5
 
 #: Colours of the non-model references drawn next to the model curves:
 #: the random decision maker and the per-sequence bounds S_peor / S_mejor.
-REFERENCE_COLOURS = {'random': '#7d8896', 'worst': '#c0624c', 'best': '#2f6399'}
+REFERENCE_COLOURS = {'random': PALETTE['blue'], 'worst': '#7d8896', 'best': PALETTE['blue_dark']}
 
 #: Style of the horizontal per-model mean line shared by every per-sequence figure.
 MEAN_LINESTYLE = ':'
@@ -262,6 +265,9 @@ class HeatmapSpec:
         size with :data:`PRINT_RC`; otherwise it grows with the matrix shape.
     annot_fontsize : float
         Font size of the in-cell annotations.
+    xtick_rotation : float
+        Angle of the column labels; smaller angles leave more height to the
+        cells when the labels are long.
     """
 
     title: str
@@ -279,6 +285,7 @@ class HeatmapSpec:
     separators: "list[int]" = field(default_factory=list)
     figsize: "tuple[float, float] | None" = None
     annot_fontsize: float = 7.0
+    xtick_rotation: float = 55.0
 
 
 def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
@@ -353,11 +360,11 @@ def heatmap_split(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[s
     widest = max(stop - start for start, stop in parts)
     label_w, right_w = 1.55, 0.08
     cell_w = (PAGE_WIDTH_IN - label_w - right_w) / widest
-    cell_h = min(cell_w * 0.8, 0.30)
+    cell_h = min(cell_w * 0.7, 0.30)
     # Room below each panel for its rotated scenario labels, from the longest one.
-    ticks_h = [0.25 + 0.047 * max(len(name) for name in scenarios[start:stop])
+    ticks_h = [0.25 + 0.042 * max(len(name) for name in scenarios[start:stop])
                for start, stop in parts]
-    panel_h, gap_h, title_h, cbar_h = n_rows * cell_h, 0.30, 0.55, 0.55
+    panel_h, gap_h, title_h, cbar_h = n_rows * cell_h, 0.22, 0.45, 0.50
     height = title_h + 2 * panel_h + sum(ticks_h) + gap_h + cbar_h
 
     with pyplot.rc_context(PRINT_RC):
@@ -401,7 +408,8 @@ def _draw_cells(axis, matrix: numpy.ndarray, models: "list[str]", scenarios: "li
     n_rows, n_cols = matrix.shape
     image = axis.imshow(numpy.ma.masked_invalid(matrix), cmap=colour_map,
                         norm=norm, aspect='auto', interpolation='nearest')
-    axis.set_xticks(range(n_cols), scenarios, rotation=55, ha='right')
+    axis.set_xticks(range(n_cols), scenarios, rotation=spec.xtick_rotation, ha='right',
+                    rotation_mode='anchor')
     axis.set_yticks(range(n_rows), models)
     axis.set_xticks(numpy.arange(-0.5, n_cols), minor=True)
     axis.set_yticks(numpy.arange(-0.5, n_rows), minor=True)

@@ -6,9 +6,9 @@
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
   "generado_por": "writings/auxiliar/scripts/build_results_context.py (no editar a mano)",
-  "generado_utc": "2026-09-29T19:45:17Z",
+  "generado_utc": "2026-09-29T20:42:11Z",
   "git": {
-   "commit": "17a347c",
+   "commit": "dc70474",
    "sucio": true
   },
   "fuente": "h1/general/results/{individual,ensemble}/ (summary.json, comparison_metrics.json, matrices/*.csv), h1/general/results/heldout/, decisiones: h1/general/results/ensemble/ens_decisions.json; inputs/best_params.json, inputs/*_BAYESIAN_OPT/ y config/CONFIG.py de cada paquete; writings/ (Main.tex, 01_Chapters, References.bib, audit/AUDIT.md). Texto redactado: writings/auxiliar/claude_context/mpes_resultados_notas.md.",
@@ -7598,6 +7598,7 @@
      "fig:pairwise-cohen",
      "fig:heatmap-welch",
      "fig:ensemble-statistical-heatmaps",
+     "fig:ensemble-pairwise-welch",
      "fig:ensemble-cohen-scenario",
      "fig:ensemble-pairwise",
      "ap:per-model",
@@ -7648,8 +7649,9 @@
    "fig:pairwise-cohen": "individual/ind_13_pares_cohen_d.png ($d$ de Cohen entre pares (modelos individuales); Appendix.tex)",
    "fig:heatmap-welch": "individual/ind_03_welch_logp_por_escenario.png (Welch por escenario (modelos individuales); Appendix.tex; 5 columnas fuera de muestra tras una línea vertical)",
    "fig:ensemble-statistical-heatmaps": "ensemble/ens_03_welch_logp_por_escenario.png (Welch por escenario (ensambles); Appendix.tex; Welch por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)",
+   "fig:ensemble-pairwise-welch": "ensemble/ens_12_pares_welch_logp.png (Welch entre pares (ensambles); Appendix.tex)",
    "fig:ensemble-cohen-scenario": "ensemble/ens_07_cohen_d_por_escenario.png ($d$ de Cohen por escenario (ensambles); Appendix.tex; d de Cohen por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)",
-   "fig:ensemble-pairwise": "ensemble/ens_13_pares_cohen_d.png + ensemble/ens_12_pares_welch_logp.png (Comparación entre pares (ensambles); Appendix.tex)",
+   "fig:ensemble-pairwise": "ensemble/ens_13_pares_cohen_d.png ($d$ de Cohen entre pares (ensambles); Appendix.tex)",
    "fig:c-base": "per_model/PES_BASE_results.png (Resultados por secuencia: Q-Learning base; Appendix.tex)",
    "fig:c-ql": "per_model/PES_QL_results.png (Resultados por secuencia: Q-Learning; Appendix.tex)",
    "fig:c-dql": "per_model/PES_DQL_results.png (Resultados por secuencia: Double Q-Learning; Appendix.tex)",
@@ -7845,8 +7847,8 @@
   "estado_audit": {
    "archivo": "writings/audit/AUDIT.md",
    "compilacion_ok": true,
-   "paginas": 60,
-   "figuras_con_label": 20,
+   "paginas": 56,
+   "figuras_con_label": 21,
    "tablas_con_label": 15,
    "referencias_internas": 98,
    "imagenes": 21,
@@ -7855,7 +7857,7 @@
    ],
    "avisos": [],
    "recuento_del_generador": {
-    "figuras_con_label": 20,
+    "figuras_con_label": 21,
     "tablas_con_label": 15,
     "referencias_internas": 98,
     "imagenes": 21

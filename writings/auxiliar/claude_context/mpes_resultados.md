@@ -1,6 +1,6 @@
 # mPES — Síntesis de métricas, salidas y resultados (contexto para la tesis)
 
-> Generado por `writings/auxiliar/scripts/build_results_context.py` — no editar a mano. Fecha (UTC): 2026-09-29T19:45:17Z; commit `17a347c` (con cambios sin confirmar). Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matrices/`, `cells/`, `heldout/`), las decisiones del replay de `writings/auxiliar/scripts/ensemble_decisions.py`, los `inputs/best_params.json`, `inputs/*_BAYESIAN_OPT/` y `config/CONFIG.py` de cada paquete, y los `.tex` de `writings/`. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. El texto redactado a mano vive en `writings/auxiliar/claude_context/mpes_resultados_notas.md`.
+> Generado por `writings/auxiliar/scripts/build_results_context.py` — no editar a mano. Fecha (UTC): 2026-09-29T20:42:11Z; commit `dc70474` (con cambios sin confirmar). Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matrices/`, `cells/`, `heldout/`), las decisiones del replay de `writings/auxiliar/scripts/ensemble_decisions.py`, los `inputs/best_params.json`, `inputs/*_BAYESIAN_OPT/` y `config/CONFIG.py` de cada paquete, y los `.tex` de `writings/`. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. El texto redactado a mano vive en `writings/auxiliar/claude_context/mpes_resultados_notas.md`.
 
 ## 0. Resumen ejecutivo (hallazgos verificados)
 
@@ -826,8 +826,8 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 
 ## 13. Mapa del documento LaTeX
 
-- Estado del último `audit.py` (`writings/audit/AUDIT.md`): Compilación OK (60 páginas), 20 figuras y 15 tablas con label, 98 referencias internas, 21 imágenes; avisos (⚠/❌): ninguno; `.tex` no incluidos en Main.tex: `Acknowledgement.tex` (excluido de Main.tex a propósito).
-- Recuento del generador sobre los `.tex` actuales: 20 figuras y 15 tablas con label, 98 referencias internas, 21 imágenes distintas (coincide con AUDIT.md).
+- Estado del último `audit.py` (`writings/audit/AUDIT.md`): Compilación OK (56 páginas), 21 figuras y 15 tablas con label, 98 referencias internas, 21 imágenes; avisos (⚠/❌): ninguno; `.tex` no incluidos en Main.tex: `Acknowledgement.tex` (excluido de Main.tex a propósito).
+- Recuento del generador sobre los `.tex` actuales: 21 figuras y 15 tablas con label, 98 referencias internas, 21 imágenes distintas (coincide con AUDIT.md).
 - Estructura en el repositorio (en el chat los archivos están planos):
   - `writings/00_Main/`: `.latexmkrc`, `IEEEtran.cls`, `Main.tex`, `References.bib`
   - `writings/01_Chapters/`: `000NHH-Frontpage.tex`, `00Abstract.tex`, `00Abstract_en.tex`, `01Introduction.tex`, `02Background.tex`, `03StateOfTheArt.tex`, `04Materials.tex`, `05Results.tex`, `06Discussion.tex`, `07Conclusion.tex`, `Appendix.tex`, `Acknowledgement.tex (excluido de Main.tex a propósito)`
@@ -851,7 +851,7 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 | `05Results.tex` | 5 Resultados | `sec:results`, `sec:res-individual`, `tab:global-mean`, `fig:heatmap-global`, `fig:extra-sev-skew`, `sec:res-ensembles`, `tab:ensemble-stress`, `tab:trf-vs-ens`, `sec:res-freq`, `tab:ens-freq`, `fig:heatmap-ens`, `sec:res-trf-vs-best`, `tab:trf-vs-best`, `fig:ensemble-extrapolation`, `fig:c-ens`, `sec:res-heldout`, `tab:heldout`, `sec:res-posthoc`, `tab:sensitivity`, `eq:rule-dynamics`, `tab:fixed-rule` |
 | `06Discussion.tex` | 6 Discusión | `sec:discussion`, `sec:disc-individual`, `sec:ens-best`, `sec:disc-rule` |
 | `07Conclusion.tex` | 7 Conclusiones | `sec:conclusion`, `sec:limitations`, `sec:future` |
-| `Appendix.tex` | Apéndice | `ap:repro`, `tab:repro-commands`, `ap:orchestrator`, `ap:stat-maps`, `fig:pairwise-cohen`, `fig:heatmap-welch`, `fig:ensemble-statistical-heatmaps`, `fig:ensemble-cohen-scenario`, `fig:ensemble-pairwise`, `ap:per-model`, `fig:c-base`, `fig:c-ql`, `fig:c-dql`, `fig:c-dqn`, `fig:c-rdqn`, `fig:c-a2c`, `fig:c-trf` |
+| `Appendix.tex` | Apéndice | `ap:repro`, `tab:repro-commands`, `ap:orchestrator`, `ap:stat-maps`, `fig:pairwise-cohen`, `fig:heatmap-welch`, `fig:ensemble-statistical-heatmaps`, `fig:ensemble-pairwise-welch`, `fig:ensemble-cohen-scenario`, `fig:ensemble-pairwise`, `ap:per-model`, `fig:c-base`, `fig:c-ql`, `fig:c-dql`, `fig:c-dqn`, `fig:c-rdqn`, `fig:c-a2c`, `fig:c-trf` |
 
 **Secciones y subsecciones** (numeración calculada; etiqueta entre paréntesis):
 
@@ -877,8 +877,9 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 - `fig:pairwise-cohen` → individual/ind_13_pares_cohen_d.png ($d$ de Cohen entre pares (modelos individuales); Appendix.tex)
 - `fig:heatmap-welch` → individual/ind_03_welch_logp_por_escenario.png (Welch por escenario (modelos individuales); Appendix.tex; 5 columnas fuera de muestra tras una línea vertical)
 - `fig:ensemble-statistical-heatmaps` → ensemble/ens_03_welch_logp_por_escenario.png (Welch por escenario (ensambles); Appendix.tex; Welch por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)
+- `fig:ensemble-pairwise-welch` → ensemble/ens_12_pares_welch_logp.png (Welch entre pares (ensambles); Appendix.tex)
 - `fig:ensemble-cohen-scenario` → ensemble/ens_07_cohen_d_por_escenario.png ($d$ de Cohen por escenario (ensambles); Appendix.tex; d de Cohen por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)
-- `fig:ensemble-pairwise` → ensemble/ens_13_pares_cohen_d.png + ensemble/ens_12_pares_welch_logp.png (Comparación entre pares (ensambles); Appendix.tex)
+- `fig:ensemble-pairwise` → ensemble/ens_13_pares_cohen_d.png ($d$ de Cohen entre pares (ensambles); Appendix.tex)
 - `fig:c-base` → per_model/PES_BASE_results.png (Resultados por secuencia: Q-Learning base; Appendix.tex)
 - `fig:c-ql` → per_model/PES_QL_results.png (Resultados por secuencia: Q-Learning; Appendix.tex)
 - `fig:c-dql` → per_model/PES_DQL_results.png (Resultados por secuencia: Double Q-Learning; Appendix.tex)

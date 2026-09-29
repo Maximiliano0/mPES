@@ -90,56 +90,43 @@ comparaciones estad\'isticas que el texto presenta de forma agregada.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.72\linewidth]{ind_13_pares_cohen_d.png}
-  \caption[$d$ de Cohen entre pares (modelos individuales)]{Modelos
-  individuales: $d$ de Cohen entre pares de modelos en los $21$ escenarios
-  de generalizaci\'on.}
+  \includegraphics[width=\linewidth]{ind_13_pares_cohen_d.png}
+  \caption[$d$ de Cohen entre pares (modelos individuales)]{Modelos individuales: $d$ de Cohen entre pares de modelos en los $21$ escenarios de generalizaci\'on.}
   \label{fig:pairwise-cohen}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
-  \caption[Welch por escenario (modelos individuales)]{Modelos
-  individuales: $\log_{10} p$ de Welch de cada escenario frente a la
-  referencia del mismo modelo; los valores menores que $-10$ se muestran
-  como $\le -10$. En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
+  \caption[Welch por escenario (modelos individuales)]{Modelos individuales: $\log_{10} p$ de Welch de cada escenario frente a la referencia del mismo modelo; los valores menores que $-10$ se muestran como $\le -10$. En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
   \label{fig:heatmap-welch}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ens_03_welch_logp_por_escenario.png}
-  \caption[Welch por escenario (ensambles)]{Ensambles: $\log_{10} p$ de
-  Welch de cada escenario frente a la referencia del mismo ensamble; los
-  valores menores que $-10$ se muestran como $\le -10$. En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
+  \caption[Welch por escenario (ensambles)]{Ensambles: $\log_{10} p$ de Welch de cada escenario frente a la referencia del mismo ensamble; los valores menores que $-10$ se muestran como $\le -10$. En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
   \label{fig:ensemble-statistical-heatmaps}
 \end{figure}
 
 \begin{figure}[H]
   \centering
+  \includegraphics[width=\linewidth]{ens_12_pares_welch_logp.png}
+  \caption[Welch entre pares (ensambles)]{Ensambles: $\log_{10} p$ de Welch entre pares de ensambles en los $21$ escenarios de generalizaci\'on; los valores m\'as bajos indican evidencia m\'as fuerte.}
+  \label{fig:ensemble-pairwise-welch}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
   \includegraphics[width=\linewidth]{ens_07_cohen_d_por_escenario.png}
-  \caption[$d$ de Cohen por escenario (ensambles)]{Ensambles: $d$ de
-  Cohen de cada escenario frente a la referencia del mismo ensamble
-  (valores positivos: mejor que la referencia). En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
+  \caption[$d$ de Cohen por escenario (ensambles)]{Ensambles: $d$ de Cohen de cada escenario frente a la referencia del mismo ensamble (valores positivos: mejor que la referencia). En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
   \label{fig:ensemble-cohen-scenario}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
   \centering
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=0.95\linewidth]{ens_13_pares_cohen_d.png}
-    \caption{$d$ de Cohen.}
-  \end{subfigure}
-
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=0.95\linewidth]{ens_12_pares_welch_logp.png}
-    \caption{$\log_{10} p$ de Welch.}
-  \end{subfigure}
-  \caption[Comparaci\'on entre pares (ensambles)]{Ensambles:
-  comparaci\'on entre pares en los $21$ escenarios de generalizaci\'on.}
+  \includegraphics[width=\linewidth]{ens_13_pares_cohen_d.png}
+  \caption[$d$ de Cohen entre pares (ensambles)]{Ensambles: $d$ de Cohen entre pares de ensambles en los $21$ escenarios de generalizaci\'on.}
   \label{fig:ensemble-pairwise}
 \end{figure}
 

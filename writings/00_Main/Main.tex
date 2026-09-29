@@ -110,9 +110,12 @@
 \usepackage{hhline}
 \usepackage{tcolorbox}
 % Highlighted remark: light background with a left rule (key methodological statements).
-\newtcolorbox{destacado}{colback=gray!8, colframe=gray!55, boxrule=0pt,
-  leftrule=2pt, arc=0pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
-  before skip=6pt, after skip=6pt}
+\definecolor{destacadofondo}{HTML}{EEF3F9}
+\definecolor{destacadofilete}{HTML}{2F6399}
+\newtcolorbox{destacado}{colback=destacadofondo, colframe=destacadofilete,
+  boxrule=0pt, leftrule=2.5pt, arc=0pt, outer arc=0pt,
+  left=8pt, right=8pt, top=6pt, bottom=6pt,
+  before skip=12pt plus 2pt, after skip=12pt plus 2pt}
 
 
 % ----- Sources -----

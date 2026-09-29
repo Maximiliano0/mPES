@@ -17,6 +17,7 @@ se encuentran en el Ap\'endice~\ref{ap:stat-maps}
 
 \subsection{Mejor modelo individual}\label{sec:res-individual}
 
+\begin{destacado}
 El Transformer es el mejor modelo individual
 (Tabla~\ref{tab:global-mean}): tiene la mayor media en la referencia y
 en generalizaci\'on, la menor dispersi\'on entre secuencias y la mayor
@@ -25,7 +26,7 @@ En generalizaci\'on supera al resto de los modelos optimizados entre un
 $3{,}4\%$ (DQN) y un $6{,}7\%$ (Q-Learning), con una ventaja de tama\~no
 medio frente a DQN ($d = 0{,}50$), el DQN recurrente ($d = 0{,}57$) y
 Q-Learning ($d = 0{,}79$).
-
+\end{destacado}
 \begin{table}[H]
 \centering
 \caption[Desempe\~no de los modelos individuales]{Modelos individuales:
@@ -184,7 +185,9 @@ $41\%$ y el $32\%$ de las decisiones; la cota, menos del $0{,}5\%$.
 
 \begin{destacado}
 En los dos ensambles que igualan o superan al Transformer, la decisi\'on no
-proviene s\'olo del voto ponderado por confianza, sino de la regla.
+proviene s\'olo del voto ponderado por confianza, sino de la regla: el
+\emph{prior} y la temperatura alta en el ensamble ponderado, y el umbral
+de confianza en la compuerta del Transformer.
 \end{destacado}
 
 \begin{table}[H]
@@ -212,8 +215,8 @@ Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9\%$ & $3
 \end{tabular}
 \end{table}
 
-\begin{figure}[!tbp]
-  \centering
+\begin{figure}[H]
+\centering
   \includegraphics[width=\linewidth]{ens_01_desempeno_por_escenario.png}
   \caption[Desempe\~no medio por escenario (ensambles)]{Ensambles:
   desempe\~no medio $\bar r$ por ensamble y escenario, con la misma
@@ -231,11 +234,16 @@ su mayor p\'erdida, poco m\'as de la mitad. El Transformer s\'olo tiene
 mayor media en \texttt{len\_all\_short} y \texttt{joint\_low\_short} (un
 $3{,}0\%$ y un $2{,}9\%$ m\'as) y, por menos del $0{,}1\%$, en
 \texttt{len\_poisson}.
+
+\begin{destacado}
 En la extrapolaci\'on de severidad y en la conjunta, el ensamble ponderado
 alcanza el \'optimo en todas las secuencias ($\sigma = 0$;
 Figura~\ref{fig:ensemble-extrapolation}), pero decide siempre como su miembro Transformer: la diferencia con el
 Transformer individual proviene de que el ensamble recorta la severidad a
-$9$ antes de transmitirla a sus miembros. La Figura~\ref{fig:c-ens} muestra
+$9$ antes de transmitirla a sus miembros.
+\end{destacado}
+
+La Figura~\ref{fig:c-ens} muestra
 su desempe\~no por secuencia en la referencia, donde tiene la menor
 dispersi\'on de todos los modelos ($\sigma = 0{,}035$).
 
@@ -341,20 +349,27 @@ con la asignaci\'on \'optima, ambos en la referencia y las cinco r\'eplicas
 \emph{held-out} (Ap\'endice~\ref{ap:orchestrator}).
 
 \textbf{Sensibilidad.} La Tabla~\ref{tab:sensitivity} var\'ia un
-par\'ametro por vez. Para la
-temperatura, el peso y el ancho del \emph{prior} y el peso base del
-Transformer, la media es m\'axima en el valor elegido, tanto en la
-referencia como en las r\'eplicas, de modo que la elecci\'on no depende de
-las $64$ secuencias sobre las que se realiz\'o, pero se trata de
-m\'aximos agudos: en las r\'eplicas, un paso de la grilla reduce la media
-entre un $0{,}2\%$ y un $0{,}8\%$. La atenuaci\'on $\eta$, el t\'ermino
-$0{,}1$ y la cota de seguridad se encuentran en una meseta y modifican la
-media en a lo sumo un $0{,}1\%$. En las r\'eplicas, sin \emph{prior}
+par\'ametro por vez:
+
+\begin{itemize}
+    \item \textbf{Temperatura, peso y ancho del \emph{prior} y peso base del
+    Transformer}: la media es m\'axima en el valor elegido, tanto en la
+    referencia como en las r\'eplicas, de modo que la elecci\'on no depende
+    de las $64$ secuencias sobre las que se realiz\'o, pero se trata de
+    m\'aximos agudos: en las r\'eplicas, un paso de la grilla reduce la
+    media entre un $0{,}2\%$ y un $0{,}8\%$.
+    \item \textbf{Atenuaci\'on $\eta$, t\'ermino $0{,}1$ y cota de
+    seguridad}: se encuentran en una meseta y modifican la media en a lo
+    sumo un $0{,}1\%$.
+\end{itemize}
+
+\begin{destacado}
+En las r\'eplicas, sin \emph{prior}
 ($w_\pi = 0$) el ensamble supera al Transformer en un $0{,}4\%$; con el
 \emph{prior} y $\tau = 1$, en un $0{,}1\%$, y con ambos, en un $1{,}1\%$.
 La ventaja proviene, por lo tanto, de combinar la temperatura alta con
 el \emph{prior}.
-
+\end{destacado}
 \begin{table}[H]
 \centering
 \caption[Sensibilidad del ensamble ponderado]{Sensibilidad del ensamble
@@ -416,7 +431,6 @@ la ciudad m\'as $k$ unidades mientras alcancen los recursos. La din\'amica
 (Ecuaci\'on~\eqref{eq:transicion}) explica por qu\'e $k$ debe ser
 positivo: con una asignaci\'on constante $a = S + k$, la severidad tras
 $n$ pasos es
-
 \begin{equation}
 S_n \;=\; \max\!\bigl(0,\ S + k\,(1 - \beta^{\,n})\bigr)
 \label{eq:rule-dynamics}
@@ -440,12 +454,16 @@ ensamble ponderado lo hace en una r\'eplica. Los trece modelos la superan en los
 escenarios de secuencias cortas (\texttt{len\_all\_short}, $0{,}845$, y
 \texttt{joint\_low\_short}, $0{,}866$), donde la regla sigue asignando
 $S + 2$ y deja sin usar un excedente que los modelos aprendieron a
-aprovechar; con secuencias largas, en cambio, conviene un $k$ menor. El valor $k = 2$
+aprovechar; con secuencias largas, en cambio, conviene un $k$ menor.
+
+\begin{destacado}
+El valor $k = 2$
 se eligi\'o a partir de la asignaci\'on \'optima y es tambi\'en el mejor
 en la referencia, sobre la que se ajustaron los modelos: la regla es un
 punto de comparaci\'on calibrado, no un competidor en igualdad de
 condiciones. Sin calibraci\'on ($k = 0$), queda muy por debajo de todos
 los modelos entrenados.
+\end{destacado}
 
 \begin{table}[H]
 \centering
@@ -483,16 +501,6 @@ Q-Learning base & $0{,}871$ & $0{,}851$ & $0{,}860$ & $-9{,}3\%$ & $2$ \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\begin{destacado}
-El ensamble ponderado alcanza su desempe\~no porque su
-decisi\'on se aproxima a la de la regla fija calibrada: la temperatura alta
-aplana las preferencias de los miembros y el \emph{prior} lleva la asignaci\'on media de $S + 2{,}2$ a
-$S + 1{,}6$, el mismo exceso sobre la severidad que la asignaci\'on
-\'optima. Por eso alcanza el nivel de la regla con $k = 2$ y conserva su
-ventaja sobre el Transformer en las r\'eplicas \emph{held-out}, aunque sus
-par\'ametros se ubican en m\'aximos agudos.
-\end{destacado}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}
