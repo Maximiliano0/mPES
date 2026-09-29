@@ -26,6 +26,17 @@
 - 📚 **Package-level docs:** every package ships `doc/<pkg>_explained.md` (usage) and `doc/<pkg>_theory.md` (theory), in Markdown only.
 - 📝 **Thesis:** [`writings/`](writings/) holds the LaTeX manuscript (`00_Main/Main.tex`, chapters in `01_Chapters/`, figures in `02_Images/`) and its audit script (`audit/audit.py`).
 
+### Verified workspace snapshot
+
+The current repository snapshot in this workspace is aligned with the validated `h1/` branch:
+
+- `h1/tabular/`: 3 active packages (`pes_base`, `pes_ql`, `pes_dql`)
+- `h1/ml/`: 4 active packages (`pes_dqn`, `pes_rdqn`, `pes_a2c`, `pes_trf`)
+- `h1/ens/`: 6 active ensemble variants (`pes_ens`, `pes_ens_sprb`, `pes_ens_accq`, `pes_ens_trf_guard`, `pes_ens_consensus`, `pes_ens_consensus_prior`)
+- `h1/general/`: benchmark harness with `scripts/`, `results/`, `work/` and the comparison report
+- `h2/`: suspended staging area for `tabular_conf/ql_conf` and `tabular_conf/dql_conf`
+- `utils/` and `writings/`: shared configuration, helper scripts, and the thesis workflow
+
 ### Repository lines
 
 | Line | Status | Current package(s) |

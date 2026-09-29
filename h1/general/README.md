@@ -24,6 +24,16 @@ suites use the same scenario catalogue and seed. All six ensemble variants —
 including `pes_ens` and `pes_ens_consensus_prior` — are part of the active
 benchmark; `pes_ens` is the best-performing ensemble in the current results.
 
+## Verified benchmark footprint
+
+In this workspace, the active benchmark is built around the following paths:
+
+- `h1/` as the execution root for all package modules
+- `h1/general/scripts/` for the sweep, aggregation and figure-generation steps
+- `h1/general/results/{individual,ensemble}/` for the generated matrices and reports
+- `h1/general/work/` for cached synthesis and per-cell runtime output
+- `h1/ens/` with the six ensemble packages benchmarked by the harness
+
 ---
 
 ## Scope
@@ -182,11 +192,11 @@ initial severity i.i.d. from the empirical severity frequencies of the
 reference CSVs (8 × 8 sequences per replica, 320 in total). No model is
 retrained or re-tuned.
 
-* Every replica stores its sampling table, seed, structure, the frequencies
+- Every replica stores its sampling table, seed, structure, the frequencies
   actually drawn and the SHA-256 of the CSVs in `sampling_distribution.json`;
   `benchmark heldout` rebuilds the canonical copy under `results/heldout/` and
   checks that all 13 packages received identical CSVs.
-* The replicas are **excluded from every stress aggregate** (mean under
+- The replicas are **excluded from every stress aggregate** (mean under
   stress, worst scenario, family degradation, ranking 08, profiles 11,
   pairwise 12-14, `report.md` sections 1-3). They appear as separate columns,
   after a vertical rule, in the heatmaps 01-04 and 07, in section 4 of
@@ -214,21 +224,21 @@ directly comparable across sweeps.
 All figures share the publication style defined in `plotting.py`
 (`PUB_RC`):
 
-* **Fixed colour per model** — `MODEL_COLOURS` assigns each package one hue
+- **Fixed colour per model** — `MODEL_COLOURS` assigns each package one hue
   that is kept across every figure. The best model of each suite
   (`pes_trf`, `pes_ens`) uses the warm accent `#c44e52`; the remaining
   models share a blue–green–amber ramp consistent with the heatmap palettes.
-* **Best-model emphasis** — in any figure that overlays several models
+- **Best-model emphasis** — in any figure that overlays several models
   (05, 06, 11, histograms, reward curves) the model with the highest mean
   over the 21 perturbation scenarios is drawn with a thick stroke
   (`BEST_LINEWIDTH = 3.0` vs `BASE_LINEWIDTH = 1.5`) and named in the
   super-title ("trazo grueso = …"). In the ranking (08) the same model is
   outlined in black and its label is bold.
-* **Legends** — a single shared legend row below the panels (05, 06 for the
+- **Legends** — a single shared legend row below the panels (05, 06 for the
   ensemble suite, 11, reward curves) or below the axis (08, 09). In 06 for
   the individual suite the model pair differs per panel, so each panel keeps
   its own legend in the lower-right corner.
-* **Figure 06** — the individual suite contrasts `pes_trf` with one partner
+- **Figure 06** — the individual suite contrasts `pes_trf` with one partner
   per panel (`pes_dql`, `pes_a2c`, `pes_dqn`); the ensemble suite draws all
   six variants. Dotted horizontal lines mark each model's mean.
 
@@ -258,29 +268,29 @@ the printed sizes.
 
 For each `(model, scenario)`:
 
-* `per_sequence_perf` — vector of length `n_sequences` parsed from the
+- `per_sequence_perf` — vector of length `n_sequences` parsed from the
   package's `Sequence X: Performance = Y.YYYY` stdout lines, or from the
   `*performances*.npy` artefact written by the ensemble evaluators.
-* `global_mean_perf`, `std_perf`, `min_perf`, `max_perf`.
-* `action_distribution` — empirical PMF over the 11 allocation actions.
-* Matrices in `matrices/` add `stress_degradation`, `welch_p`, `welch_logp`,
+- `global_mean_perf`, `std_perf`, `min_perf`, `max_perf`.
+- `action_distribution` — empirical PMF over the 11 allocation actions.
+- Matrices in `matrices/` add `stress_degradation`, `welch_p`, `welch_logp`,
   `cohen_d` and `action_kl`, always against the model's own `sev_base`
   reference condition.
-* Pairwise `Welch`, `Cohen d` and symmetric `KL` are calculated by
+- Pairwise `Welch`, `Cohen d` and symmetric `KL` are calculated by
   `figures.py` over the 21 stress scenarios common to all models in a
   suite (reference and held-out replicas excluded); KL uses common 20-bin
   performance histograms in `[0, 1]`.
 
 ## Compute notes
 
-* **Local execution** — the sweep runs on Windows CPU in `win_mpes_env`.
+- **Local execution** — the sweep runs on Windows CPU in `win_mpes_env`.
 
 ## Reproducibility
 
-* Single seed (`42`, plus the replica offset `k` for `heldout_sk`) for all
+- Single seed (`42`, plus the replica offset `k` for `heldout_sk`) for all
   CSV synthesis ensures all 13 models see the exact same severity / length
   sequences within a scenario.
-* Each cell's JSON records the workspace-relative paths to the
+- Each cell's JSON records the workspace-relative paths to the
   subprocess log, the package's results JSON, and the responses file.
-* Empty CSV-swap stash files (`*.bench_stash`) are restored even on
+- Empty CSV-swap stash files (`*.bench_stash`) are restored even on
   subprocess failure.
