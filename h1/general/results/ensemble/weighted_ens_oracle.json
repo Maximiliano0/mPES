@@ -803,6 +803,11 @@
    "share_optimal": 0.31958762886597936,
    "mean_loss_per_sequence": 0.06268175584937281,
    "share_trf_optimal": 0.2646048109965636,
+   "mean_a_minus_S": {
+    "final": 1.436426116838488,
+    "without_prior": 2.0721649484536084,
+    "trf": 2.357388316151203
+   },
    "rules": {
     "eta_0.3": {
      "changed": 7,
@@ -842,6 +847,11 @@
    "share_optimal": 0.3421602787456446,
    "mean_loss_per_sequence": 0.06115056853542622,
    "share_trf_optimal": 0.30940766550522647,
+   "mean_a_minus_S": {
+    "final": 1.5993031358885017,
+    "without_prior": 2.1874564459930315,
+    "trf": 2.4362369337979093
+   },
    "rules": {
     "eta_0.3": {
      "changed": 23,
@@ -881,6 +891,11 @@
    "share_optimal": 0.3383545770567787,
    "mean_loss_per_sequence": 0.06140576642108398,
    "share_trf_optimal": 0.3018539976825029,
+   "mean_a_minus_S": {
+    "final": 1.5718424101969872,
+    "without_prior": 2.168018539976825,
+    "trf": 2.422943221320973
+   },
    "rules": {
     "eta_0.3": {
      "changed": 30,

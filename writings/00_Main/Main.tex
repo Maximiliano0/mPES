@@ -44,9 +44,9 @@
 \setlength{\@fptop}{0pt}
 \setlength{\@fpbot}{0pt plus 1fil}
 \makeatother
-\setlength{\floatsep}{8pt plus 2pt minus 2pt}
-\setlength{\textfloatsep}{10pt plus 2pt minus 3pt}
-\setlength{\intextsep}{10pt plus 2pt minus 3pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{4pt plus 2pt minus 2pt}
 \setlength{\abovedisplayskip}{10pt plus 2pt minus 3pt}
 \setlength{\belowdisplayskip}{10pt plus 2pt minus 3pt}
 \setlength{\abovedisplayshortskip}{6pt plus 2pt minus 2pt}
@@ -100,7 +100,7 @@
 \usepackage{float}
 \usepackage[section]{placeins}
 \usepackage[font=footnotesize,labelfont=bf]{caption} % compact captions with bold labels
-\captionsetup{font=footnotesize,labelfont=bf,skip=6pt}
+\captionsetup{font=footnotesize,labelfont=bf,skip=4pt}
 \captionsetup[figure]{font=footnotesize}
 \captionsetup[subfigure]{font=footnotesize}
 \captionsetup[table]{font=footnotesize}
@@ -108,6 +108,11 @@
 \usepackage{url}
 \usepackage{makecell}
 \usepackage{hhline}
+\usepackage{tcolorbox}
+% Highlighted remark: light background with a left rule (key methodological statements).
+\newtcolorbox{destacado}{colback=gray!8, colframe=gray!55, boxrule=0pt,
+  leftrule=2pt, arc=0pt, left=6pt, right=6pt, top=4pt, bottom=4pt,
+  before skip=6pt, after skip=6pt}
 
 
 % ----- Sources -----

@@ -43,8 +43,7 @@ cualquiera de los cinco ensambles optimizables.}
 
 \section{Ejecuci\'on de la evaluaci\'on}\label{ap:orchestrator}
 
-La evaluaci\'on en los $22$ escenarios y las $5$ r\'eplicas fuera de
-muestra se ejecuta desde \texttt{h1/}:
+La evaluaci\'on en los $22$ escenarios y las $5$ r\'eplicas \emph{held-out} se ejecuta desde \texttt{h1/}:
 
 \begin{verbatim}
 python -m general.scripts.benchmark run --suite both
@@ -88,51 +87,42 @@ regla) y \texttt{fixed\_rule.py} (regla fija en los $27$ escenarios).
 Las figuras de este ap\'endice detallan, modelo por modelo, las
 comparaciones estad\'isticas que el texto informa de forma agregada.
 
-\begin{landscape}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
-  \caption[Welch por escenario (modelos individuales)]{Modelos
-  individuales: $\log_{10} p$ de Welch de cada escenario frente a la
-  referencia del mismo modelo; los valores menores que $-10$ se muestran
-  como $\le -10$. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
-  \label{fig:heatmap-welch}
-\end{figure}
-\end{landscape}
-
-
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=\linewidth]{ind_13_pares_cohen_d.png}
+  \includegraphics[width=0.72\linewidth]{ind_13_pares_cohen_d.png}
   \caption[$d$ de Cohen entre pares (modelos individuales)]{Modelos
   individuales: $d$ de Cohen entre pares de modelos en los $21$ escenarios
   de generalizaci\'on.}
   \label{fig:pairwise-cohen}
 \end{figure}
 
-\begin{landscape}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
+  \caption[Welch por escenario (modelos individuales)]{Modelos
+  individuales: $\log_{10} p$ de Welch de cada escenario frente a la
+  referencia del mismo modelo; los valores menores que $-10$ se muestran
+  como $\le -10$. En el panel inferior, las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas \emph{held-out}.}
+  \label{fig:heatmap-welch}
+\end{figure}
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ens_03_welch_logp_por_escenario.png}
   \caption[Welch por escenario (ensambles)]{Ensambles: $\log_{10} p$ de
   Welch de cada escenario frente a la referencia del mismo ensamble; los
-  valores menores que $-10$ se muestran como $\le -10$. Las cinco columnas
-  a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
+  valores menores que $-10$ se muestran como $\le -10$. En el panel inferior, las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas \emph{held-out}.}
   \label{fig:ensemble-statistical-heatmaps}
 \end{figure}
-\end{landscape}
 
-\begin{landscape}
 \begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ens_07_cohen_d_por_escenario.png}
   \caption[$d$ de Cohen por escenario (ensambles)]{Ensambles: $d$ de
   Cohen de cada escenario frente a la referencia del mismo ensamble
-  (positivo: mejor que la referencia). Las cinco columnas a la derecha de
-  la l\'inea vertical son las r\'eplicas fuera de muestra.}
+  (positivo: mejor que la referencia). En el panel inferior, las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas \emph{held-out}.}
   \label{fig:ensemble-cohen-scenario}
 \end{figure}
-\end{landscape}
 
 \begin{figure}[!htbp]
   \centering
@@ -160,49 +150,49 @@ estad\'isticos por bloque (Secci\'on~\ref{sec:res-individual}).
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_BASE_results.png}
+  \includegraphics[width=\linewidth]{PES_BASE_results.png}
   \caption[Resultados por secuencia: Q-Learning base]{Resultados por secuencia de Q-Learning base (\texttt{pes\_base}) en la referencia.}
   \label{fig:c-base}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_QL_results.png}
+  \includegraphics[width=\linewidth]{PES_QL_results.png}
   \caption[Resultados por secuencia: Q-Learning]{Resultados por secuencia de Q-Learning (\texttt{pes\_ql}) en la referencia.}
   \label{fig:c-ql}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_DQL_results.png}
+  \includegraphics[width=\linewidth]{PES_DQL_results.png}
   \caption[Resultados por secuencia: Double Q-Learning]{Resultados por secuencia de Double Q-Learning (\texttt{pes\_dql}) en la referencia.}
   \label{fig:c-dql}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_DQN_results.png}
+  \includegraphics[width=\linewidth]{PES_DQN_results.png}
   \caption[Resultados por secuencia: DQN]{Resultados por secuencia de DQN (\texttt{pes\_dqn}) en la referencia.}
   \label{fig:c-dqn}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_RDQN_results.png}
+  \includegraphics[width=\linewidth]{PES_RDQN_results.png}
   \caption[Resultados por secuencia: DQN recurrente]{Resultados por secuencia del DQN recurrente (\texttt{pes\_rdqn}) en la referencia.}
   \label{fig:c-rdqn}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_A2C_results.png}
+  \includegraphics[width=\linewidth]{PES_A2C_results.png}
   \caption[Resultados por secuencia: A2C]{Resultados por secuencia de A2C (\texttt{pes\_a2c}) en la referencia.}
   \label{fig:c-a2c}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.87\linewidth]{PES_TRF_results.png}
+  \includegraphics[width=\linewidth]{PES_TRF_results.png}
   \caption[Resultados por secuencia: Transformer]{Resultados por secuencia del Transformer (\texttt{pes\_trf}) en la referencia.}
   \label{fig:c-trf}
 \end{figure}

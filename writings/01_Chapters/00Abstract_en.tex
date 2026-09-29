@@ -35,15 +35,12 @@ individual Transformer, by a small margin, and the one that includes a
 gate regulating the participation of the Transformer reaches an
 equivalent performance, since it executes the Transformer's action in
 almost every decision. The advantage of the weighted
-ensemble is associated with a high temperature and a severity prior
-rather than with confidence weighting. The ensembles that only average
+ensemble is associated with its closeness to a fixed rule that allocates
+according to severity and that, calibrated with the optimal allocation,
+reaches the best performance. The ensembles that only average
 or vote with weights derived from Shannon entropy fall below the
 individual Transformer, so this confidence is not sufficient on its own
-to outperform the best member in terms of average performance. A
-fixed rule that allocates the severity plus two units, calibrated with
-the optimal allocation, reaches the performance of the best ensemble,
-which indicates that the optimal policy of this environment has a
-simple structure.
+to outperform the best member in terms of average performance.
 
 \par\vspace{0.5\baselineskip}
 \noindent\textbf{Keywords:} reinforcement learning, sequential

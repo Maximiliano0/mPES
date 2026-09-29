@@ -45,10 +45,9 @@ PUB_RC = {
 }
 
 #: Printable area of the thesis page (A4 with 2.54 cm margins), in inches.
-#: Figures rendered at these widths are included at ``\linewidth`` (portrait)
-#: or on a ``landscape`` page, so their font sizes are the printed sizes.
+#: Figures rendered at this width are included at ``\linewidth`` (portrait),
+#: so their font sizes are the printed sizes.
 PAGE_WIDTH_IN = 6.27
-LANDSCAPE_WIDTH_IN = 9.4
 
 #: Style for figures rendered at their printed size (see ``PAGE_WIDTH_IN``).
 PRINT_RC = {
@@ -288,34 +287,11 @@ def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
         colour_map = matplotlib.colormaps[spec.cmap].copy()
         colour_map.set_bad(color='#ececec')
         norm = spec.norm or mcolors.Normalize(vmin=spec.vmin, vmax=spec.vmax)
-        image = axis.imshow(numpy.ma.masked_invalid(matrix), cmap=colour_map,
-                            norm=norm, aspect='auto', interpolation='nearest')
-
-        axis.set_xticks(range(n_cols), scenarios, rotation=55, ha='right')
-        axis.set_yticks(range(n_rows), models)
-        axis.set_xticks(numpy.arange(-0.5, n_cols), minor=True)
-        axis.set_yticks(numpy.arange(-0.5, n_rows), minor=True)
-        axis.grid(which='minor', color='white', linewidth=1.1)
-        axis.tick_params(which='both', length=0)
-        for column in spec.separators:
-            axis.axvline(column - 0.5, color='#252525', linewidth=2.0, zorder=4)
-        for spine in axis.spines.values():
-            spine.set_visible(False)
+        image = _draw_cells(axis, matrix, models, scenarios, spec, colour_map, norm,
+                            spec.separators)
         axis.set_xlabel(spec.xlabel)
         axis.set_ylabel(spec.ylabel)
         axis.set_title(spec.title, pad=12, fontweight='semibold')
-
-        for row in range(n_rows):
-            for column in range(n_cols):
-                value = matrix[row, column]
-                if not numpy.isfinite(value):
-                    continue
-                text, reference = _cell_text(value, spec)
-                rgba = colour_map(norm(reference))
-                luminance = 0.299 * rgba[0] + 0.587 * rgba[1] + 0.114 * rgba[2]
-                axis.text(column, row, text, ha='center', va='center',
-                          fontsize=spec.annot_fontsize,
-                          color='white' if luminance < 0.55 else '#1a1a1a')
 
         colour_bar = figure.colorbar(image, ax=axis, shrink=0.85,
                                      pad=0.012, fraction=0.03 if printed else 0.15)
@@ -327,6 +303,102 @@ def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
 
         figure.tight_layout()
         save_figure(figure, out_base)
+
+
+def heatmap_split(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
+                  out_base: str, spec: HeatmapSpec, split: int,
+                  panel_titles: "tuple[str, str]" = ('', '')) -> None:
+    """Draw a wide ``model x scenario`` heatmap as two stacked portrait panels.
+
+    The columns ``[0, split)`` go to the upper panel and ``[split, n)`` to the
+    lower one. Both panels share the colour scale and the cell size, so the
+    figure fits the portrait text width (:data:`PAGE_WIDTH_IN`) at its printed
+    size with :data:`PRINT_RC`, and the colour bar is drawn horizontally below.
+
+    Parameters
+    ----------
+    matrix, models, scenarios, out_base, spec
+        As in :func:`heatmap`; ``spec.separators`` uses the full column indices.
+    split : int
+        First column of the lower panel.
+    panel_titles : tuple of str
+        Titles of the upper and lower panels.
+    """
+    n_rows, n_cols = matrix.shape
+    parts = ((0, split), (split, n_cols))
+    widest = max(stop - start for start, stop in parts)
+    label_w, right_w = 1.55, 0.08
+    cell_w = (PAGE_WIDTH_IN - label_w - right_w) / widest
+    cell_h = min(cell_w * 0.8, 0.30)
+    # Room below each panel for its rotated scenario labels, from the longest one.
+    ticks_h = [0.25 + 0.047 * max(len(name) for name in scenarios[start:stop])
+               for start, stop in parts]
+    panel_h, gap_h, title_h, cbar_h = n_rows * cell_h, 0.30, 0.55, 0.55
+    height = title_h + 2 * panel_h + sum(ticks_h) + gap_h + cbar_h
+
+    with pyplot.rc_context(PRINT_RC):
+        figure = pyplot.figure(figsize=(PAGE_WIDTH_IN, height))
+        figure.patch.set_facecolor('white')
+        colour_map = matplotlib.colormaps[spec.cmap].copy()
+        colour_map.set_bad(color='#ececec')
+        norm = spec.norm or mcolors.Normalize(vmin=spec.vmin, vmax=spec.vmax)
+        figure.suptitle(spec.title, y=1.0 - 0.08 / height, va='top', fontweight='semibold',
+                        fontsize=PRINT_RC['axes.titlesize'])
+
+        top = height - title_h
+        images = []
+        for index, (start, stop) in enumerate(parts):
+            bottom = top - panel_h
+            axis = figure.add_axes((label_w / PAGE_WIDTH_IN, bottom / height,
+                                    (stop - start) * cell_w / PAGE_WIDTH_IN, panel_h / height))
+            images.append(_draw_cells(axis, matrix[:, start:stop], models, scenarios[start:stop],
+                                      spec, colour_map, norm,
+                                      [column - start for column in spec.separators
+                                       if start < column < stop]))
+            axis.set_ylabel(spec.ylabel)
+            if panel_titles[index]:
+                axis.set_title(panel_titles[index], fontsize=PRINT_RC['axes.labelsize'], pad=4)
+            top = bottom - ticks_h[index] - gap_h
+
+        bar_axis = figure.add_axes((label_w / PAGE_WIDTH_IN, (top + gap_h - 0.14) / height,
+                                    widest * cell_w / PAGE_WIDTH_IN, 0.12 / height))
+        colour_bar = figure.colorbar(images[-1], cax=bar_axis, orientation='horizontal')
+        colour_bar.ax.tick_params(length=0)
+        if spec.cbar_label:
+            colour_bar.set_label(spec.cbar_label)
+        if spec.cbar_ticks is not None:
+            colour_bar.set_ticks(spec.cbar_ticks)
+        save_figure(figure, out_base)
+
+
+def _draw_cells(axis, matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
+                spec: HeatmapSpec, colour_map, norm, separators: "list[int]"):
+    """Draw one annotated heatmap panel on ``axis`` and return its image."""
+    n_rows, n_cols = matrix.shape
+    image = axis.imshow(numpy.ma.masked_invalid(matrix), cmap=colour_map,
+                        norm=norm, aspect='auto', interpolation='nearest')
+    axis.set_xticks(range(n_cols), scenarios, rotation=55, ha='right')
+    axis.set_yticks(range(n_rows), models)
+    axis.set_xticks(numpy.arange(-0.5, n_cols), minor=True)
+    axis.set_yticks(numpy.arange(-0.5, n_rows), minor=True)
+    axis.grid(which='minor', color='white', linewidth=1.1)
+    axis.tick_params(which='both', length=0)
+    for column in separators:
+        axis.axvline(column - 0.5, color='#252525', linewidth=2.0, zorder=4)
+    for spine in axis.spines.values():
+        spine.set_visible(False)
+    for row in range(n_rows):
+        for column in range(n_cols):
+            value = matrix[row, column]
+            if not numpy.isfinite(value):
+                continue
+            text, reference = _cell_text(value, spec)
+            rgba = colour_map(norm(reference))
+            luminance = 0.299 * rgba[0] + 0.587 * rgba[1] + 0.114 * rgba[2]
+            axis.text(column, row, text, ha='center', va='center',
+                      fontsize=spec.annot_fontsize,
+                      color='white' if luminance < 0.55 else '#1a1a1a')
+    return image
 
 
 def _cell_text(value: float, spec: HeatmapSpec) -> "tuple[str, float]":

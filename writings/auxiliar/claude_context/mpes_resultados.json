@@ -6,10 +6,10 @@
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
   "generado_por": "writings/auxiliar/scripts/build_results_context.py (no editar a mano)",
-  "generado_utc": "2026-09-29T14:12:53Z",
+  "generado_utc": "2026-09-29T19:06:16Z",
   "git": {
-   "commit": "c0db536",
-   "sucio": false
+   "commit": "048b361",
+   "sucio": true
   },
   "fuente": "h1/general/results/{individual,ensemble}/ (summary.json, comparison_metrics.json, matrices/*.csv), h1/general/results/heldout/, decisiones: h1/general/results/ensemble/ens_decisions.json; inputs/best_params.json, inputs/*_BAYESIAN_OPT/ y config/CONFIG.py de cada paquete; writings/ (Main.tex, 01_Chapters, References.bib, audit/AUDIT.md). Texto redactado: writings/auxiliar/claude_context/mpes_resultados_notas.md.",
   "convenciones": {
@@ -7269,6 +7269,8 @@
      "eq:bellman-opt",
      "sec:value-bg",
      "sec:memory-bg",
+     "eq:attention",
+     "eq:trf-block",
      "sec:entropy-bg",
      "eq:shannon",
      "sec:ensembles-bg",
@@ -7506,13 +7508,13 @@
      {
       "nivel": "subsection",
       "numero": "5.4",
-      "titulo": "Réplicas fuera de muestra",
+      "titulo": "Réplicas held-out",
       "label": "sec:res-heldout"
      },
      {
       "nivel": "subsection",
       "numero": "5.5",
-      "titulo": "Justificación a posteriori del ensamble ponderado",
+      "titulo": "Estudio post hoc del ensamble ponderado",
       "label": "sec:res-posthoc"
      }
     ],
@@ -7593,8 +7595,8 @@
      "tab:repro-commands",
      "ap:orchestrator",
      "ap:stat-maps",
-     "fig:heatmap-welch",
      "fig:pairwise-cohen",
+     "fig:heatmap-welch",
      "fig:ensemble-statistical-heatmaps",
      "fig:ensemble-cohen-scenario",
      "fig:ensemble-pairwise",
@@ -7643,8 +7645,8 @@
    "fig:heatmap-ens": "ensemble/ens_01_desempeno_por_escenario.png (Desempeño medio por escenario (ensambles); 05Results.tex; 5 columnas fuera de muestra tras una línea vertical)",
    "fig:ensemble-extrapolation": "ensemble/ens_06_curvas_extrapolacion.png (Curvas de los ensambles en los escenarios fuera de rango; 05Results.tex; 3 escenarios fuera de rango; trazo grueso = ensamble ponderado)",
    "fig:c-ens": "per_model/PES_ENS_results.png (Resultados por secuencia: ensamble ponderado; 05Results.tex)",
-   "fig:heatmap-welch": "individual/ind_03_welch_logp_por_escenario.png (Welch por escenario (modelos individuales); Appendix.tex; 5 columnas fuera de muestra tras una línea vertical)",
    "fig:pairwise-cohen": "individual/ind_13_pares_cohen_d.png ($d$ de Cohen entre pares (modelos individuales); Appendix.tex)",
+   "fig:heatmap-welch": "individual/ind_03_welch_logp_por_escenario.png (Welch por escenario (modelos individuales); Appendix.tex; 5 columnas fuera de muestra tras una línea vertical)",
    "fig:ensemble-statistical-heatmaps": "ensemble/ens_03_welch_logp_por_escenario.png (Welch por escenario (ensambles); Appendix.tex; Welch por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)",
    "fig:ensemble-cohen-scenario": "ensemble/ens_07_cohen_d_por_escenario.png ($d$ de Cohen por escenario (ensambles); Appendix.tex; d de Cohen por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)",
    "fig:ensemble-pairwise": "ensemble/ens_13_pares_cohen_d.png + ensemble/ens_12_pares_welch_logp.png (Comparación entre pares (ensambles); Appendix.tex)",
@@ -7670,7 +7672,7 @@
    "tab:trf-vs-ens": "Comparación de cada ensamble con el Transformer (05Results.tex)",
    "tab:ens-freq": "Frecuencia con que las reglas cambian la decisión (05Results.tex)",
    "tab:trf-vs-best": "Transformer frente al ensamble ponderado (05Results.tex)",
-   "tab:heldout": "Referencia frente a las réplicas fuera de muestra (05Results.tex)",
+   "tab:heldout": "Referencia frente a las réplicas held-out (05Results.tex)",
    "tab:sensitivity": "Sensibilidad del ensamble ponderado (05Results.tex)",
    "tab:fixed-rule": "Regla fija y modelos frente al óptimo (05Results.tex)",
    "tab:repro-commands": "Comandos de reproducción (Appendix.tex)"
@@ -7802,7 +7804,6 @@
    "Hausknecht2015",
    "Vaswani2017",
    "Williams1992",
-   "Mnih2016",
    "Schulman2016",
    "Shannon1948",
    "Lakshminarayanan2017",
@@ -7814,7 +7815,6 @@
    "Cawley2010",
    "Cohen1988",
    "Welch1947",
-   "Student1908",
    "Spearman1904",
    "Nijjar2025",
    "ds004477",
@@ -7836,7 +7836,9 @@
    "Cobbe2020",
    "Kirk2023",
    "mPES2026",
-   "Towers2024"
+   "Towers2024",
+   "Mnih2016",
+   "Student1908"
   ],
   "bib_no_citadas": [],
   "bib_faltantes": [],
@@ -7846,7 +7848,7 @@
    "paginas": 61,
    "figuras_con_label": 20,
    "tablas_con_label": 15,
-   "referencias_internas": 90,
+   "referencias_internas": 97,
    "imagenes": 21,
    "tex_huerfanos": [
     "Acknowledgement.tex"
@@ -7855,7 +7857,7 @@
    "recuento_del_generador": {
     "figuras_con_label": 20,
     "tablas_con_label": 15,
-    "referencias_internas": 90,
+    "referencias_internas": 97,
     "imagenes": 21
    }
   }

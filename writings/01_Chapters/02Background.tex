@@ -26,7 +26,7 @@ P(s_{t+1} \mid s_t, a_t, s_{t-1}, a_{t-1}, \ldots, s_0)
 
 Donde $s_t$ y $a_t$ son el estado y la acci\'on en el paso $t$. El
 agente busca la pol\'itica $\pi(a \mid s)$ que maximiza el retorno
-descontado esperado:
+descontado esperado.
 
 \begin{equation}
 G_t \;=\; \sum_{k=0}^{T-t-1} \gamma^{k}\, r_{t+k+1}
@@ -37,7 +37,7 @@ Donde $r_{t+k+1}$ es la recompensa recibida $k+1$ pasos despu\'es de $t$ y
 $T$ el \'ultimo paso del episodio. El valor de una acci\'on bajo la
 pol\'itica $\pi$ es $Q^{\pi}(s,a) = \mathbb{E}_{\pi}[G_t \mid s_t = s,
 a_t = a]$, y el de la pol\'itica \'optima satisface la ecuaci\'on de
-Bellman:
+Bellman.
 
 \begin{equation}
 Q^{*}(s, a) \;=\; \mathbb{E}\!\left[r_{t+1} + \gamma \max_{a'}
@@ -50,7 +50,7 @@ pol\'itica \'optima elige en cada estado $\arg\max_a Q^{*}(s, a)$. Si la
 din\'amica y toda la secuencia se conocen de antemano, la
 Ecuaci\'on~\eqref{eq:bellman-opt} se resuelve en forma exacta por
 programaci\'on din\'amica~\citep{SuttonBarto2018}; en esta tesis, ese
-\'optimo con informaci\'on completa es la referencia superior de la
+\'optimo con informaci\'on completa brinda la cota superior de la
 m\'etrica (Secci\'on~\ref{sec:metric}).
 
 Cuando el agente no observa todas las variables de las que dependen la
@@ -61,71 +61,102 @@ informaci\'on \'util para decidir.
 
 \subsection{Aprendizaje por refuerzo basado en valores}\label{sec:value-bg}
 
-\textbf{Q-Learning.} Estima $Q^{*}$ en una tabla~\citep{Watkins1992}
-con la actualizaci\'on $Q(s,a) \leftarrow Q(s,a) + \alpha_{\mathrm{lr}}\,[r + \gamma
-\max_{a'} Q(s',a') - Q(s,a)]$, con tasa de aprendizaje $\alpha_{\mathrm{lr}}$, y
-explora con una pol\'itica $\varepsilon$-\emph{greedy}, que elige una
-acci\'on al azar con probabilidad $\varepsilon$ y la de mayor $Q$ en otro
-caso; $\varepsilon$ decrece de $\varepsilon_0$ a $\varepsilon_{\min}$
-durante el entrenamiento para pasar de explorar a explotar lo
-aprendido.
+Los modelos tabulares y de tipo DQN de esta tesis estiman $Q^{*}$ y
+eligen la acci\'on de mayor valor con los siguientes m\'etodos:
 
-\textbf{Double Q-Learning.} Mantiene dos tablas~\citep{Hasselt2010},
-una para elegir la acci\'on siguiente y otra para evaluarla, con lo que
-reduce la sobreestimaci\'on que introduce el m\'aximo.
-
-\textbf{\emph{Deep Q-Network} (DQN).} Aproxima $Q$ con una red
-neuronal~\citep{Mnih2015} y estabiliza el entrenamiento con un \emph{buffer} de
-repetici\'on de experiencia (\emph{experience replay})~\citep{Lin1992} y
-una red objetivo (\emph{target network}) que se copia cada $C$ pasos.
-Double DQN~\citep{Hasselt2016} elige la acci\'on siguiente con la red en
-l\'inea y la eval\'ua con la red objetivo. Los tres agentes de tipo DQN
-de esta tesis usan ese valor objetivo y enmascaran las acciones no
-factibles, que nunca pueden resultar elegidas. Se entrenan con
-Adam~\citep{Kingma2015}, con pesos iniciales de Glorot~\citep{Glorot2010},
-que mantienen la escala de las activaciones entre capas, y con dos
-recursos que acotan cada actualizaci\'on: la p\'erdida de
-Huber~\citep{Huber1964}, cuadr\'atica para errores peque\~nos y lineal
-para los grandes, y el recorte de la norma del
-gradiente~\citep{Pascanu2013}. El aprendizaje empieza cuando el
-\emph{buffer} contiene suficientes transiciones para que los primeros
-lotes no provengan de unos pocos episodios~\citep{Mnih2015}.
-
-\textbf{Modelado de recompensa por potencial (PBRS).} Suma a la
-recompensa el t\'ermino $\kappa[\gamma\Phi(s')-\Phi(s)]$~\citep{Ng1999},
-que no cambia las pol\'iticas \'optimas y puede acelerar el
-aprendizaje cuando la recompensa informa poco sobre el progreso; en esta
-tesis, $\Phi(s) = -\sum_i S_i$ es la suma de las severidades actuales con
-signo negativo (Secci\'on~\ref{sec:env-dyn}).
+\begin{itemize}
+    \item \textbf{Q-Learning}: estima $Q^{*}$ en una
+    tabla~\citep{Watkins1992} con la actualizaci\'on $Q(s,a) \leftarrow
+    Q(s,a) + \alpha_{\mathrm{lr}}\,[r + \gamma \max_{a'} Q(s',a') -
+    Q(s,a)]$, con tasa de aprendizaje $\alpha_{\mathrm{lr}}$, y explora
+    con una pol\'itica $\varepsilon$-\emph{greedy}, que elige una acci\'on
+    al azar con probabilidad $\varepsilon$ y la de mayor $Q$ en otro caso;
+    $\varepsilon$ decrece de $\varepsilon_0$ a $\varepsilon_{\min}$ durante
+    el entrenamiento para pasar de explorar a explotar lo aprendido.
+    \item \textbf{Double Q-Learning}: mantiene dos
+    tablas~\citep{Hasselt2010}, una para elegir la acci\'on siguiente y
+    otra para evaluarla, con lo que reduce la sobreestimaci\'on que
+    introduce el m\'aximo.
+    \item \textbf{\emph{Deep Q-Network} (DQN)}: aproxima $Q$ con una red
+    neuronal~\citep{Mnih2015} y estabiliza el entrenamiento con un
+    \emph{buffer} de repetici\'on de experiencia (\emph{experience
+    replay})~\citep{Lin1992} y una red objetivo (\emph{target network})
+    que se copia cada $C$ pasos. Double DQN~\citep{Hasselt2016} elige la
+    acci\'on siguiente con la red en l\'inea y la eval\'ua con la red
+    objetivo. Los tres agentes de tipo DQN de esta tesis usan ese valor
+    objetivo y enmascaran las acciones no factibles, que nunca pueden
+    resultar elegidas. Se entrenan con Adam~\citep{Kingma2015}, con pesos
+    iniciales de Glorot~\citep{Glorot2010}, que mantienen la escala de las
+    activaciones entre capas, y con dos recursos que acotan cada
+    actualizaci\'on: la p\'erdida de Huber~\citep{Huber1964},
+    cuadr\'atica para errores peque\~nos y lineal para los grandes, y el
+    recorte de la norma del gradiente~\citep{Pascanu2013}. El aprendizaje
+    empieza cuando el \emph{buffer} contiene suficientes transiciones para
+    que los primeros lotes no provengan de unos pocos
+    episodios~\citep{Mnih2015}.
+    \item \textbf{Modelado de recompensa por potencial (PBRS)}: suma a la
+    recompensa el t\'ermino $\kappa[\gamma\Phi(s')-\Phi(s)]$~\citep{Ng1999},
+    que no cambia las pol\'iticas \'optimas y puede acelerar el
+    aprendizaje cuando la recompensa informa poco sobre el progreso; en
+    esta tesis, $\Phi(s) = -\sum_i S_i$ es la suma de las severidades
+    actuales con signo negativo (Secci\'on~\ref{sec:env-dyn}).
+\end{itemize}
 
 \subsection{Memoria, atenci\'on y actor--cr\'itico}\label{sec:memory-bg}
 
-Cuando el estado observado no contiene toda la informaci\'on relevante
-(POMDP), puede procesarse una ventana de estados recientes. La
-LSTM~\citep{Hochreiter1997} lo hace con un estado oculto y compuertas de
-entrada, olvido y salida que regulan qu\'e informaci\'on se conserva;
-Hausknecht y Stone~\citep{Hausknecht2015}
-mostraron que un DQN con una LSTM iguala al DQN con cuadros apilados en
-entornos parcialmente observables y se degrada menos cuando cambia la
-calidad de las observaciones. El Transformer~\citep{Vaswani2017}
-reemplaza la recurrencia por atenci\'on de producto escalar: cada
-posici\'on combina las dem\'as con pesos que dependen de su similitud, en
-varias cabezas en paralelo, y un vector de posici\'on sumado a la entrada
-indica el orden. Cada bloque alterna atenci\'on y una capa
-\emph{feed-forward}, con conexiones residuales y normalizaci\'on de capa;
-con una m\'ascara causal, cada posici\'on s\'olo atiende a las anteriores.
-Los m\'etodos actor--cr\'itico derivados del gradiente de
-pol\'itica~\citep{Williams1992}, como A2C, la variante s\'incrona de
-A3C~\citep{Mnih2016}, aprenden a la vez una pol\'itica y una funci\'on de
-valor; la ventaja se estima con GAE~\citep{Schulman2016}, que promedia
-estimaciones de varios pasos con un factor $\lambda$, y un t\'ermino de
-entrop\'ia con coeficiente $\beta_H$ evita la convergencia prematura de la
-pol\'itica.
+Cuando el estado no contiene toda la informaci\'on relevante, puede
+procesarse una ventana de los \'ultimos $W$ estados, como hacen las dos
+primeras arquitecturas:
+
+\begin{itemize}
+    \item \textbf{LSTM}~\citep{Hochreiter1997}: recorre la ventana con un
+    estado oculto y compuertas de entrada, olvido y salida que regulan
+    qu\'e informaci\'on se conserva. Hausknecht y
+    Stone~\citep{Hausknecht2015} mostraron que un DQN con una LSTM iguala
+    al DQN con cuadros apilados en entornos parcialmente observables y se
+    degrada menos cuando cambia la calidad de las observaciones.
+    \item \textbf{Transformer}~\citep{Vaswani2017}: reemplaza la
+    recurrencia por atenci\'on de producto escalar. Cada estado de la
+    ventana se proyecta a dimensi\'on $d_{\mathrm{model}}$ y se le suma un
+    vector de posici\'on que indica su orden; las $W$ filas resultantes
+    forman la matriz $X$. Una cabeza de atenci\'on combina las posiciones
+    con pesos que dependen de su similitud.
+    \begin{equation}
+    \mathrm{At}(X) \;=\; \mathrm{softmax}\!\left(\frac{(XW_q)(XW_k)^{\top}}{\sqrt{d_h}} + M\right) XW_v
+    \qquad
+    M_{ij} = \begin{cases} 0 & j \le i \\ -\infty & j > i \end{cases}
+    \label{eq:attention}
+    \end{equation}
+    Donde $W_q$, $W_k$ y $W_v$ son matrices aprendidas de
+    $d_{\mathrm{model}} \times d_h$, la \emph{softmax} se aplica por filas y
+    la m\'ascara causal $M$ impide que cada posici\'on atienda a las
+    posteriores. La atenci\'on de varias cabezas concatena $h$ cabezas con
+    par\'ametros propios y las proyecta de nuevo a $d_{\mathrm{model}}$,
+    $\mathrm{MHA}(X) = [\mathrm{At}_1(X), \ldots, \mathrm{At}_h(X)]\,W_o$.
+    Cada bloque aplica esa atenci\'on y una capa \emph{feed-forward} por
+    posici\'on, $\mathrm{FF}(x) = \max(0,\, x W_1 + b_1)\, W_2 + b_2$, cada
+    una con conexi\'on residual y normalizaci\'on de capa (LN).
+    \begin{equation}
+    X' \;=\; \mathrm{LN}\big(X + \mathrm{MHA}(X)\big)
+    \qquad
+    X'' \;=\; \mathrm{LN}\big(X' + \mathrm{FF}(X')\big)
+    \label{eq:trf-block}
+    \end{equation}
+    Donde $X''$ es la entrada del bloque siguiente; por la m\'ascara, s\'olo
+    la \'ultima fila depende de toda la ventana.
+    \item \textbf{Actor--cr\'itico}: los m\'etodos derivados del gradiente
+    de pol\'itica~\citep{Williams1992}, como A2C, aprenden a la vez una
+    pol\'itica (actor) y una funci\'on de valor (cr\'itico); la
+    ventaja se estima con GAE~\citep{Schulman2016}, que promedia
+    estimaciones de varios pasos con un factor $\lambda$, y un t\'ermino
+    de entrop\'ia con coeficiente $\beta_H$ evita la convergencia
+    prematura de la pol\'itica.
+\end{itemize}
 
 \subsection{Entrop\'ia como medida de confianza}\label{sec:entropy-bg}
 
-La entrop\'ia de Shannon~\citep{Shannon1948} de una distribuci\'on $p$
-sobre las acciones es:
+La entrop\'ia de Shannon~\citep{Shannon1948} se define para una
+distribuci\'on $p$ sobre las acciones.
 
 \begin{equation}
 H(p) \;=\; -\sum_{a \in \mathcal{A}} p(a)\,\log p(a)
@@ -139,8 +170,8 @@ La entrop\'ia de la distribuci\'on predictiva es una medida habitual de la
 incertidumbre de un modelo~\citep{Lakshminarayanan2017}; normalizada por
 ese m\'aximo, queda en $[0, 1]$. En esta tesis
 $1 - H(p)/\log|\mathcal{A}|$ se llama \emph{confianza}
-(Ecuaci\'on~\eqref{eq:shannon-norm}): vale $1$ si toda la probabilidad
-est\'a en una acci\'on y $0$ si la distribuci\'on es uniforme. Los agentes de tipo DQN producen valores $Q$, no
+(Ecuaci\'on~\eqref{eq:shannon-norm}) y va de $0$, con la distribuci\'on
+uniforme, a $1$. Los agentes de tipo DQN producen valores $Q$, no
 probabilidades, por lo que la confianza se calcula sobre una
 distribuci\'on derivada de ellos (Secci\'on~\ref{sec:ens-methods}) y no
 es una probabilidad calibrada.
@@ -156,8 +187,8 @@ pesos $w_k$ y se elige la acci\'on m\'as probable; en el voto duro
 (\emph{hard voting}), que en esta tesis se llama voto por acci\'on, cada
 miembro vota por su acci\'on preferida~\citep{Wiering2008}. Los pesos
 pueden depender de la confianza de cada miembro en la decisi\'on actual.
-Una compuerta, como en la mezcla de expertos~\citep{Jacobs1991}, decide
-seg\'un la entrada qu\'e miembro determina la salida.
+Una compuerta, como en la mezcla de expertos~\citep{Jacobs1991}, elige
+seg\'un la entrada qu\'e miembro decide.
 
 Las reglas de combinaci\'on pueden incorporar tambi\'en conocimiento del
 dominio que no proviene de los miembros: mezclar la distribuci\'on del
@@ -177,36 +208,43 @@ modela por separado la densidad de las configuraciones de mayor y de
 menor puntaje y propone configuraciones donde el cociente entre ambas es
 alto. Los ensayos poco prometedores se interrumpen con una regla de
 poda (\emph{pruning}) que compara su puntaje intermedio con la mediana de
-los ensayos anteriores. En este trabajo, los hiperpar\'ametros se
-optimizaron con el objetivo de maximizar el desempe\~no promedio en las
-secuencias de referencia. Como se elige la configuraci\'on de mayor
-puntaje sobre esas mismas secuencias, ese puntaje tiende a sobreestimar
-el desempe\~no en secuencias nuevas (sesgo de
+los ensayos anteriores. En este trabajo se maximiz\'o el desempe\~no
+promedio en las secuencias de referencia. Como la configuraci\'on se elige
+sobre esas mismas secuencias, su puntaje tiende a sobreestimar el
+desempe\~no en secuencias nuevas (sesgo de
 selecci\'on~\citep{Cawley2010}); por eso el desempe\~no se mide tambi\'en
-en r\'eplicas independientes de la misma distribuci\'on
+en r\'eplicas \emph{held-out} de la misma distribuci\'on
 (Secci\'on~\ref{sec:res-heldout}).
 
 \subsection{Comparaci\'on estad\'istica}\label{sec:stats-bg}
 
-Las diferencias entre modelos se expresan con la $d$ de
-Cohen~\citep{Cohen1988}, la diferencia de medias en desviaciones
-est\'andar, y se leen como efecto despreciable ($|d| < 0{,}2$), peque\~no
-($0{,}2$ a $0{,}5$), medio ($0{,}5$ a $0{,}8$) o grande ($\ge 0{,}8$). La
-prueba $t$ de Welch~\citep{Welch1947} indica si la diferencia es
-significativa. Su valor $p$ se informa por el orden de magnitud:
-$p < 10^{-k}$ equivale a $\log_{10} p < -k$, y cuanto m\'as negativo es
-$\log_{10} p$, menos compatible es la diferencia observada con la igualdad
-de medias. Como cada comparaci\'on junta m\'as de $1\,300$ secuencias por
-modelo, diferencias peque\~nas producen valores $p$ muy bajos: $p$ indica
-si hay diferencia y $d$, cu\'an grande es. Adem\'as, todos los modelos
-enfrentan las mismas secuencias y no se corrige por comparaciones
-m\'ultiples, por lo que los valores $p$ son orientativos y la medida
-principal es la $d$. La prueba de Welch se usa en las comparaciones que
-juntan escenarios o grupos evaluados por separado. Cuando dos modelos se
-comparan secuencia por secuencia, se usa la prueba $t$
-pareada~\citep{Student1908}, que analiza las diferencias entre ambos en
-cada secuencia, y la concordancia entre dos ordenamientos se mide con la
-correlaci\'on de rangos de Spearman~\citep{Spearman1904}, $r_s$.
+Las comparaciones entre modelos usan tres medidas:
+
+\begin{itemize}
+    \item \textbf{Tama\~no del efecto}: la $d$ de Cohen~\citep{Cohen1988}
+    es la diferencia de medias en desviaciones est\'andar y se interpreta como
+    efecto despreciable ($|d| < 0{,}2$), peque\~no ($0{,}2$ a $0{,}5$),
+    medio ($0{,}5$ a $0{,}8$) o grande ($\ge 0{,}8$). Es la medida
+    principal.
+    \item \textbf{Significaci\'on}: la prueba $t$ de
+    Welch~\citep{Welch1947} indica si la diferencia es significativa y se
+    usa en las comparaciones que agrupan escenarios o grupos evaluados por
+    separado. Su valor $p$ se informa por el orden de magnitud:
+    $p < 10^{-k}$ equivale a $\log_{10} p < -k$; cuanto m\'as negativo es
+    $\log_{10} p$, menos compatible es la diferencia con la igualdad de
+    medias. Como cada comparaci\'on agrupa m\'as de $1\,300$
+    secuencias por modelo, diferencias peque\~nas producen valores $p$ muy
+    bajos: $p$ indica si hay diferencia y $d$, cu\'an grande es. Adem\'as,
+    todos los modelos enfrentan las mismas secuencias y no se corrige por
+    comparaciones m\'ultiples, por lo que los valores $p$ son
+    orientativos.
+    \item \textbf{Concordancia de ordenamientos}: la correlaci\'on de
+    rangos de Spearman~\citep{Spearman1904}, $r_s$, correlaciona las
+    posiciones de los modelos en dos ordenamientos: vale $1$ si el orden
+    es el mismo, $0$ si no hay relaci\'on y $-1$ si est\'a invertido; un
+    valor cercano a $1$ indica que el ordenamiento se conserva aunque
+    cambien las medias.
+\end{itemize}
 
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

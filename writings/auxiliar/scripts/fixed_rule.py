@@ -85,6 +85,16 @@ def summarise(members: list, columns: list) -> dict:
     return summary
 
 
+def reference_spread() -> dict:
+    """Mean, standard deviation (ddof=1) and range of each rule over the reference sequences."""
+    spread = {}
+    for k in OFFSETS:
+        perfs = oracle.prior_policy_perfs('sev_base', k)
+        spread[f'S+{k}'] = {'media': float(perfs.mean()), 'desviacion': float(perfs.std(ddof=1)),
+                            'minimo': float(perfs.min()), 'maximo': float(perfs.max())}
+    return spread
+
+
 ###############
 ##  Main
 ###############
@@ -105,6 +115,7 @@ def main() -> None:
     columns = [f'S+{k}' for k in OFFSETS] + list(MODELS)
     summary = {group: summarise([row for row in rows.values() if row['grupo'] == group], columns)
                for group in ('referencia', 'generalizacion', 'heldout')}
+    summary['referencia']['por_secuencia'] = reference_spread()
 
     for group, values in summary.items():
         print(f"{group} ({values['escenarios']} escenarios)")

@@ -7,9 +7,9 @@
 Los resultados respaldan la hip\'otesis H1 y no respaldan la H2: s\'olo
 una de las seis reglas, el ensamble ponderado, supera al Transformer, con
 una diferencia de tama\~no despreciable (Secci\'on~\ref{sec:ens-best}).
-Una regla fija calibrada con la asignaci\'on \'optima alcanza el mismo
-nivel, lo que acota el alcance de ambas conclusiones
-(Secci\'on~\ref{sec:disc-rule}).
+Sus par\'ametros, fijados \emph{ad hoc}, se confrontaron a posteriori con
+una regla fija calibrada con la asignaci\'on \'optima
+(Secci\'on~\ref{sec:res-posthoc}).
 
 \subsection{Interpretaci\'on de la ventaja del Transformer}\label{sec:disc-individual}
 
@@ -18,91 +18,120 @@ DQN recurrente recibe la misma ventana de seis estados y en
 generalizaci\'on queda un $4\%$ por debajo del Transformer e incluso un
 $1\%$ por debajo del DQN, que s\'olo observa el estado actual. Tampoco se
 debe al tama\~no, porque el Transformer tiene un $21\%$ menos de
-par\'ametros que el DQN recurrente. Descartados esos dos
-factores, la mejora se atribuye a la atenci\'on causal, que pondera cada
-estado de la ventana seg\'un su relaci\'on con el estado actual en lugar
-de resumirla en un \'unico estado oculto, como hace la LSTM. La ventaja
-se conserva en generalizaci\'on: el Transformer obtiene la mayor media en
-el $73\%$ de los escenarios ($16$ de $22$;
+par\'ametros que el DQN recurrente.
+
+\begin{destacado}
+Descartados esos dos factores, la mejora se atribuye a la atenci\'on
+causal, que pondera cada estado de la ventana seg\'un su relaci\'on con el
+estado actual en lugar de resumirla en un \'unico estado oculto, como hace
+la LSTM.
+\end{destacado}
+
+La ventaja se conserva en generalizaci\'on: el Transformer obtiene la
+mayor media en el $71\%$ de los escenarios ($15$ de $21$;
 Figura~\ref{fig:heatmap-global}) y su media all\'i supera en un $0{,}3\%$
-a la de la referencia. Su mayor p\'erdida ocurre con secuencias m\'as largas
-que las de entrenamiento, donde cae un $7\%$ y queda un $3\%$ por debajo
-del DQN recurrente. Como no se evalu\'o una variante sin atenci\'on, su
-efecto no puede separarse del de las conexiones residuales con
-normalizaci\'on de capa ni del de los hiperpar\'ametros.
+a la de la referencia. Su mayor p\'erdida ocurre con secuencias m\'as
+largas que las de entrenamiento, donde cae un $7\%$ y queda un $3\%$ por
+debajo del DQN recurrente. Como no se evalu\'o una variante sin
+atenci\'on, su efecto no puede separarse del de las conexiones residuales
+con normalizaci\'on de capa ni del de los hiperpar\'ametros.
 
 \subsection{Efecto de la regla de combinaci\'on}\label{sec:ens-best}
 
 Los seis ensambles combinan los mismos modelos y ponderan a cada miembro
-por su confianza; s\'olo cambia la regla (Tabla~\ref{tab:ens-freq}):
+por su confianza, cambiando s\'olo la regla de combinaci\'on
+(Tabla~\ref{tab:ens-freq}):
 
 \begin{itemize}
-    \item En el \textbf{ensamble ponderado} la decisi\'on no la determina
-    el Transformer, pese a que tiene el $82\%$ del peso base: $\tau = 15$ aplana las distribuciones
-    de los miembros y el \emph{prior} cambia la acci\'on votada en el
-    $41\%$ de las decisiones de la referencia y el $32\%$ de las de
-    generalizaci\'on. Su ventaja se asocia a la combinaci\'on de una
-    preferencia d\'ebil de los modelos con una regla fija que asigna
-    aproximadamente seg\'un la severidad.
+    \item En el \textbf{ensamble ponderado}, la decisi\'on no la determina
+    el Transformer, pese a que tiene el $82\%$ del peso base: $\tau = 15$
+    aplana las distribuciones de los miembros y el \emph{prior} cambia la
+    acci\'on votada en el $41\%$ de las decisiones de la referencia y en
+    el $32\%$ de las de generalizaci\'on.
     \item La \textbf{compuerta del Transformer} lo sigue en el $97\%$ y el
     $95\%$ de las decisiones, y por eso alcanza un desempe\~no
     equivalente.
-    \item En el \textbf{voto suave} y el \textbf{voto por acci\'on} los
+    \item En el \textbf{voto suave} y el \textbf{voto por acci\'on}, los
     pesos base favorecen al DQN recurrente sobre el Transformer; en la
-    extrapolaci\'on de severidad, la ponderaci\'on por confianza no
-    produjo que predominara el miembro con mayor desempe\~no individual.
+    extrapolaci\'on de severidad, la ponderaci\'on por confianza no hizo
+    predominar al miembro de mayor desempe\~no individual.
     \item El \textbf{consenso con \emph{prior}} mejora la referencia y el
     peor escenario del consenso, aunque su \emph{prior} cambia menos del
     $5\%$ de las decisiones; la mejora no puede atribuirse al
     \emph{prior}.
 \end{itemize}
 
+\begin{destacado}
 La ventaja del ensamble ponderado proviene del \emph{prior} y de la
 temperatura alta m\'as que de la ponderaci\'on por confianza, y requiere
-ambos: en las r\'eplicas fuera de muestra, la temperatura alta sin
-\emph{prior} deja una ventaja de $0{,}004$ sobre el Transformer, el
-\emph{prior} con $\tau = 1$, de $0{,}001$, y los dos juntos, de $0{,}010$
-(Secci\'on~\ref{sec:res-posthoc}). Sus par\'ametros est\'an en
-m\'aximos angostos, pero esos m\'aximos coinciden en la referencia y en las
-r\'eplicas, por lo que la ventaja se mantiene fuera de muestra
-(Secci\'on~\ref{sec:res-heldout}). Los datos muestran tambi\'en que la
-ponderaci\'on por confianza, por s\'i sola, no basta para superar al mejor
-miembro: los dos ensambles que s\'olo promedian o votan con ella quedan
-por debajo del Transformer individual.
+ambos. Se explica por su cercan\'ia con la regla fija casi \'optima
+(Secci\'on~\ref{sec:res-posthoc}): con $\tau = 15$ las preferencias de los
+miembros quedan casi planas, y el \emph{prior}, la \'unica regla del
+ensamble con efecto apreciable, lleva la decisi\'on a una asignaci\'on
+seg\'un la severidad. En las decisiones con recursos, el \emph{prior}
+reduce la asignaci\'on media de $S + 2{,}2$, la del voto sin \emph{prior},
+a $S + 1{,}6$, lo que equivale a una regla con $k \approx 1{,}6$: el mismo
+exceso medio que la asignaci\'on \'optima y $0{,}4$ unidades menos que la
+regla $a = \min(S + 2, R)$. El Transformer, en cambio, asigna en promedio
+$S + 2{,}4$.
+\end{destacado}
+
+En las r\'eplicas \emph{held-out}, la temperatura alta sin \emph{prior}
+obtiene una ventaja del $0{,}4\%$ sobre el Transformer; el \emph{prior} con
+$\tau = 1$, del $0{,}1\%$, y ambos juntos, del $1{,}1\%$
+(Secci\'on~\ref{sec:res-posthoc}). Sus par\'ametros est\'an en m\'aximos
+agudos, pero esos m\'aximos coinciden en la referencia y en las
+r\'eplicas, por lo que la ventaja se mantiene en las r\'eplicas
+\emph{held-out} (Secci\'on~\ref{sec:res-heldout}).
+
+\begin{destacado}
+La ponderaci\'on por confianza, por s\'i sola, no basta para superar al
+mejor miembro: los dos ensambles que s\'olo promedian o votan con ella
+quedan por debajo del Transformer individual.
+\end{destacado}
 
 \subsection{Alcance de los resultados frente a una regla fija}\label{sec:disc-rule}
 
-Que una regla fija de una l\'inea, asignar la severidad m\'as dos
-unidades, iguale al mejor ensamble y supere al Transformer
-(Tabla~\ref{tab:fixed-rule}) obliga a precisar qu\'e muestran los
+Que una regla fija simple, que asigna la severidad m\'as dos unidades,
+iguale al mejor ensamble y supere al Transformer
+(Tabla~\ref{tab:fixed-rule}) requiere precisar el alcance de los
 resultados.
 
-No invalida la comparaci\'on entre modelos. H1 y H2 comparan
+Este hecho no invalida la comparaci\'on entre modelos: H1 y H2 comparan
 arquitecturas y reglas de combinaci\'on entre s\'i, en las mismas
-condiciones, y esas comparaciones no cambian. Tampoco significa que los
-agentes no hayan aprendido. La din\'amica s\'olo indica que hay que
-asignar m\'as que la severidad (Ecuaci\'on~\eqref{eq:rule-dynamics});
-el desplazamiento $k = 2$ se eligi\'o a la vista de la asignaci\'on
-\'optima con informaci\'on completa. Sin esa calibraci\'on, asignar la
-severidad rinde $0{,}78$, mientras que los agentes llegaron a entre
-$0{,}85$ y $0{,}93$ s\'olo a partir de la recompensa, sin conocer la
-regla ni el \'optimo. Adem\'as, la regla no se adapta: el $k$ que
-conviene cambia con la longitud de las secuencias, y con secuencias
-cortas los trece modelos la superan, porque aprendieron a gastar el
-presupuesto que a la regla le sobra.
+condiciones, y esas comparaciones se mantienen. Tampoco implica que los
+agentes no hayan aprendido. La din\'amica s\'olo indica que conviene
+asignar m\'as que la severidad (Ecuaci\'on~\eqref{eq:rule-dynamics}); el
+desplazamiento $k = 2$ se eligi\'o a partir de la asignaci\'on \'optima con
+informaci\'on completa. Sin esa calibraci\'on, la regla que asigna la severidad obtiene
+$0{,}78$, mientras que los agentes alcanzaron entre $0{,}85$ y $0{,}93$
+s\'olo a partir de la recompensa, sin conocer la regla ni el \'optimo.
+Adem\'as, la regla no se adapta: el $k$ conveniente var\'ia con la
+longitud de las secuencias, y con secuencias cortas los trece modelos la
+superan porque aprendieron a utilizar el presupuesto que la regla deja sin
+asignar.
 
-Lo que s\'i muestra es que la pol\'itica \'optima de mPES tiene una
-estructura simple, asignar algo m\'as que la severidad mientras dure el
-presupuesto, y que una heur\'istica calibrada con ella alcanza el nivel de
-los mejores modelos. En este entorno, por lo tanto, la ventaja pr\'actica
-de los agentes aprendidos frente a esa heur\'istica es nula: el problema
+\begin{destacado}
+Los resultados muestran, en cambio, que la pol\'itica \'optima de mPES
+tiene una estructura simple, asignar algo m\'as que la severidad mientras
+dure el presupuesto, y que una heur\'istica calibrada con ella alcanza el
+nivel de los mejores modelos. En este entorno, la ventaja pr\'actica de
+los agentes aprendidos frente a esa heur\'istica es nula: el problema
 result\'o m\'as simple de lo que su formulaci\'on sugiere, y la ventaja
-del ensamble ponderado se explica porque su \emph{prior} lo acerca a esa
-regla. Es un resultado an\'alogo al de Kong
-\emph{et al.}~\citep{Kong2019}, en el que el RL redescubre los algoritmos
-cl\'asicos del problema. Evaluar la utilidad de estos modelos para
-decisiones reales requiere entornos en los que ninguna regla simple sea
-casi \'optima.
+del ensamble ponderado se explica porque su \emph{prior} lo aproxima a esa
+regla.
+\end{destacado}
+
+El resultado es an\'alogo al de Kong \emph{et al.}~\citep{Kong2019}, en el
+que el RL redescubre los algoritmos cl\'asicos del problema. El trabajo
+sobre los agentes conserva, sin embargo, su utilidad. La regla fija
+requiere un \'optimo calculable con informaci\'on completa y de forma
+simple, dos condiciones que provienen de las simplificaciones de mPES:
+ciudades que evolucionan de forma independiente, un \'unico recurso y una
+din\'amica determinista y conocida. Con ciudades que interact\'uan, varios
+recursos o una din\'amica estoc\'astica o desconocida, no existe un
+\'optimo contra el cual calibrar una regla ni garant\'ia de que la
+pol\'itica \'optima admita una expresi\'on simple.
 
 \biblio
 \end{document}

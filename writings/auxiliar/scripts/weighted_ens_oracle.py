@@ -324,8 +324,8 @@ def fit_prior(records: List[dict], tie_aware: bool) -> dict:
             'mean_loglik_sigma_fixed': _log_likelihood(inputs, float(ENS_SEVERITY_PRIOR_SIGMA), 0.0) / n}
 
 
-def prior_policy(scenario: str, offset: int = 0) -> float:
-    """Mean ``r̄`` of the prior's mode as a policy: ``a = min(clip(S, 9) + offset, R, 10)``."""
+def prior_policy_perfs(scenario: str, offset: int = 0) -> numpy.ndarray:
+    """Per-sequence ``r̄`` of the prior's mode as a policy: ``a = min(clip(S, 9) + offset, R, 10)``."""
     perfs = []
     for severities in load_sequences(scenario):
         remaining, allocation = BUDGET, []
@@ -334,7 +334,12 @@ def prior_policy(scenario: str, offset: int = 0) -> float:
             allocation.append(action)
             remaining -= action
         perfs.append(performance(allocation, severities))
-    return float(numpy.mean(perfs))
+    return numpy.asarray(perfs, dtype=float)
+
+
+def prior_policy(scenario: str, offset: int = 0) -> float:
+    """Mean ``r̄`` of the prior's mode as a policy (see ``prior_policy_perfs``)."""
+    return float(numpy.mean(prior_policy_perfs(scenario, offset)))
 
 
 ###############
@@ -409,6 +414,10 @@ def audit_rules(solved: Dict[str, dict]) -> dict:
                          'share_optimal': float(numpy.mean([r['optimal'] for r in live])),
                          'mean_loss_per_sequence': sum(r['loss'] for r in data) / n_seq,
                          'share_trf_optimal': float(numpy.mean([r['loss_trf'] <= TIE_TOL for r in live])),
+                         'mean_a_minus_S': {
+                             'final': float(numpy.mean([r['a'] - r['S'] for r in live])),
+                             'without_prior': float(numpy.mean([r['a_without_prior'] - r['S'] for r in live])),
+                             'trf': float(numpy.mean([r['a_trf'] - r['S'] for r in live]))},
                          'rules': {}}
         for name in variants:
             changed = [r for r in live if r[f'a_without_{name}'] != r['a']]
@@ -516,6 +525,9 @@ def main() -> None:
             print(f'  {group:8s} decisiones óptimas={100 * summary["share_optimal"]:.1f} % '
                   f'(TRF solo en los mismos estados {100 * summary["share_trf_optimal"]:.1f} %), '
                   f'pérdida media por secuencia={summary["mean_loss_per_sequence"]:.4f}')
+            offset = summary['mean_a_minus_S']
+            print(f'    a-S medio con recursos: final={offset["final"]:+.2f} '
+                  f'sin prior={offset["without_prior"]:+.2f} TRF={offset["trf"]:+.2f}')
             for name, rule in summary['rules'].items():
                 print(f'    {name:8s} cambia {rule["changed"]:4d} ({100 * rule["share_changed"]:4.1f} %) '
                       f'ayuda={rule["helps"]:3d} perjudica={rule["hurts"]:3d} neutra={rule["neutral"]:3d} '

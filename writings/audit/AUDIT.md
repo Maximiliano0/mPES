@@ -21,7 +21,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **20**.
 - Tablas con label: **15**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **90**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **97**.
 
 - ✅ Sin referencias rotas.
 
@@ -54,7 +54,9 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 5. Idioma único (español)
 
-- ✅ No se detectaron palabras inglesas frecuentes.
+**Palabras en inglés detectadas:**
+
+`after`, `before`
 
 ## 6. Cobertura de los `doc/` del proyecto
 

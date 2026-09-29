@@ -33,16 +33,13 @@ Entre los ensambles, s\'olo el ensamble ponderado supera al Transformer
 individual, por un margen reducido, y aquel que incluye una compuerta
 que regula la participaci\'on del Transformer alcanza un desempe\~no
 equivalente, porque ejecuta la acci\'on de este en casi todas las
-decisiones. La ventaja del ensamble ponderado se asocia a una
-temperatura alta y a un \emph{prior} de severidad m\'as que a la
-ponderaci\'on por confianza. Los ensambles que s\'olo promedian o votan
-con pesos derivados de la entrop\'ia de Shannon quedan por debajo del
-Transformer individual, por lo que esa confianza no basta por s\'i sola
-para superar al mejor miembro en t\'erminos de desempe\~no promedio.
-Una regla fija que asigna la severidad m\'as dos unidades, calibrada con
-la asignaci\'on \'optima, alcanza el desempe\~no del mejor ensamble, lo
-que indica que la pol\'itica \'optima de este entorno tiene una
-estructura simple.
+decisiones. La ventaja del ensamble ponderado se asocia a la cercan\'ia
+con una regla fija que asigna seg\'un la severidad y que, calibrada con
+la asignaci\'on \'optima, alcanza el mejor desempe\~no. Los ensambles que
+s\'olo promedian o votan con pesos derivados de la entrop\'ia de Shannon
+quedan por debajo del Transformer individual, por lo que esa confianza no
+basta por s\'i sola para superar al mejor miembro en t\'erminos de
+desempe\~no promedio.
 
 \par\vspace{0.5\baselineskip}
 \noindent\textbf{Palabras clave:} aprendizaje por refuerzo, asignaci\'on
