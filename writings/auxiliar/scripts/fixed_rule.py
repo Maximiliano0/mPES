@@ -67,6 +67,24 @@ def group_of(scenario: str) -> str:
     return 'heldout' if scenario.startswith('heldout') else 'generalizacion'
 
 
+def summarise(members: list, columns: list) -> dict:
+    """Means of one scenario group, rule wins and each model against the rule and the optimum."""
+    summary: dict = {column: float(numpy.mean([row[column] for row in members]))
+                     for column in columns}
+    summary['escenarios'] = len(members)
+    for rule in columns[:len(OFFSETS)]:
+        for key, model in (('trf', 'pes_trf'), ('ens', 'pes_ens')):
+            summary[f'{rule}_supera_{key}'] = sum(row[rule] > row[model] for row in members)
+    # Each model against the rule S+2 and against the optimum (r̄ = 1).
+    summary['modelos'] = {
+        model: {'media': summary[model],
+                'dif_regla': summary[model] - summary[RULE],
+                'brecha_optimo': 1.0 - summary[model],
+                'supera_regla': sum(row[model] > row[RULE] for row in members)}
+        for model in MODELS}
+    return summary
+
+
 ###############
 ##  Main
 ###############
@@ -85,23 +103,8 @@ def main() -> None:
         rows[scenario] = row
 
     columns = [f'S+{k}' for k in OFFSETS] + list(MODELS)
-    summary = {}
-    for group in ('referencia', 'generalizacion', 'heldout'):
-        members = [row for row in rows.values() if row['grupo'] == group]
-        summary[group] = {column: float(numpy.mean([row[column] for row in members]))
-                          for column in columns}
-        summary[group]['escenarios'] = len(members)
-        for rule in columns[:len(OFFSETS)]:
-            for key, model in (('trf', 'pes_trf'), ('ens', 'pes_ens')):
-                wins = sum(row[rule] > row[model] for row in members)
-                summary[group][f'{rule}_supera_{key}'] = wins
-        # Each model against the rule S+2 and against the optimum (r̄ = 1).
-        summary[group]['modelos'] = {
-            model: {'media': summary[group][model],
-                    'dif_regla': summary[group][model] - summary[group][RULE],
-                    'brecha_optimo': 1.0 - summary[group][model],
-                    'supera_regla': sum(row[model] > row[RULE] for row in members)}
-            for model in MODELS}
+    summary = {group: summarise([row for row in rows.values() if row['grupo'] == group], columns)
+               for group in ('referencia', 'generalizacion', 'heldout')}
 
     for group, values in summary.items():
         print(f"{group} ({values['escenarios']} escenarios)")
