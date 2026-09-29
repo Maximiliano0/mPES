@@ -6,9 +6,9 @@
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
   "generado_por": "writings/auxiliar/scripts/build_results_context.py (no editar a mano)",
-  "generado_utc": "2026-09-29T13:41:44Z",
+  "generado_utc": "2026-09-29T14:06:35Z",
   "git": {
-   "commit": "2ab02da",
+   "commit": "3be74eb",
    "sucio": true
   },
   "fuente": "h1/general/results/{individual,ensemble}/ (summary.json, comparison_metrics.json, matrices/*.csv), h1/general/results/heldout/, decisiones: h1/general/results/ensemble/ens_decisions.json; inputs/best_params.json, inputs/*_BAYESIAN_OPT/ y config/CONFIG.py de cada paquete; writings/ (Main.tex, 01_Chapters, References.bib, audit/AUDIT.md). Texto redactado: writings/auxiliar/claude_context/mpes_resultados_notas.md.",
@@ -7475,6 +7475,7 @@
      "tab:heldout",
      "sec:res-posthoc",
      "tab:sensitivity",
+     "eq:rule-dynamics",
      "tab:fixed-rule"
     ],
     "secciones": [
@@ -7671,7 +7672,7 @@
    "tab:trf-vs-best": "Transformer frente al ensamble ponderado (05Results.tex)",
    "tab:heldout": "Referencia frente a las réplicas fuera de muestra (05Results.tex)",
    "tab:sensitivity": "Sensibilidad del ensamble ponderado (05Results.tex)",
-   "tab:fixed-rule": "Regla fija frente a los modelos (05Results.tex)",
+   "tab:fixed-rule": "Regla fija y modelos frente al óptimo (05Results.tex)",
    "tab:repro-commands": "Comandos de reproducción (Appendix.tex)"
   },
   "figuras_generadas_no_incluidas": {
@@ -7845,7 +7846,7 @@
    "paginas": 60,
    "figuras_con_label": 20,
    "tablas_con_label": 15,
-   "referencias_internas": 83,
+   "referencias_internas": 87,
    "imagenes": 21,
    "tex_huerfanos": [
     "Acknowledgement.tex"
@@ -7854,7 +7855,7 @@
    "recuento_del_generador": {
     "figuras_con_label": 20,
     "tablas_con_label": 15,
-    "referencias_internas": 83,
+    "referencias_internas": 90,
     "imagenes": 21
    }
   }

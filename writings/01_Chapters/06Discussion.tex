@@ -80,14 +80,16 @@ resultados.
 No invalida la comparaci\'on entre modelos. H1 y H2 comparan
 arquitecturas y reglas de combinaci\'on entre s\'i, en las mismas
 condiciones, y esas comparaciones no cambian. Tampoco significa que los
-agentes no hayan aprendido: la regla necesita conocer de antemano el
-desplazamiento $k = 2$, que se obtuvo de la asignaci\'on \'optima con
-informaci\'on completa; sin ese dato, asignar la severidad rinde
-$0{,}78$, mientras que los agentes llegaron a entre $0{,}85$ y $0{,}93$
-s\'olo a partir de la recompensa, sin conocer la regla ni el \'optimo.
-Adem\'as, la regla no se adapta: el $k$ que conviene cambia con la
-longitud de las secuencias, y con secuencias cortas el Transformer la
-supera ampliamente.
+agentes no hayan aprendido. La din\'amica s\'olo indica que hay que
+asignar m\'as que la severidad (Ecuaci\'on~\eqref{eq:rule-dynamics});
+el desplazamiento $k = 2$ se eligi\'o a la vista de la asignaci\'on
+\'optima con informaci\'on completa. Sin esa calibraci\'on, asignar la
+severidad rinde $0{,}78$, mientras que los agentes llegaron a entre
+$0{,}85$ y $0{,}93$ s\'olo a partir de la recompensa, sin conocer la
+regla ni el \'optimo. Adem\'as, la regla no se adapta: el $k$ que
+conviene cambia con la longitud de las secuencias, y con secuencias
+cortas los trece modelos la superan, porque aprendieron a gastar el
+presupuesto que a la regla le sobra.
 
 Lo que s\'i muestra es que la pol\'itica \'optima de mPES tiene una
 estructura simple, asignar algo m\'as que la severidad mientras dure el

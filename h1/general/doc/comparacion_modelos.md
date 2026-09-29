@@ -381,19 +381,39 @@ están en `../results/ensemble/`:
   programación dinámica (la misma recursión que `S_mejor`, guardando la acción que alcanza
   cada mínimo) y mide el efecto de cada regla en los estados que visita el ensamble.
 - `fixed_rule.py` → `fixed_rule.json`: evalúa la regla sin modelo `a = min(S + k, R)` en los
-  27 escenarios.
+  27 escenarios y la compara con los 13 modelos y con el óptimo (r̄ = 1).
 
-| Política | Referencia | Generalización (21) | Réplicas (5) |
-|---|---:|---:|---:|
-| Regla, k = 0 | 0.782 | 0.805 | 0.787 |
-| Regla, k = 1 | 0.900 | 0.907 | 0.906 |
-| Regla, k = 2 | 0.940 | 0.937 | 0.943 |
-| Regla, k = 3 | 0.939 | 0.940 | 0.941 |
-| `pes_trf` | 0.927 | 0.930 | 0.929 |
-| `pes_ens` | 0.937 | 0.939 | 0.939 |
+Con una asignación constante `a = S + k`, la severidad tras `n` evoluciones es
+`S_n = max(0, S + k·(1 − 1.4^n))`: con `k = 0` no cambia y con `k > 0` se extingue. El punto de
+equilibrio `a = S` sale de la dinámica; el valor de `k` se calibró con los datos.
 
-- La regla con k = 2 supera a `pes_trf` en 18 de 21 escenarios de generalización y en las 5
-  réplicas; pierde con secuencias cortas (0.845 frente a 0.936 en `len_all_short`).
+| Política | Referencia | Generalización (21) | Réplicas (5) | Dif. con k = 2 (gen.) | Escenarios de gen. en que la supera |
+|---|---:|---:|---:|---:|---:|
+| Óptimo (DP, información completa) | 1.000 | 1.000 | 1.000 | | |
+| Regla, k = 0 | 0.782 | 0.805 | 0.787 | | |
+| Regla, k = 1 | 0.900 | 0.907 | 0.906 | | |
+| Regla, k = 2 | 0.940 | 0.937 | 0.943 | | |
+| Regla, k = 3 | 0.939 | 0.940 | 0.941 | | |
+| `pes_ens` | 0.937 | 0.939 | 0.939 | +0.002 | 4 |
+| `pes_ens_trf_guard` | 0.928 | 0.931 | 0.928 | −0.007 | 3 |
+| `pes_trf` | 0.927 | 0.930 | 0.929 | −0.008 | 3 |
+| `pes_ens_consensus_prior` | 0.918 | 0.919 | 0.915 | −0.018 | 2 |
+| `pes_ens_consensus` | 0.889 | 0.905 | 0.893 | −0.033 | 2 |
+| `pes_ens_sprb` | 0.914 | 0.902 | 0.917 | −0.035 | 2 |
+| `pes_ens_accq` | 0.914 | 0.901 | 0.916 | −0.036 | 2 |
+| `pes_dqn` | 0.894 | 0.899 | 0.891 | −0.039 | 2 |
+| `pes_a2c` | 0.887 | 0.896 | 0.887 | −0.041 | 2 |
+| `pes_rdqn` | 0.899 | 0.889 | 0.903 | −0.049 | 2 |
+| `pes_dql` | 0.896 | 0.877 | 0.900 | −0.060 | 2 |
+| `pes_ql` | 0.887 | 0.871 | 0.881 | −0.066 | 2 |
+| `pes_base` | 0.871 | 0.851 | 0.860 | −0.087 | 2 |
+
+- La regla con k = 2 queda a ~0.06 del óptimo y por encima de 12 de los 13 modelos; `pes_ens`
+  la iguala (+0.002 en generalización, −0.004 en las réplicas, 1 de 5 réplicas). Ningún modelo
+  la supera en `sev_base`.
+- Los 13 modelos la superan en los dos escenarios de secuencias cortas (`len_all_short`, 0.845;
+  `joint_low_short`, 0.866): a la regla le sobra presupuesto y los modelos aprendieron a gastarlo.
+  Frente a `pes_trf` la regla gana en 18 de 21 escenarios de generalización y en las 5 réplicas.
 - El desplazamiento k = 2 surge del óptimo con información completa (con presupuesto, el
   óptimo asigna entre S + 0.7 y S + 1.9); también es el mejor k en `sev_base`.
 - Interpretación: la política óptima de mPES tiene una estructura simple, por lo que en este

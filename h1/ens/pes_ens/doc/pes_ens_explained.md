@@ -95,10 +95,14 @@ Resultados principales (réplicas = media de las 5 réplicas fuera de muestra):
 - **Regla fija.** $a = \min(S + 2, R)$ obtiene 0,940 en la referencia, 0,937
   en generalización y 0,943 en las réplicas: iguala al ensamble (0,937 /
   0,939 / 0,939) y supera al Transformer (0,927 / 0,930 / 0,929). Con
-  $k = 0$ obtiene 0,782 / 0,805 / 0,787. El desplazamiento 2 se lee del
-  óptimo con información completa, por lo que la regla no es un competidor
-  en igualdad de condiciones; indica que la política óptima del entorno es
-  simple y explica por qué el *prior* ayuda.
+  $k = 0$ obtiene 0,782 / 0,805 / 0,787. Con $k = 2$ queda por encima de 12
+  de los 13 modelos del benchmark (tabla completa en
+  `comparacion_modelos.md`); los 13 la superan sólo con secuencias cortas.
+  Con $a = S + k$ constante, $S_n = \max(0, S + k(1 - 1{,}4^n))$: la
+  dinámica fija el equilibrio $a = S$, y el desplazamiento 2 se eligió a la
+  vista del óptimo con información completa, por lo que la regla no es un
+  competidor en igualdad de condiciones; indica que la política óptima del
+  entorno es simple y explica por qué el *prior* ayuda.
 
 Ver la base teórica en [pes_ens_theory.md](pes_ens_theory.md) y la
 comparación completa en
