@@ -375,8 +375,8 @@ Las réplicas no entran en ninguna media bajo estrés ni en los contrastes parea
 - `pes_ens_trf_guard` es el ensemble activo más próximo al Transformer individual en rendimiento bajo estrés.
 - La extrapolación alta de severidad es el principal punto débil de `pes_base`, `pes_ql`, `pes_dql`, `pes_rdqn`, `pes_ens_sprb` y `pes_ens_accq`.
 - La extrapolación de longitud es el escenario crítico de `pes_dqn`, `pes_a2c`, `pes_trf` y de los ensembles con degradación media negativa.
-- En los contrastes pareados, `pes_trf` frente a `pes_ql` presenta $p \approx 1.63\times10^{-88}$ y $d \approx 0.78$.
-- Entre ensembles, `pes_ens` frente a `pes_ens_consensus` presenta $p \approx 2.47\times10^{-49}$ y $d \approx 0.58$.
+- En los contrastes pareados, `pes_trf` frente a `pes_ql` presenta $p \approx 4.27\times10^{-85}$ y $d \approx 0.79$.
+- Entre ensembles, `pes_ens` frente a `pes_ens_consensus` presenta $p \approx 9.73\times10^{-49}$ y $d \approx 0.58$.
 - Los perfiles de generalización permiten distinguir si el rendimiento se conserva cuando cambian por separado la severidad inicial, la longitud de secuencia, sus combinaciones y la estructura del experimento.
 
 Las figuras en formato `.png` y las métricas completas en

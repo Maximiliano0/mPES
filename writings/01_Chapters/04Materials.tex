@@ -423,8 +423,9 @@ semilla de su ensayo.
 Adem\'as de la referencia, cada modelo se eval\'ua
 en $21$ escenarios de generalizaci\'on (Tabla~\ref{tab:scenarios}): $9$
 cambian la distribuci\'on de severidades, $5$ las longitudes, $4$ ambas
-y $3$ s\'olo la partici\'on en bloques; estos \'ultimos son un control y
-deben reproducir la referencia. Ocho de los escenarios de severidad
+y $3$ repiten las secuencias de la referencia, dos de ellos con otra
+partici\'on en bloques; estos \'ultimos son un control y deben
+reproducir la referencia. Ocho de los escenarios de severidad
 incluyen valores de $0$, $1$ o $9$, que est\'an en el espacio de estados
 pero no en el entrenamiento. Tres escenarios quedan \emph{fuera de
 rango}: la \emph{extrapolaci\'on de severidad} (severidades de $10$ a
@@ -483,7 +484,7 @@ conjunta      & \texttt{joint\_extrap\_both}   & Severidad y longitud fuera de r
 \midrule
 estructural   & \texttt{struct\_few\_long\_blocks}  & $4$ bloques $\times$ $16$ secuencias.\\
 estructural   & \texttt{struct\_many\_short\_blocks}& $16$ bloques $\times$ $4$ secuencias.\\
-estructural   & \texttt{struct\_more\_total}        & $8$ bloques $\times$ $16$ secuencias ($n = 128$).\\
+estructural   & \texttt{struct\_more\_total}        & $8$ bloques $\times$ $8$ secuencias, las de la referencia.\\
 \midrule
 r\'eplica      & \texttt{heldout\_s1}--\texttt{s5} & Sorteo independiente de longitudes y severidades con las frecuencias de la referencia (semilla $42 + k$).\\
 \bottomrule

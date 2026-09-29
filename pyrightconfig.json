@@ -1,0 +1,8 @@
+{
+  // Repo-root pyright configuration (``pyright`` from the workspace root).
+  // The thesis helper scripts put ``h1/`` on ``sys.path`` at runtime, so the
+  // same path is declared here for static import resolution.
+  "executionEnvironments": [
+    {"root": "writings/auxiliar/scripts", "extraPaths": ["h1", "writings/auxiliar/scripts"]}
+  ]
+}

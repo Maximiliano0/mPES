@@ -50,6 +50,7 @@ from typing import Dict, List, Optional, Tuple
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy
 
 
@@ -212,7 +213,7 @@ def _plot_overview_by_family(data: Dict[Tuple[str, str], dict],
                     ax.set_ylabel(ylabel, fontsize=8)
                 ax.tick_params(labelsize=7)
         # single shared legend
-        handles = [plt.Line2D([0], [0], color=MODEL_COLORS[m], linewidth=2.0, label=m)
+        handles = [Line2D([0], [0], color=MODEL_COLORS[m], linewidth=2.0, label=m)
                    for m in models]
         fig.legend(handles=handles, loc='lower center', ncol=len(models),
                    frameon=False, fontsize=9, bbox_to_anchor=(0.5, -0.01))

@@ -591,8 +591,8 @@ def main():
         _, parity_perfs, _ = run_experiment(env, parity_qf, False, trials_per_sequence, sevs)
         parity_mean = float(numpy.mean(parity_perfs))
         list_item(f"Parity mean_perf (matches Optuna): {parity_mean:.6f}")
-        if from_best_date is not None:
-            _expected = best_info['mean_perf']  # noqa: F821
+        if from_best_date is not None and best_info is not None:
+            _expected = best_info['mean_perf']
             _delta = abs(parity_mean - _expected)
             list_item(f"Optuna reported mean_perf:         {_expected:.6f}")
             list_item(f"|Δ| = {_delta:.6f}  "

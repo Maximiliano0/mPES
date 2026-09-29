@@ -333,11 +333,7 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
     running_norm = numpy.cumsum(norm_r) / x
     cum_norm = numpy.cumsum(norm_r)
 
-    has_perf = perf_full is not None and perf_full.size >= n
-    if perf_full is not None and has_perf:
-        perf = perf_full[:n]
-        running_perf = numpy.cumsum(perf) / x
-        cum_perf = numpy.cumsum(perf)
+    perf = perf_full[:n] if perf_full is not None and perf_full.size >= n else None
 
     color_norm = '#d62728'  # red — normalized reward
     color_perf = '#1f77b4'  # blue — perf
@@ -351,10 +347,10 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
                 label=f'Running mean -> mean_norm_reward = {norm_r.mean():.4f}')
     ax_top.axhline(norm_r.mean(), color=color_norm, linestyle=':',
                    linewidth=0.9)
-    if perf_full is not None and has_perf:
+    if perf is not None:
         ax_top.plot(x, perf, 's', color=color_perf, alpha=0.45, markersize=4,
                     label=r'perf$_i$ (final-severity based)')
-        ax_top.plot(x, running_perf, '-', color=color_perf, linewidth=2.0,
+        ax_top.plot(x, numpy.cumsum(perf) / x, '-', color=color_perf, linewidth=2.0,
                     label=f'Running mean -> mean_perf = {perf.mean():.4f}')
         ax_top.axhline(perf.mean(), color=color_perf, linestyle=':',
                        linewidth=0.9)
@@ -367,8 +363,8 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
     # ----- Bottom: cumulative growth (both in [0, k]) -----
     ax_bot.plot(x, cum_norm, '-', color=color_norm, linewidth=2.0,
                 label=r'$\Sigma_{i \leq k}$ normalized_reward$_i$')
-    if perf_full is not None and has_perf:
-        ax_bot.plot(x, cum_perf, '-', color=color_perf, linewidth=2.0,
+    if perf is not None:
+        ax_bot.plot(x, numpy.cumsum(perf), '-', color=color_perf, linewidth=2.0,
                     label=r'$\Sigma_{i \leq k}$ perf$_i$')
     ax_bot.plot(x, x, ':', color='#444444', linewidth=0.9, alpha=0.7,
                 label=r'Ideal $y = k$ (perfect agent)')
@@ -379,7 +375,7 @@ def plot_norm_reward_vs_perf(pkg_group: str, pkg_name: str) -> Optional[str]:
     ax_bot.legend(loc='upper left', fontsize=9, framealpha=0.9)
 
     perf_txt = (f'mean_perf={perf.mean():.4f}'
-                if has_perf else 'mean_perf=N/A')
+                if perf is not None else 'mean_perf=N/A')
     fig.suptitle(
         f'Normalised reward vs. mean_perf -- {pkg_group}/{pkg_name}\n'
         f'(n={n} sequences, total {int(n_trials.sum())} trials, '

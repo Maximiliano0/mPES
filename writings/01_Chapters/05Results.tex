@@ -20,8 +20,8 @@ El Transformer demuestra ser el mejor modelo individual
 generalizaci\'on, frente a $0{,}871$--$0{,}899$ del resto de los modelos
 optimizados, con la menor dispersi\'on entre secuencias y la mayor media
 en $16$ de los $22$ escenarios (Figura~\ref{fig:heatmap-global}). Su
-ventaja es de tama\~no medio frente a DQN ($d = 0{,}51$), al DQN
-recurrente ($d = 0{,}57$) y a Q-Learning ($d = 0{,}78$).
+ventaja es de tama\~no medio frente a DQN ($d = 0{,}50$), al DQN
+recurrente ($d = 0{,}57$) y a Q-Learning ($d = 0{,}79$).
 
 \begin{table}[H]
 \centering
@@ -185,18 +185,18 @@ positivos indican ventaja del ensamble.}
 \toprule
 \textbf{Ensamble} & \textbf{Diferencia} & $d$ & \textbf{Efecto} & $p$ & \textbf{Mayor media en} \\
 \midrule
-Ensamble ponderado        & $+0{,}010$ & $0{,}19$  & despreciable & $< 10^{-6}$  & $18$ de $21$ \\
-Compuerta del Transformer & $+0{,}001$ & $0{,}02$  & despreciable & $0{,}64$     & $15$ de $21$ \\
+Ensamble ponderado        & $+0{,}010$ & $0{,}19$  & despreciable & $< 10^{-5}$  & $18$ de $21$ \\
+Compuerta del Transformer & $+0{,}001$ & $0{,}02$  & despreciable & $0{,}68$     & $15$ de $21$ \\
 Consenso con prior        & $-0{,}010$ & $-0{,}18$ & despreciable & $< 10^{-5}$  & $5$ de $21$ \\
-Consenso                  & $-0{,}025$ & $-0{,}39$ & peque\~no    & $< 10^{-23}$ & $3$ de $21$ \\
-Voto suave                & $-0{,}027$ & $-0{,}41$ & peque\~no    & $< 10^{-24}$ & $2$ de $21$ \\
+Consenso                  & $-0{,}025$ & $-0{,}39$ & peque\~no    & $< 10^{-22}$ & $3$ de $21$ \\
+Voto suave                & $-0{,}027$ & $-0{,}40$ & peque\~no    & $< 10^{-24}$ & $2$ de $21$ \\
 Voto por acci\'on         & $-0{,}028$ & $-0{,}42$ & peque\~no    & $< 10^{-26}$ & $2$ de $21$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 La compuerta del Transformer obtiene un desempe\~no equivalente al del
-Transformer ($d = 0{,}02$; $p = 0{,}64$): supera su media en $15$
+Transformer ($d = 0{,}02$; $p = 0{,}68$): supera su media en $15$
 escenarios, pero nunca por m\'as de $0{,}006$. Los otros cuatro ensambles
 quedan por debajo del Transformer individual. El voto suave y el voto por
 acci\'on, que s\'olo promedian o votan ponderando por la confianza, tienen
@@ -249,7 +249,7 @@ de sus desempe\~nos. En el ensamble ponderado deciden el voto y el
 casi planas (en la referencia, la acci\'on m\'as probable de cada uno tiene
 en promedio probabilidad $0{,}19$ y supera a la segunda por
 $0{,}02$--$0{,}03$), y el \emph{prior} cambia la acci\'on votada en el
-$41\%$ y el $33\%$ de las decisiones. La cota casi nunca act\'ua. Por lo
+$41\%$ y el $32\%$ de las decisiones. La cota casi nunca act\'ua. Por lo
 tanto, en los dos ensambles que igualan o superan al Transformer la
 decisi\'on no proviene s\'olo del voto ponderado por confianza, sino de la
 regla.
@@ -265,16 +265,16 @@ de las decisiones con recursos disponibles en que ocurre cada evento.}
 \toprule
 \textbf{Ensamble} & \textbf{Evento} & \textbf{Ref.} & \textbf{Gen.} \\
 \midrule
-Compuerta del Transformer & Sigue al Transformer ($g \ge 0{,}5$) & $96{,}9\%$ & $95{,}0\%$ \\
+Compuerta del Transformer & Sigue al Transformer ($g \ge 0{,}5$) & $96{,}9\%$ & $94{,}9\%$ \\
                           & Acci\'on final distinta de la del Transformer & $0{,}8\%$ & $2{,}7\%$ \\
 \midrule
 Consenso con prior & El \emph{prior} cambia la acci\'on votada & $4{,}5\%$ & $4{,}6\%$ \\
                    & La cota cambia la acci\'on & $0{,}3\%$ & $1{,}5\%$ \\
-                   & Acci\'on final distinta de la del Transformer & $62{,}4\%$ & $58{,}6\%$ \\
+                   & Acci\'on final distinta de la del Transformer & $62{,}4\%$ & $58{,}4\%$ \\
 \midrule
-Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9\%$ & $32{,}5\%$ \\
+Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9\%$ & $32{,}1\%$ \\
                    & La cota cambia la acci\'on & $0{,}0\%$ & $0{,}3\%$ \\
-                   & Acci\'on final distinta de la del Transformer & $61{,}2\%$ & $48{,}1\%$ \\
+                   & Acci\'on final distinta de la del Transformer & $61{,}2\%$ & $47{,}4\%$ \\
 \bottomrule
 \end{tabular}
 \end{table}

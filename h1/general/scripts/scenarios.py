@@ -433,10 +433,12 @@ def build_scenarios(empirical_severity_path: str,
         '16 blocks x 4 sequences = 64 (more, smaller blocks).',
         sev_emp, len_emp, num_blocks=16, num_sequences_per_block=4,
     ))
+    # Originally 8 x 16 = 128, which only repeated the 64 reference sequences
+    # and which the Optuna ensemble evaluators cap at 64; kept at 64 for every model.
     scenarios.append(Scenario(
         'struct_more_total', 'structural',
-        '8 blocks x 16 sequences = 128 (double sample size).',
-        sev_emp, len_emp, num_blocks=8, num_sequences_per_block=16,
+        '8 blocks x 8 sequences = 64 (same sequences as sev_base; control).',
+        sev_emp, len_emp, num_blocks=8, num_sequences_per_block=8,
     ))
 
     # ---- E. Held-out replicas (not part of the stress aggregates) ----

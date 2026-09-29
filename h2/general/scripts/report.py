@@ -68,8 +68,8 @@ def write_report() -> str:
         if not means:
             lines.append(f'| {m} | {baseline:.4f} | - | - | - | - | - |')
             continue
-        best_s = max(means, key=means.get)
-        worst_s = min(means, key=means.get)
+        best_s = max(means, key=means.__getitem__)
+        worst_s = min(means, key=means.__getitem__)
         avg_degr = float(numpy.mean([baseline - v for v in means.values()]))
         lines.append(
             f'| {m} | {baseline:.4f} | `{best_s}` | {means[best_s]:.4f} | '

@@ -73,7 +73,7 @@ from ..config.CONFIG import SEED
 from .. import INPUTS_PATH
 
 try:
-    from utils.scripts.notify import notify
+    from utils.scripts.notify import notify  # pyright: ignore[reportMissingImports]
 except ImportError:
     def notify(*_args, **_kwargs):
         """No-op fallback when ``utils.scripts.notify`` is not importable."""

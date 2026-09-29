@@ -33,7 +33,7 @@ benchmark; `pes_ens` is the best-performing ensemble in the current results.
 | Models evaluated | 13: 7 individual + 6 ensemble models |
 | Scenarios | 27 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural + 5 held-out) |
 | Cells | 13 × 27 = **351** |
-| `n` per cell | 64 sequences (128 in `struct_more_total`; seed = 42, `42 + k` for `heldout_sk`) |
+| `n` per cell | 64 sequences (seed = 42, `42 + k` for `heldout_sk`) |
 | Retraining | **None** — pure inference on existing artefacts |
 
 The benchmark **does not modify** any package's source code beyond the
@@ -165,7 +165,7 @@ general/
 | joint | `joint_extrap_both` | Under-stress severity × under-stress length. |
 | structural | `struct_few_long_blocks` | 4 blocks × 16 sequences. |
 | structural | `struct_many_short_blocks` | 16 blocks × 4 sequences. |
-| structural | `struct_more_total` | 8 blocks × 16 sequences (n=128). |
+| structural | `struct_more_total` | 8 blocks × 8 sequences, same as `sev_base` (was 8 × 16 = 128 repeating them). |
 | heldout | `heldout_s1` … `heldout_s5` | i.i.d. draws from the empirical severity / length frequencies (seed 42 + k). |
 
 ### Held-out replicas

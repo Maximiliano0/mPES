@@ -227,7 +227,7 @@ def build_markdown(context: dict, json_path: str) -> str:
 
 def main() -> None:
     """Write compact JSON and Markdown evidence files."""
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or '').split('\n', 1)[0])
     parser.add_argument('--json-output', default=DEFAULT_JSON, help='compact JSON output path')
     parser.add_argument('--markdown-output', default=DEFAULT_MARKDOWN, help='Markdown summary output path')
     args = parser.parse_args()

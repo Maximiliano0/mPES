@@ -240,7 +240,7 @@ def _heatmap(matrix: numpy.ndarray,
                         color=colour, fontsize=7)
 
         cbar = fig.colorbar(im, ax=ax, shrink=0.85, pad=0.012)
-        cbar.outline.set_visible(False)
+        cbar.ax.spines['outline'].set_visible(False)
         cbar.ax.tick_params(length=0)
         if cbar_label:
             cbar.set_label(cbar_label)
