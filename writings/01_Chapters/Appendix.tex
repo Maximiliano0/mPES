@@ -9,16 +9,17 @@ repositorio \texttt{mPES}, con el entorno virtual \texttt{win\_mpes\_env}
 activado, Python 3.12, las dependencias de
 \texttt{utils/config/requirements.txt} y las variables
 \texttt{VIRTUAL\_ENV}, \texttt{PYTHONIOENCODING=utf-8} y
-\texttt{TF\_ENABLE\_ONEDNN\_OPTS=0} (Tabla~\ref{tab:repro-commands}). El
+\texttt{TF\_ENABLE\_ONEDNN\_OPTS=0} definidas (Tabla~\ref{tab:repro-commands}). El
 entrenamiento final lee los hiperpar\'ametros de
-\texttt{inputs/best\_params.json}; la arquitectura del DQN recurrente y
-del Transformer, y el n\'umero de episodios de todos los modelos, se
-leen de \texttt{config/CONFIG.py}.
+\texttt{inputs/best\_params.json} (Q-Learning base usa los valores
+originales de PES, fijados en su script). La arquitectura del DQN
+recurrente y del Transformer, y el n\'umero de episodios de las tres redes
+de tipo DQN, se leen de \texttt{config/CONFIG.py}.
 
 \begin{table}[!ht]
 \centering
 \caption[Comandos de reproducci\'on]{Comandos de optimizaci\'on bayesiana,
-entrenamiento final y evaluaci\'on de cada paquete. \texttt{<pkg>} es
+entrenamiento final y evaluaci\'on de cada paquete. \texttt{<pkg>} designa
 cualquiera de los cinco ensambles optimizables.}
 \label{tab:repro-commands}
 \small
@@ -43,7 +44,7 @@ cualquiera de los cinco ensambles optimizables.}
 
 \section{Ejecuci\'on de la evaluaci\'on}\label{ap:orchestrator}
 
-La evaluaci\'on en los $22$ escenarios y las $5$ r\'eplicas \emph{held-out} se ejecuta desde \texttt{h1/}:
+La evaluaci\'on en la referencia, los $21$ escenarios y las cinco r\'eplicas \emph{held-out} se ejecuta desde \texttt{h1/}:
 
 \begin{verbatim}
 python -m general.scripts.benchmark run --suite both
@@ -59,7 +60,7 @@ cada paquete por los del escenario. El segundo guarda en
 \texttt{general/results/heldout/} una copia de las r\'eplicas y comprueba
 que los $13$ modelos recibieron las mismas secuencias; cada r\'eplica
 registra en \texttt{sampling\_distribution.json} las frecuencias de
-sorteo, la semilla y las frecuencias efectivamente obtenidas. El tercero
+sorteo, la semilla y las frecuencias obtenidas. El tercero
 calcula las matrices modelo $\times$ escenario y las comparaciones entre
 pares; el cuarto genera las figuras, y el quinto, las del agente
 aleatorio. Los resultados se guardan en
@@ -77,15 +78,15 @@ Tabla~\ref{tab:trf-vs-ens} se obtiene con
 cada ensamble con el Transformer a partir de los resultados guardados en
 \texttt{general/results/}, y la Tabla~\ref{tab:heldout}, con
 \texttt{python writings/auxiliar/scripts/heldout\_gap.py}. Los
-an\'alisis de la Secci\'on~\ref{sec:res-posthoc} se obtienen, desde la
-misma carpeta, con \texttt{weighted\_ens\_sensitivity.py} (sensibilidad),
+an\'alisis de la Secci\'on~\ref{sec:res-posthoc} se obtienen del mismo
+modo con \texttt{weighted\_ens\_sensitivity.py} (sensibilidad),
 \texttt{weighted\_ens\_oracle.py} (asignaci\'on \'optima y efecto de cada
 regla) y \texttt{fixed\_rule.py} (regla fija en los $27$ escenarios).
 
 \section{Mapas estad\'isticos complementarios}\label{ap:stat-maps}
 
-Las figuras de este ap\'endice detallan, modelo por modelo, las
-comparaciones estad\'isticas que el texto informa de forma agregada.
+Las figuras de esta secci\'on detallan, modelo por modelo, las
+comparaciones estad\'isticas que el texto presenta de forma agregada.
 
 \begin{figure}[H]
   \centering
@@ -102,7 +103,7 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
   \caption[Welch por escenario (modelos individuales)]{Modelos
   individuales: $\log_{10} p$ de Welch de cada escenario frente a la
   referencia del mismo modelo; los valores menores que $-10$ se muestran
-  como $\le -10$. En el panel inferior, las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas \emph{held-out}.}
+  como $\le -10$. En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
   \label{fig:heatmap-welch}
 \end{figure}
 
@@ -111,7 +112,7 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
   \includegraphics[width=\linewidth]{ens_03_welch_logp_por_escenario.png}
   \caption[Welch por escenario (ensambles)]{Ensambles: $\log_{10} p$ de
   Welch de cada escenario frente a la referencia del mismo ensamble; los
-  valores menores que $-10$ se muestran como $\le -10$. En el panel inferior, las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas \emph{held-out}.}
+  valores menores que $-10$ se muestran como $\le -10$. En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
   \label{fig:ensemble-statistical-heatmaps}
 \end{figure}
 
@@ -120,7 +121,7 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
   \includegraphics[width=\linewidth]{ens_07_cohen_d_por_escenario.png}
   \caption[$d$ de Cohen por escenario (ensambles)]{Ensambles: $d$ de
   Cohen de cada escenario frente a la referencia del mismo ensamble
-  (positivo: mejor que la referencia). En el panel inferior, las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas \emph{held-out}.}
+  (valores positivos: mejor que la referencia). En el panel inferior, a la derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
   \label{fig:ensemble-cohen-scenario}
 \end{figure}
 
@@ -144,8 +145,8 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
 
 \section{Resultados por secuencia de cada modelo}\label{ap:per-model}
 
-Las figuras de este ap\'endice muestran, para cada modelo individual, el
-desempe\~no de cada secuencia de la referencia, su distribuci\'on y sus
+Las figuras de esta secci\'on muestran, para cada modelo individual, el
+desempe\~no en cada secuencia de la referencia, su distribuci\'on y sus
 estad\'isticos por bloque (Secci\'on~\ref{sec:res-individual}).
 
 \begin{figure}[H]

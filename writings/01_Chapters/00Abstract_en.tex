@@ -9,38 +9,34 @@ allocation problem with limited resources. A simulated pandemic is used
 as the test scenario: cities are presented sequentially, each with an
 initial severity, and an agent decides how many resources to allocate to
 each one from a fixed budget. Unaddressed severity grows at every step,
-so an insufficient allocation to a city is amplified in the following
-steps.
+so an insufficient allocation is amplified.
 
 Six agents with optimised hyperparameters were trained: two tabular
 methods (Q-Learning and Double Q-Learning) and four neural networks (a
 deep Q-network, a recurrent variant that processes the most recent
 states, an actor--critic method and a causal Transformer that attends to
-the recent history), plus a non-optimised Q-Learning as a reference. Six rules
+the recent history), plus a non-optimised Q-Learning baseline. Six rules
 for combining the networks into an ensemble were also evaluated; in all
 of them each network is weighted by its confidence in the decision,
 derived from Shannon entropy. All
 models were evaluated on the same 64 sequences of cities under the
-training conditions and in 21 scenarios with other severities or
-lengths, three of them outside the training range.
+training conditions and in 21 generalisation scenarios, three of them beyond the environment's bounds.
 
-The comparison metric is the normalised performance of each sequence,
+The comparison metric is the normalised performance on each sequence,
 where 0 represents no allocation and 1 the optimal allocation, computed
-with knowledge of the full sequence. The analysis identifies the
-Transformer as the best individual model, both under training
+with knowledge of the full sequence. The Transformer is the best individual model, both under training
 conditions and in the generalisation scenarios.
 
 Among the ensembles, only the weighted ensemble outperforms the
-individual Transformer, by a small margin, and the one that includes a
-gate regulating the participation of the Transformer reaches an
+individual Transformer, by a small margin. The one that includes a
+gate regulating the participation of the Transformer achieves
 equivalent performance, since it executes the Transformer's action in
-almost every decision. The advantage of the weighted
-ensemble is associated with its closeness to a fixed rule that allocates
-according to severity and that, calibrated with the optimal allocation,
-reaches the best performance. The ensembles that only average
+almost every decision. This advantage is explained by its closeness to a fixed rule that
+allocates according to severity and that, calibrated against the optimal
+allocation, reaches the same level. Ensembles that only average
 or vote with weights derived from Shannon entropy fall below the
 individual Transformer, so this confidence is not sufficient on its own
-to outperform the best member in terms of average performance.
+to outperform the best member in average performance.
 
 \par\vspace{0.5\baselineskip}
 \noindent\textbf{Keywords:} reinforcement learning, sequential

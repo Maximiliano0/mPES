@@ -59,12 +59,14 @@ from .benchmark import (REFERENCE_MODEL, REFERENCE_SCENARIO, SUITES,
                         generalisation_scenarios, heldout_scenarios, load_cells,
                         matrices_dir, summary_path)
 from .plotting import (ALPHA_LEVELS, BASE_LINEWIDTH, BEST_LINEWIDTH,
-                       MEAN_LINESTYLE, MEAN_LINEWIDTH, PAGE_WIDTH_IN, PRINT_BASE_LINEWIDTH,
+                       MEAN_LINESTYLE, MEAN_LINEWIDTH, PAGE_WIDTH_IN, PALETTE, PRINT_BASE_LINEWIDTH,
                        PRINT_BEST_LINEWIDTH, PRINT_RC, PUB_RC, HeatmapSpec, cohen_d,
                        heatmap, heatmap_split, histogram_pmf, model_colour, read_matrix_csv,
                        save_figure, style_axes, symmetric_kl, welch_test)
 
 
+#: Suite names shown in figure titles.
+SUITE_TITLES = {'individual': 'Modelos individuales', 'ensemble': 'Ensambles'}
 ENSEMBLE_REFERENCE = 'pes_ens'
 FAMILY_ORDER = ('severity', 'length', 'joint', 'structural')
 FAMILY_LABELS = {'severity': 'Severidad', 'length': 'Longitud',
@@ -163,19 +165,19 @@ def render_matrix_figures(suite: str) -> None:
     output = figures_dir(suite)
     specs = {
         'global_mean': ('01_desempeno_por_escenario', HeatmapSpec(
-            title=f'{suite.capitalize()}: desempeño normalizado medio por modelo y escenario',
-            cbar_label='Rendimiento normalizado medio', cmap='mpes_perf', fmt='{:.2f}')),
+            title=f'{SUITE_TITLES.get(suite, suite)}: desempeño normalizado medio por modelo y escenario',
+            cbar_label='Desempeño normalizado medio', cmap='mpes_perf', fmt='{:.2f}')),
         'stress_degradation': ('02_degradacion_por_escenario', HeatmapSpec(
-            title=f'{suite.capitalize()}: degradación respecto a {REFERENCE_SCENARIO}',
+            title=f'{SUITE_TITLES.get(suite, suite)}: degradación respecto a {REFERENCE_SCENARIO}',
             cbar_label='Degradación (positivo = pérdida)',
             cmap='mpes_div', fmt='{:+.3f}')),
         'welch_logp': ('03_welch_logp_por_escenario', HeatmapSpec(
-            title=f'{suite.capitalize()}: log10(p) del test t de Welch',
+            title=f'{SUITE_TITLES.get(suite, suite)}: log10(p) de la prueba t de Welch',
             cbar_label='log10(p); más bajo = evidencia más fuerte',
             cmap='mpes_pval', vmin=-10.0, vmax=0.0, fmt='{:.2f}',
             clip_low_label='≤-10', cbar_ticks=[-10.0, *ALPHA_LEVELS, 0.0])),
         'cohen_d': ('07_cohen_d_por_escenario', HeatmapSpec(
-            title=f'{suite.capitalize()}: tamaño de efecto (d de Cohen)',
+            title=f'{SUITE_TITLES.get(suite, suite)}: tamaño de efecto (d de Cohen)',
             cbar_label='d de Cohen; positivo = mejor que la referencia',
             cmap='mpes_div', fmt='{:+.2f}')),
     }
@@ -234,7 +236,7 @@ def _render_action_kl(suite: str, output: str) -> None:
     heatmap(display, models, scenarios,
             os.path.join(output, '04_kl_acciones_por_escenario'),
             HeatmapSpec(
-                title=f'{suite.capitalize()}: divergencia KL de acciones vs {REFERENCE_SCENARIO}',
+                title=f'{SUITE_TITLES.get(suite, suite)}: divergencia KL de acciones vs {REFERENCE_SCENARIO}',
                 cbar_label='KL(escenario ‖ referencia), escala logarítmica',
                 cmap='mpes_kl', fmt='{:.2f}',
                 norm=mcolors.LogNorm(vmin=floor, vmax=ceiling),
@@ -290,11 +292,11 @@ def render_curve_figures(suite: str, cells: dict) -> None:
         for axis in axes[1]:
             axis.set_xlabel('Secuencia ordenada')
         for axis in axes[:, 0]:
-            axis.set_ylabel('Rendimiento normalizado')
+            axis.set_ylabel('Desempeño normalizado')
         handles, labels = axes[0, 0].get_legend_handles_labels()
         figure.legend(handles, labels, loc='lower center', ncol=4,
                       frameon=False, bbox_to_anchor=(0.5, 0.0))
-        figure.suptitle(f'{suite.capitalize()}: desempeño por secuencia y familia de '
+        figure.suptitle(f'{SUITE_TITLES.get(suite, suite)}: desempeño por secuencia y familia de '
                         f'perturbación\n(trazo grueso = {best})', fontweight='semibold')
         figure.tight_layout(rect=(0, 0.08, 1, 0.96))
         save_figure(figure, os.path.join(output, '05_curvas_por_familia'))
@@ -348,7 +350,7 @@ def _render_universal(suite: str, cells: dict, models: "list[str]",
         if plotted:
             _fit_ylim(axis, plotted)
         style_axes(axis)
-    axes[0].set_ylabel('Rendimiento normalizado')
+    axes[0].set_ylabel('Desempeño normalizado')
     same_models = len({tuple(models_) for models_ in panel_models.values()}) == 1
     if same_models:
         handles, labels = axes[0].get_legend_handles_labels()
@@ -360,7 +362,7 @@ def _render_universal(suite: str, cells: dict, models: "list[str]",
         for axis in axes:
             axis.legend(frameon=False, loc='lower right')
         bottom = 0.02
-    figure.suptitle(f'{suite.capitalize()}: desempeño en escenarios de extrapolación\n'
+    figure.suptitle(f'{SUITE_TITLES.get(suite, suite)}: desempeño en escenarios de extrapolación\n'
                     f'(trazo grueso = {best}; línea punteada = media)',
                     fontweight='semibold')
     figure.tight_layout(rect=(0, bottom, 1, 0.93))
@@ -448,19 +450,19 @@ def _plot_ranking(suite: str, models: "list[str]", metrics: dict, output: str) -
     positions = numpy.arange(len(order))
     width = 0.36
     figure, axis = pyplot.subplots(figsize=(10.0, 5.6))
-    edge = ['#1a1a1a' if row == 0 else 'none' for row in range(len(order))]
+    edge = [PALETTE['ink'] if row == 0 else 'none' for row in range(len(order))]
     axis.barh(positions + width / 2, [metrics[m]['reference_mean'] for m in order],
               width, label=f'Condición de referencia ({REFERENCE_SCENARIO})',
-              color='#a7c8db', edgecolor=edge, linewidth=1.2)
+              color=PALETTE['blue_light'], edgecolor=edge, linewidth=1.2)
     axis.barh(positions - width / 2, [metrics[m]['stress_mean'] for m in order],
               width, label='Media en los escenarios de perturbación',
-              color='#1f6e83', edgecolor=edge, linewidth=1.2)
+              color=PALETTE['blue_dark'], edgecolor=edge, linewidth=1.2)
     axis.set_yticks(positions, order)
     axis.get_yticklabels()[0].set_fontweight('bold')
     axis.invert_yaxis()
     axis.set_xlim(0, 1.08)
-    axis.set_xlabel('Rendimiento normalizado')
-    axis.set_title(f'{suite.capitalize()}: ranking de desempeño (borde = mejor modelo)')
+    axis.set_xlabel('Desempeño normalizado')
+    axis.set_title(f'{SUITE_TITLES.get(suite, suite)}: ranking de desempeño (borde = mejor modelo)')
     axis.legend(frameon=False, ncol=2, loc='upper center', bbox_to_anchor=(0.5, -0.14))
     style_axes(axis)
     for row, model in enumerate(order):
@@ -468,7 +470,7 @@ def _plot_ranking(suite: str, models: "list[str]", metrics: dict, output: str) -
                   f"{metrics[model]['stress_mean']:.3f}", va='center', fontsize=9)
         axis.text(metrics[model]['reference_mean'] + 0.01, row + width / 2,
                   f"{metrics[model]['reference_mean']:.3f}", va='center', fontsize=9,
-                  color='#4a4a4a')
+                  color=PALETTE['ink'])
     figure.tight_layout()
     save_figure(figure, os.path.join(output, '08_ranking_desempeno'))
 
@@ -486,10 +488,10 @@ def _plot_family_sensitivity(suite: str, models: "list[str]", metrics: dict,
                   for family in families]
         axis.bar(positions + (index - (len(models) - 1) / 2) * width, values, width,
                  label=model, color=model_colour(model, index))
-    axis.axhline(0, color='#252525', linewidth=0.8)
+    axis.axhline(0, color=PALETTE['ink'], linewidth=0.8)
     axis.set_xticks(positions, [FAMILY_LABELS[family] for family in families])
     axis.set_ylabel(f'Degradación frente a {REFERENCE_SCENARIO}')
-    axis.set_title(f'{suite.capitalize()}: degradación media por familia de perturbación')
+    axis.set_title(f'{SUITE_TITLES.get(suite, suite)}: degradación media por familia de perturbación')
     axis.legend(frameon=False, ncol=min(len(models), 4), loc='upper center',
                 bbox_to_anchor=(0.5, -0.10))
     style_axes(axis)
@@ -509,8 +511,8 @@ def _plot_stability(suite: str, models: "list[str]", metrics: dict, output: str)
         axis.annotate(model, (x_value, y_value), xytext=(7, 5),
                       textcoords='offset points', fontsize=9)
     axis.set_xlabel('Desviación estándar media por escenario')
-    axis.set_ylabel('Rendimiento medio en los escenarios de perturbación')
-    axis.set_title(f'{suite.capitalize()}: desempeño y estabilidad')
+    axis.set_ylabel('Desempeño medio en los escenarios de perturbación')
+    axis.set_title(f'{SUITE_TITLES.get(suite, suite)}: desempeño y estabilidad')
     style_axes(axis)
     figure.tight_layout()
     save_figure(figure, os.path.join(output, '10_desempeno_vs_estabilidad'))
@@ -546,13 +548,13 @@ def _plot_generalisation(suite: str, summary: dict, models: "list[str]",
         axis.set_xticks(positions, family_scenarios,
                         rotation=42, ha='right', fontsize=8)
         axis.set_ylim(0.6, 1.02)
-        axis.set_ylabel('Rendimiento normalizado')
+        axis.set_ylabel('Desempeño normalizado')
         axis.set_title(FAMILY_LABELS[family])
         style_axes(axis)
     handles, labels = axes[0, 0].get_legend_handles_labels()
     figure.legend(handles, labels, loc='lower center', ncol=len(labels), frameon=False,
                   fontsize=9.5, bbox_to_anchor=(0.5, 0.005))
-    figure.suptitle(f'{suite.capitalize()}: perfiles de generalización '
+    figure.suptitle(f'{SUITE_TITLES.get(suite, suite)}: perfiles de generalización '
                     f'(trazo grueso = {best})', fontsize=14, fontweight='semibold')
     figure.tight_layout(rect=(0, 0.06, 1, 0.95))
     save_figure(figure, os.path.join(output, '11_perfiles_generalizacion'))
@@ -584,7 +586,7 @@ def _plot_pairwise(suite: str, summary: dict, models: "list[str]",
                                                    distributions[second])
 
     heatmap(log_p, models, models, os.path.join(output, '12_pares_welch_logp'),
-            HeatmapSpec(title=f'{suite.capitalize()}: evidencia estadística entre modelos',
+            HeatmapSpec(title=f'{SUITE_TITLES.get(suite, suite)}: evidencia estadística entre modelos',
                         cbar_label='log10(p); más bajo = evidencia más fuerte',
                         cmap='mpes_pval', vmin=-10.0, vmax=0.0, fmt='{:.1f}',
                         clip_low_label='≤-10', xlabel='Modelo de referencia',
@@ -592,14 +594,14 @@ def _plot_pairwise(suite: str, summary: dict, models: "list[str]",
                         annot_fontsize=8))
     bound = max(float(numpy.nanmax(numpy.abs(effect))), 1e-3)
     heatmap(effect, models, models, os.path.join(output, '13_pares_cohen_d'),
-            HeatmapSpec(title=f'{suite.capitalize()}: tamaño de efecto entre modelos',
+            HeatmapSpec(title=f'{SUITE_TITLES.get(suite, suite)}: tamaño de efecto entre modelos',
                         cbar_label='d de Cohen', cmap='mpes_div',
                         vmin=-bound, vmax=bound, fmt='{:+.2f}',
                         xlabel='Modelo de referencia', ylabel='Modelo comparado',
                         figsize=PAIRWISE_HEATMAP_SIZE, annot_fontsize=8))
     heatmap(divergence, models, models, os.path.join(output, '14_pares_kl'),
-            HeatmapSpec(title=f'{suite.capitalize()}: divergencia entre distribuciones',
-                        cbar_label='KL simétrica del rendimiento', cmap='mpes_kl',
+            HeatmapSpec(title=f'{SUITE_TITLES.get(suite, suite)}: divergencia entre distribuciones',
+                        cbar_label='KL simétrica del desempeño', cmap='mpes_kl',
                         vmin=0.0, vmax=float(numpy.nanmax(divergence)) or 1.0,
                         fmt='{:.2f}', xlabel='Modelo de referencia',
                         ylabel='Modelo comparado', figsize=PAIRWISE_HEATMAP_SIZE,
@@ -620,22 +622,22 @@ def _plot_heldout(suite: str, models: "list[str]", metrics: dict, output: str) -
     for row, model in enumerate(order):
         reference, pooled = metrics[model]['reference_mean'], metrics[model]['heldout_mean']
         replica_means = list(metrics[model]['heldout_replica_means'].values())
-        axis.plot([pooled, reference], [row, row], color='#bdbdbd', linewidth=2, zorder=1)
-        axis.scatter(replica_means, [row] * len(replica_means), s=16, color='#1f6e83',
+        axis.plot([pooled, reference], [row, row], color=PALETTE['grey'], linewidth=2, zorder=1)
+        axis.scatter(replica_means, [row] * len(replica_means), s=16, color=PALETTE['blue_dark'],
                      alpha=0.35, linewidth=0, zorder=2)
         axis.text(max([reference, pooled, *replica_means]) + 0.004, row,
                   f"{metrics[model]['heldout_gap']:+.3f}", va='center', fontsize=9,
-                  color='#4a4a4a')
+                  color=PALETTE['ink'])
     axis.scatter([metrics[m]['reference_mean'] for m in order], positions, s=70,
-                 color='#a7c8db', edgecolor='#1a1a1a', linewidth=0.8, zorder=3,
+                 color=PALETTE['blue_light'], edgecolor=PALETTE['ink'], linewidth=0.8, zorder=3,
                  label=f'Referencia ({REFERENCE_SCENARIO}, 64 secuencias)')
     axis.scatter([metrics[m]['heldout_mean'] for m in order], positions, s=70,
-                 color='#1f6e83', edgecolor='white', linewidth=1.2, zorder=3,
+                 color=PALETTE['blue_dark'], edgecolor='white', linewidth=1.2, zorder=3,
                  label='Réplicas held-out (media agrupada; puntos claros = cada réplica)')
     axis.set_yticks(positions, order)
     axis.invert_yaxis()
-    axis.set_xlabel('Rendimiento normalizado')
-    axis.set_title(f'{suite.capitalize()}: referencia frente a réplicas held-out '
+    axis.set_xlabel('Desempeño normalizado')
+    axis.set_title(f'{SUITE_TITLES.get(suite, suite)}: referencia frente a réplicas held-out '
                    '(número = referencia - held-out)')
     axis.legend(frameon=False, ncol=1, loc='upper center', bbox_to_anchor=(0.5, -0.12))
     style_axes(axis)
@@ -675,7 +677,7 @@ def render_distribution_figures(suite: str, cells: dict) -> None:
                           linewidth=_linewidth(model, best),
                           color=model_colour(model, index), label=model)
             axis.set_title(f'Distribución del desempeño por secuencia — {scenario}')
-            axis.set_xlabel('Rendimiento normalizado')
+            axis.set_xlabel('Desempeño normalizado')
             axis.set_ylabel('Frecuencia')
             axis.set_xlim(0, 1)
             axis.legend(frameon=False, fontsize=8, loc='upper left')
@@ -693,7 +695,7 @@ def render_distribution_figures(suite: str, cells: dict) -> None:
                 axes[1].plot(steps, numpy.cumsum(values) / steps, color=colour,
                              linewidth=width, label=model)
             axes[0].set_title('Recompensa normalizada acumulada')
-            axes[0].set_ylabel('Suma de rendimiento')
+            axes[0].set_ylabel('Suma de desempeño')
             axes[1].set_title('Recompensa normalizada media móvil')
             axes[1].set_ylabel('Media acumulada')
             axes[1].set_ylim(0, 1.02)
@@ -703,7 +705,7 @@ def render_distribution_figures(suite: str, cells: dict) -> None:
             handles, labels = axes[0].get_legend_handles_labels()
             figure.legend(handles, labels, loc='lower center', ncol=len(labels),
                           frameon=False, fontsize=8.5, bbox_to_anchor=(0.5, 0.0))
-            figure.suptitle(f'{suite.capitalize()} — {scenario} (trazo grueso = {best})',
+            figure.suptitle(f'{SUITE_TITLES.get(suite, suite)} — {scenario} (trazo grueso = {best})',
                             fontweight='semibold')
             figure.tight_layout(rect=(0, 0.07, 1, 0.94))
             save_figure(figure, os.path.join(rewards, scenario))
@@ -714,6 +716,14 @@ def render_distribution_figures(suite: str, cells: dict) -> None:
 ###############
 #: Printed size of the per-model reference figure (full text width, two per page).
 MODEL_PANEL_SIZE = (PAGE_WIDTH_IN, 3.4)
+#: Names used in the thesis text, shown in the title of each per-model figure.
+MODEL_DISPLAY_NAMES = {
+    'pes_base': 'Q-Learning base', 'pes_ql': 'Q-Learning', 'pes_dql': 'Double Q-Learning',
+    'pes_dqn': 'DQN', 'pes_rdqn': 'DQN recurrente', 'pes_a2c': 'A2C', 'pes_trf': 'Transformer',
+    'pes_ens': 'Ensamble ponderado', 'pes_ens_sprb': 'Voto suave', 'pes_ens_accq': 'Voto por acción',
+    'pes_ens_consensus': 'Consenso', 'pes_ens_consensus_prior': 'Consenso con prior',
+    'pes_ens_trf_guard': 'Compuerta del Transformer',
+}
 MODEL_PANEL_RC = {**PRINT_RC, 'axes.titlesize': 8, 'axes.labelsize': 7.5,
                   'axes.titleweight': 'bold', 'axes.labelweight': 'bold',
                   'xtick.labelsize': 7, 'ytick.labelsize': 7, 'legend.fontsize': 6.5}
@@ -786,12 +796,10 @@ def render_model_panels(suite: str, cells: dict) -> None:
                   for start in range(0, performances.size, per_block)]
         report = _package_report(model)
         stats = _panel_statistics(performances, blocks, report)
-        metadata = (report or {}).get('metadata', {})
-        agent = metadata.get('model_type', model.upper()).replace('_AGENT', '-Agent')
+        name = MODEL_DISPLAY_NAMES.get(model, model)
         with pyplot.rc_context(MODEL_PANEL_RC):
             _draw_model_panel(performances, blocks, stats,
-                              f"PES Experiment Results - Subject {metadata.get('subject_id', model)}"
-                              f'\n{agent} Performance Analysis',
+                              f'{name} ({model}): desempeño por secuencia en la referencia',
                               os.path.join(output, f'{model.upper()}_results'))
 
 
@@ -810,42 +818,45 @@ def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]"
     mean, std = stats['overall_mean'], stats['overall_std']
 
     trend = figure.add_subplot(grid[0, :2])
-    trend.plot(steps, performances, 'b-o', linewidth=1.0, markersize=2, alpha=0.7)
-    trend.axhline(y=mean, color='r', linestyle='--', linewidth=1.0, label=f'Mean: {mean:.3f}')
-    trend.fill_between(steps, mean - std, mean + std, alpha=0.2, color='red')
-    trend.set(xlabel='Sequence Number', ylabel='Performance',
-              title='Performance Over All Sequences', ylim=(0, 1.05))
+    trend.plot(steps, performances, '-o', color=PALETTE['blue'], linewidth=1.0, markersize=2)
+    trend.axhline(y=mean, color=PALETTE['coral'], linestyle='--', linewidth=1.0, label=f'Media: {mean:.3f}')
+    trend.fill_between(steps, mean - std, mean + std, alpha=0.6, color=PALETTE['coral_light'],
+                       linewidth=0)
+    trend.set(xlabel='Secuencia', ylabel='Desempeño',
+              title='Desempeño por secuencia', ylim=(0, 1.05))
     trend.legend(loc='lower left')
 
     histogram = figure.add_subplot(grid[0, 2])
-    histogram.hist(performances, bins=15, color='skyblue', edgecolor='black',
-                   linewidth=0.5, alpha=0.7)
-    histogram.axvline(x=mean, color='red', linestyle='--', linewidth=1.0, label='Mean')
-    histogram.axvline(x=stats['overall_median'], color='green', linestyle='--',
-                      linewidth=1.0, label='Median')
-    histogram.set(xlabel='Performance', ylabel='Frequency', title='Distribution')
+    histogram.hist(performances, bins=15, color=PALETTE['blue_light'], edgecolor='white',
+                   linewidth=0.6)
+    histogram.axvline(x=mean, color=PALETTE['coral'], linestyle='--', linewidth=1.0, label='Media')
+    histogram.axvline(x=stats['overall_median'], color=PALETTE['blue_dark'], linestyle=':',
+                      linewidth=1.0, label='Mediana')
+    histogram.set(xlabel='Desempeño', ylabel='Frecuencia', title='Distribución')
     histogram.legend(loc='upper left')
 
     boxes = figure.add_subplot(grid[1, 0])
     drawn = boxes.boxplot(blocks, tick_labels=[f'B{i + 1}' for i in range(len(blocks))],
                           patch_artist=True, flierprops={'markersize': 3},
                           boxprops={'linewidth': 0.7}, whiskerprops={'linewidth': 0.7},
-                          medianprops={'linewidth': 0.9})
+                          medianprops={'linewidth': 1.0, 'color': PALETTE['coral']})
     for patch in drawn['boxes']:
-        patch.set_facecolor('lightblue')
-    boxes.set(xlabel='Block', ylabel='Performance', title='Performance by Block',
+        patch.set_facecolor(PALETTE['blue_pale'])
+        patch.set_edgecolor(PALETTE['blue_dark'])
+    boxes.set(xlabel='Bloque', ylabel='Desempeño', title='Desempeño por bloque',
               ylim=(0, 1.05))
 
     cumulative = figure.add_subplot(grid[1, 1])
-    cumulative.plot(steps, numpy.cumsum(performances) / steps, 'g-o', linewidth=1.0, markersize=2)
-    cumulative.set(xlabel='Sequence Number', ylabel='Cum. mean',
-                   title='Cumulative Mean', ylim=(0, 1.05))
+    cumulative.plot(steps, numpy.cumsum(performances) / steps, '-o', color=PALETTE['teal'],
+                    linewidth=1.0, markersize=2)
+    cumulative.set(xlabel='Secuencia', ylabel='Media acumulada',
+                   title='Media acumulada', ylim=(0, 1.05))
 
     block_means = figure.add_subplot(grid[1, 2])
     block_means.bar(range(1, len(blocks) + 1), [float(numpy.mean(b)) for b in blocks],
-                    color='steelblue', alpha=0.7)
-    block_means.set(xlabel='Block Number', ylabel='Mean',
-                    title='Block-wise Mean', ylim=(0, 1.05))
+                    color=PALETTE['blue_light'], edgecolor=PALETTE['blue'], linewidth=0.6)
+    block_means.set(xlabel='Bloque', ylabel='Media',
+                    title='Media por bloque', ylim=(0, 1.05))
     block_means.set_xticks(range(1, len(blocks) + 1))
     for axis in (trend, cumulative):
         axis.grid(True, alpha=0.3)
@@ -854,26 +865,29 @@ def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]"
 
     summary = figure.add_subplot(grid[2, :])
     summary.axis('off')
-    header = ['Metric', 'Value'] * 3
+    header = ['Estadístico', 'Valor'] * 3
     rows = [header,
-            ['Mean', f'{mean:.4f}', 'Median', f"{stats['overall_median']:.4f}",
-             'N Seq', f"{stats['total_sequences']}"],
-            ['Std Dev', f'{std:.4f}', 'Min', f"{stats['overall_min']:.4f}",
-             'Max', f"{stats['overall_max']:.4f}"],
+            ['Media', f'{mean:.4f}', 'Mediana', f"{stats['overall_median']:.4f}",
+             'Secuencias', f"{stats['total_sequences']}"],
+            ['Desv. estándar', f'{std:.4f}', 'Mínimo', f"{stats['overall_min']:.4f}",
+             'Máximo', f"{stats['overall_max']:.4f}"],
             ['Q1', f"{stats['percentile_25']:.4f}", 'Q3', f"{stats['percentile_75']:.4f}",
-             'Improvement', f"{stats['improvement']:.4f}"],
-            ['First', f"{stats['first_block_mean']:.4f}", 'Last', f"{stats['last_block_mean']:.4f}",
-             '', '']]
+             'Último − primero', f"{stats['improvement']:.4f}"],
+            ['Primer bloque', f"{stats['first_block_mean']:.4f}",
+             'Último bloque', f"{stats['last_block_mean']:.4f}", '', '']]
     table = summary.table(cellText=rows, cellLoc='center', loc='center',
                           colWidths=[0.16, 0.11] * 3)
     table.auto_set_font_size(False)
     table.set_fontsize(7)
+    for cell in table.get_celld().values():
+        cell.set_edgecolor(PALETTE['grey'])
+        cell.set_linewidth(0.6)
     for column in range(len(header)):
-        table[(0, column)].set_facecolor('#4CAF50')
+        table[(0, column)].set_facecolor(PALETTE['blue_dark'])
         table[(0, column)].set_text_props(weight='bold', color='white')
     for row in range(2, len(rows), 2):
         for column in range(len(header)):
-            table[(row, column)].set_facecolor('#f0f0f0')
+            table[(row, column)].set_facecolor(PALETTE['blue_pale'])
 
     figure.suptitle(title, fontsize=8.5, fontweight='bold')
     save_figure(figure, out_base)

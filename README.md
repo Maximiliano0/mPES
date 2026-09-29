@@ -79,7 +79,16 @@
 
 ## ⚙️ Setup
 
-Activate the virtual environment from the repository root (PowerShell):
+Create the virtual environment once, from the repository root (PowerShell,
+Python 3.12):
+
+```powershell
+py -3.12 -m venv win_mpes_env
+win_mpes_env\Scripts\Activate.ps1
+pip install -r utils/config/requirements.txt
+```
+
+Then, in every session, activate it and set the variables:
 
 ```powershell
 win_mpes_env\Scripts\Activate.ps1

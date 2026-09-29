@@ -4,16 +4,16 @@
 \begin{document}
 
 Esta tesis compara arquitecturas de aprendizaje por refuerzo (RL,
-\emph{Reinforcement Learning}) en una simulaci\'on de pandemia donde el
-agente estudiado distribuye un presupuesto fijo entre ciudades que se presentan sucesivamente, sin conocer cu\'antas
+\emph{Reinforcement Learning}) en una simulaci\'on de pandemia en la que un
+agente distribuye un presupuesto fijo entre ciudades que se presentan sucesivamente, sin conocer cu\'antas
 restan ni cu\'al ser\'a su severidad. El entorno, \textbf{mPES}, extiende el \emph{Pandemic
 Experiment Scenario} (PES) del BCI-NE Lab de la Universidad de
 Essex~\citep{BCINE2022}.
 
 \subsection{Motivaci\'on}\label{sec:motivacion}
 
-Durante la pandemia de COVID--19, gobiernos y hospitales debieron
-asignar recursos escasos en condiciones en que cada asignaci\'on
+Durante la pandemia de COVID-19, gobiernos y hospitales debieron
+asignar recursos escasos cuando cada asignaci\'on
 modificaba la evoluci\'on posterior del sistema sanitario. En esta tesis
 la pandemia no es el objeto de estudio, sino un escenario controlado que
 permite medir qu\'e modelos toman mejores decisiones y c\'omo se
@@ -27,9 +27,8 @@ cada unidad asignada la reduce en una cantidad $\alpha$
 (Ecuaci\'on~\eqref{eq:transicion}).
 Esta regla simplifica los modelos de la epidemiolog\'ia
 computacional~\citep{Kuhl2021}, desde los compartimentales hasta
-simulaciones espaciales de COVID-19 basadas en agentes, como las de Parisi
-\emph{et al.}~\citep{Parisi2021}, de los que se conserva s\'olo el
-crecimiento de la severidad y el efecto de los recursos.
+simulaciones espaciales de COVID-19 basadas en agentes~\citep{Parisi2021}:
+s\'olo conserva el crecimiento de la severidad y el efecto de los recursos.
 
 \subsection{Preguntas e hip\'otesis}\label{sec:hypothesis}
 
@@ -56,16 +55,16 @@ desempe\~no del mejor modelo individual.}
 \subsection{Contribuciones}
 
 \begin{enumerate}
-    \item Una comparaci\'on de seis modelos de RL, evaluados con los
-    mismos entorno, protocolo y cantidad de secuencias, con
+    \item Una comparaci\'on de seis modelos de RL, evaluados con el mismo protocolo
+    y las mismas secuencias, con
     hiperpar\'ametros de entrenamiento ajustados por optimizaci\'on
     bayesiana.
-    \item Seis reglas para combinar esos modelos sin reentrenarlos, en
-    las que cada modelo se pondera seg\'un la entrop\'ia de su
+    \item Seis reglas para combinar las redes neuronales sin reentrenarlas, en
+    las que cada red se pondera seg\'un la entrop\'ia de su
     distribuci\'on de acciones.
-    \item Una evaluaci\'on en $21$ escenarios que cambian la severidad,
-    la longitud de las secuencias o ambas, en un \emph{framework}
-    reproducible.
+    \item Una evaluaci\'on reproducible (Ap\'endice~\ref{ap:repro}) en $21$
+    escenarios de generalizaci\'on, $18$ de los cuales cambian la severidad,
+    la longitud de las secuencias o ambas.
 \end{enumerate}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

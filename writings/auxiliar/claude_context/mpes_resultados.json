@@ -6,9 +6,9 @@
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
   "generado_por": "writings/auxiliar/scripts/build_results_context.py (no editar a mano)",
-  "generado_utc": "2026-09-29T19:06:16Z",
+  "generado_utc": "2026-09-29T19:45:17Z",
   "git": {
-   "commit": "048b361",
+   "commit": "17a347c",
    "sucio": true
   },
   "fuente": "h1/general/results/{individual,ensemble}/ (summary.json, comparison_metrics.json, matrices/*.csv), h1/general/results/heldout/, decisiones: h1/general/results/ensemble/ens_decisions.json; inputs/best_params.json, inputs/*_BAYESIAN_OPT/ y config/CONFIG.py de cada paquete; writings/ (Main.tex, 01_Chapters, References.bib, audit/AUDIT.md). Texto redactado: writings/auxiliar/claude_context/mpes_resultados_notas.md.",
@@ -611,8 +611,8 @@
    "delta_rel_vs_ql_referencia": 0.358,
    "delta_rel_vs_ql_generalizacion": 0.453,
    "hiperparametros": {
-    "tipo": "Double DQN con codificador Transformer causal (Pre-LN)",
-    "arquitectura": "ventana W=6 -> proyección d_model=32 + vector de posición fijo (Glorot, no entrenado) -> 2 bloques [atención causal 4 cabezas key_dim 16; FFN 64; residual; LayerNorm previa] -> última posición -> Dense(32,ReLU) -> Dense(11); dropout 0",
+    "tipo": "Double DQN con codificador Transformer causal (Post-LN)",
+    "arquitectura": "ventana W=6 -> proyección d_model=32 + vector de posición fijo (Glorot, no entrenado) -> 2 bloques [atención causal 4 cabezas key_dim 16; FFN 64; residual; LayerNorm posterior (Post-LN)] -> última posición -> Dense(32,ReLU) -> Dense(11); dropout 0",
     "parametros_entrenables": 27019,
     "arquitectura_origen": "exploración ad hoc, fijada en config/CONFIG.py (NO optimizada)",
     "lr": 0.000215,
@@ -7845,10 +7845,10 @@
   "estado_audit": {
    "archivo": "writings/audit/AUDIT.md",
    "compilacion_ok": true,
-   "paginas": 61,
+   "paginas": 60,
    "figuras_con_label": 20,
    "tablas_con_label": 15,
-   "referencias_internas": 97,
+   "referencias_internas": 98,
    "imagenes": 21,
    "tex_huerfanos": [
     "Acknowledgement.tex"
@@ -7857,7 +7857,7 @@
    "recuento_del_generador": {
     "figuras_con_label": 20,
     "tablas_con_label": 15,
-    "referencias_internas": 97,
+    "referencias_internas": 98,
     "imagenes": 21
    }
   }

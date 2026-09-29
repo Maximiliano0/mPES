@@ -3,12 +3,11 @@
 \begin{document}
 
 Esta tesis compara m\'etodos de aprendizaje por refuerzo en un problema
-de asignaci\'on secuencial con recursos limitados. Como escenario de prueba
-se emplea una pandemia simulada, en la cual las ciudades se presentan
+de asignaci\'on secuencial con recursos limitados. El escenario de prueba es una pandemia simulada: las ciudades se presentan
 sucesivamente, cada una con una severidad inicial, y un agente decide
-cu\'antos recursos asignarle a partir de un presupuesto fijo. La severidad
+cu\'antos recursos asignarle de un presupuesto fijo. La severidad
 no atendida crece en cada paso, por lo que una asignaci\'on insuficiente
-en una ciudad se ampl\'ia en los pasos siguientes.
+se amplifica.
 
 Se entrenaron seis agentes con hiperpar\'ametros optimizados: dos
 tabulares (Q-Learning y Double Q-Learning) y cuatro redes neuronales (una
@@ -19,26 +18,26 @@ evaluaron adem\'as seis reglas para combinar las redes en un ensamble, en
 las que cada red se pondera seg\'un su confianza en la decisi\'on,
 derivada de la entrop\'ia de Shannon. Todos
 los modelos se evaluaron sobre las mismas $64$ secuencias de ciudades en
-las condiciones de entrenamiento y en $21$ escenarios con otras
-severidades o longitudes, tres de ellos fuera del rango de entrenamiento.
+las condiciones de entrenamiento y en $21$ escenarios de
+generalizaci\'on, tres de ellos por encima de las cotas del entorno.
 
-Como m\'etrica de comparaci\'on se emplea el desempe\~no normalizado de
+La m\'etrica de comparaci\'on es el desempe\~no normalizado en
 cada secuencia, donde $0$ representa la ausencia de asignaci\'on y $1$ la
 asignaci\'on \'optima, calculada con conocimiento de la secuencia
-completa. El an\'alisis identifica al Transformer como el mejor modelo
+completa. El Transformer es el mejor modelo
 individual, tanto en las condiciones de entrenamiento como en los
 escenarios de generalizaci\'on.
 
 Entre los ensambles, s\'olo el ensamble ponderado supera al Transformer
-individual, por un margen reducido, y aquel que incluye una compuerta
+individual, por un margen reducido. El que incluye una compuerta
 que regula la participaci\'on del Transformer alcanza un desempe\~no
 equivalente, porque ejecuta la acci\'on de este en casi todas las
-decisiones. La ventaja del ensamble ponderado se asocia a la cercan\'ia
-con una regla fija que asigna seg\'un la severidad y que, calibrada con
-la asignaci\'on \'optima, alcanza el mejor desempe\~no. Los ensambles que
+decisiones. Esa ventaja se explica por su cercan\'ia a una regla fija que asigna
+seg\'un la severidad y que, calibrada con la asignaci\'on \'optima,
+alcanza el mismo nivel. Los ensambles que
 s\'olo promedian o votan con pesos derivados de la entrop\'ia de Shannon
 quedan por debajo del Transformer individual, por lo que esa confianza no
-basta por s\'i sola para superar al mejor miembro en t\'erminos de
+basta por s\'i sola para superar al mejor miembro en
 desempe\~no promedio.
 
 \par\vspace{0.5\baselineskip}

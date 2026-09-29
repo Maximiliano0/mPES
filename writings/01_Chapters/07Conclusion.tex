@@ -9,31 +9,26 @@
 \textbf{Mejor modelo individual.} Los resultados respaldan la hip\'otesis
 H1. El Transformer causal obtuvo el mayor desempe\~no medio entre los
 modelos individuales, en la referencia y en los escenarios de
-generalizaci\'on; en estos \'ultimos super\'o en un $3\%$ a DQN y en un
+generalizaci\'on. En estos \'ultimos super\'o en un $3\%$ al DQN y en un
 $5\%$ al DQN recurrente, diferencias de tama\~no medio. Mantuvo el
 desempe\~no con severidades fuera de rango, aunque no fue el m\'as estable
 en su peor escenario: con secuencias largas perdi\'o un $7\%$ respecto de
-su referencia, frente al $6\%$ de DQN.
+su referencia, frente al $6\%$ del DQN.
 
 \textbf{Ensambles frente al mejor modelo individual.} Los resultados no
 respaldan la hip\'otesis H2. S\'olo el ensamble ponderado super\'o al Transformer,
-en un $1\%$ en generalizaci\'on, una diferencia significativa pero de
+en un $1{,}1\%$ en generalizaci\'on, una diferencia significativa pero de
 tama\~no despreciable. La
 compuerta del Transformer alcanz\'o un desempe\~no equivalente y los
-otros cuatro ensambles quedaron por debajo. La ventaja del ensamble ponderado no se explica por
-la ponderaci\'on por confianza: su acci\'on final difiere de la del
-Transformer en el $61\%$ de las decisiones de la referencia, en buena
-medida por la temperatura alta y el \emph{prior} de severidad, que acercan
-su decisi\'on a la asignaci\'on de la regla fija calibrada con el
-\'optimo. El estudio \emph{post hoc} muestra que la ventaja requiere ambos, que el
+otros cuatro ensambles quedaron por debajo. Su ventaja proviene de la temperatura alta y del \emph{prior} de
+severidad m\'as que de la ponderaci\'on por confianza: ambos acercan su
+decisi\'on a la de la regla fija calibrada con el \'optimo. El estudio \emph{post hoc} muestra que la ventaja requiere ambos, que el
 \emph{prior} est\'a centrado por debajo de la asignaci\'on \'optima y que
 la cota de seguridad no tiene efecto.
 
 \textbf{Ponderaci\'on por confianza.} El dise\~no no permite determinar si
-ponderar por la confianza mejora a una votaci\'on simple, porque todos los
-ensambles aplican esa ponderaci\'on. Los que s\'olo promedian o votan con
-esos pesos obtuvieron un desempe\~no inferior al del Transformer
-individual.
+ponderar por la confianza supera a una votaci\'on simple, porque todos los
+ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al Transformer.
 
 \subsection{Limitaciones del estudio}\label{sec:limitations}
 
@@ -43,7 +38,7 @@ individual.
     construir intervalos de confianza para el ordenamiento.
     \item Los hiperpar\'ametros se ajustaron sobre la referencia; las
     r\'eplicas \emph{held-out} (Secci\'on~\ref{sec:res-heldout}) no
-    muestran sobreajuste, pero usan las frecuencias de esa referencia.
+    muestran sobreajuste, pero comparten la distribuci\'on de la referencia.
     \item Las arquitecturas del DQN recurrente y del Transformer se
     eligieron \emph{ad hoc}; otras configuraciones podr\'ian modificar el
     ordenamiento.
@@ -71,27 +66,21 @@ individual.
 
 \subsection{Conclusi\'on general}
 
-En el entorno controlado de mPES, el Transformer causal es el modelo
-individual con mejor desempe\~no, en las condiciones de entrenamiento y
-fuera de ellas, aunque no es el que menos se degrada en su peor
-escenario. La combinaci\'on de modelos lo super\'o en un solo caso y por un
-margen despreciable, mediante una regla que suaviza las preferencias de
-los miembros y las mezcla con un \emph{prior} de severidad. Una regla
-fija calibrada con la asignaci\'on \'optima alcanza ese mismo nivel, de
-modo que en este entorno la ventaja de los modelos aprendidos frente a
-una heur\'istica bien calibrada es nula. En consecuencia, los resultados
-respaldan H1 y no respaldan H2, dentro de un entorno cuya pol\'itica
-\'optima es simple. Estas conclusiones se limitan al entorno y a los modelos
-evaluados. La heur\'istica, sin embargo, requiere un \'optimo calculable con
-informaci\'on completa, que mPES admite por sus simplificaciones. Los
-agentes evaluados, en cambio, aprenden s\'olo a partir de la recompensa y
-no requieren ese conocimiento, y el marco desarrollado (entorno, protocolo,
-escenarios de generalizaci\'on, r\'eplicas \emph{held-out} y reglas de
-combinaci\'on) se aplica sin cambios a variantes sin esas
-simplificaciones. En ese sentido, mPES act\'ua como un banco de prueba en
-el que el \'optimo conocido permite medir con exactitud cu\'anto se acercan
-los agentes, antes de aplicarlos a problemas en los que esa medici\'on no
-es posible y en los que ninguna regla simple es casi \'optima.
+En mPES, el Transformer causal es el mejor modelo individual, y la
+combinaci\'on de modelos lo supera en un solo caso y por un margen
+despreciable: los resultados respaldan H1 y no respaldan H2. Una regla fija
+calibrada con la asignaci\'on \'optima alcanza ese mismo nivel, porque la
+pol\'itica \'optima del entorno es simple. Estas conclusiones se limitan al
+entorno y a los modelos evaluados. La regla requiere un \'optimo calculable
+con informaci\'on completa, que mPES admite por sus simplificaciones; los
+agentes evaluados, en cambio, aprenden s\'olo a partir de la recompensa. El
+marco desarrollado (entorno, protocolo, escenarios de generalizaci\'on,
+r\'eplicas \emph{held-out} y reglas de combinaci\'on) se aplica sin cambios a
+variantes sin esas simplificaciones. En ese sentido, mPES act\'ua como un
+banco de pruebas en el que el \'optimo conocido permite medir con exactitud
+cu\'anto se acercan los agentes, antes de aplicarlos a problemas en los que
+esa medici\'on no es posible y en los que ninguna regla simple es casi
+\'optima.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

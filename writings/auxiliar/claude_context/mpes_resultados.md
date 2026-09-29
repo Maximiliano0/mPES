@@ -1,6 +1,6 @@
 # mPES — Síntesis de métricas, salidas y resultados (contexto para la tesis)
 
-> Generado por `writings/auxiliar/scripts/build_results_context.py` — no editar a mano. Fecha (UTC): 2026-09-29T19:06:16Z; commit `048b361` (con cambios sin confirmar). Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matrices/`, `cells/`, `heldout/`), las decisiones del replay de `writings/auxiliar/scripts/ensemble_decisions.py`, los `inputs/best_params.json`, `inputs/*_BAYESIAN_OPT/` y `config/CONFIG.py` de cada paquete, y los `.tex` de `writings/`. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. El texto redactado a mano vive en `writings/auxiliar/claude_context/mpes_resultados_notas.md`.
+> Generado por `writings/auxiliar/scripts/build_results_context.py` — no editar a mano. Fecha (UTC): 2026-09-29T19:45:17Z; commit `17a347c` (con cambios sin confirmar). Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matrices/`, `cells/`, `heldout/`), las decisiones del replay de `writings/auxiliar/scripts/ensemble_decisions.py`, los `inputs/best_params.json`, `inputs/*_BAYESIAN_OPT/` y `config/CONFIG.py` de cada paquete, y los `.tex` de `writings/`. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. El texto redactado a mano vive en `writings/auxiliar/claude_context/mpes_resultados_notas.md`.
 
 ## 0. Resumen ejecutivo (hallazgos verificados)
 
@@ -60,7 +60,7 @@
 | `pes_dqn` | DQN | Double DQN, red densa | Input(3) -> Dense(64,ReLU) -> Dense(64,ReLU) -> Dense(11) | 5131 | 40000 | 84 | Optuna/TPE, 47 ensayos, mejor #41 (arquitectura incluida) |
 | `pes_rdqn` | DQN recurrente | Double DQN con codificador LSTM (esquema DRQN) | ventana W=6 estados -> LSTM(64) -> Dense(96,ReLU) -> Dense(96,ReLU) -> Dense(11) | 34027 | 30000 | 57 | BO sólo de hiperparámetros de entrenamiento; arquitectura ad hoc |
 | `pes_a2c` | A2C | Advantage Actor-Critic (redes separadas) | actor Input(3)->Dense(128,ReLU)->Dense(11,softmax); crítico Input(3)->Dense(128,ReLU)->Dense(1) | — | 125000 | 132 | Optuna/TPE, 100 ensayos, mejor #89 |
-| `pes_trf` | Transformer | Double DQN con codificador Transformer causal (Pre-LN) | ventana W=6 -> proyección d_model=32 + vector de posición fijo (Glorot, no entrenado) -> 2 bloques [atención causal 4 cabezas key_dim 16; FFN 64; residual; LayerNorm previa] -> última posición -> Dense(32,ReLU) -> Dense(11); dropout 0 | 27019 | 30000 | 45 | BO sólo de hiperparámetros de entrenamiento; arquitectura ad hoc |
+| `pes_trf` | Transformer | Double DQN con codificador Transformer causal (Post-LN) | ventana W=6 -> proyección d_model=32 + vector de posición fijo (Glorot, no entrenado) -> 2 bloques [atención causal 4 cabezas key_dim 16; FFN 64; residual; LayerNorm posterior (Post-LN)] -> última posición -> Dense(32,ReLU) -> Dense(11); dropout 0 | 27019 | 30000 | 45 | BO sólo de hiperparámetros de entrenamiento; arquitectura ad hoc |
 
 **Tabulares** (Tabla `tab:tabular-hparams`): Q-Learning base α 0,2 · γ 0,9 · ε 0,8→0 lineal · 1 000 000 episodios. Q-Learning α 0,2862 · γ 0,8587 · ε 0,6813→0,0437 lineal · 550 000 episodios. Double Q-Learning α 0,1132 · γ 0,9777 · ε 0,5998→0,0327 exponencial con calentamiento w 0,0260 y fracción q 0,6430 · PBRS κ 0,000392 (Φ(s) = −Σ S_i) · 360 000 episodios. Semilla de entrenamiento = 42 + i + 1 (i = índice del mejor ensayo).
 
@@ -826,8 +826,8 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 
 ## 13. Mapa del documento LaTeX
 
-- Estado del último `audit.py` (`writings/audit/AUDIT.md`): Compilación OK (61 páginas), 20 figuras y 15 tablas con label, 97 referencias internas, 21 imágenes; avisos (⚠/❌): ninguno; `.tex` no incluidos en Main.tex: `Acknowledgement.tex` (excluido de Main.tex a propósito).
-- Recuento del generador sobre los `.tex` actuales: 20 figuras y 15 tablas con label, 97 referencias internas, 21 imágenes distintas (coincide con AUDIT.md).
+- Estado del último `audit.py` (`writings/audit/AUDIT.md`): Compilación OK (60 páginas), 20 figuras y 15 tablas con label, 98 referencias internas, 21 imágenes; avisos (⚠/❌): ninguno; `.tex` no incluidos en Main.tex: `Acknowledgement.tex` (excluido de Main.tex a propósito).
+- Recuento del generador sobre los `.tex` actuales: 20 figuras y 15 tablas con label, 98 referencias internas, 21 imágenes distintas (coincide con AUDIT.md).
 - Estructura en el repositorio (en el chat los archivos están planos):
   - `writings/00_Main/`: `.latexmkrc`, `IEEEtran.cls`, `Main.tex`, `References.bib`
   - `writings/01_Chapters/`: `000NHH-Frontpage.tex`, `00Abstract.tex`, `00Abstract_en.tex`, `01Introduction.tex`, `02Background.tex`, `03StateOfTheArt.tex`, `04Materials.tex`, `05Results.tex`, `06Discussion.tex`, `07Conclusion.tex`, `Appendix.tex`, `Acknowledgement.tex (excluido de Main.tex a propósito)`

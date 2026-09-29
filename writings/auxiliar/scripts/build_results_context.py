@@ -463,7 +463,7 @@ def trainable_parameters(pkg: str, cfg, n_inputs: int, n_actions: int) -> int:
     """Number of trainable parameters of the deployed network, from ``config/CONFIG.py``.
 
     DQN: dense chain. RDQN: LSTM (4 gates) + dense head. TRF: input projection,
-    ``TRF_NUM_LAYERS`` Pre-LN blocks (Q/K/V/O projections with bias, FFN, two
+    ``TRF_NUM_LAYERS`` Post-LN blocks (Q/K/V/O projections with bias, FFN, two
     LayerNorms) and dense head; the fixed positional vector is not trained.
     """
     if pkg == 'pes_dqn':

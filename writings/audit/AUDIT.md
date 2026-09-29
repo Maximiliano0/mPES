@@ -8,7 +8,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - `01_Chapters/Acknowledgement.tex`
 
-- ✅ Compilación exitosa — **61 páginas**.
+- ✅ Compilación exitosa — **60 páginas**.
 - 📄 PDF: `out/mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-Secuenciales.pdf`
 
 - ✅ Sin Overfull \hbox.
@@ -21,7 +21,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **20**.
 - Tablas con label: **15**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **97**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **98**.
 
 - ✅ Sin referencias rotas.
 

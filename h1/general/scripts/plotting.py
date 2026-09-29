@@ -63,31 +63,55 @@ PRINT_RC = {
 PRINT_BEST_LINEWIDTH = 1.8
 PRINT_BASE_LINEWIDTH = 0.9
 
-# Soft sequential/diverging ramps shared by every heatmap in the benchmark.
-_PALETTE_ANCHORS = {
-    'mpes_perf': ['#f3f7f4', '#cfe7e2', '#7fc6c0', '#3b9aa1', '#1f6e83',
-                  '#1b455f', '#16263f'],
-    'mpes_div':  ['#2a6489', '#5994b8', '#a7c8db', '#f1f1ee',
-                  '#f1c5a3', '#d77c5d', '#9e3a26'],
-    'mpes_pval': ['#1f0033', '#5a1450', '#9c3060', '#d96a52', '#f6a36b',
-                  '#ffd9a3', '#fff4e6'],
-    'mpes_kl':   ['#fdf8ec', '#d9ecdb', '#7ec5b6', '#3a8a9a', '#1d5c80',
-                  '#162d52', '#0a0f29'],
+#: Base colours of every figure: a blue family in harmony with the ITBA logo,
+#: a muted coral as the single warm accent and soft neutrals. Large filled
+#: areas (heatmap cells, bars, histograms) use the pastel steps; lines and
+#: markers use the mid steps, which stay legible on white.
+PALETTE = {
+    'blue_dark':  '#2f6399',  # emphasis, table headers, dark end of the ramps
+    'blue':       '#6c9cca',  # standard marks and lines
+    'blue_light': '#bcd3e8',  # pastel fills
+    'blue_pale':  '#e6eef7',  # backgrounds, box fills, striped rows
+    'coral':      '#d87069',  # warm accent: mean lines, the highlighted model
+    'coral_light': '#f2cfc1',  # pastel warm fill (dispersion bands)
+    'teal':       '#1ba6ae',  # secondary line (medians, cumulative mean)
+    'grey':       '#a0a8b3',  # references and de-emphasised marks
+    'ink':        '#2b3440',  # text and outlines
 }
 
-# Stable, colour-blind friendly line colours for per-model curves.
-MODEL_LINE_COLOURS = ('#8d99ae', '#457b9d', '#2a9d8f', '#c9a227',
-                      '#f4a261', '#e76f51', '#6d597a', '#264653')
+# Soft sequential/diverging ramps shared by every heatmap in the benchmark.
+# Sequential maps use one hue from pastel to a medium-dark step (never black);
+# the diverging map uses the blue family and the coral accent around a
+# neutral light grey.
+_PALETTE_ANCHORS = {
+    # Positioned anchors: most of the lightness range is spent on the upper
+    # part of the scale, where the model means concentrate.
+    'mpes_perf': [(0.0, '#f5f8fb'), (0.3, '#dde8f3'), (0.5, '#bcd3e8'),
+                  (0.65, '#94b8da'), (0.78, '#6c9cca'), (0.9, '#4677ad'),
+                  (1.0, '#285384')],
+    'mpes_div':  ['#3f73a8', '#7ea3cc', '#bed2e7', '#f3f3f1',
+                  '#f2cfc1', '#e09a84', '#c0624c'],
+    'mpes_pval': ['#3b4a86', '#5a68a3', '#7f8bbf', '#a6afd6', '#c9cfe7',
+                  '#e2e6f3', '#f8f9fc'],
+    'mpes_kl':   ['#f5f8fb', '#d3e2f0', '#b0cae4', '#8db3d8', '#6c9cca',
+                  '#4a80b6', '#2f6399'],
+}
+
+# Muted categorical line colours, CVD-checked on all pairs (Machado 2009,
+# OKLab dE >= 8 under protan/deutan, >= 15 under normal vision).
+MODEL_LINE_COLOURS = ('#8aa4fa', '#0c739f', '#1ba6ae', '#387a23',
+                      '#c0a033', '#d87069', '#a0a8b3')
 
 # Fixed model -> colour mapping so a model keeps its hue across every figure.
-# The best model of each suite (pes_trf / pes_ens) gets the warm accent.
+# The best model of each suite (pes_trf / pes_ens) gets the warm accent and
+# the untuned reference (pes_base) the neutral grey.
 MODEL_COLOURS = {
-    'pes_base': '#9aa5b1', 'pes_ql': '#5b8fb9', 'pes_dql': '#2f6690',
-    'pes_dqn': '#2a9d8f', 'pes_rdqn': '#7fb069', 'pes_a2c': '#e9a13b',
-    'pes_trf': '#c44e52',
-    'pes_ens': '#c44e52', 'pes_ens_sprb': '#5b8fb9', 'pes_ens_accq': '#2f6690',
-    'pes_ens_consensus': '#2a9d8f', 'pes_ens_consensus_prior': '#7fb069',
-    'pes_ens_trf_guard': '#e9a13b',
+    'pes_base': '#a0a8b3', 'pes_ql': '#8aa4fa', 'pes_dql': '#0c739f',
+    'pes_dqn': '#1ba6ae', 'pes_rdqn': '#387a23', 'pes_a2c': '#c0a033',
+    'pes_trf': '#d87069',
+    'pes_ens': '#d87069', 'pes_ens_sprb': '#8aa4fa', 'pes_ens_accq': '#0c739f',
+    'pes_ens_consensus': '#1ba6ae', 'pes_ens_consensus_prior': '#387a23',
+    'pes_ens_trf_guard': '#c0a033',
 }
 
 #: Line widths for the best model of a panel versus the remaining ones.
@@ -96,7 +120,7 @@ BASE_LINEWIDTH = 1.5
 
 #: Colours of the non-model references drawn next to the model curves:
 #: the random decision maker and the per-sequence bounds S_peor / S_mejor.
-REFERENCE_COLOURS = {'random': '#7b8794', 'worst': '#9e3a26', 'best': '#1f6e83'}
+REFERENCE_COLOURS = {'random': '#7d8896', 'worst': '#c0624c', 'best': '#2f6399'}
 
 #: Style of the horizontal per-model mean line shared by every per-sequence figure.
 MEAN_LINESTYLE = ':'
@@ -384,7 +408,7 @@ def _draw_cells(axis, matrix: numpy.ndarray, models: "list[str]", scenarios: "li
     axis.grid(which='minor', color='white', linewidth=1.1)
     axis.tick_params(which='both', length=0)
     for column in separators:
-        axis.axvline(column - 0.5, color='#252525', linewidth=2.0, zorder=4)
+        axis.axvline(column - 0.5, color=PALETTE['ink'], linewidth=2.0, zorder=4)
     for spine in axis.spines.values():
         spine.set_visible(False)
     for row in range(n_rows):
@@ -394,11 +418,22 @@ def _draw_cells(axis, matrix: numpy.ndarray, models: "list[str]", scenarios: "li
                 continue
             text, reference = _cell_text(value, spec)
             rgba = colour_map(norm(reference))
-            luminance = 0.299 * rgba[0] + 0.587 * rgba[1] + 0.114 * rgba[2]
             axis.text(column, row, text, ha='center', va='center',
-                      fontsize=spec.annot_fontsize,
-                      color='white' if luminance < 0.55 else '#1a1a1a')
+                      fontsize=spec.annot_fontsize, color=_annotation_colour(rgba))
     return image
+
+
+def _annotation_colour(rgba) -> str:
+    """Return white or dark ink, whichever contrasts more with the cell (WCAG)."""
+    def linear(channel: float) -> float:
+        return channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4
+    luminance = (0.2126 * linear(rgba[0]) + 0.7152 * linear(rgba[1])
+                 + 0.0722 * linear(rgba[2]))
+    ink = PALETTE['ink']
+    ink_luminance = 0.0223  # relative luminance of PALETTE['ink']
+    on_white = 1.05 / (luminance + 0.05)
+    on_ink = (luminance + 0.05) / (ink_luminance + 0.05)
+    return 'white' if on_white > on_ink else ink
 
 
 def _cell_text(value: float, spec: HeatmapSpec) -> "tuple[str, float]":

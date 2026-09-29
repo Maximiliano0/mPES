@@ -161,8 +161,8 @@ Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matr
 - nota: Recorta la severidad a {{_/max_severidad}} antes de escalar la entrada.
 
 ## [hiper.pes_trf]
-- tipo: Double DQN con codificador Transformer causal (Pre-LN)
-- arquitectura: ventana W={{_/cfg/pes_trf/TRF_HISTORY_LEN}} -> proyección d_model={{_/cfg/pes_trf/TRF_D_MODEL}} + vector de posición fijo (Glorot, no entrenado) -> {{_/cfg/pes_trf/TRF_NUM_LAYERS}} bloques [atención causal {{_/cfg/pes_trf/TRF_NUM_HEADS}} cabezas key_dim {{_/cfg/pes_trf/TRF_KEY_DIM}}; FFN {{_/cfg/pes_trf/TRF_FF_DIM}}; residual; LayerNorm previa] -> última posición -> {{_/arq/trf_capas}} -> Dense({{_/n_acciones}}); dropout {{_/cfg/pes_trf/TRF_DROPOUT|g}}
+- tipo: Double DQN con codificador Transformer causal (Post-LN)
+- arquitectura: ventana W={{_/cfg/pes_trf/TRF_HISTORY_LEN}} -> proyección d_model={{_/cfg/pes_trf/TRF_D_MODEL}} + vector de posición fijo (Glorot, no entrenado) -> {{_/cfg/pes_trf/TRF_NUM_LAYERS}} bloques [atención causal {{_/cfg/pes_trf/TRF_NUM_HEADS}} cabezas key_dim {{_/cfg/pes_trf/TRF_KEY_DIM}}; FFN {{_/cfg/pes_trf/TRF_FF_DIM}}; residual; LayerNorm posterior (Post-LN)] -> última posición -> {{_/arq/trf_capas}} -> Dense({{_/n_acciones}}); dropout {{_/cfg/pes_trf/TRF_DROPOUT|g}}
 - arquitectura_origen: exploración ad hoc, fijada en config/CONFIG.py (NO optimizada)
 - nota: Sólo los hiperparámetros de entrenamiento vienen de la optimización bayesiana. NO citar número de ensayos, score de Optuna ni los campos de arquitectura de su best_params.json (no corresponden al modelo desplegado).
 

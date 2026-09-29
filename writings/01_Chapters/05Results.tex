@@ -4,27 +4,27 @@
 
 \label{sec:results}
 
-Los valores a los que se hace referencia, salvo que se especifique otra
-cosa, corresponden al desempe\~no normalizado $\bar r$
+Salvo indicaci\'on en contrario, los valores corresponden al
+desempe\~no normalizado $\bar r$
 (Ecuaci\'on~\eqref{eq:normalised-severity-materials}) medio de cada
 escenario; \emph{referencia} es la condici\'on de entrenamiento y
-\emph{generalizaci\'on}, la media en los $21$ escenarios. Al comparar
-medias, las diferencias se expresan como variaci\'on porcentual respecto de
-la media con la que se comparan. Los mapas
+\emph{generalizaci\'on}, la media en los $21$ escenarios. Las diferencias
+entre medias se expresan como variaci\'on porcentual respecto de la media
+de comparaci\'on. Los mapas
 estad\'isticos por escenario y las matrices de comparaci\'on entre pares
-pueden encontrarse en el Ap\'endice~\ref{ap:stat-maps}
+se encuentran en el Ap\'endice~\ref{ap:stat-maps}
 (Figuras~\ref{fig:pairwise-cohen}--\ref{fig:ensemble-pairwise}).
 
 \subsection{Mejor modelo individual}\label{sec:res-individual}
 
 El Transformer es el mejor modelo individual
 (Tabla~\ref{tab:global-mean}): tiene la mayor media en la referencia y
-en generalizaci\'on, donde supera al resto de los modelos optimizados entre
-un $3{,}4\%$ (DQN) y un $6{,}7\%$ (Q-Learning), la menor dispersi\'on entre
-secuencias y la mayor media en $15$ de los $21$ escenarios
-(Figura~\ref{fig:heatmap-global}). Su
-ventaja es de tama\~no medio frente a DQN ($d = 0{,}50$), al DQN
-recurrente ($d = 0{,}57$) y a Q-Learning ($d = 0{,}79$).
+en generalizaci\'on, la menor dispersi\'on entre secuencias y la mayor
+media en $15$ de los $21$ escenarios (Figura~\ref{fig:heatmap-global}).
+En generalizaci\'on supera al resto de los modelos optimizados entre un
+$3{,}4\%$ (DQN) y un $6{,}7\%$ (Q-Learning), con una ventaja de tama\~no
+medio frente a DQN ($d = 0{,}50$), el DQN recurrente ($d = 0{,}57$) y
+Q-Learning ($d = 0{,}79$).
 
 \begin{table}[H]
 \centering
@@ -61,15 +61,12 @@ Q-Learning base   & $0{,}871$ & $0{,}074$ & $0{,}851$ & Extrap.\ de severidad ($
   \label{fig:heatmap-global}
 \end{figure}
 
-En la Figura~\ref{fig:extra-sev-skew}, con las secuencias ordenadas de
-menor a mayor $\bar r$, el Transformer queda por encima o al nivel del
+En la Figura~\ref{fig:extra-sev-skew}, el Transformer queda por encima o al nivel del
 resto en los tres escenarios de severidad y en el de longitudes Poisson,
 con la mayor ventaja en los peores casos de la distribuci\'on bimodal;
 con secuencias largas lo supera el DQN recurrente, y con alta severidad y
 longitud $10$ las curvas casi se superponen. Las
-Figuras~\ref{fig:c-base}--\ref{fig:c-trf} (Ap\'endice~\ref{ap:per-model}) muestran, para cada modelo, el
-desempe\~no de cada secuencia de la referencia, su distribuci\'on y sus
-estad\'isticos por bloque.
+Figuras~\ref{fig:c-base}--\ref{fig:c-trf} (Ap\'endice~\ref{ap:per-model}) muestran el desempe\~no por secuencia de cada modelo en la referencia.
 
 \begin{figure}[H]
   \centering
@@ -90,16 +87,18 @@ como los dos grupos se evaluaron por separado, $d$ y $p$ se calculan con la
 media, la desviaci\'on est\'andar y el n\'umero de secuencias de cada
 escenario.
 
-S\'olo el ensamble ponderado supera al Transformer: su media en
-generalizaci\'on es un $1{,}1\%$ mayor, tiene mayor media en $18$ de los
-$21$ escenarios y su peor escenario es un $4{,}7\%$ m\'as alto. La diferencia es
-significativa pero de tama\~no despreciable ($d = 0{,}19$, apenas por
-debajo de un efecto peque\~no). En la referencia reduce en un $45\%$ la
-distancia al \'optimo que deja Q-Learning,
-$(\bar r - \bar r_{\mathrm{ql}})/(1 - \bar r_{\mathrm{ql}})$, frente al
-$36\%$ del Transformer. Frente a los dem\'as ensambles, su ventaja es de tama\~no
-medio sobre el consenso ($d = 0{,}58$) y despreciable sobre la compuerta
-($d = 0{,}17$); ambas son significativas ($p < 10^{-5}$).
+El mejor ensamble es el ponderado: tiene la mayor media en la referencia y
+en generalizaci\'on, el peor escenario m\'as alto y la menor p\'erdida
+(Tabla~\ref{tab:ensemble-stress}), y es el \'unico que supera al
+Transformer (Secci\'on~\ref{sec:res-trf-vs-best}). Entre los ensambles,
+s\'olo lo superan el consenso, en \texttt{len\_all\_short} y
+\texttt{joint\_low\_short}, y la compuerta del Transformer, en
+\texttt{len\_poisson} (Figura~\ref{fig:heatmap-ens}). Su ventaja es de
+tama\~no medio sobre el consenso ($d = 0{,}58$) y despreciable sobre la
+compuerta ($d = 0{,}17$), ambas significativas ($p < 10^{-5}$). En la
+referencia reduce en un $45\%$ la distancia al \'optimo que deja
+Q-Learning, $(\bar r - \bar r_{\mathrm{ql}})/(1 - \bar r_{\mathrm{ql}})$,
+frente al $36\%$ del Transformer.
 
 \begin{table}[H]
 \centering
@@ -115,7 +114,7 @@ escenario respecto de la referencia.}
 \midrule
 Ensamble ponderado        & $0{,}937$ & $0{,}939$ & Secuencias largas ($0{,}900$) & $4{,}0\%$ \\
 Compuerta del Transformer & $0{,}928$ & $0{,}931$ & Secuencias largas ($0{,}861$) & $7{,}2\%$ \\
-Consenso con prior        & $0{,}918$ & $0{,}919$ & Secuencias largas ($0{,}870$) & $5{,}2\%$ \\
+Consenso con \emph{prior}        & $0{,}918$ & $0{,}919$ & Secuencias largas ($0{,}870$) & $5{,}2\%$ \\
 Consenso                  & $0{,}889$ & $0{,}905$ & Secuencias largas ($0{,}826$) & $7{,}1\%$ \\
 Voto suave                & $0{,}914$ & $0{,}902$ & Extrap.\ de severidad ($0{,}860$) & $5{,}9\%$ \\
 Voto por acci\'on         & $0{,}914$ & $0{,}901$ & Extrap.\ de severidad ($0{,}859$) & $6{,}0\%$ \\
@@ -138,7 +137,7 @@ Transformer; los valores positivos indican ventaja del ensamble.}
 \midrule
 Ensamble ponderado        & $+1{,}1\%$ & $0{,}19$  & despreciable & $< 10^{-5}$  & $18$ de $21$ \\
 Compuerta del Transformer & $+0{,}1\%$ & $0{,}02$  & despreciable & $0{,}68$     & $15$ de $21$ \\
-Consenso con prior        & $-1{,}1\%$ & $-0{,}18$ & despreciable & $< 10^{-5}$  & $5$ de $21$ \\
+Consenso con \emph{prior}        & $-1{,}1\%$ & $-0{,}18$ & despreciable & $< 10^{-5}$  & $5$ de $21$ \\
 Consenso                  & $-2{,}7\%$ & $-0{,}39$ & peque\~no    & $< 10^{-22}$ & $3$ de $21$ \\
 Voto suave                & $-2{,}9\%$ & $-0{,}40$ & peque\~no    & $< 10^{-24}$ & $2$ de $21$ \\
 Voto por acci\'on         & $-3{,}1\%$ & $-0{,}42$ & peque\~no    & $< 10^{-26}$ & $2$ de $21$ \\
@@ -154,48 +153,34 @@ acci\'on, que s\'olo promedian o votan ponderando por la confianza, tienen
 las medias m\'as bajas (efecto peque\~no, $d \approx -0{,}4$). Su peor
 escenario es la extrapolaci\'on de severidad: el $41\%$ y el $42\%$ de sus
 secuencias quedan por debajo de $0{,}8$
-(Figura~\ref{fig:ensemble-extrapolation}) y su media queda por debajo de
-la de tres de sus cuatro miembros: un $14\%$ por debajo de la del
-Transformer, entre un $7\%$ y un $8\%$ de la de A2C y un $3\%$ de la de
+(Figura~\ref{fig:ensemble-extrapolation}) y su media es inferior a
+la de tres de sus cuatro miembros: en un $14\%$ a la del
+Transformer, entre un $7\%$ y un $8\%$ a la de A2C y en un $3\%$ a la de
 DQN.
-
-El mejor ensamble es el ponderado: tiene la mayor media en la
-referencia y en generalizaci\'on, el peor escenario m\'as alto (secuencias
-largas) y la menor p\'erdida respecto de la referencia, un $4{,}0\%$
-(Tabla~\ref{tab:ensemble-stress}). Es adem\'as el ensamble con mayor media
-en $18$ de los $21$ escenarios; s\'olo lo superan
-el consenso, en \texttt{len\_all\_short} y \texttt{joint\_low\_short}, y
-la compuerta del Transformer, en \texttt{len\_poisson}
-(Figura~\ref{fig:heatmap-ens}).
 
 \subsubsection{Efecto de las reglas fijas sobre la decisi\'on}\label{sec:res-freq}
 
 Tres ensambles agregan reglas fijas al voto: el ensamble ponderado y el
 consenso con \emph{prior} lo mezclan con un \emph{prior} de severidad y
 aplican una cota de seguridad, y la compuerta del Transformer decide
-cu\'ando ejecutar la acci\'on del Transformer; el voto suave, el voto por
-acci\'on y el consenso no tienen reglas fijas. Para determinar si la decisi\'on
-de esos tres ensambles proviene del voto o de las reglas, se repiti\'o su
+cu\'ando ejecutar la acci\'on del Transformer. Para determinar si su decisi\'on proviene del voto o de las reglas, se repiti\'o su
 evaluaci\'on registrando, en cada decisi\'on, la
 acci\'on antes y despu\'es de cada regla y la que prefiere el Transformer
 (Ap\'endice~\ref{ap:orchestrator}). La repetici\'on reproduce las medias de
-la evaluaci\'on principal con diferencias menores que el $0{,}01\%$ de la
+la evaluaci\'on principal con diferencias inferiores al $0{,}01\%$ de la
 escala de $\bar r$ (Tabla~\ref{tab:ens-freq}).
 
 En el consenso con \emph{prior} decide el voto: el \emph{prior} cambia la
-acci\'on votada en menos del $5\%$ de las decisiones, tanto en la
-referencia como en generalizaci\'on, y el ensamble queda por debajo del
-Transformer. En la compuerta decide el Transformer: su acci\'on se ejecuta
+acci\'on votada en menos del $5\%$ de las decisiones. En la compuerta decide el Transformer: su acci\'on se ejecuta
 en el $97\%$ y el $95\%$ de las decisiones, lo que explica la equivalencia
 de sus desempe\~nos.
 
 En el ensamble ponderado deciden el voto y el
 \emph{prior}: con $\tau = 15$ las distribuciones de los miembros quedan
 casi planas (en la referencia, la acci\'on m\'as probable de cada uno tiene
-en promedio probabilidad $0{,}19$ y supera a la segunda por
+en promedio probabilidad $0{,}19$ y supera a la segunda en
 $0{,}02$--$0{,}03$), y el \emph{prior} cambia la acci\'on votada en el
-$41\%$ y el $32\%$ de las decisiones. La cota de seguridad cambia menos del
-$0{,}5\%$ de las decisiones.
+$41\%$ y el $32\%$ de las decisiones; la cota, menos del $0{,}5\%$.
 
 \begin{destacado}
 En los dos ensambles que igualan o superan al Transformer, la decisi\'on no
@@ -216,7 +201,7 @@ de las decisiones con recursos disponibles en que ocurre cada evento.}
 Compuerta del Transformer & Sigue al Transformer ($g \ge 0{,}5$) & $96{,}9\%$ & $94{,}9\%$ \\
                           & Acci\'on final distinta de la del Transformer & $0{,}8\%$ & $2{,}7\%$ \\
 \midrule
-Consenso con prior & El \emph{prior} cambia la acci\'on votada & $4{,}5\%$ & $4{,}6\%$ \\
+Consenso con \emph{prior} & El \emph{prior} cambia la acci\'on votada & $4{,}5\%$ & $4{,}6\%$ \\
                    & La cota cambia la acci\'on & $0{,}3\%$ & $1{,}5\%$ \\
                    & Acci\'on final distinta de la del Transformer & $62{,}4\%$ & $58{,}4\%$ \\
 \midrule
@@ -231,30 +216,28 @@ Ensamble ponderado & El \emph{prior} cambia la acci\'on votada & $40{,}9\%$ & $3
   \centering
   \includegraphics[width=\linewidth]{ens_01_desempeno_por_escenario.png}
   \caption[Desempe\~no medio por escenario (ensambles)]{Ensambles:
-  desempe\~no medio $\bar r$ por ensamble y escenario. El panel superior muestra la referencia (primera columna), la severidad y la
-  longitud; el inferior, los escenarios conjuntos y estructurales y, a la
-  derecha de la l\'inea vertical, las cinco r\'eplicas \emph{held-out}.}
+  desempe\~no medio $\bar r$ por ensamble y escenario, con la misma
+  disposici\'on que la Figura~\ref{fig:heatmap-global}.}
   \label{fig:heatmap-ens}
 \end{figure}
 
 \subsection{Transformer frente al mejor ensamble}\label{sec:res-trf-vs-best}
 
 El ensamble ponderado supera al Transformer en todas las medidas de la
-Tabla~\ref{tab:trf-vs-best}: una media en generalizaci\'on un $1{,}1\%$
-mayor, con un efecto despreciable ($d = 0{,}19$;
-Tabla~\ref{tab:trf-vs-ens}), un peor escenario un $4{,}7\%$ m\'as alto y
-una p\'erdida m\'axima de poco m\'as de la mitad. El Transformer tiene mayor
-media s\'olo en \texttt{len\_all\_short} (un $3{,}0\%$ m\'as), en
-\texttt{joint\_low\_short} (un $2{,}9\%$ m\'as) y, por menos del $0{,}1\%$,
-en \texttt{len\_poisson}.
+Tabla~\ref{tab:trf-vs-best}: su media en generalizaci\'on es un $1{,}1\%$
+mayor, diferencia significativa pero de efecto despreciable ($d = 0{,}19$;
+Tabla~\ref{tab:trf-vs-ens}); su peor escenario, un $4{,}7\%$ m\'as alto, y
+su mayor p\'erdida, poco m\'as de la mitad. El Transformer s\'olo tiene
+mayor media en \texttt{len\_all\_short} y \texttt{joint\_low\_short} (un
+$3{,}0\%$ y un $2{,}9\%$ m\'as) y, por menos del $0{,}1\%$, en
+\texttt{len\_poisson}.
 En la extrapolaci\'on de severidad y en la conjunta, el ensamble ponderado
 alcanza el \'optimo en todas las secuencias ($\sigma = 0$;
-Figura~\ref{fig:ensemble-extrapolation}), pero todas sus decisiones
-coinciden con las del Transformer que lo integra: la diferencia con el
+Figura~\ref{fig:ensemble-extrapolation}), pero decide siempre como su miembro Transformer: la diferencia con el
 Transformer individual proviene de que el ensamble recorta la severidad a
 $9$ antes de transmitirla a sus miembros. La Figura~\ref{fig:c-ens} muestra
 su desempe\~no por secuencia en la referencia, donde tiene la menor
-dispersi\'on de todos los sistemas ($\sigma = 0{,}035$).
+dispersi\'on de todos los modelos ($\sigma = 0{,}035$).
 
 \begin{table}[H]
 \centering
@@ -300,11 +283,10 @@ Escenarios con mayor media (de $21$) & $3$ & $18$ \\
 
 En las cinco r\'eplicas \emph{held-out}, $320$ secuencias nuevas de la
 distribuci\'on de la referencia, ning\'un modelo pierde desempe\~no de
-forma apreciable (Tabla~\ref{tab:heldout}). La ca\'ida respecto de la
-referencia va de $-0{,}5\%$ a $+1{,}2\%$, siempre con efecto despreciable
-($|d| \le 0{,}15$) y sin significaci\'on ($p \ge 0{,}29$). En los once
+forma apreciable (Tabla~\ref{tab:heldout}). La ca\'ida va de $-0{,}5\%$ a $+1{,}2\%$, siempre con efecto despreciable
+($|d| \le 0{,}15$) y sin significaci\'on estad\'istica ($p \ge 0{,}29$). En los once
 modelos optimizados con Optuna queda entre $-0{,}5\%$ y $+0{,}6\%$; la
-mayor corresponde a Q-Learning base, que no se optimiz\'o, de modo que
+mayor ca\'ida corresponde a Q-Learning base, que no se optimiz\'o, de modo que
 diferencias de ese tama\~no son compatibles con la variaci\'on entre
 muestras. El ordenamiento se conserva (correlaci\'on de Spearman entre
 las medias, $r_s = 0{,}97$): s\'olo cambian de posici\'on modelos cuyas
@@ -315,8 +297,8 @@ mayor media en las cinco r\'eplicas.
 
 \begin{destacado}
 Elegir la configuraci\'on sobre las $64$ secuencias de la referencia no
-produjo sobreajuste (\emph{overfitting}) a esas secuencias: el sesgo de
-selecci\'on de la Secci\'on~\ref{sec:hpo-bg} no sobrestim\'o el desempe\~no medido en la referencia, y cada modelo obtiene el mismo desempe\~no en secuencias que no
+produjo sobreajuste (\emph{overfitting}): el sesgo de
+selecci\'on de la Secci\'on~\ref{sec:hpo-bg} no sobrestim\'o el desempe\~no en la referencia, y cada modelo obtiene el mismo desempe\~no en secuencias que no
 intervinieron en su entrenamiento ni en su optimizaci\'on.
 \end{destacado}
 
@@ -335,7 +317,7 @@ variaci\'on porcentual de la referencia a las r\'eplicas (positiva si el desempe
 Ensamble ponderado          & $0{,}937$ & $0{,}939$ ($0{,}003$) & $-0{,}2\%$ & $+0{,}04$ \\
 Compuerta del Transformer   & $0{,}928$ & $0{,}928$ ($0{,}004$) & $0{,}0\%$ & $-0{,}01$ \\
 Transformer                 & $0{,}927$ & $0{,}929$ ($0{,}003$) & $-0{,}2\%$ & $+0{,}03$ \\
-Consenso con prior          & $0{,}918$ & $0{,}915$ ($0{,}007$) & $+0{,}3\%$ & $-0{,}07$ \\
+Consenso con \emph{prior}          & $0{,}918$ & $0{,}915$ ($0{,}007$) & $+0{,}3\%$ & $-0{,}07$ \\
 Voto por acci\'on           & $0{,}914$ & $0{,}916$ ($0{,}009$) & $-0{,}2\%$ & $+0{,}04$ \\
 Voto suave                  & $0{,}914$ & $0{,}917$ ($0{,}008$) & $-0{,}3\%$ & $+0{,}06$ \\
 DQN recurrente              & $0{,}899$ & $0{,}903$ ($0{,}008$) & $-0{,}5\%$ & $+0{,}08$ \\
@@ -354,25 +336,24 @@ Q-Learning base             & $0{,}871$ & $0{,}860$ ($0{,}010$) & $+1{,}2\%$ & $
 Los par\'ametros del ensamble ponderado se fijaron \emph{ad hoc}
 (Secci\'on~\ref{sec:ens-methods}). Para evaluar esa elecci\'on se
 realizaron, despu\'es de la evaluaci\'on principal y sin modificar los
-par\'ametros, dos estudios: un an\'alisis de sensibilidad, que var\'ia cada
-par\'ametro por separado, y un contraste de cada regla fija con la
-asignaci\'on \'optima. Ambos emplean la referencia y las cinco r\'eplicas
+par\'ametros, un an\'alisis de sensibilidad y un contraste de cada regla del ensamble
+con la asignaci\'on \'optima, ambos en la referencia y las cinco r\'eplicas
 \emph{held-out} (Ap\'endice~\ref{ap:orchestrator}).
 
 \textbf{Sensibilidad.} La Tabla~\ref{tab:sensitivity} var\'ia un
-par\'ametro por vez y mantiene los dem\'as en sus valores fijos. La
+par\'ametro por vez. Para la
 temperatura, el peso y el ancho del \emph{prior} y el peso base del
-Transformer alcanzan su m\'aximo en el valor elegido, tanto en la
+Transformer, la media es m\'axima en el valor elegido, tanto en la
 referencia como en las r\'eplicas, de modo que la elecci\'on no depende de
-las $64$ secuencias sobre las que se realiz\'o. Se trata, sin embargo, de
+las $64$ secuencias sobre las que se realiz\'o, pero se trata de
 m\'aximos agudos: en las r\'eplicas, un paso de la grilla reduce la media
 entre un $0{,}2\%$ y un $0{,}8\%$. La atenuaci\'on $\eta$, el t\'ermino
 $0{,}1$ y la cota de seguridad se encuentran en una meseta y modifican la
 media en a lo sumo un $0{,}1\%$. En las r\'eplicas, sin \emph{prior}
 ($w_\pi = 0$) el ensamble supera al Transformer en un $0{,}4\%$; con el
 \emph{prior} y $\tau = 1$, en un $0{,}1\%$, y con ambos, en un $1{,}1\%$.
-La ventaja proviene, por lo tanto, de la combinaci\'on de la temperatura
-alta con el \emph{prior}.
+La ventaja proviene, por lo tanto, de combinar la temperatura alta con
+el \emph{prior}.
 
 \begin{table}[H]
 \centering
@@ -400,8 +381,7 @@ Cota de seguridad             & activa    & s\'i / no          & sin efecto  & a
 
 \textbf{Contraste con el \'optimo.} La asignaci\'on \'optima de cada ciudad
 se reconstruy\'o con la programaci\'on din\'amica que calcula
-$S_{\mathrm{mejor}}$ (Ecuaci\'on~\eqref{eq:dp-optimum}), registrando en
-cada ciudad la acci\'on que alcanza el m\'inimo, en las $384$ secuencias de
+$S_{\mathrm{mejor}}$ (Ecuaci\'on~\eqref{eq:dp-optimum}) en las $384$ secuencias de
 la referencia y de las r\'eplicas. En el $6\%$ de las ciudades, todas con
 $S \le 5$, existe m\'as de una acci\'on \'optima; los resultados no cambian
 al considerarlas todas.
@@ -411,31 +391,31 @@ al considerarlas todas.
     \'optimo nunca asigna $0$ y asigna en promedio $1{,}6$ unidades m\'as
     que la severidad de la ciudad (entre $0{,}7$ y $1{,}9$ seg\'un la
     severidad); cuando el presupuesto se agota, asigna $0$.
-    \item \textbf{\emph{Prior}}: acierta el ancho pero no el centro. Una
+    \item \textbf{\emph{Prior}}: reproduce el ancho, pero no el centro. Una
     gaussiana centrada en $S$ ajustada a esas asignaciones tiene
     $\sigma_S = 2{,}7$, cercano al $3$ elegido; si tambi\'en se ajusta el
     centro, este queda en $S + 2{,}2$, con $\sigma_S = 1{,}4$, y el ajuste
     mejora sustancialmente. El ancho del \emph{prior} compensa en parte su
     centro desplazado.
     \item \textbf{Cota de seguridad}: nunca contradice al \'optimo, que
-    asigna al menos $\lfloor S/2 \rfloor$ siempre que puede, pero la acci\'on del ensamble queda por debajo de ella en muy pocas decisiones: modifica $2$ de $1\,726$
+    asigna al menos $\lfloor S/2 \rfloor$ siempre que puede, pero la acci\'on del ensamble rara vez queda por debajo de ella: modifica $2$ de $1\,726$
     decisiones.
     \item \textbf{Atenuaci\'on $\eta$}: act\'ua en el sentido del \'optimo,
     con un efecto despreciable.
     \item \textbf{Efecto de cada regla}: el \emph{prior} es la \'unica con
     efecto apreciable; cambia el $37\%$ de las decisiones con recursos y
-    mejora el $\bar r$ medio en un $1{,}2\%$. En esas decisiones, el voto
+    mejora el $\bar r$ medio en un $1{,}2\%$. En las decisiones con recursos, el voto
     sin \emph{prior} asigna en promedio $S + 2{,}2$ y el Transformer
     $S + 2{,}4$; con el \emph{prior}, el ensamble asigna $S + 1{,}6$.
 \end{itemize}
 
 \textbf{Una regla fija como pol\'itica.} Dado que el \'optimo asigna algo
-m\'as que la severidad, se evalu\'o tambi\'en esa estructura sin ning\'un
-modelo, mediante la regla $a = \min(S + k, R)$, que asigna la severidad de
+m\'as que la severidad, se evalu\'o tambi\'en, sin ning\'un
+modelo, la regla $a = \min(S + k, R)$, que asigna la severidad de
 la ciudad m\'as $k$ unidades mientras alcancen los recursos. La din\'amica
 (Ecuaci\'on~\eqref{eq:transicion}) explica por qu\'e $k$ debe ser
-positivo. Con una asignaci\'on constante $a = S + k$, la severidad tras
-$n$ evoluciones se obtiene aplicando $n$ veces esa ecuaci\'on.
+positivo: con una asignaci\'on constante $a = S + k$, la severidad tras
+$n$ pasos es
 
 \begin{equation}
 S_n \;=\; \max\!\bigl(0,\ S + k\,(1 - \beta^{\,n})\bigr)
@@ -444,35 +424,28 @@ S_n \;=\; \max\!\bigl(0,\ S + k\,(1 - \beta^{\,n})\bigr)
 
 Con $k = 0$ la severidad permanece constante, porque la asignaci\'on s\'olo
 la contiene, y con cualquier $k > 0$ se extingue, tanto antes cuanto mayor
-es $k$: con $S = 7$, en $7$, $5$ y $4$ evoluciones para $k = 1$, $2$ y
+es $k$: con $S = 7$, en $7$, $5$ y $4$ pasos para $k = 1$, $2$ y
 $3$. El punto de equilibrio $a = S$ se deduce de la din\'amica sin conocer
-el futuro; cu\'anto conviene superarlo depende de cu\'anto alcanza el
-presupuesto en las secuencias t\'ipicas, y ese valor se calibr\'o con los
-datos.
+el futuro; cu\'anto conviene superarlo depende de la holgura del
+presupuesto en las secuencias t\'ipicas.
 
 La Tabla~\ref{tab:fixed-rule} eval\'ua la regla en las mismas secuencias
-que los modelos y compara ambos con el \'optimo con informaci\'on
-completa, que por construcci\'on vale $\bar r = 1$, de modo que la
-distancia de cada pol\'itica al \'optimo es $1 - \bar r$. Con $k = 2$, la
+que los modelos; como el \'optimo con informaci\'on completa vale
+$\bar r = 1$, la distancia de cada pol\'itica al \'optimo es $1 - \bar r$. Con $k = 2$, la
 regla queda a un $6\%$ del \'optimo y por encima de doce de los trece
 modelos. S\'olo el ensamble ponderado la iguala: la supera en un $0{,}2\%$
 en generalizaci\'on y queda un $0{,}4\%$ por debajo en las r\'eplicas. En
-generalizaci\'on, el Transformer y la compuerta quedan un $0{,}8\%$ y un
-$0{,}7\%$ por debajo; los otros cuatro ensambles, entre un $1{,}9\%$ y un
-$3{,}9\%$, y los dem\'as modelos individuales, entre un $4{,}1\%$ y un
-$9{,}3\%$. Ning\'un modelo la supera en la referencia, y s\'olo el
-ensamble ponderado lo hace en una r\'eplica. La regla pierde frente a los
-trece modelos en los mismos dos escenarios, los de secuencias cortas
-(\texttt{len\_all\_short}, $0{,}845$, y \texttt{joint\_low\_short},
-$0{,}866$): la regla deja presupuesto sin asignar porque contin\'ua asignando $S + 2$, mientras
-que todos los modelos aprendieron a utilizar ese excedente. Con
-secuencias largas, en cambio, resulta preferible un $k$ menor. El valor $k = 2$
+generalizaci\'on, el Transformer queda un $0{,}8\%$ por debajo. Ning\'un modelo la supera en la referencia, y s\'olo el
+ensamble ponderado lo hace en una r\'eplica. Los trece modelos la superan en los dos
+escenarios de secuencias cortas (\texttt{len\_all\_short}, $0{,}845$, y
+\texttt{joint\_low\_short}, $0{,}866$), donde la regla sigue asignando
+$S + 2$ y deja sin usar un excedente que los modelos aprendieron a
+aprovechar; con secuencias largas, en cambio, conviene un $k$ menor. El valor $k = 2$
 se eligi\'o a partir de la asignaci\'on \'optima y es tambi\'en el mejor
-en la referencia, la condici\'on sobre la que se ajustaron los modelos; la
-regla constituye, por lo tanto, una referencia calibrada y no un
-competidor en igualdad de condiciones. La versi\'on sin calibraci\'on, que
-asigna la severidad ($k = 0$), queda muy por debajo de todos los modelos
-entrenados.
+en la referencia, sobre la que se ajustaron los modelos: la regla es un
+punto de comparaci\'on calibrado, no un competidor en igualdad de
+condiciones. Sin calibraci\'on ($k = 0$), queda muy por debajo de todos
+los modelos entrenados.
 
 \begin{table}[H]
 \centering
@@ -497,7 +470,7 @@ Regla, $k = 3$ & $0{,}939$ & $0{,}940$ & $0{,}941$ & -- & -- \\
 Ensamble ponderado & $0{,}937$ & $0{,}939$ & $0{,}939$ & $+0{,}2\%$ & $4$ \\
 Compuerta del Transformer & $0{,}928$ & $0{,}931$ & $0{,}928$ & $-0{,}7\%$ & $3$ \\
 Transformer & $0{,}927$ & $0{,}930$ & $0{,}929$ & $-0{,}8\%$ & $3$ \\
-Consenso con prior & $0{,}918$ & $0{,}919$ & $0{,}915$ & $-1{,}9\%$ & $2$ \\
+Consenso con \emph{prior} & $0{,}918$ & $0{,}919$ & $0{,}915$ & $-1{,}9\%$ & $2$ \\
 Consenso & $0{,}889$ & $0{,}905$ & $0{,}893$ & $-3{,}5\%$ & $2$ \\
 Voto suave & $0{,}914$ & $0{,}902$ & $0{,}917$ & $-3{,}7\%$ & $2$ \\
 Voto por acci\'on & $0{,}914$ & $0{,}901$ & $0{,}916$ & $-3{,}9\%$ & $2$ \\
@@ -512,10 +485,9 @@ Q-Learning base & $0{,}871$ & $0{,}851$ & $0{,}860$ & $-9{,}3\%$ & $2$ \\
 \end{table}
 
 \begin{destacado}
-En s\'intesis, el ensamble ponderado alcanza su desempe\~no porque su
-decisi\'on se aproxima a la de la regla fija calibrada. La temperatura alta
-aplana las preferencias de los miembros y el \emph{prior}, la \'unica regla
-con efecto apreciable, lleva la asignaci\'on media de $S + 2{,}2$ a
+El ensamble ponderado alcanza su desempe\~no porque su
+decisi\'on se aproxima a la de la regla fija calibrada: la temperatura alta
+aplana las preferencias de los miembros y el \emph{prior} lleva la asignaci\'on media de $S + 2{,}2$ a
 $S + 1{,}6$, el mismo exceso sobre la severidad que la asignaci\'on
 \'optima. Por eso alcanza el nivel de la regla con $k = 2$ y conserva su
 ventaja sobre el Transformer en las r\'eplicas \emph{held-out}, aunque sus

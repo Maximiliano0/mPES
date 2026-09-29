@@ -25,12 +25,12 @@
     "warmup_ratio": 0.24281758667148645,
     "target_ratio": 0.5333200932803407,
     "learning_starts_frac": 0.12169314570885453,
-    "history_len": 3,
-    "d_model": 16,
-    "num_heads": 8,
+    "history_len": 6,
+    "d_model": 32,
+    "num_heads": 4,
     "key_dim": 16,
-    "ff_dim": 128,
-    "num_layers": 4,
-    "dropout": 0.14813867890931723
+    "ff_dim": 64,
+    "num_layers": 2,
+    "dropout": 0.0
   }
 }

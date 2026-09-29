@@ -270,7 +270,7 @@ def run_random_player(pkg: str, seed: int) -> "tuple[numpy.ndarray, numpy.ndarra
 ##  Figures
 ###############
 def _sequence_axis(axis, n_sequences: int) -> None:
-    axis.set_xlabel('Secuencia de validación')
+    axis.set_xlabel('Secuencia de la referencia')
     axis.set_xlim(-1, n_sequences)
     style_axes(axis)
 
@@ -290,7 +290,7 @@ def plot_raw(raw: numpy.ndarray, colour: str) -> None:
     figure, axis = pyplot.subplots(figsize=(9, 4.2))
     x = numpy.arange(len(raw))
     axis.plot(x, raw, color=colour, marker='o', markersize=3.5, linewidth=1.6,
-              label='Decisor aleatorio')
+              label='Agente aleatorio')
     axis.axhline(float(raw.mean()), color=colour, linestyle=MEAN_LINESTYLE,
                  linewidth=MEAN_LINEWIDTH, label=f'Media = {raw.mean():.1f}')
     axis.set_ylabel(r'Severidad final acumulada $S_{\mathrm{cruda}}$')
@@ -305,7 +305,7 @@ def plot_normalised(normalised: numpy.ndarray, colour: str) -> None:
     figure, axis = pyplot.subplots(figsize=(9, 4.2))
     x = numpy.arange(len(normalised))
     axis.plot(x, normalised, color=colour, marker='s', markersize=3.5, linewidth=1.6,
-              label='Decisor aleatorio')
+              label='Agente aleatorio')
     axis.axhline(float(normalised.mean()), color=colour, linestyle=MEAN_LINESTYLE,
                  linewidth=MEAN_LINEWIDTH, label=f'Media = {normalised.mean():.3f}')
     _bounds(axis, len(normalised))
