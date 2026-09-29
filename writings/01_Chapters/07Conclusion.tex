@@ -34,12 +34,12 @@ individual.
 \subsection{Limitaciones del estudio}\label{sec:limitations}
 
 \begin{itemize}
-    \item Cada escenario se gener\'o con una \'unica semilla ($42$), lo que
-    impide estimar la variabilidad de las medias y construir intervalos de
-    confianza para el ordenamiento.
-    \item Los hiperpar\'ametros se ajustaron sobre las mismas $64$
-    secuencias de la referencia, por lo que el desempe\~no en esa
-    condici\'on puede estar sobreestimado.
+    \item Los escenarios de generalizaci\'on usan una \'unica semilla
+    ($42$), lo que impide estimar la variabilidad de sus medias y
+    construir intervalos de confianza para el ordenamiento.
+    \item Los hiperpar\'ametros se ajustaron sobre la referencia; las
+    r\'eplicas fuera de muestra (Secci\'on~\ref{sec:res-heldout}) no
+    muestran sobreajuste, pero usan las frecuencias de esa referencia.
     \item Las arquitecturas del DQN recurrente y del Transformer se
     eligieron \emph{ad hoc}; otras configuraciones podr\'ian modificar el
     ordenamiento.

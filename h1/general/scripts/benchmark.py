@@ -16,6 +16,7 @@ Usage
     python -m general.scripts.benchmark run --suite both
     python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_base
     python -m general.scripts.benchmark progress --suite individual --watch
+    python -m general.scripts.benchmark heldout    # results/heldout/ catalogue
 """
 ##########################
 ##  Imports externos    ##
@@ -39,7 +40,8 @@ import numpy
 ##########################
 ##  Imports internos    ##
 ##########################
-from .scenarios import Scenario, build_scenarios, materialise_scenario
+from .scenarios import (SAMPLING_FILE, Scenario, build_scenarios, is_heldout,
+                        materialise_scenario, sha256_file)
 
 
 ###############
@@ -49,6 +51,7 @@ WORKSPACE_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath
 GENERAL_ROOT = os.path.join(WORKSPACE_ROOT, 'general')
 WORK_ROOT = os.path.join(GENERAL_ROOT, 'work')
 RESULTS_ROOT = os.path.join(GENERAL_ROOT, 'results')
+HELDOUT_ROOT = os.path.join(RESULTS_ROOT, 'heldout')
 
 INDIVIDUAL_PACKAGE_GROUPS = {
     'pes_base': 'tabular',
@@ -158,6 +161,16 @@ def scenario_catalogue(reference_pkg: str = 'pes_dqn') -> "list[Scenario]":
     """Build the scenario catalogue from a reference package's inputs."""
     severity_path, lengths_path = find_baseline_paths(reference_pkg)
     return build_scenarios(severity_path, lengths_path)
+
+
+def generalisation_scenarios(scenarios: "list[str]") -> "list[str]":
+    """Scenarios that enter the stress aggregates: neither the reference nor a held-out replica."""
+    return [s for s in scenarios if s != REFERENCE_SCENARIO and not is_heldout(s)]
+
+
+def heldout_scenarios(scenarios: "list[str]") -> "list[str]":
+    """Held-out replicas of the reference distribution, in catalogue order."""
+    return [s for s in scenarios if is_heldout(s)]
 
 
 ###############
@@ -331,11 +344,16 @@ def run_cell(pkg: str, scenario: Scenario, *,
         'num_blocks': scenario.num_blocks,
         'num_sequences_per_block': scenario.num_sequences_per_block,
         'seed': seed,
+        'effective_seed': seed + int(scenario.extra.get('seed_offset', 0)),
         'wallclock_s': round(time.time() - started, 3),
         'returncode': return_code,
         'timestamp': _dt.datetime.now(_dt.timezone.utc).isoformat(),
         'subprocess_log': os.path.relpath(log_path, WORKSPACE_ROOT),
     }
+
+    sampling_path = os.path.join(os.path.dirname(scenario_csvs[0]), SAMPLING_FILE)
+    if os.path.isfile(sampling_path):
+        metrics['sampling_distribution'] = os.path.relpath(sampling_path, WORKSPACE_ROOT)
 
     report_json = _latest('*results_*.json', outputs_dir)
     if report_json:
@@ -394,6 +412,61 @@ def run_sweep(packages: "list[str]", catalogue: "list[Scenario]", *,
             except Exception as error:  # pylint: disable=broad-except
                 print(f'  !! FAILED: {error}', flush=True)
     print(f'[benchmark] done in {time.time() - started:.1f}s')
+
+
+###############
+##  Held-out catalogue
+###############
+def write_heldout_catalogue(reference_pkg: str = 'pes_dqn', seed: int = 42) -> str:
+    """Write the canonical held-out CSVs and ``heldout_catalogue.json`` under ``results/heldout/``.
+
+    Each replica is materialised again from the catalogue (same seed, same
+    sampling table) and every package's ``work/<pkg>/scenarios/<id>/`` copy is
+    checked against it, so the catalogue records that all models faced the
+    same sequences.
+
+    Returns
+    -------
+    str
+        Path of ``heldout_catalogue.json``.
+    """
+    replicas, sampling = [], None
+    for scenario in scenario_catalogue(reference_pkg):
+        if not is_heldout(scenario.scenario_id):
+            continue
+        canonical = os.path.join(HELDOUT_ROOT, scenario.scenario_id)
+        materialise_scenario(scenario, canonical, seed=seed)
+        with open(os.path.join(canonical, SAMPLING_FILE), 'r', encoding='utf-8') as handle:
+            record = json.load(handle)
+        sampling = record['sampling_distribution']
+        copies = {}
+        for pkg in ALL_PACKAGES:
+            work = _scenario_dir(pkg, scenario.scenario_id)
+            files = [os.path.join(work, name) for name in record['outputs_sha256']]
+            if not all(os.path.isfile(path) for path in files):
+                copies[pkg] = 'missing'
+                continue
+            same = all(sha256_file(path) == record['outputs_sha256'][os.path.basename(path)]
+                       for path in files)
+            copies[pkg] = 'match' if same else 'mismatch'
+        replicas.append({key: record[key] for key in ('scenario', 'description', 'base_seed',
+                                                      'seed_offset', 'effective_seed', 'structure',
+                                                      'observed', 'outputs_sha256')}
+                        | {'work_copies': copies})
+    payload = {
+        'generated': _dt.datetime.now(_dt.timezone.utc).isoformat(),
+        'reference_pkg': reference_pkg,
+        'purpose': ('Held-out replicas of the reference condition: fresh i.i.d. draws from the '
+                    'empirical frequencies of the reference CSVs, never used for training '
+                    'selection or Optuna. Excluded from the stress/generalisation aggregates.'),
+        'sampling_distribution': sampling,
+        'replicas': replicas,
+    }
+    os.makedirs(HELDOUT_ROOT, exist_ok=True)
+    path = os.path.join(HELDOUT_ROOT, 'heldout_catalogue.json')
+    with open(path, 'w', encoding='utf-8') as handle:
+        json.dump(payload, handle, indent=2)
+    return path
 
 
 ###############
@@ -497,6 +570,20 @@ def _command_run(args) -> None:
     run_sweep(_resolve_packages(args), catalogue, seed=args.seed, force=args.force)
 
 
+def _command_heldout(args) -> None:
+    """Write the held-out catalogue and report whether every package copy matches it."""
+    path = write_heldout_catalogue(args.reference_pkg, args.seed)
+    with open(path, 'r', encoding='utf-8') as handle:
+        replicas = json.load(handle)['replicas']
+    for replica in replicas:
+        statuses = statistics.multimode(replica['work_copies'].values())
+        mismatched = [pkg for pkg, status in replica['work_copies'].items() if status != 'match']
+        print(f"[heldout] {replica['scenario']:12s} seed={replica['effective_seed']} "
+              f"trials={replica['structure']['n_trials']} copies={statuses} "
+              f"not matching: {mismatched or 'none'}")
+    print(f'[heldout] catalogue -> {path}')
+
+
 def _command_progress(args) -> None:
     """Print progress once or refresh it periodically."""
     scenario_ids = [s.scenario_id for s in scenario_catalogue(args.reference_pkg)]
@@ -525,6 +612,11 @@ def main() -> None:
     run_parser.add_argument('--force', action='store_true')
     run_parser.add_argument('--reference-pkg', default='pes_dqn')
     run_parser.set_defaults(handler=_command_run)
+
+    heldout_parser = subparsers.add_parser('heldout', help='Write results/heldout/ catalogue.')
+    heldout_parser.add_argument('--seed', type=int, default=42)
+    heldout_parser.add_argument('--reference-pkg', default='pes_dqn')
+    heldout_parser.set_defaults(handler=_command_heldout)
 
     progress_parser = subparsers.add_parser('progress', help='Show sweep progress.')
     progress_parser.add_argument('--suite', choices=SUITES, default='individual')

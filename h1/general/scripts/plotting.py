@@ -211,6 +211,9 @@ class HeatmapSpec:
         Text drawn in cells whose value falls outside ``[vmin, vmax]``.
     cbar_ticks : list, optional
         Manual colour-bar tick locations.
+    separators : list of int, optional
+        Column indices before which a vertical rule is drawn (e.g. the first
+        held-out replica, to set it apart from the stress scenarios).
     """
 
     title: str
@@ -225,6 +228,7 @@ class HeatmapSpec:
     cbar_ticks: "list | None" = field(default=None)
     xlabel: str = 'Escenario'
     ylabel: str = 'Modelo'
+    separators: "list[int]" = field(default_factory=list)
 
 
 def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
@@ -265,6 +269,8 @@ def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
         axis.set_yticks(numpy.arange(-0.5, n_rows), minor=True)
         axis.grid(which='minor', color='white', linewidth=1.1)
         axis.tick_params(which='both', length=0)
+        for column in spec.separators:
+            axis.axvline(column - 0.5, color='#252525', linewidth=2.0, zorder=4)
         for spine in axis.spines.values():
             spine.set_visible(False)
         axis.set_xlabel(spec.xlabel)

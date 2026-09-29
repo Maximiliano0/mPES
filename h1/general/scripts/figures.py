@@ -17,6 +17,7 @@ renders, per suite, a coherently numbered figure set under
 ``10_desempeno_vs_estabilidad``                  mean performance vs dispersion
 ``11_perfiles_generalizacion``                   response profile per family
 ``12_pares_welch_logp`` / ``13_pares_cohen_d`` / ``14_pares_kl``  pairwise model contrasts
+``15_referencia_vs_heldout``                     reference vs held-out replicas (overfitting)
 ``histogramas/<scenario>``                       per-sequence distribution per scenario
 ``recompensa/<scenario>``                        cumulative and running-mean reward
 ===============================================  ==========================================
@@ -25,7 +26,9 @@ Shared conventions (see :mod:`plotting`): each model keeps a fixed colour
 (``MODEL_COLOURS``) and, whenever several models are overlaid, the one with
 the highest mean over the perturbation scenarios is drawn with
 ``BEST_LINEWIDTH`` and named in the super-title. The reference condition is
-``sev_base`` (``REFERENCE_SCENARIO`` in :mod:`benchmark`).
+``sev_base`` (``REFERENCE_SCENARIO`` in :mod:`benchmark`). The held-out
+replicas (``heldout_s*``) appear as separate columns in the heatmaps but are
+excluded from every stress aggregate (ranking, families, profiles, pairs).
 
 Usage
 -----
@@ -50,7 +53,8 @@ import numpy
 ##########################
 from .benchmark import (REFERENCE_MODEL, REFERENCE_SCENARIO, SUITES,
                         SUITE_PACKAGES, comparison_metrics_path, figures_dir,
-                        load_cells, matrices_dir, summary_path)
+                        generalisation_scenarios, heldout_scenarios, load_cells,
+                        matrices_dir, summary_path)
 from .plotting import (ALPHA_LEVELS, BASE_LINEWIDTH, BEST_LINEWIDTH, MEAN_LINESTYLE,
                        MEAN_LINEWIDTH, PUB_RC, HeatmapSpec, cohen_d, heatmap,
                        histogram_pmf, model_colour, read_matrix_csv, save_figure,
@@ -170,8 +174,15 @@ def render_matrix_figures(suite: str) -> None:
             continue
         models, scenarios, matrix = read_matrix_csv(path)
         _autoscale(spec, matrix)
+        spec.separators = _heldout_separator(scenarios)
         heatmap(matrix, models, scenarios, os.path.join(output, name), spec)
     _render_action_kl(suite, output)
+
+
+def _heldout_separator(scenarios: "list[str]") -> "list[int]":
+    """Column index of the first held-out replica, if any."""
+    replicas = heldout_scenarios(scenarios)
+    return [scenarios.index(replicas[0])] if replicas else []
 
 
 def _autoscale(spec: HeatmapSpec, matrix: numpy.ndarray) -> None:
@@ -208,7 +219,8 @@ def _render_action_kl(suite: str, output: str) -> None:
                 title=f'{suite.capitalize()}: divergencia KL de acciones vs {REFERENCE_SCENARIO}',
                 cbar_label='KL(escenario ‖ referencia), escala logarítmica',
                 cmap='mpes_kl', fmt='{:.2f}',
-                norm=mcolors.LogNorm(vmin=floor, vmax=ceiling)))
+                norm=mcolors.LogNorm(vmin=floor, vmax=ceiling),
+                separators=_heldout_separator(scenarios)))
 
 
 ###############
@@ -262,9 +274,9 @@ def render_curve_figures(suite: str, cells: dict) -> None:
 
 
 def _stress_mean(cells: dict, model: str, scenarios: "list[str]") -> float:
-    """Mean performance of one model over the non-reference scenarios."""
+    """Mean performance of one model over the stress scenarios."""
     values = [cells.get(model, {}).get(scenario, {}).get('global_mean_perf')
-              for scenario in scenarios if scenario != REFERENCE_SCENARIO]
+              for scenario in generalisation_scenarios(scenarios)]
     values = [value for value in values if value is not None]
     return float(numpy.mean(values)) if values else float('-inf')
 
@@ -333,7 +345,10 @@ def _model_metrics(summary: dict, model: str) -> dict:
     means = {scenario: cell['global_mean_perf'] for scenario, cell in cells.items()
              if cell.get('global_mean_perf') is not None}
     baseline = means.get(reference, float('nan'))
-    stress = {scenario: value for scenario, value in means.items() if scenario != reference}
+    stress = {scenario: means[scenario] for scenario in generalisation_scenarios(list(means))}
+    replicas = heldout_scenarios(list(means))
+    pooled = numpy.concatenate([numpy.asarray(cells[s].get('per_sequence_perf', []), dtype=float)
+                                for s in replicas]) if replicas else numpy.array([])
     families: dict = {}
     for scenario, value in stress.items():
         family = cells.get(scenario, {}).get('family')
@@ -352,6 +367,9 @@ def _model_metrics(summary: dict, model: str) -> dict:
         'stress_std': float(numpy.mean([cells[s]['std_perf'] for s in stress
                                         if cells[s].get('std_perf') is not None]))
         if stress else float('nan'),
+        'heldout_replica_means': {s: means[s] for s in replicas},
+        'heldout_mean': float(pooled.mean()) if pooled.size else float('nan'),
+        'heldout_gap': float(baseline - pooled.mean()) if pooled.size else float('nan'),
     }
 
 
@@ -383,6 +401,7 @@ def render_comparison_figures(suite: str) -> dict:
         _plot_stability(suite, models, metrics, output)
         _plot_generalisation(suite, summary, models, scenarios, output)
         pairwise = _plot_pairwise(suite, summary, models, scenarios, output)
+        _plot_heldout(suite, models, metrics, output)
 
     payload = {'suite': suite, 'reference_scenario': summary['reference_scenario'],
                'models': metrics, 'pairwise': pairwise}
@@ -475,8 +494,8 @@ def _plot_generalisation(suite: str, summary: dict, models: "list[str]",
                for family in FAMILY_ORDER}
     stress_means: "dict[str, float]" = {
         model: float(numpy.nanmean([summary['cells'].get(model, {}).get(s, {}).get(
-            'global_mean_perf', numpy.nan) for s in scenarios
-            if s != summary['reference_scenario']])) for model in models}
+            'global_mean_perf', numpy.nan) for s in generalisation_scenarios(scenarios)]))
+        for model in models}
     candidates = [m for m in models if m != REFERENCE_MODEL]
     best = max(candidates, key=lambda m: stress_means[m]) if candidates else None
     figure, axes = pyplot.subplots(2, 2, figsize=(14, 9), squeeze=False)
@@ -510,9 +529,8 @@ def _plot_generalisation(suite: str, summary: dict, models: "list[str]",
 def _plot_pairwise(suite: str, summary: dict, models: "list[str]",
                    scenarios: "list[str]", output: str) -> dict:
     """Pairwise Welch, Cohen and KL contrasts between the models of a suite."""
-    reference = summary['reference_scenario']
-    common = [scenario for scenario in scenarios if scenario != reference
-              and all(scenario in summary['cells'].get(model, {}) for model in models)]
+    common = [scenario for scenario in generalisation_scenarios(scenarios)
+              if all(scenario in summary['cells'].get(model, {}) for model in models)]
     vectors = {model: numpy.asarray(
         [value for scenario in common
          for value in summary['cells'][model][scenario].get('per_sequence_perf', [])],
@@ -554,6 +572,40 @@ def _plot_pairwise(suite: str, summary: dict, models: "list[str]",
     return {'scenarios_used': common, 'models': models,
             'welch_log10_p': log_p.tolist(), 'cohen_d': effect.tolist(),
             'symmetric_kl': divergence.tolist()}
+
+
+def _plot_heldout(suite: str, models: "list[str]", metrics: dict, output: str) -> None:
+    """Reference score against the held-out replicas of the same distribution."""
+    shown = [model for model in models if metrics[model]['heldout_replica_means']]
+    if not shown:
+        return
+    order = sorted(shown, key=lambda model: metrics[model]['reference_mean'], reverse=True)
+    positions = numpy.arange(len(order))
+    figure, axis = pyplot.subplots(figsize=(9.5, 0.55 * len(order) + 1.8))
+    for row, model in enumerate(order):
+        reference, pooled = metrics[model]['reference_mean'], metrics[model]['heldout_mean']
+        replica_means = list(metrics[model]['heldout_replica_means'].values())
+        axis.plot([pooled, reference], [row, row], color='#bdbdbd', linewidth=2, zorder=1)
+        axis.scatter(replica_means, [row] * len(replica_means), s=16, color='#1f6e83',
+                     alpha=0.35, linewidth=0, zorder=2)
+        axis.text(max([reference, pooled, *replica_means]) + 0.004, row,
+                  f"{metrics[model]['heldout_gap']:+.3f}", va='center', fontsize=9,
+                  color='#4a4a4a')
+    axis.scatter([metrics[m]['reference_mean'] for m in order], positions, s=70,
+                 color='#a7c8db', edgecolor='#1a1a1a', linewidth=0.8, zorder=3,
+                 label=f'Referencia ({REFERENCE_SCENARIO}, 64 secuencias)')
+    axis.scatter([metrics[m]['heldout_mean'] for m in order], positions, s=70,
+                 color='#1f6e83', edgecolor='white', linewidth=1.2, zorder=3,
+                 label='Réplicas held-out (media agrupada; puntos claros = cada réplica)')
+    axis.set_yticks(positions, order)
+    axis.invert_yaxis()
+    axis.set_xlabel('Rendimiento normalizado')
+    axis.set_title(f'{suite.capitalize()}: referencia frente a réplicas fuera de muestra '
+                   '(número = referencia - held-out)')
+    axis.legend(frameon=False, ncol=1, loc='upper center', bbox_to_anchor=(0.5, -0.12))
+    style_axes(axis)
+    figure.tight_layout()
+    save_figure(figure, os.path.join(output, '15_referencia_vs_heldout'))
 
 
 ###############

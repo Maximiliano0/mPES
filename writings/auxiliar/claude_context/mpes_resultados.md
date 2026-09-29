@@ -1,6 +1,6 @@
 # mPES — Síntesis de métricas, salidas y resultados (contexto para la tesis)
 
-> Generado el 2026-09-24 a partir de `h1/general/results/` (matrices, `comparison_metrics.json`, `cells/`), los `inputs/best_params.json` y `config/CONFIG.py` de cada paquete. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. **Actualización 2026-09-28:** todos los valores de `pes_ens_consensus_prior` (Consenso con prior) se recalcularon tras corregir la doble softmax en su confianza (nuevo `inputs/best_params.json`, re-optimizado con Optuna, y re-ejecución de sus 22 celdas del benchmark); los demás modelos no cambiaron.
+> Generado el 2026-09-24 a partir de `h1/general/results/` (matrices, `comparison_metrics.json`, `cells/`), los `inputs/best_params.json` y `config/CONFIG.py` de cada paquete. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. **Actualización 2026-09-28:** todos los valores de `pes_ens_consensus_prior` (Consenso con prior) se recalcularon tras corregir la doble softmax en su confianza (nuevo `inputs/best_params.json`, re-optimizado con Optuna, y re-ejecución de sus 22 celdas del benchmark); los demás modelos no cambiaron. **Actualización 2026-09-28 (réplicas fuera de muestra):** se agregaron cinco réplicas de la referencia (`heldout_s1`..`heldout_s5`, 65 celdas nuevas, fuente `h1/general/results/heldout/`; §10bis). Quedan fuera de todos los agregados de generalización (medias de 21 escenarios, peores escenarios, familias, pares, conteos "N de 22"/"N de 21"), por lo que ningún otro número de este archivo cambió.
 
 ## 0. Resumen ejecutivo (hallazgos verificados)
 
@@ -16,12 +16,13 @@
 10. **Voto suave y voto por acción**: generalización más baja (0.902 / 0.901), peor escenario `sev_extrapolate_high` (0.860 / 0.859), con 41 % / 42 % de secuencias bajo 0,8. Sus pesos dan más peso al DQN recurrente que al Transformer.
 11. **Consenso** tiene la referencia más baja de los ensambles (0.889); la variante con prior mejora referencia (0.918) y peor escenario (0.826 → 0.870), aunque su prior sólo cambia el 4,5 % / 4,6 % de las decisiones.
 12. **Agente aleatorio**: 0.670 (cota inferior de referencia).
+13. **Réplicas fuera de muestra** (§10bis, Tabla `tab:heldout`): en 320 secuencias nuevas sorteadas de la distribución de la referencia ningún modelo pierde desempeño apreciable: caída (ref. − réplicas) de -0.004 a +0.011 (|d| ≤ 0.15, p ≥ 0.29); en los 11 optimizados con Optuna entre -0.004 y +0.005; la mayor es la de Q-Learning base, que no se optimizó. Spearman ρ = 0.97 entre medias. El ensamble ponderado supera al Transformer por 0.010 (t pareada p < 10⁻⁷) y en las 5 réplicas. → La selección sobre las 64 secuencias no infló la referencia.
 
 ## 1. Definiciones
 
 - **Desempeño normalizado** por secuencia: $\bar r = (S_{peor} - S_{agente}) / (S_{peor} - S_{mejor})$. $0$ = no asignar recursos; $1$ = asignación óptima ($S_{mejor}$ exacto por programación dinámica, mochila acotada con asignaciones 0..10 por ciudad que suman ≤ 30). $\bar r \le 1$. No es una probabilidad.
 - **Referencia** = escenario `sev_base` (distribución de entrenamiento), $n = 64$ secuencias (8 bloques × 8), 360 pasos.
-- **Generalización** = media de las medias de los **21** escenarios distintos de la referencia (incluye 3 estructurales que reproducen exactamente la referencia y escenarios más fáciles, p. ej. secuencias cortas).
+- **Generalización** = media de las medias de los **21** escenarios distintos de la referencia, sin las 5 réplicas fuera de muestra (incluye 3 estructurales que reproducen exactamente la referencia y escenarios más fáciles, p. ej. secuencias cortas).
 - **Degradación** de una celda = $\bar r_{ref} - \bar r_{esc}$ (positiva = pérdida; negativa = mejora). **Degradación media** = promedio con signo sobre los 21 escenarios. **Mayor degradación** = máximo de esas 21.
 - **Por celda frente a la propia referencia**: $d$ de Cohen (positivo = mejor en el escenario), $\log_{10} p$ de Welch (bilateral) y KL de acciones (desplazamiento de la política sobre las 11 acciones).
 - **Entre pares de modelos** (mismo grupo): se juntan las secuencias de los 21 escenarios de generalización (sin `sev_base`); $d > 0$ ⇒ gana el modelo de la fila; KL simetrizada entre histogramas de desempeño (20 bins en [0, 1], $\varepsilon = 10^{-9}$).
@@ -174,8 +175,9 @@ _Tesis, Tabla tab:ens-freq; generado con writings/auxiliar/scripts/ensemble_deci
 - Con tau = 15 las distribuciones de los tres miembros quedan casi planas: en la referencia la acción más probable de cada uno tiene en promedio probabilidad 0,19 y supera a la segunda por 0,02-0,03.
 - El voto (antes del prior) ya difiere de la acción del Transformer en el 31 % de las decisiones de la referencia.
 - En sev_extrapolate_high y joint_extrap_both todas las decisiones de pes_ens coinciden con las de su miembro Transformer (que recibe la severidad recortada a 9).
+- Réplicas fuera de muestra (`heldout_s1`..`s5`, no incluidas en "Generalización"; fuente `h1/general/results/heldout/ens_decisions_heldout.json`, replay = benchmark con diferencia < 2e-5): compuerta sigue al Transformer 94.6 % y difiere 2.8 %; consenso con prior: prior 3.7 %, cota 0.5 %, acción distinta del Transformer 63.4 %; ensamble ponderado: prior 36.4 %, cota 0.1 %, distinta 50.5 %. Quedan dentro del rango referencia–generalización, por eso la tesis no agrega una columna.
 
-## 6. Catálogo de escenarios (1 referencia + 21 de generalización)
+## 6. Catálogo de escenarios (1 referencia + 21 de generalización + 5 réplicas fuera de muestra)
 
 | Escenario | Familia | Nombre en el texto | Descripción | Secuencias | Pasos | Fuera de rango |
 |---|---|---|---|---:|---:|:---:|
@@ -201,13 +203,20 @@ _Tesis, Tabla tab:ens-freq; generado con writings/auxiliar/scripts/ensemble_deci
 | `struct_few_long_blocks` | estructural | — | 4 bloques × 16 secuencias = 64; misma distribución que la referencia (control). | 64 | 360 |  |
 | `struct_many_short_blocks` | estructural | — | 16 bloques × 4 secuencias = 64; misma distribución que la referencia (control). | 64 | 360 |  |
 | `struct_more_total` | estructural | — | 8 bloques × 16 secuencias = 128; los CSV empíricos se repiten (las 64 secuencias dos veces), por eso reproduce exactamente la media de la referencia (control). | 128 | 720 |  |
+| `heldout_s1` | fuera de muestra | réplica fuera de muestra | Réplica 1 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente con las frecuencias de la referencia; semilla 43. Excluida de la generalización. | 64 | 340 |  |
+| `heldout_s2` | fuera de muestra | réplica fuera de muestra | Réplica 2 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente con las frecuencias de la referencia; semilla 44. Excluida de la generalización. | 64 | 374 |  |
+| `heldout_s3` | fuera de muestra | réplica fuera de muestra | Réplica 3 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente con las frecuencias de la referencia; semilla 45. Excluida de la generalización. | 64 | 369 |  |
+| `heldout_s4` | fuera de muestra | réplica fuera de muestra | Réplica 4 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente con las frecuencias de la referencia; semilla 46. Excluida de la generalización. | 64 | 346 |  |
+| `heldout_s5` | fuera de muestra | réplica fuera de muestra | Réplica 5 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente con las frecuencias de la referencia; semilla 47. Excluida de la generalización. | 64 | 389 |  |
 
-- Familias: severidad 9 · longitud 5 · conjunta 4 · estructural 3. Se descartaron escenarios de severidad constante (S_peor = S_mejor ⇒ métrica indefinida).
+- Familias: severidad 9 · longitud 5 · conjunta 4 · estructural 3 (+ 5 réplicas fuera de muestra, fuera de todos los agregados; ver §10bis). Se descartaron escenarios de severidad constante (S_peor = S_mejor ⇒ métrica indefinida).
 - Los 8 escenarios de severidad dentro de rango incluyen S = 0, 1 o 9, que están en el espacio de estados pero no aparecen en el entrenamiento (2..8).
 
 ## 7. Matrices modelo × escenario
 
 Leyenda de columnas: QL-base = `pes_base` (Q-Learning base), QL = `pes_ql` (Q-Learning), DQL = `pes_dql` (Double Q-Learning), DQN = `pes_dqn` (DQN), RDQN = `pes_rdqn` (DQN recurrente), A2C = `pes_a2c` (A2C), TRF = `pes_trf` (Transformer), ENS = `pes_ens` (Ensamble ponderado), VS = `pes_ens_sprb` (Voto suave), VA = `pes_ens_accq` (Voto por acción), CONS = `pes_ens_consensus` (Consenso), CONS+P = `pes_ens_consensus_prior` (Consenso con prior), GUARD = `pes_ens_trf_guard` (Compuerta del Transformer). ⚠ = fuera de rango. En negrita, la mayor media de la fila dentro del grupo.
+
+_Réplicas fuera de muestra: los CSV `h1/general/results/{individual,ensemble}/matrices/*.csv` (y `summary.json`) tienen desde el 2026-09-28 cinco columnas extra al final (`heldout_s1`..`heldout_s5`); se omiten en estas tablas y se resumen en §10bis. Los heatmaps por escenario (01, 02, 03, 04, 07) las muestran a la derecha de una línea vertical._
 
 ### 7.1 Media $\bar r$ — individuales
 
@@ -701,10 +710,86 @@ _Las distribuciones incluyen los pasos sin recursos (acción forzada 0)._
 
 - 258 decisiones con recursos disponibles en la referencia; confianza media 0.116. Q no factibles -> valor muy negativo; desplazamiento a valores no negativos; normalización; confianza = 1 - H_norm. NO comparable con la confianza de los ensambles (refleja sobre todo cuántas acciones quedan factibles).
 
+## 10bis. Réplicas fuera de muestra de la referencia (Sección `sec:res-heldout`, Tabla `tab:heldout`)
+
+_Agregado el 2026-09-28. Fuente: `h1/general/results/heldout/heldout_gap.json` (generado con `writings/auxiliar/scripts/heldout_gap.py`) y `heldout_catalogue.json` (`python -m general.scripts.benchmark heldout`). Numeración 10bis para no alterar las referencias a §12/§13 de `instrucciones_sistema.md`._
+
+- **Propósito**: los modelos optimizados y los ensambles eligieron su configuración sobre las mismas 64 secuencias de `sev_base`; las réplicas miden cuánto se sobreajustó cada configuración a esas secuencias (cuán optimista es la referencia). Ningún modelo se reentrenó ni se reoptimizó.
+- **Procedimiento**: cada réplica sortea 8 × 8 = 64 secuencias nuevas: cada longitud y cada severidad inicial, de forma independiente (i.i.d.), con las frecuencias empíricas de `sequence_lengths.csv` e `initial_severity.csv` de la referencia, que son las mismas con las que se entrenan los modelos individuales. Semilla 42 + k (k = 1..5 → 43..47). En total 320 secuencias.
+- **Exclusión**: no intervienen en el entrenamiento, en la optimización ni en ningún agregado de generalización (medias de 21 escenarios, peor escenario, degradación por familia, matrices de pares, conteos "N de 22"/"N de 21"); esos números no cambiaron (comprobación de regresión).
+- **Integridad**: `benchmark heldout` guarda en `results/heldout/heldout_sK/` los dos CSV y `sampling_distribution.json` (frecuencias de sorteo, semilla y frecuencias obtenidas) y comprueba con sha256 que los 13 paquetes recibieron las mismas secuencias: 13 de 13 coinciden en las 5 réplicas.
+
+**Frecuencias de sorteo** (de los CSV de la referencia):
+
+| Severidad inicial | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Conteo (n = 360) | 40 | 64 | 64 | 80 | 56 | 16 | 40 |
+| Probabilidad | 0.111 | 0.178 | 0.178 | 0.222 | 0.156 | 0.044 | 0.111 |
+
+| Longitud | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Conteo (n = 64) | 12 | 9 | 10 | 13 | 8 | 7 | 2 | 3 |
+| Probabilidad | 0.188 | 0.141 | 0.156 | 0.203 | 0.125 | 0.109 | 0.031 | 0.047 |
+
+| Réplica | Semilla | Secuencias | Pasos |
+|---|---:|---:|---:|
+| `heldout_s1` | 43 | 64 | 340 |
+| `heldout_s2` | 44 | 64 | 374 |
+| `heldout_s3` | 45 | 64 | 369 |
+| `heldout_s4` | 46 | 64 | 346 |
+| `heldout_s5` | 47 | 64 | 389 |
+| total | — | 320 | 1818 |
+
+**Referencia frente a réplicas** (Tabla `tab:heldout`; ordenado por la referencia; rango entre los 13 modelos):
+
+| Paquete | Nombre en el texto | Selección | Ref. | Fuera de muestra (320) | SD entre réplicas | Caída | $d$ | $p$ Welch | Rango ref. → f. m. |
+|---|---|---|---:|---:|---:|---:|---:|---:|---|
+| `pes_ens` | Ensamble ponderado | manual (sin optimizar) | 0.937 | 0.939 | 0.003 | -0.002 | +0.04 | 0.75 | 1 → 1 |
+| `pes_ens_trf_guard` | Compuerta del Transformer | Optuna | 0.928 | 0.928 | 0.004 | 0.000 | -0.01 | 0.96 | 2 → 3 |
+| `pes_trf` | Transformer | Optuna | 0.927 | 0.929 | 0.003 | -0.001 | +0.03 | 0.81 | 3 → 2 |
+| `pes_ens_consensus_prior` | Consenso con prior | Optuna | 0.918 | 0.915 | 0.007 | +0.003 | -0.07 | 0.61 | 4 → 6 |
+| `pes_ens_accq` | Voto por acción | Optuna | 0.914 | 0.916 | 0.009 | -0.002 | +0.04 | 0.75 | 5 → 5 |
+| `pes_ens_sprb` | Voto suave | Optuna | 0.914 | 0.917 | 0.008 | -0.003 | +0.06 | 0.66 | 6 → 4 |
+| `pes_rdqn` | DQN recurrente | Optuna | 0.899 | 0.903 | 0.008 | -0.004 | +0.08 | 0.54 | 7 → 7 |
+| `pes_dql` | Double Q-Learning | Optuna | 0.896 | 0.900 | 0.006 | -0.004 | +0.07 | 0.57 | 8 → 8 |
+| `pes_dqn` | DQN | Optuna | 0.894 | 0.891 | 0.006 | +0.002 | -0.04 | 0.77 | 9 → 10 |
+| `pes_ens_consensus` | Consenso | Optuna | 0.889 | 0.893 | 0.007 | -0.004 | +0.06 | 0.67 | 10 → 9 |
+| `pes_a2c` | A2C | Optuna | 0.887 | 0.887 | 0.006 | 0.000 | -0.01 | 0.96 | 11 → 11 |
+| `pes_ql` | Q-Learning | Optuna | 0.887 | 0.881 | 0.008 | +0.005 | -0.08 | 0.53 | 12 → 12 |
+| `pes_base` | Q-Learning base | sin optimizar | 0.871 | 0.860 | 0.010 | +0.011 | -0.15 | 0.29 | 13 → 13 |
+
+**Media por réplica**:
+
+| Paquete | s1 | s2 | s3 | s4 | s5 |
+|---|---:|---:|---:|---:|---:|
+| `pes_ens` | 0.939 | 0.936 | 0.940 | 0.936 | 0.943 |
+| `pes_ens_trf_guard` | 0.935 | 0.928 | 0.924 | 0.925 | 0.926 |
+| `pes_trf` | 0.934 | 0.929 | 0.926 | 0.927 | 0.927 |
+| `pes_ens_consensus_prior` | 0.916 | 0.924 | 0.916 | 0.904 | 0.914 |
+| `pes_ens_accq` | 0.926 | 0.915 | 0.925 | 0.904 | 0.912 |
+| `pes_ens_sprb` | 0.925 | 0.917 | 0.924 | 0.909 | 0.909 |
+| `pes_rdqn` | 0.911 | 0.900 | 0.911 | 0.895 | 0.898 |
+| `pes_dql` | 0.907 | 0.903 | 0.893 | 0.896 | 0.901 |
+| `pes_dqn` | 0.891 | 0.894 | 0.894 | 0.881 | 0.897 |
+| `pes_ens_consensus` | 0.903 | 0.897 | 0.890 | 0.885 | 0.891 |
+| `pes_a2c` | 0.893 | 0.890 | 0.885 | 0.877 | 0.889 |
+| `pes_ql` | 0.884 | 0.875 | 0.890 | 0.871 | 0.886 |
+| `pes_base` | 0.873 | 0.858 | 0.847 | 0.864 | 0.858 |
+| ENS − TRF | +0.004 | +0.008 | +0.014 | +0.010 | +0.016 |
+
+- Caída = ref. − media de las 320 secuencias de las réplicas (positiva = pérdida, como la degradación). $d$ y $p$: réplicas agrupadas (n = 320) frente a la referencia (n = 64) del mismo modelo; $d > 0$ = mejor en las réplicas; Welch bilateral. SD entre réplicas = desviación estándar de las 5 medias (entre paréntesis en `tab:heldout`). Error estándar de la caída entre 0.005 y 0.010.
+- Caída entre -0.004 (DQN recurrente) y +0.011 (Q-Learning base); |d| ≤ 0.15 (efecto despreciable) y p ≥ 0.29 en los 13. En los 11 optimizados con Optuna, entre -0.004 y +0.005 (máx.: Q-Learning); la mayor caída es la de Q-Learning base, que no se optimizó: diferencias de ese tamaño son compatibles con la variación entre muestras.
+- Ordenamiento: Spearman ρ = 0.967 (p = 7.1e-08, 13 modelos; tesis: 0,97). Cambian de posición sólo modelos cuyas medias difieren en menos de 0,005 en ambas condiciones: Compuerta del Transformer 2 → 3, Transformer 3 → 2, Consenso con prior 4 → 6, Voto suave 6 → 4, DQN 9 → 10, Consenso 10 → 9. El ensamble ponderado es 1.º en ambas.
+- **Ensamble ponderado vs Transformer** en las mismas 320 secuencias: diferencia media +0.010 (en la referencia +0.010), t pareada p = 7.5e-08 (tesis: p < 10⁻⁷), Wilcoxon p = 2.0e-08; mayor media en 5 de 5 réplicas.
+- **Afirmación de la tesis** (`sec:res-heldout`): "Elegir la configuración sobre las 64 secuencias de la referencia no infló, por lo tanto, el desempeño medido en esa condición." `06Discussion` (último párrafo): la ventaja del ensamble ponderado tampoco se debe a que sus parámetros se eligieran sobre la referencia (se mantiene en 0,010). `07Conclusion` (limitaciones): la caída no superó 0,011 ni fue significativa.
+- **Salvedad**: las réplicas se sortean con frecuencias estimadas a partir de las mismas 64 secuencias, no con datos nuevos del experimento original: miden el sobreajuste a esas secuencias concretas, no a la distribución.
+- `reference_std` de `heldout_gap.json` usa ddof = 1 (p. ej. Transformer 0.0458), mientras que las σ de §4.2/§5.2 usan ddof = 0 (0.045); las medias coinciden.
+- Figuras: las columnas `heldout_s1`..`s5` aparecen a la derecha de una línea vertical en los heatmaps 01/02/03/04/07 (en la tesis: `fig:heatmap-global`, `fig:heatmap-ens`, `fig:heatmap-welch`, `fig:ensemble-statistical-heatmaps`); `15_referencia_vs_heldout` (individual y ensemble) se genera pero la tesis no la usa. Valores por celda: `h1/general/results/<grupo>/cells/<pkg>__heldout_sK.json` (no se copian a `celdas` del JSON).
+
 ## 11. Advertencias metodológicas (deben respetarse al redactar)
 
-- Una única semilla (42) por escenario y un único conjunto de 64 secuencias de referencia: no hay intervalos de confianza del ordenamiento; los p de Welch no son independientes ni corregidos por comparaciones múltiples.
-- Hiperparámetros de modelos y ensambles ajustados con las mismas 64 secuencias de la referencia: la referencia puede ser optimista; la generalización está menos expuesta a ese sesgo.
+- Una única semilla (42) por escenario de generalización: no hay intervalos de confianza del ordenamiento; sólo la referencia cuenta con 5 réplicas (fuera de muestra, §10bis). Los p de Welch no son independientes ni corregidos por comparaciones múltiples.
+- Hiperparámetros de modelos y ensambles ajustados con las mismas 64 secuencias de la referencia. Medido en las 5 réplicas fuera de muestra (§10bis): caída entre -0.004 y +0.011, nunca significativa (|d| ≤ 0.15, p ≥ 0.29), ρ de Spearman 0.97: la referencia no resultó optimista. Salvedad: las réplicas se sortean con frecuencias estimadas a partir de esas mismas 64 secuencias, no con datos nuevos del experimento original.
 - La media de generalización incluye los 3 escenarios estructurales (idénticos a la referencia) y escenarios más fáciles (p. ej. len_all_short, joint_low_short); leerla junto con el peor escenario.
 - Entrenamiento sólo con severidades 2..8: filas S = 0, 1, 9 de las tablas Q quedan con valores iniciales aleatorios; parte de la caída tabular refleja falta de cobertura, no sólo capacidad de generalizar.
 - Con severidades 10..12 una política que asigna mucho puede acercarse al óptimo: un rbar alto en sev_extrapolate_high no prueba por sí solo mejor generalización (A2C también supera allí su referencia).
@@ -742,7 +827,7 @@ Contrastados contra los datos de este archivo (2026-09-24). Corregirlos cuando s
   - `writings/02_Images/ensemble/`: `ens_01_desempeno_por_escenario.png`, `ens_03_welch_logp_por_escenario.png`, `ens_04_kl_acciones_por_escenario.png`, `ens_06_curvas_extrapolacion.png`, `ens_07_cohen_d_por_escenario.png`, `ens_12_pares_welch_logp.png`, `ens_13_pares_cohen_d.png`
   - `writings/02_Images/agent_internals/`: `trf_agent_confidences.png`
   - `writings/audit/`: `audit.py`, `AUDIT.md`
-  - `writings/auxiliar/scripts/`: `sync_figures.py`, `ensemble_decisions.py`, `rebuild_thesis.py`
+  - `writings/auxiliar/scripts/`: `sync_figures.py`, `ensemble_decisions.py`, `rebuild_thesis.py`, `heldout_gap.py`
 
 | Archivo | Sección (definida en Main.tex) | Etiquetas |
 |---|---|---|
@@ -753,7 +838,7 @@ Contrastados contra los datos de este archivo (2026-09-24). Corregirlos cuando s
 | `02Background.tex` | 2 Marco Teórico | `sec:background`, `sec:ensembles-bg`, `sec:stats-bg`, `eq:return`, `eq:bellman-opt`, `eq:qlearning`, `eq:double-q`, `eq:dqn-loss`, `eq:ddqn-target`, `eq:lstm`, `eq:pg`, `eq:gae`, `eq:causal-attention`, `eq:shannon`, `eq:shannon-norm`, `eq:ens-softmax`, `eq:soft-voting`, `eq:hard-voting`, `eq:cohen`, `eq:welch`, `eq:kl` |
 | `03StateOfTheArt.tex` | 3 Estado de la Cuestión | `sec:soa`, `sec:soa-trf` |
 | `04Materials.tex` | 4 Materiales y Métodos | `sec:methods`, `sec:env-dyn`, `sec:metric`, `sec:tabular`, `sec:deep`, `sec:ens-methods`, `sec:scenario-catalogue`, `eq:state-space`, `eq:transicion`, `eq:reward`, `eq:raw-severity-materials`, `eq:normalised-severity-materials`, `eq:tabular-update-materials`, `eq:dql-epsilon-materials`, `eq:dql-pbrs-materials`, `eq:ens-soft`, `eq:ens-prior`, `eq:ens-action`, `eq:ens-sprb`, `eq:ens-accq-vote`, `eq:ens-accq-action`, `eq:ens-consensus`, `eq:ens-guard`, `fig:baseline-random`, `fig:baseline-random-raw`, `fig:baseline-random-normalised`, `tab:packages`, `tab:tabular-hparams`, `tab:deep-hparams`, `tab:a2c-hparams`, `tab:ens-summary`, `tab:ens-params`, `tab:scenarios` |
-| `05Results.tex` | 5 Resultados | `sec:results`, `sec:res-individual`, `sec:per-model`, `sec:per-seq-extended`, `sec:res-ensembles`, `sec:res-freq`, `eq:severity-reduction`, `tab:global-mean`, `tab:pairwise-stats`, `tab:ensemble-stress`, `tab:ens-freq`, `tab:pairwise-ens`, `fig:heatmap-global`, `fig:c-base`, `fig:c-ql`, `fig:c-dql`, `fig:c-dqn`, `fig:c-rdqn`, `fig:c-a2c`, `fig:c-trf`, `fig:extra-sev-skew`, `fig:heatmap-ens`, `fig:ensemble-extrapolation`, `fig:c-ens` |
+| `05Results.tex` | 5 Resultados | `sec:results`, `sec:res-individual`, `sec:per-model`, `sec:per-seq-extended`, `sec:res-ensembles`, `sec:res-freq`, `eq:severity-reduction`, `tab:global-mean`, `tab:pairwise-stats`, `tab:ensemble-stress`, `tab:ens-freq`, `tab:pairwise-ens`, `fig:heatmap-global`, `fig:c-base`, `fig:c-ql`, `fig:c-dql`, `fig:c-dqn`, `fig:c-rdqn`, `fig:c-a2c`, `fig:c-trf`, `fig:extra-sev-skew`, `fig:heatmap-ens`, `fig:ensemble-extrapolation`, `fig:c-ens`, `sec:res-heldout`, `tab:heldout` |
 | `06Discussion.tex` | 6 Discusión | `sec:discussion`, `sec:disc-individual`, `sec:ens-best` |
 | `07Conclusion.tex` | 7 Conclusiones | `sec:conclusion`, `sec:limitations`, `sec:future` |
 | `Appendix.tex` | Apéndice | `ap:repro`, `ap:orchestrator`, `ap:stat-maps`, `ap:trf-conf`, `tab:repro-commands`, `fig:heatmap-welch`, `fig:heatmap-kl`, `fig:pairwise-cohen`, `fig:ensemble-statistical-heatmaps`, `fig:ensemble-pairwise`, `fig:trf-internals` |
@@ -761,23 +846,24 @@ Contrastados contra los datos de este archivo (2026-09-24). Corregirlos cuando s
 **Figuras de la tesis** (label → archivo en `02_Images/<carpeta>/`):
 
 - `fig:baseline-random` → baseline/random_player_sequence_performance.png + baseline/random_player_normalised_performance.png (agente aleatorio)
-- `fig:heatmap-global` → individual/ind_01_desempeno_por_escenario.png (media por modelo y escenario)
+- `fig:heatmap-global` → individual/ind_01_desempeno_por_escenario.png (media por modelo y escenario; 5 columnas `heldout_s1`..`s5` a la derecha de una línea vertical)
 - `fig:c-base .. fig:c-trf` → per_model/PES_<PKG>_results.png (64 secuencias de la referencia, distribución, estadísticos por bloque, resumen)
 - `fig:extra-sev-skew` → individual/ind_05_curvas_por_familia.png (curvas ordenadas en sev_bimodal, sev_gauss_high, sev_beta_highskew, len_poisson, len_extrapolate_long, joint_high_long; trazo grueso = Transformer)
-- `fig:heatmap-ens` → ensemble/ens_01_desempeno_por_escenario.png
+- `fig:heatmap-ens` → ensemble/ens_01_desempeno_por_escenario.png (ídem, 5 columnas fuera de muestra tras una línea vertical)
 - `fig:ensemble-extrapolation` → ensemble/ens_06_curvas_extrapolacion.png (3 escenarios fuera de rango; trazo grueso = ensamble ponderado)
 - `fig:c-ens` → per_model/PES_ENS_results.png
-- `fig:heatmap-welch` → individual/ind_03_welch_logp_por_escenario.png
+- `fig:heatmap-welch` → individual/ind_03_welch_logp_por_escenario.png (5 columnas fuera de muestra tras una línea vertical)
 - `fig:heatmap-kl` → individual/ind_04_kl_acciones_por_escenario.png
 - `fig:pairwise-cohen` → individual/ind_13_pares_cohen_d.png
-- `fig:ensemble-statistical-heatmaps` → ensemble/ens_03 + ens_07 + ens_04
+- `fig:ensemble-statistical-heatmaps` → ensemble/ens_03 + ens_07 + ens_04 (ens_03 y ens_07 con 5 columnas fuera de muestra tras una línea vertical)
 - `fig:ensemble-pairwise` → ensemble/ens_13 + ens_12
 - `fig:trf-internals` → agent_internals/trf_agent_confidences.png
+- Tabla `tab:heldout` (sec:res-heldout, 05Results) → `h1/general/results/heldout/heldout_gap.json` (§10bis). Desde el 2026-09-28 todos los heatmaps por escenario (01, 02, 03, 04, 07) muestran las 5 réplicas a la derecha de una línea vertical.
 
 **Figuras generadas en `h1/general/results/` que la tesis NO usa** (no están en `02_Images/`):
 
-- individual: `02_degradacion_por_escenario`, `06_curvas_estresores_universales`, `07_cohen_d_por_escenario`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `12_pares_welch_logp`, `14_pares_kl`
-- ensemble: `02_degradacion_por_escenario`, `05_curvas_por_familia`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `14_pares_kl`
+- individual: `02_degradacion_por_escenario`, `06_curvas_estresores_universales`, `07_cohen_d_por_escenario`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `12_pares_welch_logp`, `14_pares_kl`, `15_referencia_vs_heldout`
+- ensemble: `02_degradacion_por_escenario`, `05_curvas_por_familia`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `14_pares_kl`, `15_referencia_vs_heldout`
 - agent_internals: `trf_agent_cumulative_performance`, `trf_agent_normalised_performance`, `trf_agent_remapped_confidences`
 - Cómo incluirlas: Agregar el stem a SUITE_FIGURES en writings/auxiliar/scripts/sync_figures.py y ejecutarlo (sync_figures borra de 02_Images todo lo que no esté en su lista); nombre destino ind_<stem>.png o ens_<stem>.png.
 
@@ -786,5 +872,6 @@ Contrastados contra los datos de este archivo (2026-09-24). Corregirlos cuando s
 ## 14. Reproducción
 
 - Entorno: win_mpes_env\Scripts\Activate.ps1 desde la raíz; comandos desde h1/; VIRTUAL_ENV, PYTHONIOENCODING=utf-8, TF_ENABLE_ONEDNN_OPTS=0.
-- Benchmark (desde `h1/`): `python -m general.scripts.benchmark run --suite both`; `python -m general.scripts.analysis`; `python -m general.scripts.figures`; `python -m general.scripts.random_baseline`; `python -m general.scripts.agent_internals`
-- Tesis (desde la raíz): `cd writings`; `python audit\audit.py`; `python audit\audit.py --no-tex`; `python auxiliar\scripts\sync_figures.py`; `python auxiliar\scripts\ensemble_decisions.py`
+- Benchmark (desde `h1/`): `python -m general.scripts.benchmark run --suite both`; `python -m general.scripts.benchmark heldout`; `python -m general.scripts.analysis`; `python -m general.scripts.figures`; `python -m general.scripts.random_baseline`; `python -m general.scripts.agent_internals`
+- Tesis (desde la raíz): `cd writings`; `python audit\audit.py`; `python audit\audit.py --no-tex`; `python auxiliar\scripts\sync_figures.py`; `python auxiliar\scripts\ensemble_decisions.py`; `python auxiliar\scripts\heldout_gap.py`
+- Réplicas fuera de muestra: `run --suite both` evalúa también `heldout_s1`..`s5` (65 celdas: 13 modelos × 5); `benchmark heldout` escribe `general/results/heldout/` (CSV y `sampling_distribution.json` por réplica, `heldout_catalogue.json` con sha256 y verificación de las copias en los 13 paquetes); `python writings/auxiliar/scripts/heldout_gap.py` (desde la raíz, como en el Apéndice `ap:orchestrator`; independiente del directorio) escribe `h1/general/results/heldout/heldout_gap.json` (Tabla `tab:heldout`).

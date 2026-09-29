@@ -2,11 +2,11 @@
 
 # 📈 mPES Under Stress Experiments — `general/`
 
-**Cross-model under-stress evaluation under 22 perturbation scenarios.**
+**Cross-model under-stress evaluation under 22 scenarios plus 5 held-out replicas.**
 
 [![Models](https://img.shields.io/badge/models-13-blue.svg)](#scope)
-[![Scenarios](https://img.shields.io/badge/scenarios-22-blueviolet.svg)](#scenario-catalogue)
-[![Cells](https://img.shields.io/badge/cells-286-success.svg)](#scope)
+[![Scenarios](https://img.shields.io/badge/scenarios-27-blueviolet.svg)](#scenario-catalogue)
+[![Cells](https://img.shields.io/badge/cells-351-success.svg)](#scope)
 [![Output](https://img.shields.io/badge/figures-PNG-orange.svg)](#heatmaps-publication-quality)
 
 </div>
@@ -14,7 +14,8 @@
 > **Purpose** — Generalise and benchmark seven individual mPES agents and six
 > ensemble variants under a 22-scenario matrix of severity / length / joint /
 > structural perturbations to expose each model's limitations and identify
-> the most robust one within each suite.
+> the most robust one within each suite. Five held-out replicas of the
+> baseline distribution measure how optimistic the tuned reference score is.
 
 The benchmark stores two comparable suites: `individual` contains the seven
 individual agents (`pes_base`, `pes_ql`, `pes_dql`, `pes_dqn`, `pes_rdqn`,
@@ -30,9 +31,9 @@ benchmark; `pes_ens` is the best-performing ensemble in the current results.
 | Aspect | Value |
 |---|---|
 | Models evaluated | 13: 7 individual + 6 ensemble models |
-| Scenarios | 22 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural) |
-| Cells | 13 × 22 = **286** |
-| `n` per cell | 64 sequences (128 in `struct_more_total`; single seed = 42) |
+| Scenarios | 27 (1 baseline + 9 severity + 5 length + 4 joint + 3 structural + 5 held-out) |
+| Cells | 13 × 27 = **351** |
+| `n` per cell | 64 sequences (128 in `struct_more_total`; seed = 42, `42 + k` for `heldout_sk`) |
 | Retraining | **None** — pure inference on existing artefacts |
 
 The benchmark **does not modify** any package's source code beyond the
@@ -93,6 +94,14 @@ python -m general.scripts.benchmark run --pkg pes_dqn --scenario sev_base
 python -m general.scripts.benchmark run --pkg pes_dqn --force
 ```
 
+### Held-out replicas
+
+```powershell
+python -m general.scripts.benchmark run --suite both --scenario heldout_s1 --scenario heldout_s2 `
+    --scenario heldout_s3 --scenario heldout_s4 --scenario heldout_s5
+python -m general.scripts.benchmark heldout      # results/heldout/ catalogue + copy check
+```
+
 ## Output layout
 
 ```text
@@ -112,15 +121,18 @@ general/
 │   └── agent_internals.py           # pes_trf confidence / performance panels
 ├── work/                            # runtime intermediates (per cell)
 │   └── <pkg>/
-│       ├── scenarios/<sid>/         # synthesised input CSVs
+│       ├── scenarios/<sid>/         # synthesised input CSVs (+ sampling_distribution.json
+│       │                            #   for heldout_s*)
 │       └── outputs/<sid>/           # subprocess outputs + log
 └── results/
     ├── baseline/                    # random_player_*.png
     ├── agent_internals/             # trf_agent_*.png
+    ├── heldout/                     # canonical heldout_s*/ CSVs + sampling_distribution.json,
+    │                                # heldout_catalogue.json, heldout_gap.json
     └── <suite>/                     # individual | ensemble
         ├── cells/<model>__<sid>.json    # one payload per benchmark cell
         ├── matrices/<metric>.csv        # model x scenario matrices
-        ├── figures/                     # 01..14 PNG
+        ├── figures/                     # 01..15 PNG
         │   ├── histogramas/<sid>.*      # per-scenario distributions
         │   └── recompensa/<sid>.*       # cumulative + running-mean reward
         ├── summary.json                 # machine-readable consolidation
@@ -154,6 +166,28 @@ general/
 | structural | `struct_few_long_blocks` | 4 blocks × 16 sequences. |
 | structural | `struct_many_short_blocks` | 16 blocks × 4 sequences. |
 | structural | `struct_more_total` | 8 blocks × 16 sequences (n=128). |
+| heldout | `heldout_s1` … `heldout_s5` | i.i.d. draws from the empirical severity / length frequencies (seed 42 + k). |
+
+### Held-out replicas
+
+`sev_base` replays the 64 fixed sequences of `inputs/*.csv`, on which every
+Optuna study (and the hand tuning of `pes_ens`) selected its configuration,
+so its score is in-sample. The five `heldout_s*` scenarios draw new sequences
+from the **same** distribution the individual models sample during training:
+each sequence length i.i.d. from the empirical length frequencies and each
+initial severity i.i.d. from the empirical severity frequencies of the
+reference CSVs (8 × 8 sequences per replica, 320 in total). No model is
+retrained or re-tuned.
+
+* Every replica stores its sampling table, seed, structure, the frequencies
+  actually drawn and the SHA-256 of the CSVs in `sampling_distribution.json`;
+  `benchmark heldout` rebuilds the canonical copy under `results/heldout/` and
+  checks that all 13 packages received identical CSVs.
+* The replicas are **excluded from every stress aggregate** (mean under
+  stress, worst scenario, family degradation, ranking 08, profiles 11,
+  pairwise 12-14, `report.md` sections 1-3). They appear as separate columns,
+  after a vertical rule, in the heatmaps 01-04 and 07, in section 4 of
+  `report.md` and in figure 15.
 
 ## Heatmaps (publication quality)
 
@@ -209,6 +243,7 @@ All figures share the publication style defined in `plotting.py`
 | Stability | `figures/10_desempeno_vs_estabilidad` | Mean performance vs dispersion, one colour per model |
 | Generalisation | `figures/11_perfiles_generalizacion` | Response profile across each family; best model in thick stroke |
 | Pairwise contrasts | `figures/12_pares_welch_logp`, `13_pares_cohen_d`, `14_pares_kl` | Model-versus-model comparison |
+| Held-out gap | `figures/15_referencia_vs_heldout` | Reference vs pooled held-out mean per model; light dots = each replica |
 
 ## Metrics per cell
 
@@ -223,8 +258,9 @@ For each `(model, scenario)`:
   `cohen_d` and `action_kl`, always against the model's own `sev_base`
   reference condition.
 * Pairwise `Welch`, `Cohen d` and symmetric `KL` are calculated by
-  `figures.py` over the non-reference scenarios common to all models in a
-  suite; KL uses common 20-bin performance histograms in `[0, 1]`.
+  `figures.py` over the 21 stress scenarios common to all models in a
+  suite (reference and held-out replicas excluded); KL uses common 20-bin
+  performance histograms in `[0, 1]`.
 
 ## Compute notes
 
@@ -232,8 +268,9 @@ For each `(model, scenario)`:
 
 ## Reproducibility
 
-* Single seed (`42`) for all CSV synthesis ensures all 13 models see the
-  exact same severity / length sequences within a scenario.
+* Single seed (`42`, plus the replica offset `k` for `heldout_sk`) for all
+  CSV synthesis ensures all 13 models see the exact same severity / length
+  sequences within a scenario.
 * Each cell's JSON records the workspace-relative paths to the
   subprocess log, the package's results JSON, and the responses file.
 * Empty CSV-swap stash files (`*.bench_stash`) are restored even on

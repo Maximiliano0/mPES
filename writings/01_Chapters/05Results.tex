@@ -52,7 +52,7 @@ Q-Learning base   & $0{,}871$ & $0{,}074$ & $0{,}851$ & Extrap.\ de severidad ($
   \includegraphics[width=\linewidth]{ind_01_desempeno_por_escenario.png}
   \caption[Desempe\~no medio por escenario (modelos
   individuales)]{Modelos individuales: desempe\~no medio $\bar r$ por
-  modelo y escenario. La primera columna es la referencia.}
+  modelo y escenario. La primera columna es la referencia. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
   \label{fig:heatmap-global}
 \end{figure}
 
@@ -221,7 +221,7 @@ la compuerta del Transformer, en \texttt{len\_poisson}
   \includegraphics[width=\linewidth]{ens_01_desempeno_por_escenario.png}
   \caption[Desempe\~no medio por escenario (ensambles)]{Ensambles:
   desempe\~no medio $\bar r$ por ensamble y escenario. La primera columna
-  es la referencia.}
+  es la referencia. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
   \label{fig:heatmap-ens}
 \end{figure}
 
@@ -336,6 +336,53 @@ Escenarios con mayor media (de $21$) & $3$ & $18$ \\
   \caption[Resultados por secuencia: ensamble ponderado]{Resultados por secuencia del ensamble ponderado (\texttt{pes\_ens}) en la referencia.}
   \label{fig:c-ens}
 \end{figure}
+
+\subsection{R\'eplicas fuera de muestra}\label{sec:res-heldout}
+
+En las cinco r\'eplicas fuera de muestra, $320$ secuencias nuevas de la
+distribuci\'on de la referencia, ning\'un modelo pierde desempe\~no de
+forma apreciable (Tabla~\ref{tab:heldout}). La ca\'ida respecto de la
+referencia va de $-0{,}004$ a $+0{,}011$, siempre con efecto despreciable
+($|d| \le 0{,}15$) y sin significaci\'on ($p \ge 0{,}29$). En los once
+modelos optimizados con Optuna queda entre $-0{,}004$ y $+0{,}005$; la
+mayor corresponde a Q-Learning base, que no se optimiz\'o, de modo que
+diferencias de ese tama\~no son compatibles con la variaci\'on entre
+muestras. El ordenamiento se conserva (correlaci\'on de Spearman entre
+las medias, $\rho = 0{,}97$): s\'olo cambian de posici\'on modelos cuyas
+medias difieren en menos de $0{,}005$ en ambas condiciones. En las mismas $320$ secuencias, el ensamble ponderado
+supera al Transformer por $0{,}010$ (prueba $t$ pareada, $p < 10^{-7}$) y
+tiene mayor media en las cinco r\'eplicas. Elegir la configuraci\'on
+sobre las $64$ secuencias de la referencia no infl\'o, por lo tanto, el
+desempe\~no medido en esa condici\'on.
+
+\begin{table}[H]
+\centering
+\caption[Referencia frente a las r\'eplicas fuera de muestra]{Media en la
+referencia y en las cinco r\'eplicas fuera de muestra (entre par\'entesis,
+desviaci\'on est\'andar de las medias de las r\'eplicas); ca\'ida:
+referencia menos r\'eplicas; $d$: r\'eplicas frente a referencia.}
+\label{tab:heldout}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Modelo} & \textbf{Ref.} & \textbf{Fuera de muestra} & \textbf{Ca\'ida} & $d$ \\
+\midrule
+Ensamble ponderado          & $0{,}937$ & $0{,}939$ ($0{,}003$) & $-0{,}002$ & $+0{,}04$ \\
+Compuerta del Transformer   & $0{,}928$ & $0{,}928$ ($0{,}004$) & $0{,}000$ & $-0{,}01$ \\
+Transformer                 & $0{,}927$ & $0{,}929$ ($0{,}003$) & $-0{,}001$ & $+0{,}03$ \\
+Consenso con prior          & $0{,}918$ & $0{,}915$ ($0{,}007$) & $+0{,}003$ & $-0{,}07$ \\
+Voto por acci\'on           & $0{,}914$ & $0{,}916$ ($0{,}009$) & $-0{,}002$ & $+0{,}04$ \\
+Voto suave                  & $0{,}914$ & $0{,}917$ ($0{,}008$) & $-0{,}003$ & $+0{,}06$ \\
+DQN recurrente              & $0{,}899$ & $0{,}903$ ($0{,}008$) & $-0{,}004$ & $+0{,}08$ \\
+Double Q-Learning           & $0{,}896$ & $0{,}900$ ($0{,}006$) & $-0{,}004$ & $+0{,}07$ \\
+DQN                         & $0{,}894$ & $0{,}891$ ($0{,}006$) & $+0{,}002$ & $-0{,}04$ \\
+Consenso                    & $0{,}889$ & $0{,}893$ ($0{,}007$) & $-0{,}004$ & $+0{,}06$ \\
+A2C                         & $0{,}887$ & $0{,}887$ ($0{,}006$) & $0{,}000$ & $-0{,}01$ \\
+Q-Learning                  & $0{,}887$ & $0{,}881$ ($0{,}008$) & $+0{,}005$ & $-0{,}08$ \\
+Q-Learning base             & $0{,}871$ & $0{,}860$ ($0{,}010$) & $+0{,}011$ & $-0{,}15$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

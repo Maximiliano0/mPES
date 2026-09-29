@@ -32,9 +32,9 @@ import numpy
 ##########################
 ##  Imports internos    ##
 ##########################
-from .benchmark import (REFERENCE_SCENARIO, SUITES, SUITE_PACKAGES, load_cells,
-                        matrices_dir, report_path, scenario_catalogue,
-                        summary_path, suite_dir)
+from .benchmark import (REFERENCE_SCENARIO, SUITES, SUITE_PACKAGES, generalisation_scenarios,
+                        heldout_scenarios, load_cells, matrices_dir, report_path,
+                        scenario_catalogue, summary_path, suite_dir)
 from .plotting import cohen_d, kl_divergence, welch_test
 
 
@@ -170,9 +170,12 @@ def write_report(suite: str = 'individual') -> str:
              '',
              '**Mean degradation** is the signed mean drop in normalized '
              'performance relative to that baseline, '
-             '`mean_s(baseline - perf_s)` over the non-reference scenarios. '
+             '`mean_s(baseline - perf_s)` over the stress scenarios. '
              'Positive = loss under stress; negative = the model performs better '
              'under stress than at baseline.',
+             '',
+             'The held-out replicas (`heldout_s*`) are fresh draws from the baseline '
+             'distribution; they are excluded from sections 1-3 and reported in section 4.',
              '',
              '## 1. Per-model best / worst', '',
              '| Model | Reference | Best scenario | Best | Worst scenario | Worst | Mean degradation |',
@@ -181,7 +184,7 @@ def write_report(suite: str = 'individual') -> str:
         baseline = cells.get(model, {}).get(reference, {}).get('global_mean_perf')
         means = {scenario: value for scenario, value in (
             (s, cells.get(model, {}).get(s, {}).get('global_mean_perf'))
-            for s in scenarios if s != reference) if value is not None}
+            for s in generalisation_scenarios(scenarios)) if value is not None}
         if baseline is None or not means:
             lines.append(f'| {model} | - | - | - | - | - | - |')
             continue
@@ -201,7 +204,7 @@ def write_report(suite: str = 'individual') -> str:
                 families.setdefault(family, []).append(scenario)
                 break
     for family, family_scenarios in families.items():
-        if family == 'baseline':
+        if family in ('baseline', 'heldout'):
             continue
         degradations = []
         for model in models:
@@ -224,22 +227,52 @@ def write_report(suite: str = 'individual') -> str:
         baseline = cells.get(model, {}).get(reference, {}).get('global_mean_perf')
         if baseline is None:
             continue
-        for scenario in scenarios:
+        for scenario in generalisation_scenarios(scenarios):
             value = cells.get(model, {}).get(scenario, {}).get('global_mean_perf')
-            if scenario != reference and value is not None:
+            if value is not None:
                 rows.append((baseline - value, model, scenario, baseline, value))
     rows.sort(reverse=True)
     for rank, (delta, model, scenario, baseline, value) in enumerate(rows[:5], 1):
         lines.append(f'| {rank} | {model} | `{scenario}` | {baseline:.4f} | '
                      f'{value:.4f} | {delta:+.4f} |')
 
-    lines += ['', '## 4. Artefacts', '',
+    lines += _heldout_section(models, scenarios, reference, cells)
+    lines += ['', '## 5. Artefacts', '',
               '* Matrices: `matrices/*.csv`',
               '* Figures: `figures/*.png`',
               '* Cells: `cells/<model>__<scenario>.json`', '']
     with open(report_path(suite), 'w', encoding='utf-8') as handle:
         handle.write('\n'.join(lines))
     return report_path(suite)
+
+
+def _heldout_section(models: "list[str]", scenarios: "list[str]", reference: str,
+                     cells: dict) -> "list[str]":
+    """Report lines comparing the reference with the pooled held-out replicas."""
+    replicas = heldout_scenarios(scenarios)
+    lines = ['', '## 4. Held-out replicas of the reference distribution', '',
+             f'Replicas: {", ".join(f"`{s}`" for s in replicas) or "none"}. '
+             'Gap = reference - pooled held-out mean (positive = the reference score '
+             'is optimistic); d and Welch compare the pooled held-out sequences with '
+             'the reference sequences.', '',
+             '| Model | Reference | Held-out mean | SD between replicas | Gap | d | log10 p |',
+             '|---|---:|---:|---:|---:|---:|---:|']
+    for model in models:
+        base = numpy.asarray(cells.get(model, {}).get(reference, {}).get('per_sequence_perf', []),
+                             dtype=float)
+        present = [s for s in replicas if cells.get(model, {}).get(s, {}).get('per_sequence_perf')]
+        if not base.size or not present:
+            lines.append(f'| {model} | - | - | - | - | - | - |')
+            continue
+        pooled = numpy.concatenate([numpy.asarray(cells[model][s]['per_sequence_perf'], dtype=float)
+                                    for s in present])
+        replica_means = [cells[model][s]['global_mean_perf'] for s in present]
+        spread = float(numpy.std(replica_means, ddof=1)) if len(present) > 1 else float('nan')
+        _, _, log_p = welch_test(pooled, base)
+        lines.append(f'| {model} | {base.mean():.4f} | {pooled.mean():.4f} | {spread:.4f} | '
+                     f'{base.mean() - pooled.mean():+.4f} | {cohen_d(pooled, base):+.2f} | '
+                     f'{log_p:.2f} |')
+    return lines
 
 
 def main() -> None:

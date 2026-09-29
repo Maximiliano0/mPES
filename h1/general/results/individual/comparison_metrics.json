@@ -14,7 +14,16 @@
         "severity": 0.03160590277777775,
         "structural": 0.0
       },
-      "stress_std": 0.07651433663682228
+      "stress_std": 0.07651433663682228,
+      "heldout_replica_means": {
+        "heldout_s1": 0.8728843749999999,
+        "heldout_s2": 0.8577796875000001,
+        "heldout_s3": 0.84653125,
+        "heldout_s4": 0.8636296875,
+        "heldout_s5": 0.8579296875
+      },
+      "heldout_mean": 0.8597509375000001,
+      "heldout_gap": 0.010813124999999868
     },
     "pes_ql": {
       "reference_mean": 0.8866421875,
@@ -28,7 +37,16 @@
         "severity": 0.02399149305555559,
         "structural": -3.700743415417188e-17
       },
-      "stress_std": 0.07128217935197625
+      "stress_std": 0.07128217935197625,
+      "heldout_replica_means": {
+        "heldout_s1": 0.884284375,
+        "heldout_s2": 0.8748578124999999,
+        "heldout_s3": 0.8900140624999999,
+        "heldout_s4": 0.8712656249999999,
+        "heldout_s5": 0.8859625
+      },
+      "heldout_mean": 0.881276875,
+      "heldout_gap": 0.005365312500000052
     },
     "pes_dql": {
       "reference_mean": 0.8963406249999999,
@@ -42,7 +60,16 @@
         "severity": 0.029385416666666535,
         "structural": 0.0
       },
-      "stress_std": 0.0620933337377456
+      "stress_std": 0.0620933337377456,
+      "heldout_replica_means": {
+        "heldout_s1": 0.9072765625,
+        "heldout_s2": 0.90299375,
+        "heldout_s3": 0.8932562500000001,
+        "heldout_s4": 0.8964000000000001,
+        "heldout_s5": 0.901
+      },
+      "heldout_mean": 0.9001853125,
+      "heldout_gap": -0.00384468750000011
     },
     "pes_dqn": {
       "reference_mean": 0.8937328125,
@@ -56,7 +83,16 @@
         "severity": -0.0016354166666666299,
         "structural": 3.700743415417188e-17
       },
-      "stress_std": 0.05355627449255461
+      "stress_std": 0.05355627449255461,
+      "heldout_replica_means": {
+        "heldout_s1": 0.8908171874999999,
+        "heldout_s2": 0.8943812499999999,
+        "heldout_s3": 0.8943828125,
+        "heldout_s4": 0.88109375,
+        "heldout_s5": 0.8967734374999999
+      },
+      "heldout_mean": 0.8914896875,
+      "heldout_gap": 0.0022431250000000125
     },
     "pes_rdqn": {
       "reference_mean": 0.8986500000000001,
@@ -70,7 +106,16 @@
         "severity": 0.011177604166666775,
         "structural": 3.700743415417188e-17
       },
-      "stress_std": 0.07299320587432652
+      "stress_std": 0.07299320587432652,
+      "heldout_replica_means": {
+        "heldout_s1": 0.910784375,
+        "heldout_s2": 0.9000671874999999,
+        "heldout_s3": 0.91099375,
+        "heldout_s4": 0.89483125,
+        "heldout_s5": 0.8978125
+      },
+      "heldout_mean": 0.9028978125,
+      "heldout_gap": -0.004247812499999948
     },
     "pes_a2c": {
       "reference_mean": 0.8872421875000001,
@@ -84,7 +129,16 @@
         "severity": -0.004721701388888833,
         "structural": 0.0
       },
-      "stress_std": 0.05910264675485878
+      "stress_std": 0.05910264675485878,
+      "heldout_replica_means": {
+        "heldout_s1": 0.8925734375,
+        "heldout_s2": 0.8900984375,
+        "heldout_s3": 0.88513125,
+        "heldout_s4": 0.8772671875,
+        "heldout_s5": 0.8892171875
+      },
+      "heldout_mean": 0.8868575,
+      "heldout_gap": 0.00038468750000009155
     },
     "pes_trf": {
       "reference_mean": 0.9271890625000001,
@@ -98,7 +152,16 @@
         "severity": -0.0065163194444443195,
         "structural": 0.0
       },
-      "stress_std": 0.044438335628488
+      "stress_std": 0.044438335628488,
+      "heldout_replica_means": {
+        "heldout_s1": 0.9343359375,
+        "heldout_s2": 0.9288875000000001,
+        "heldout_s3": 0.9259312500000001,
+        "heldout_s4": 0.9266859375,
+        "heldout_s5": 0.9273921875
+      },
+      "heldout_mean": 0.9286465624999998,
+      "heldout_gap": -0.0014574999999996674
     }
   },
   "pairwise": {

@@ -43,10 +43,12 @@ cualquiera de los cinco ensambles optimizables.}
 
 \section{Ejecuci\'on de la evaluaci\'on}\label{ap:orchestrator}
 
-La evaluaci\'on en los $22$ escenarios se ejecuta desde \texttt{h1/}:
+La evaluaci\'on en los $22$ escenarios y las $5$ r\'eplicas fuera de
+muestra se ejecuta desde \texttt{h1/}:
 
 \begin{verbatim}
 python -m general.scripts.benchmark run --suite both
+python -m general.scripts.benchmark heldout
 python -m general.scripts.analysis
 python -m general.scripts.figures
 python -m general.scripts.random_baseline
@@ -54,10 +56,15 @@ python -m general.scripts.random_baseline
 
 El primer comando, reanudable, eval\'ua cada par (modelo, escenario) de
 los dos grupos reemplazando temporalmente los archivos de entrada de
-cada paquete por los del escenario. El segundo calcula las matrices
-modelo $\times$ escenario y las comparaciones entre pares; el tercero
-genera las figuras, y el cuarto, las del agente aleatorio. Los resultados
-se guardan en \texttt{general/results/<grupo>/}.
+cada paquete por los del escenario. El segundo guarda en
+\texttt{general/results/heldout/} una copia de las r\'eplicas y comprueba
+que los $13$ modelos recibieron las mismas secuencias; cada r\'eplica
+registra en \texttt{sampling\_distribution.json} las frecuencias de
+sorteo, la semilla y las frecuencias efectivamente obtenidas. El tercero
+calcula las matrices modelo $\times$ escenario y las comparaciones entre
+pares; el cuarto genera las figuras, y el quinto, las del agente
+aleatorio. Los resultados se guardan en
+\texttt{general/results/<grupo>/}.
 
 Las frecuencias de la Tabla~\ref{tab:ens-freq} se obtienen, desde la
 ra\'iz del repositorio, con
@@ -69,7 +76,8 @@ coincidan con las de la evaluaci\'on principal. La
 Tabla~\ref{tab:trf-vs-ens} se obtiene con
 \texttt{python writings/auxiliar/scripts/trf\_vs\_ens.py}, que compara
 cada ensamble con el Transformer a partir de los resultados guardados en
-\texttt{general/results/}.
+\texttt{general/results/}, y la Tabla~\ref{tab:heldout}, con
+\texttt{python writings/auxiliar/scripts/heldout\_gap.py}.
 
 \section{Mapas estad\'isticos complementarios}\label{ap:stat-maps}
 
@@ -82,7 +90,7 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
   \caption[Welch por escenario (modelos individuales)]{Modelos
   individuales: $\log_{10} p$ de Welch de cada escenario frente a la
   referencia del mismo modelo; los valores menores que $-10$ se muestran
-  como $\le -10$.}
+  como $\le -10$. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
   \label{fig:heatmap-welch}
 \end{figure}
 
@@ -110,7 +118,7 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
     \caption{$d$ de Cohen.}
   \end{subfigure}
   \caption[Mapas estad\'isticos por escenario (ensambles)]{Ensambles:
-  comparaci\'on de cada escenario con la referencia del mismo ensamble.}
+  comparaci\'on de cada escenario con la referencia del mismo ensamble. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
   \label{fig:ensemble-statistical-heatmaps}
 \end{figure}
 

@@ -4,7 +4,8 @@ This package generalises and benchmarks every trained mPES agent -- the
 seven individual packages (including ``tabular/pes_base``, the
 ``REFERENCE_MODEL``) and the six ensemble variants -- under a matrix of
 stress-test scenarios (severity / length / joint / structural
-perturbations).
+perturbations), plus five held-out replicas of the baseline distribution
+that measure how optimistic the tuned reference score is.
 
 Entry points (all under :mod:`general.scripts`)
 -----------------------------------------------

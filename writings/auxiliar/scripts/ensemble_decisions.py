@@ -58,6 +58,7 @@ with contextlib.redirect_stdout(io.StringIO()):
     from ens.pes_ens_trf_guard.ext import evaluate_ens as guard_evaluate
     from ens.pes_ens_trf_guard.src.pandemic_env import Pandemic, run_experiment
     from ens.pes_ens_trf_guard.src.tools_env import convert_globalseq_to_seqs
+    from general.scripts.benchmark import generalisation_scenarios, heldout_scenarios
 
 DEFAULT_WEIGHTS = {'dqn': 0.15, 'a2c': 0.10, 'rdqn': 0.25, 'trf': 0.50}
 EVALUATORS = {'pes_ens_consensus_prior': consensus_prior_evaluate, 'pes_ens_trf_guard': guard_evaluate}
@@ -338,7 +339,8 @@ def main() -> None:
 
     for pkg, _, keys in rules:
         for label, subset in (('sev_base', ['sev_base']),
-                              ('generalizacion', [s for s in scenarios if s != 'sev_base'])):
+                              ('generalizacion', generalisation_scenarios(scenarios)),
+                              ('heldout', heldout_scenarios(scenarios))):
             totals = {k: sum(results[pkg][s][k] for s in subset if s in results[pkg]) for k in keys}
             if totals['n']:
                 shares = {k: round(100.0 * v / totals['n'], 1) for k, v in totals.items() if k != 'n'}

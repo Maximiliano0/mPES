@@ -4,8 +4,8 @@ Reproduce la Tabla ``tab:trf-vs-ens`` de Resultados a partir de los
 ``summary.json`` de ``h1/general/results/{individual,ensemble}/``:
 
 * ``diferencia``: media de generalización del ensamble menos la de
-  ``pes_trf`` (promedio de las medias de los escenarios distintos de la
-  referencia).
+  ``pes_trf`` (promedio de las medias de los 21 escenarios de
+  generalización; la referencia y las réplicas ``heldout_s*`` quedan fuera).
 * ``d`` y ``p``: d de Cohen y test de Welch sobre todas las secuencias de
   esos escenarios, con las mismas funciones que los mapas por pares
   (``general.scripts.plotting``).
@@ -41,6 +41,7 @@ sys.path.insert(0, H1)
 ##  Imports internos    ##
 ##########################
 # pylint: disable=wrong-import-position
+from general.scripts.benchmark import generalisation_scenarios
 from general.scripts.plotting import cohen_d, welch_test
 
 TRANSFORMER = 'pes_trf'
@@ -113,11 +114,10 @@ def main() -> None:
 
     individual = load_summary('individual')
     ensemble = load_summary('ensemble')
-    reference = ensemble['reference_scenario']
     transformer_cells = individual['cells'][TRANSFORMER]
     results = {}
     for model, cells in ensemble['cells'].items():
-        scenarios = [s for s in cells if s != reference and s in transformer_cells]
+        scenarios = [s for s in generalisation_scenarios(list(cells)) if s in transformer_cells]
         results[model] = compare(cells, transformer_cells, scenarios)
     for model, row in sorted(results.items(), key=lambda item: -item[1]['difference']):
         print(f'{model:26s} gen={row["gen_mean"]:.4f} diff={row["difference"]:+.4f} d={row["cohen_d"]:+.3f} '

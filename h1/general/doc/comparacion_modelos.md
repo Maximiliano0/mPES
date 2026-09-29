@@ -2,7 +2,8 @@
 
 > Informe generado a partir de los resultados disponibles en `h1/general/results/`.
 > La comparación usa 22 escenarios, 64 secuencias por celda y
-> `sev_base` como baseline.
+> `sev_base` como baseline, más 5 réplicas fuera de muestra de la referencia
+> (sección *Réplicas fuera de muestra*) que no entran en las medias bajo estrés.
 
 ## Metodología
 
@@ -331,6 +332,41 @@ más retroceden frente a su baseline, ambos ante `sev_extrapolate_high`.
 ![d de Cohen entre ensembles](../results/ensemble/figures/13_pares_cohen_d.png)
 
 ![KL entre distribuciones de rendimiento de ensembles](../results/ensemble/figures/14_pares_kl.png)
+
+## Réplicas fuera de muestra
+
+`sev_base` reproduce las 64 secuencias fijas sobre las que Optuna (y el ajuste manual de `pes_ens`)
+eligió cada configuración, así que su media es una medición dentro de la muestra. Los escenarios
+`heldout_s1` … `heldout_s5` sortean 8 × 8 secuencias nuevas cada uno (320 en total) con las frecuencias
+empíricas de longitud y de severidad de la referencia, de forma independiente, que es la misma
+distribución con la que se entrenan los modelos individuales. No se reentrena ni se reoptimiza nada.
+Cada réplica guarda su tabla de sorteo, su semilla (42 + k) y las frecuencias obtenidas en
+`sampling_distribution.json`; el catálogo y la verificación de copias están en `../results/heldout/`.
+Las réplicas no entran en ninguna media bajo estrés ni en los contrastes pareados.
+
+| Modelo | Selección | Baseline | Held-out (DE entre réplicas) | Caída | d | p Welch | Rango ref. → held-out |
+|---|---|---:|---:|---:|---:|---:|---|
+| `pes_ens` | manual | 0.937 | 0.939 (0.003) | -0.0015 | +0.04 | 0.75 | 1 → 1 |
+| `pes_ens_trf_guard` | optuna | 0.928 | 0.928 (0.004) | +0.0003 | -0.01 | 0.96 | 2 → 3 |
+| `pes_trf` | optuna | 0.927 | 0.929 (0.003) | -0.0015 | +0.03 | 0.81 | 3 → 2 |
+| `pes_ens_consensus_prior` | optuna | 0.918 | 0.915 (0.007) | +0.0029 | -0.07 | 0.61 | 4 → 6 |
+| `pes_ens_accq` | optuna | 0.914 | 0.916 (0.009) | -0.0020 | +0.04 | 0.75 | 5 → 5 |
+| `pes_ens_sprb` | optuna | 0.914 | 0.917 (0.008) | -0.0028 | +0.06 | 0.66 | 6 → 4 |
+| `pes_rdqn` | optuna | 0.899 | 0.903 (0.008) | -0.0042 | +0.08 | 0.54 | 7 → 7 |
+| `pes_dql` | optuna | 0.896 | 0.900 (0.006) | -0.0038 | +0.07 | 0.57 | 8 → 8 |
+| `pes_dqn` | optuna | 0.894 | 0.891 (0.006) | +0.0022 | -0.04 | 0.77 | 9 → 10 |
+| `pes_ens_consensus` | optuna | 0.889 | 0.893 (0.007) | -0.0037 | +0.06 | 0.67 | 10 → 9 |
+| `pes_a2c` | optuna | 0.887 | 0.887 (0.006) | +0.0004 | -0.01 | 0.96 | 11 → 11 |
+| `pes_ql` | optuna | 0.887 | 0.881 (0.008) | +0.0054 | -0.08 | 0.53 | 12 → 12 |
+| `pes_base` | sin optimizar | 0.871 | 0.860 (0.010) | +0.0108 | -0.15 | 0.29 | 13 → 13 |
+
+- Ninguna caída es significativa (p ≥ 0.29; |d| ≤ 0.15); la mayor es la de `pes_base`, que no se optimizó.
+- El orden se conserva: Spearman ρ = 0.967 entre las medias de referencia y held-out.
+- En las mismas 320 secuencias, `pes_ens` supera a `pes_trf` por 0.010 (t pareada p = 7.5e-08; Wilcoxon p = 2.0e-08) y gana en 5 de 5 réplicas.
+
+![Referencia frente a réplicas (individuales)](../results/individual/figures/15_referencia_vs_heldout.png)
+
+![Referencia frente a réplicas (ensembles)](../results/ensemble/figures/15_referencia_vs_heldout.png)
 
 ## Lectura comparativa
 

@@ -5,11 +5,11 @@
   "autor": "Ing. Maximiliano Leonel Vega",
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
-  "fuente": "h1/general/results/{individual,ensemble}/ (matrices/*.csv, comparison_metrics.json, cells/*.json), inputs/best_params.json y config/CONFIG.py de cada paquete; generado 2026-09-24. pes_ens_consensus_prior actualizado el 2026-09-28 tras corregir la doble softmax en su confianza (nuevo inputs/best_params.json y re-ejecución de sus 22 celdas); el resto no cambió.",
+  "fuente": "h1/general/results/{individual,ensemble}/ (matrices/*.csv, comparison_metrics.json, cells/*.json), inputs/best_params.json y config/CONFIG.py de cada paquete; generado 2026-09-24. pes_ens_consensus_prior actualizado el 2026-09-28 tras corregir la doble softmax en su confianza (nuevo inputs/best_params.json y re-ejecución de sus 22 celdas); el resto no cambió. Réplicas fuera de muestra heldout_s1..heldout_s5 agregadas el 2026-09-28 (65 celdas nuevas; clave replicas_fuera_de_muestra; fuente h1/general/results/heldout/): excluidas de todos los agregados de generalización, por lo que ningún otro valor cambió.",
   "convenciones": {
    "metrica": "rbar = (S_peor - S_agente) / (S_peor - S_mejor); 0 = no asignar, 1 = óptimo (S_mejor por programación dinámica exacta, mochila acotada 0..10 por ciudad, suma <= 30); rbar <= 1.",
    "referencia": "escenario sev_base (distribución de entrenamiento), n = 64 secuencias, 360 pasos.",
-   "generalizacion": "media de las medias de los 21 escenarios distintos de sev_base (incluye los 3 estructurales, que reproducen la referencia).",
+   "generalizacion": "media de las medias de los 21 escenarios distintos de sev_base, sin las 5 réplicas fuera de muestra (incluye los 3 estructurales, que reproducen la referencia).",
    "degradacion": "deg = mu(sev_base) - mu(escenario); positiva = pérdida; negativa = mejora.",
    "degradacion_media": "promedio con signo de deg sobre los 21 escenarios.",
    "cohen_d_celda": "d del escenario frente a la referencia del mismo modelo; positivo = mejor en el escenario.",
@@ -18,7 +18,8 @@
    "pares": "Comparaciones entre modelos de un mismo grupo juntando las secuencias de los 21 escenarios de generalización (sin sev_base). d > 0: el primer modelo del par supera al segundo. kl_sym: KL simetrizada entre histogramas de desempeño (20 bins en [0,1], eps = 1e-9).",
    "claves_celda": {"mu": "media rbar", "sd": "desviación estándar entre secuencias", "min": "mínimo", "max": "máximo", "deg": "degradación vs referencia", "d": "Cohen d vs referencia", "log10p": "log10 p de Welch vs referencia", "kl_acc": "KL de acciones vs referencia", "f_opt": "fracción de secuencias con rbar = 1", "f_lt08": "fracción con rbar < 0,8", "a_media": "asignación media por paso (incluye pasos sin recursos)", "n": "nº de secuencias"},
    "derivado": "Campos con prefijo derivado_ no aparecen en la tesis; se calcularon de las mismas matrices.",
-   "estadistica": "Sin corrección por comparaciones múltiples; secuencias comunes a todos los modelos (misma semilla), no independientes: los p son exploratorios; priorizar d."
+   "estadistica": "Sin corrección por comparaciones múltiples; secuencias comunes a todos los modelos (misma semilla), no independientes: los p son exploratorios; priorizar d.",
+   "replicas_fuera_de_muestra": "heldout_s1..heldout_s5: 5 réplicas i.i.d. de la referencia (ver replicas_fuera_de_muestra); excluidas de generalización (21), peor escenario, familias, pares y conteos; no se copian a celdas ni a ganadores_por_escenario."
   }
  },
  "entorno": {
@@ -599,7 +600,12 @@
   },
   "struct_few_long_blocks": {"familia": "estructural", "n_secuencias": 64, "n_pasos": 360, "bloques_x_secuencias": "4x16", "descripcion": "4 bloques × 16 secuencias = 64; misma distribución que la referencia (control).", "nombre_en_texto": null, "fuera_de_rango": false},
   "struct_many_short_blocks": {"familia": "estructural", "n_secuencias": 64, "n_pasos": 360, "bloques_x_secuencias": "16x4", "descripcion": "16 bloques × 4 secuencias = 64; misma distribución que la referencia (control).", "nombre_en_texto": null, "fuera_de_rango": false},
-  "struct_more_total": {"familia": "estructural", "n_secuencias": 128, "n_pasos": 720, "bloques_x_secuencias": "8x16", "descripcion": "8 bloques × 16 secuencias = 128; los CSV empíricos se repiten (las 64 secuencias dos veces), por eso reproduce exactamente la media de la referencia (control).", "nombre_en_texto": null, "fuera_de_rango": false}
+  "struct_more_total": {"familia": "estructural", "n_secuencias": 128, "n_pasos": 720, "bloques_x_secuencias": "8x16", "descripcion": "8 bloques × 16 secuencias = 128; los CSV empíricos se repiten (las 64 secuencias dos veces), por eso reproduce exactamente la media de la referencia (control).", "nombre_en_texto": null, "fuera_de_rango": false},
+  "heldout_s1": {"familia": "fuera de muestra", "n_secuencias": 64, "n_pasos": 340, "bloques_x_secuencias": "8x8", "descripcion": "Réplica 1 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente (i.i.d.) con las frecuencias empíricas de la referencia; semilla 43.", "nombre_en_texto": "réplica fuera de muestra", "fuera_de_rango": false, "semilla": 43, "excluido_de_generalizacion": true},
+  "heldout_s2": {"familia": "fuera de muestra", "n_secuencias": 64, "n_pasos": 374, "bloques_x_secuencias": "8x8", "descripcion": "Réplica 2 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente (i.i.d.) con las frecuencias empíricas de la referencia; semilla 44.", "nombre_en_texto": "réplica fuera de muestra", "fuera_de_rango": false, "semilla": 44, "excluido_de_generalizacion": true},
+  "heldout_s3": {"familia": "fuera de muestra", "n_secuencias": 64, "n_pasos": 369, "bloques_x_secuencias": "8x8", "descripcion": "Réplica 3 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente (i.i.d.) con las frecuencias empíricas de la referencia; semilla 45.", "nombre_en_texto": "réplica fuera de muestra", "fuera_de_rango": false, "semilla": 45, "excluido_de_generalizacion": true},
+  "heldout_s4": {"familia": "fuera de muestra", "n_secuencias": 64, "n_pasos": 346, "bloques_x_secuencias": "8x8", "descripcion": "Réplica 4 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente (i.i.d.) con las frecuencias empíricas de la referencia; semilla 46.", "nombre_en_texto": "réplica fuera de muestra", "fuera_de_rango": false, "semilla": 46, "excluido_de_generalizacion": true},
+  "heldout_s5": {"familia": "fuera de muestra", "n_secuencias": 64, "n_pasos": 389, "bloques_x_secuencias": "8x8", "descripcion": "Réplica 5 de la referencia: 8 × 8 secuencias nuevas; longitud y severidad inicial sorteadas de forma independiente (i.i.d.) con las frecuencias empíricas de la referencia; semilla 47.", "nombre_en_texto": "réplica fuera de muestra", "fuera_de_rango": false, "semilla": 47, "excluido_de_generalizacion": true}
  },
  "celdas": {
   "pes_base": {
@@ -1339,17 +1345,20 @@
   "unidad": "% de decisiones con recursos disponibles (R > 0)",
   "pes_ens_trf_guard": {
    "sigue_al_transformer_g>=0.5": {"referencia": 96.9, "generalizacion": 95.0},
-   "accion_final_distinta_del_transformer": {"referencia": 0.8, "generalizacion": 2.7}
+   "accion_final_distinta_del_transformer": {"referencia": 0.8, "generalizacion": 2.7},
+   "replicas_fuera_de_muestra": {"sigue_al_transformer": 94.6, "accion_final_distinta_del_transformer": 2.8}
   },
   "pes_ens_consensus_prior": {
    "prior_cambia_accion_votada": {"referencia": 4.5, "generalizacion": 4.6},
    "cota_cambia_accion": {"referencia": 0.3, "generalizacion": 1.5},
-   "accion_final_distinta_del_transformer": {"referencia": 62.4, "generalizacion": 58.6}
+   "accion_final_distinta_del_transformer": {"referencia": 62.4, "generalizacion": 58.6},
+   "replicas_fuera_de_muestra": {"prior_cambia_accion_votada": 3.7, "cota_cambia_accion": 0.5, "accion_final_distinta_del_transformer": 63.4}
   },
   "pes_ens": {
    "prior_cambia_accion_votada": {"referencia": 40.9, "generalizacion": 32.5},
    "cota_cambia_accion": {"referencia": 0.0, "generalizacion": 0.3},
    "accion_final_distinta_del_transformer": {"referencia": 61.2, "generalizacion": 48.1},
+   "replicas_fuera_de_muestra": {"prior_cambia_accion_votada": 36.4, "cota_cambia_accion": 0.1, "accion_final_distinta_del_transformer": 50.5},
    "otros_hechos_tesis": ["Con tau = 15 las distribuciones de los tres miembros quedan casi planas: en la referencia la acción más probable de cada uno tiene en promedio probabilidad 0,19 y supera a la segunda por 0,02-0,03.", "El voto (antes del prior) ya difiere de la acción del Transformer en el 31 % de las decisiones de la referencia.", "En sev_extrapolate_high y joint_extrap_both todas las decisiones de pes_ens coinciden con las de su miembro Transformer (que recibe la severidad recortada a 9)."]
   }
  },
@@ -1358,7 +1367,298 @@
   "individual": {"severidad": 0.011898, "longitud": 0.009486, "conjunta": -0.002838, "estructural": 0.0},
   "ensemble": {"severidad": -0.001157, "longitud": 0.015196, "conjunta": -0.013592, "estructural": 0.0}
  },
- "advertencias_metodologicas": ["Una única semilla (42) por escenario y un único conjunto de 64 secuencias de referencia: no hay intervalos de confianza del ordenamiento; los p de Welch no son independientes ni corregidos por comparaciones múltiples.", "Hiperparámetros de modelos y ensambles ajustados con las mismas 64 secuencias de la referencia: la referencia puede ser optimista; la generalización está menos expuesta a ese sesgo.", "La media de generalización incluye los 3 escenarios estructurales (idénticos a la referencia) y escenarios más fáciles (p. ej. len_all_short, joint_low_short); leerla junto con el peor escenario.", "Entrenamiento sólo con severidades 2..8: filas S = 0, 1, 9 de las tablas Q quedan con valores iniciales aleatorios; parte de la caída tabular refleja falta de cobertura, no sólo capacidad de generalizar.", "Con severidades 10..12 una política que asigna mucho puede acercarse al óptimo: un rbar alto en sev_extrapolate_high no prueba por sí solo mejor generalización (A2C también supera allí su referencia).", "Arquitecturas de DQN recurrente y Transformer elegidas ad hoc (no optimizadas): las conclusiones se refieren a los modelos finales evaluados; los resultados no identifican la causa de la ventaja del Transformer.", "La confianza 1 - H_norm se calcula sobre softmax de valores Q (no probabilidades aprendidas, salvo A2C): es heurística, no calibrada; no se comprobó que sea mayor en decisiones acertadas.", "El registro de confianza del Transformer (media 0,116) usa otro cálculo que los ensambles: no comparar con tau_g ni con otros umbrales.", "La ventaja del ensamble ponderado es compatible con el prior de severidad y tau = 15, no con la ponderación por confianza; con un único ensamble ganador no se puede separar el aporte de cada componente.", "\"Distancia de Lieber\" en documentos previos = divergencia de Kullback-Leibler.", "h2/ es una línea suspendida: no citarla como trabajo realizado. La tesis no usa datos humanos (ds004477 sólo como contexto del entorno PES)."],
+ "replicas_fuera_de_muestra": {
+  "fuente": "h1/general/results/heldout/heldout_gap.json (writings/auxiliar/scripts/heldout_gap.py) y heldout_catalogue.json (python -m general.scripts.benchmark heldout); agregado 2026-09-28. Tesis: Sección sec:res-heldout y Tabla tab:heldout (05Results); también 04Materials (párrafo y fila de tab:scenarios), 06Discussion (último párrafo), 07Conclusion (sec:limitations) y Apéndice ap:orchestrator.",
+  "proposito": "Las optimizaciones eligieron su configuración sobre las mismas 64 secuencias de sev_base; las réplicas miden cuánto se sobreajustó cada configuración a esas secuencias (cuán optimista es la referencia). Ningún modelo se reentrenó ni se reoptimizó.",
+  "procedimiento": "Cada réplica sortea 8 x 8 = 64 secuencias nuevas: cada longitud y cada severidad inicial, de forma independiente (i.i.d.), con las frecuencias empíricas de los CSV de la referencia (las mismas con las que se entrenan los modelos individuales). Semilla 42 + k (k = 1..5 -> 43..47). Total 320 secuencias.",
+  "exclusion": "No intervienen en el entrenamiento, la optimización ni en ningún agregado de generalización (medias de 21 escenarios, peor escenario, degradación por familia, matrices de pares, conteos \"N de 22\"/\"N de 21\"); esos valores no cambiaron (comprobación de regresión). Valores por celda en h1/general/results/<grupo>/cells/<pkg>__heldout_sK.json y en las 5 últimas columnas de matrices/*.csv y summary.json.",
+  "distribucion_de_sorteo": {
+   "severidad": {"valores": [2, 3, 4, 5, 6, 7, 8], "conteos": [40, 64, 64, 80, 56, 16, 40], "probabilidades": [0.1111, 0.1778, 0.1778, 0.2222, 0.1556, 0.0444, 0.1111], "n": 360, "fuente": "initial_severity.csv de la referencia (idéntico en los 13 paquetes)"},
+   "longitud": {"valores": [3, 4, 5, 6, 7, 8, 9, 10], "conteos": [12, 9, 10, 13, 8, 7, 2, 3], "probabilidades": [0.1875, 0.1406, 0.1562, 0.2031, 0.125, 0.1094, 0.0312, 0.0469], "n": 64, "fuente": "sequence_lengths.csv de la referencia (idéntico en los 13 paquetes)"}
+  },
+  "replicas": {
+   "heldout_s1": {"semilla": 43, "n_secuencias": 64, "n_pasos": 340, "bloques_x_secuencias": "8x8"},
+   "heldout_s2": {"semilla": 44, "n_secuencias": 64, "n_pasos": 374, "bloques_x_secuencias": "8x8"},
+   "heldout_s3": {"semilla": 45, "n_secuencias": 64, "n_pasos": 369, "bloques_x_secuencias": "8x8"},
+   "heldout_s4": {"semilla": 46, "n_secuencias": 64, "n_pasos": 346, "bloques_x_secuencias": "8x8"},
+   "heldout_s5": {"semilla": 47, "n_secuencias": 64, "n_pasos": 389, "bloques_x_secuencias": "8x8"}
+  },
+  "total": {"n_secuencias": 320, "n_pasos": 1818},
+  "verificacion_copias": "benchmark heldout guarda los CSV y sampling_distribution.json (frecuencias de sorteo, semilla y frecuencias obtenidas) en results/heldout/heldout_sK/ y comprueba con sha256 que los 13 paquetes recibieron las mismas secuencias: 13/13 coinciden en las 5 réplicas.",
+  "convenciones": {"caida": "referencia - media de las 320 secuencias de las réplicas; positiva = pérdida (como deg).", "cohen_d": "réplicas agrupadas (n = 320) frente a la referencia (n = 64) del mismo modelo; positivo = mejor en las réplicas.", "welch_p": "p bilateral de Welch, réplicas agrupadas vs referencia.", "sd_entre_replicas": "desviación estándar de las 5 medias de réplica (entre paréntesis en tab:heldout).", "rango": "posición entre los 13 modelos (ambos grupos) por media; 1 = mayor.", "referencia_sd_ddof1": "ddof = 1; las referencia_sd de modelos_individuales/ensambles usan ddof = 0."},
+  "modelos": {
+   "pes_base": {
+    "nombre_en_texto": "Q-Learning base",
+    "seleccion": "valores originales de PES (sin optimizar)",
+    "referencia_media": 0.870564,
+    "referencia_sd_ddof1": 0.074525,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.859751,
+    "fuera_de_muestra_sd": 0.073422,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.872884, "heldout_s2": 0.85778, "heldout_s3": 0.846531, "heldout_s4": 0.86363, "heldout_s5": 0.85793},
+    "sd_entre_replicas": 0.009611,
+    "caida": 0.010813,
+    "caida_se": 0.01018,
+    "cohen_d": -0.146907,
+    "welch_p": 0.291004,
+    "welch_log10p": -0.536102,
+    "rango_referencia": 13,
+    "rango_fuera_de_muestra": 13
+   },
+   "pes_ql": {
+    "nombre_en_texto": "Q-Learning",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.886642,
+    "referencia_sd_ddof1": 0.061265,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.881277,
+    "fuera_de_muestra_sd": 0.064367,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.884284, "heldout_s2": 0.874858, "heldout_s3": 0.890014, "heldout_s4": 0.871266, "heldout_s5": 0.885962},
+    "sd_entre_replicas": 0.007886,
+    "caida": 0.005365,
+    "caida_se": 0.008461,
+    "cohen_d": -0.084009,
+    "welch_p": 0.527572,
+    "welch_log10p": -0.277718,
+    "rango_referencia": 12,
+    "rango_fuera_de_muestra": 12
+   },
+   "pes_dql": {
+    "nombre_en_texto": "Double Q-Learning",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.896341,
+    "referencia_sd_ddof1": 0.048081,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.900185,
+    "fuera_de_muestra_sd": 0.052505,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.907277, "heldout_s2": 0.902994, "heldout_s3": 0.893256, "heldout_s4": 0.8964, "heldout_s5": 0.901},
+    "sd_entre_replicas": 0.005504,
+    "caida": -0.003845,
+    "caida_se": 0.006689,
+    "cohen_d": 0.07422,
+    "welch_p": 0.566769,
+    "welch_log10p": -0.246594,
+    "rango_referencia": 8,
+    "rango_fuera_de_muestra": 8
+   },
+   "pes_dqn": {
+    "nombre_en_texto": "DQN",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.893733,
+    "referencia_sd_ddof1": 0.05561,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.89149,
+    "fuera_de_muestra_sd": 0.055287,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.890817, "heldout_s2": 0.894381, "heldout_s3": 0.894383, "heldout_s4": 0.881094, "heldout_s5": 0.896773},
+    "sd_entre_replicas": 0.006188,
+    "caida": 0.002243,
+    "caida_se": 0.007607,
+    "cohen_d": -0.040533,
+    "welch_p": 0.768782,
+    "welch_log10p": -0.114197,
+    "rango_referencia": 9,
+    "rango_fuera_de_muestra": 10
+   },
+   "pes_rdqn": {
+    "nombre_en_texto": "DQN recurrente",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.89865,
+    "referencia_sd_ddof1": 0.049145,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.902898,
+    "fuera_de_muestra_sd": 0.056036,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.910784, "heldout_s2": 0.900067, "heldout_s3": 0.910994, "heldout_s4": 0.894831, "heldout_s5": 0.897813},
+    "sd_entre_replicas": 0.007528,
+    "caida": -0.004248,
+    "caida_se": 0.006896,
+    "cohen_d": 0.077291,
+    "welch_p": 0.539306,
+    "welch_log10p": -0.268164,
+    "rango_referencia": 7,
+    "rango_fuera_de_muestra": 7
+   },
+   "pes_a2c": {
+    "nombre_en_texto": "A2C",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.887242,
+    "referencia_sd_ddof1": 0.063666,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.886857,
+    "fuera_de_muestra_sd": 0.061117,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.892573, "heldout_s2": 0.890098, "heldout_s3": 0.885131, "heldout_s4": 0.877267, "heldout_s5": 0.889217},
+    "sd_entre_replicas": 0.005994,
+    "caida": 0.000385,
+    "caida_se": 0.008661,
+    "cohen_d": -0.006251,
+    "welch_p": 0.964672,
+    "welch_log10p": -0.01562,
+    "rango_referencia": 11,
+    "rango_fuera_de_muestra": 11
+   },
+   "pes_trf": {
+    "nombre_en_texto": "Transformer",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.927189,
+    "referencia_sd_ddof1": 0.045826,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.928647,
+    "fuera_de_muestra_sd": 0.041642,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.934336, "heldout_s2": 0.928888, "heldout_s3": 0.925931, "heldout_s4": 0.926686, "heldout_s5": 0.927392},
+    "sd_entre_replicas": 0.003362,
+    "caida": -0.001457,
+    "caida_se": 0.006183,
+    "cohen_d": 0.034407,
+    "welch_p": 0.814218,
+    "welch_log10p": -0.089259,
+    "rango_referencia": 3,
+    "rango_fuera_de_muestra": 2
+   },
+   "pes_ens": {
+    "nombre_en_texto": "Ensamble ponderado",
+    "seleccion": "valores fijos de config/CONFIG.py (sin optimización)",
+    "referencia_media": 0.937312,
+    "referencia_sd_ddof1": 0.035211,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.938848,
+    "fuera_de_muestra_sd": 0.035189,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.938523, "heldout_s2": 0.936425, "heldout_s3": 0.939644, "heldout_s4": 0.936417, "heldout_s5": 0.943231},
+    "sd_entre_replicas": 0.002817,
+    "caida": -0.001536,
+    "caida_se": 0.004821,
+    "cohen_d": 0.043635,
+    "welch_p": 0.750821,
+    "welch_log10p": -0.124464,
+    "rango_referencia": 1,
+    "rango_fuera_de_muestra": 1
+   },
+   "pes_ens_sprb": {
+    "nombre_en_texto": "Voto suave",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.914202,
+    "referencia_sd_ddof1": 0.045234,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.916962,
+    "fuera_de_muestra_sd": 0.050633,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.925178, "heldout_s2": 0.917345, "heldout_s3": 0.924004, "heldout_s4": 0.909282, "heldout_s5": 0.909},
+    "sd_entre_replicas": 0.00774,
+    "caida": -0.00276,
+    "caida_se": 0.006323,
+    "cohen_d": 0.055449,
+    "welch_p": 0.663399,
+    "welch_log10p": -0.178225,
+    "rango_referencia": 6,
+    "rango_fuera_de_muestra": 4
+   },
+   "pes_ens_accq": {
+    "nombre_en_texto": "Voto por acción",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.914233,
+    "referencia_sd_ddof1": 0.044378,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.916204,
+    "fuera_de_muestra_sd": 0.050122,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.9258, "heldout_s2": 0.915167, "heldout_s3": 0.925016, "heldout_s4": 0.903517, "heldout_s5": 0.911519},
+    "sd_entre_replicas": 0.009404,
+    "caida": -0.001971,
+    "caida_se": 0.006215,
+    "cohen_d": 0.040038,
+    "welch_p": 0.751839,
+    "welch_log10p": -0.123875,
+    "rango_referencia": 5,
+    "rango_fuera_de_muestra": 5
+   },
+   "pes_ens_consensus": {
+    "nombre_en_texto": "Consenso",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.889317,
+    "referencia_sd_ddof1": 0.064222,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.893065,
+    "fuera_de_muestra_sd": 0.060607,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.902524, "heldout_s2": 0.896822, "heldout_s3": 0.890188, "heldout_s4": 0.884547, "heldout_s5": 0.891241},
+    "sd_entre_replicas": 0.006851,
+    "caida": -0.003747,
+    "caida_se": 0.008713,
+    "cohen_d": 0.061212,
+    "welch_p": 0.668218,
+    "welch_log10p": -0.175082,
+    "rango_referencia": 10,
+    "rango_fuera_de_muestra": 9
+   },
+   "pes_ens_consensus_prior": {
+    "nombre_en_texto": "Consenso con prior",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.9177,
+    "referencia_sd_ddof1": 0.041355,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.914815,
+    "fuera_de_muestra_sd": 0.042832,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.915528, "heldout_s2": 0.923912, "heldout_s3": 0.916449, "heldout_s4": 0.904177, "heldout_s5": 0.914011},
+    "sd_entre_replicas": 0.007067,
+    "caida": 0.002885,
+    "caida_se": 0.005697,
+    "cohen_d": -0.067732,
+    "welch_p": 0.613802,
+    "welch_log10p": -0.211972,
+    "rango_referencia": 4,
+    "rango_fuera_de_muestra": 6
+   },
+   "pes_ens_trf_guard": {
+    "nombre_en_texto": "Compuerta del Transformer",
+    "seleccion": "Optuna/TPE sobre las 64 secuencias de referencia",
+    "referencia_media": 0.92791,
+    "referencia_sd_ddof1": 0.046065,
+    "n_referencia": 64,
+    "fuera_de_muestra_media": 0.927575,
+    "fuera_de_muestra_sd": 0.041557,
+    "n_fuera_de_muestra": 320,
+    "medias_por_replica": {"heldout_s1": 0.934585, "heldout_s2": 0.928475, "heldout_s3": 0.923527, "heldout_s4": 0.92546, "heldout_s5": 0.92583},
+    "sd_entre_replicas": 0.004297,
+    "caida": 0.000335,
+    "caida_se": 0.006209,
+    "cohen_d": -0.007903,
+    "welch_p": 0.957156,
+    "welch_log10p": -0.019017,
+    "rango_referencia": 2,
+    "rango_fuera_de_muestra": 3
+   }
+  },
+  "hechos_derivados": {
+   "caida_min": {"modelo": "pes_rdqn", "valor": -0.004248},
+   "caida_max": {"modelo": "pes_base", "valor": 0.010813},
+   "caida_rango_11_optuna": [-0.004248, 0.005365],
+   "max_abs_d": 0.146907,
+   "min_welch_p": 0.291004,
+   "cambios_de_rango": {"pes_ens_trf_guard": [2, 3], "pes_trf": [3, 2], "pes_ens_consensus_prior": [4, 6], "pes_ens_sprb": [6, 4], "pes_dqn": [9, 10], "pes_ens_consensus": [10, 9]}
+  },
+  "spearman_referencia_vs_fuera_de_muestra": {"rho": 0.967033, "p": 7.064e-08, "n_modelos": 13},
+  "ensamble_ponderado_vs_transformer": {
+   "diferencia_media": 0.010202,
+   "t_pareada_p": 7.468e-08,
+   "wilcoxon_p": 1.994e-08,
+   "replicas_ganadas": 5,
+   "n_replicas": 5,
+   "n_secuencias": 320,
+   "diferencia_por_replica": {"heldout_s1": 0.004188, "heldout_s2": 0.007537, "heldout_s3": 0.013713, "heldout_s4": 0.009731, "heldout_s5": 0.015839}
+  },
+  "afirmacion_tesis": "En las 5 réplicas (320 secuencias nuevas) ningún modelo pierde desempeño de forma apreciable: caída de -0,004 a +0,011, |d| <= 0,15, p >= 0,29; en los 11 optimizados con Optuna entre -0,004 y +0,005 (la mayor, Q-Learning base, no se optimizó). Spearman rho = 0,97. El ensamble ponderado supera al Transformer por 0,010 (t pareada, p < 10^-7) y en las 5 réplicas. \"Elegir la configuración sobre las 64 secuencias de la referencia no infló el desempeño medido en esa condición.\"",
+  "salvedad": "Las réplicas se sortean con frecuencias estimadas a partir de las mismas 64 secuencias, no con datos nuevos del experimento original: miden el sobreajuste a esas secuencias concretas, no a la distribución.",
+  "figuras": "Columnas heldout_s1..s5 a la derecha de una línea vertical en los heatmaps por escenario 01/02/03/04/07 (tesis: fig:heatmap-global, fig:heatmap-ens, fig:heatmap-welch, fig:ensemble-statistical-heatmaps). 15_referencia_vs_heldout (individual y ensemble) se genera pero no está en la tesis.",
+  "reproduccion": ["python -m general.scripts.benchmark run --suite both (desde h1/; incluye las 65 celdas heldout)", "python -m general.scripts.benchmark heldout (desde h1/)", "python writings/auxiliar/scripts/heldout_gap.py (desde la raíz)"]
+ },
+ "advertencias_metodologicas": ["Una única semilla (42) por escenario de generalización: no hay intervalos de confianza del ordenamiento; sólo la referencia cuenta con 5 réplicas (fuera de muestra; ver replicas_fuera_de_muestra). Los p de Welch no son independientes ni corregidos por comparaciones múltiples.", "Hiperparámetros de modelos y ensambles ajustados con las mismas 64 secuencias de la referencia. Medido en las 5 réplicas fuera de muestra (replicas_fuera_de_muestra): caída entre -0.004 y +0.011, nunca significativa (|d| ≤ 0.15, p ≥ 0.29), ρ de Spearman 0.97: la referencia no resultó optimista. Salvedad: las réplicas se sortean con frecuencias estimadas a partir de esas mismas 64 secuencias, no con datos nuevos del experimento original.", "La media de generalización incluye los 3 escenarios estructurales (idénticos a la referencia) y escenarios más fáciles (p. ej. len_all_short, joint_low_short); leerla junto con el peor escenario.", "Entrenamiento sólo con severidades 2..8: filas S = 0, 1, 9 de las tablas Q quedan con valores iniciales aleatorios; parte de la caída tabular refleja falta de cobertura, no sólo capacidad de generalizar.", "Con severidades 10..12 una política que asigna mucho puede acercarse al óptimo: un rbar alto en sev_extrapolate_high no prueba por sí solo mejor generalización (A2C también supera allí su referencia).", "Arquitecturas de DQN recurrente y Transformer elegidas ad hoc (no optimizadas): las conclusiones se refieren a los modelos finales evaluados; los resultados no identifican la causa de la ventaja del Transformer.", "La confianza 1 - H_norm se calcula sobre softmax de valores Q (no probabilidades aprendidas, salvo A2C): es heurística, no calibrada; no se comprobó que sea mayor en decisiones acertadas.", "El registro de confianza del Transformer (media 0,116) usa otro cálculo que los ensambles: no comparar con tau_g ni con otros umbrales.", "La ventaja del ensamble ponderado es compatible con el prior de severidad y tau = 15, no con la ponderación por confianza; con un único ensamble ganador no se puede separar el aporte de cada componente.", "\"Distancia de Lieber\" en documentos previos = divergencia de Kullback-Leibler.", "h2/ es una línea suspendida: no citarla como trabajo realizado. La tesis no usa datos humanos (ds004477 sólo como contexto del entorno PES)."],
  "puntos_de_atencion_borrador_actual": [
   {
    "severidad": "mayor",
@@ -1393,7 +1693,7 @@
     "agent_internals": ["trf_agent_confidences.png"]
    },
    "writings/audit/": ["audit.py", "AUDIT.md"],
-   "writings/auxiliar/scripts/": ["sync_figures.py", "ensemble_decisions.py", "rebuild_thesis.py"]
+   "writings/auxiliar/scripts/": ["sync_figures.py", "ensemble_decisions.py", "rebuild_thesis.py", "heldout_gap.py"]
   },
   "capitulos": [
    {
@@ -1434,7 +1734,7 @@
    {
     "archivo": "05Results.tex",
     "seccion": "5 Resultados",
-    "labels": ["sec:results", "sec:res-individual", "sec:per-model", "sec:per-seq-extended", "sec:res-ensembles", "sec:res-freq", "eq:severity-reduction", "tab:global-mean", "tab:pairwise-stats", "tab:ensemble-stress", "tab:ens-freq", "tab:pairwise-ens", "fig:heatmap-global", "fig:c-base", "fig:c-ql", "fig:c-dql", "fig:c-dqn", "fig:c-rdqn", "fig:c-a2c", "fig:c-trf", "fig:extra-sev-skew", "fig:heatmap-ens", "fig:ensemble-extrapolation", "fig:c-ens"]
+    "labels": ["sec:results", "sec:res-individual", "sec:per-model", "sec:per-seq-extended", "sec:res-ensembles", "sec:res-freq", "eq:severity-reduction", "tab:global-mean", "tab:pairwise-stats", "tab:ensemble-stress", "tab:ens-freq", "tab:pairwise-ens", "fig:heatmap-global", "fig:c-base", "fig:c-ql", "fig:c-dql", "fig:c-dqn", "fig:c-rdqn", "fig:c-a2c", "fig:c-trf", "fig:extra-sev-skew", "fig:heatmap-ens", "fig:ensemble-extrapolation", "fig:c-ens", "sec:res-heldout", "tab:heldout"]
    },
    {
     "archivo": "06Discussion.tex",
@@ -1452,10 +1752,10 @@
     "labels": ["ap:repro", "ap:orchestrator", "ap:stat-maps", "ap:trf-conf", "tab:repro-commands", "fig:heatmap-welch", "fig:heatmap-kl", "fig:pairwise-cohen", "fig:ensemble-statistical-heatmaps", "fig:ensemble-pairwise", "fig:trf-internals"]
    }
   ],
-  "figuras": {"fig:baseline-random": "baseline/random_player_sequence_performance.png + baseline/random_player_normalised_performance.png (agente aleatorio)", "fig:heatmap-global": "individual/ind_01_desempeno_por_escenario.png (media por modelo y escenario)", "fig:c-base .. fig:c-trf": "per_model/PES_<PKG>_results.png (64 secuencias de la referencia, distribución, estadísticos por bloque, resumen)", "fig:extra-sev-skew": "individual/ind_05_curvas_por_familia.png (curvas ordenadas en sev_bimodal, sev_gauss_high, sev_beta_highskew, len_poisson, len_extrapolate_long, joint_high_long; trazo grueso = Transformer)", "fig:heatmap-ens": "ensemble/ens_01_desempeno_por_escenario.png", "fig:ensemble-extrapolation": "ensemble/ens_06_curvas_extrapolacion.png (3 escenarios fuera de rango; trazo grueso = ensamble ponderado)", "fig:c-ens": "per_model/PES_ENS_results.png", "fig:heatmap-welch": "individual/ind_03_welch_logp_por_escenario.png", "fig:heatmap-kl": "individual/ind_04_kl_acciones_por_escenario.png", "fig:pairwise-cohen": "individual/ind_13_pares_cohen_d.png", "fig:ensemble-statistical-heatmaps": "ensemble/ens_03 + ens_07 + ens_04", "fig:ensemble-pairwise": "ensemble/ens_13 + ens_12", "fig:trf-internals": "agent_internals/trf_agent_confidences.png"},
+  "figuras": {"fig:baseline-random": "baseline/random_player_sequence_performance.png + baseline/random_player_normalised_performance.png (agente aleatorio)", "fig:heatmap-global": "individual/ind_01_desempeno_por_escenario.png (media por modelo y escenario; 5 columnas heldout_s1..s5 a la derecha de una línea vertical)", "fig:c-base .. fig:c-trf": "per_model/PES_<PKG>_results.png (64 secuencias de la referencia, distribución, estadísticos por bloque, resumen)", "fig:extra-sev-skew": "individual/ind_05_curvas_por_familia.png (curvas ordenadas en sev_bimodal, sev_gauss_high, sev_beta_highskew, len_poisson, len_extrapolate_long, joint_high_long; trazo grueso = Transformer)", "fig:heatmap-ens": "ensemble/ens_01_desempeno_por_escenario.png (ídem, 5 columnas fuera de muestra tras una línea vertical)", "fig:ensemble-extrapolation": "ensemble/ens_06_curvas_extrapolacion.png (3 escenarios fuera de rango; trazo grueso = ensamble ponderado)", "fig:c-ens": "per_model/PES_ENS_results.png", "fig:heatmap-welch": "individual/ind_03_welch_logp_por_escenario.png (5 columnas fuera de muestra tras una línea vertical)", "fig:heatmap-kl": "individual/ind_04_kl_acciones_por_escenario.png", "fig:pairwise-cohen": "individual/ind_13_pares_cohen_d.png", "fig:ensemble-statistical-heatmaps": "ensemble/ens_03 + ens_07 + ens_04 (ens_03 y ens_07 con 5 columnas fuera de muestra tras una línea vertical)", "fig:ensemble-pairwise": "ensemble/ens_13 + ens_12", "fig:trf-internals": "agent_internals/trf_agent_confidences.png", "tab:heldout": "tabla (sec:res-heldout, 05Results) desde h1/general/results/heldout/heldout_gap.json; ver replicas_fuera_de_muestra", "nota_2026_09_28": "Todos los heatmaps por escenario (01, 02, 03, 04, 07) muestran las 5 réplicas fuera de muestra a la derecha de una línea vertical."},
   "figuras_generadas_no_incluidas": {
-   "individual": ["02_degradacion_por_escenario", "06_curvas_estresores_universales", "07_cohen_d_por_escenario", "08_ranking_desempeno", "09_degradacion_por_familia", "10_desempeno_vs_estabilidad", "11_perfiles_generalizacion", "12_pares_welch_logp", "14_pares_kl"],
-   "ensemble": ["02_degradacion_por_escenario", "05_curvas_por_familia", "08_ranking_desempeno", "09_degradacion_por_familia", "10_desempeno_vs_estabilidad", "11_perfiles_generalizacion", "14_pares_kl"],
+   "individual": ["02_degradacion_por_escenario", "06_curvas_estresores_universales", "07_cohen_d_por_escenario", "08_ranking_desempeno", "09_degradacion_por_familia", "10_desempeno_vs_estabilidad", "11_perfiles_generalizacion", "12_pares_welch_logp", "14_pares_kl", "15_referencia_vs_heldout"],
+   "ensemble": ["02_degradacion_por_escenario", "05_curvas_por_familia", "08_ranking_desempeno", "09_degradacion_por_familia", "10_desempeno_vs_estabilidad", "11_perfiles_generalizacion", "14_pares_kl", "15_referencia_vs_heldout"],
    "agent_internals": ["trf_agent_cumulative_performance", "trf_agent_normalised_performance", "trf_agent_remapped_confidences"],
    "como_incluirlas": "Agregar el stem a SUITE_FIGURES en writings/auxiliar/scripts/sync_figures.py y ejecutarlo (sync_figures borra de 02_Images todo lo que no esté en su lista); nombre destino ind_<stem>.png o ens_<stem>.png."
   },
@@ -1464,7 +1764,8 @@
  },
  "reproduccion": {
   "entorno": "win_mpes_env\\Scripts\\Activate.ps1 desde la raíz; comandos desde h1/; VIRTUAL_ENV, PYTHONIOENCODING=utf-8, TF_ENABLE_ONEDNN_OPTS=0.",
-  "benchmark": ["python -m general.scripts.benchmark run --suite both", "python -m general.scripts.analysis", "python -m general.scripts.figures", "python -m general.scripts.random_baseline", "python -m general.scripts.agent_internals"],
-  "tesis_desde_raiz": ["cd writings", "python audit\\audit.py", "python audit\\audit.py --no-tex", "python auxiliar\\scripts\\sync_figures.py", "python auxiliar\\scripts\\ensemble_decisions.py"]
+  "benchmark": ["python -m general.scripts.benchmark run --suite both", "python -m general.scripts.benchmark heldout", "python -m general.scripts.analysis", "python -m general.scripts.figures", "python -m general.scripts.random_baseline", "python -m general.scripts.agent_internals"],
+  "tesis_desde_raiz": ["cd writings", "python audit\\audit.py", "python audit\\audit.py --no-tex", "python auxiliar\\scripts\\sync_figures.py", "python auxiliar\\scripts\\ensemble_decisions.py", "python auxiliar\\scripts\\heldout_gap.py"],
+  "replicas_fuera_de_muestra": "run --suite both evalúa también heldout_s1..s5 (65 celdas); benchmark heldout escribe general/results/heldout/ (CSV + sampling_distribution.json por réplica, heldout_catalogue.json con sha256 y verificación de copias en los 13 paquetes); python writings/auxiliar/scripts/heldout_gap.py (desde la raíz, como en el Apéndice; independiente del directorio) escribe h1/general/results/heldout/heldout_gap.json (Tabla tab:heldout)."
  }
 }
