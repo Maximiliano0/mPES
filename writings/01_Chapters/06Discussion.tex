@@ -7,6 +7,9 @@
 Los resultados respaldan la hip\'otesis H1 y no respaldan la H2: s\'olo
 una de las seis reglas, el ensamble ponderado, supera al Transformer, con
 una diferencia de tama\~no despreciable (Secci\'on~\ref{sec:ens-best}).
+Una regla fija calibrada con la asignaci\'on \'optima alcanza el mismo
+nivel, lo que acota el alcance de ambas conclusiones
+(Secci\'on~\ref{sec:disc-rule}).
 
 \subsection{Interpretaci\'on de la ventaja del Transformer}\label{sec:disc-individual}
 
@@ -54,14 +57,50 @@ por su confianza; s\'olo cambia la regla (Tabla~\ref{tab:ens-freq}):
     \emph{prior}.
 \end{itemize}
 
-Los datos son compatibles con que la ventaja del ensamble ponderado
-provenga del \emph{prior} y de la temperatura alta m\'as que de la
-ponderaci\'on por confianza; con un \'unico ensamble que supera al Transformer no puede
-separarse el aporte de cada componente. Los datos s\'i muestran que esa
-ponderaci\'on, por s\'i sola, no basta para superar al mejor miembro: los
-dos ensambles que s\'olo promedian o votan con ella quedan por debajo del
-Transformer individual. La ventaja del ensamble ponderado se mantiene
-fuera de muestra (Secci\'on~\ref{sec:res-heldout}).
+La ventaja del ensamble ponderado proviene del \emph{prior} y de la
+temperatura alta m\'as que de la ponderaci\'on por confianza, y requiere
+ambos: en las r\'eplicas fuera de muestra, la temperatura alta sin
+\emph{prior} deja una ventaja de $0{,}004$ sobre el Transformer, el
+\emph{prior} con $\tau = 1$, de $0{,}001$, y los dos juntos, de $0{,}010$
+(Secci\'on~\ref{sec:res-posthoc}). Sus par\'ametros est\'an en
+m\'aximos angostos, pero esos m\'aximos coinciden en la referencia y en las
+r\'eplicas, por lo que la ventaja se mantiene fuera de muestra
+(Secci\'on~\ref{sec:res-heldout}). Los datos muestran tambi\'en que la
+ponderaci\'on por confianza, por s\'i sola, no basta para superar al mejor
+miembro: los dos ensambles que s\'olo promedian o votan con ella quedan
+por debajo del Transformer individual.
+
+\subsection{Alcance de los resultados frente a una regla fija}\label{sec:disc-rule}
+
+Que una regla fija de una l\'inea, asignar la severidad m\'as dos
+unidades, iguale al mejor ensamble y supere al Transformer
+(Tabla~\ref{tab:fixed-rule}) obliga a precisar qu\'e muestran los
+resultados.
+
+No invalida la comparaci\'on entre modelos. H1 y H2 comparan
+arquitecturas y reglas de combinaci\'on entre s\'i, en las mismas
+condiciones, y esas comparaciones no cambian. Tampoco significa que los
+agentes no hayan aprendido: la regla necesita conocer de antemano el
+desplazamiento $k = 2$, que se obtuvo de la asignaci\'on \'optima con
+informaci\'on completa; sin ese dato, asignar la severidad rinde
+$0{,}78$, mientras que los agentes llegaron a entre $0{,}85$ y $0{,}93$
+s\'olo a partir de la recompensa, sin conocer la regla ni el \'optimo.
+Adem\'as, la regla no se adapta: el $k$ que conviene cambia con la
+longitud de las secuencias, y con secuencias cortas el Transformer la
+supera ampliamente.
+
+Lo que s\'i muestra es que la pol\'itica \'optima de mPES tiene una
+estructura simple, asignar algo m\'as que la severidad mientras dure el
+presupuesto, y que una heur\'istica calibrada con ella alcanza el nivel de
+los mejores modelos. En este entorno, por lo tanto, la ventaja pr\'actica
+de los agentes aprendidos frente a esa heur\'istica es nula: el problema
+result\'o m\'as simple de lo que su formulaci\'on sugiere, y la ventaja
+del ensamble ponderado se explica porque su \emph{prior} lo acerca a esa
+regla. Es un resultado an\'alogo al de Kong
+\emph{et al.}~\citep{Kong2019}, en el que el RL redescubre los algoritmos
+cl\'asicos del problema. Evaluar la utilidad de estos modelos para
+decisiones reales requiere entornos en los que ninguna regla simple sea
+casi \'optima.
 
 \biblio
 \end{document}

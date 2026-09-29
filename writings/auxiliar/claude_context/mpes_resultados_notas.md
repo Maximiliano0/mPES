@@ -184,7 +184,7 @@ Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matr
 ## [individuales_notas]
 - DQN: `Input({{_/dim_entrada}}) → {{_/arq/dqn_capas_md}} → Dense({{_/n_acciones}})`, replay + red objetivo.
 - DQN recurrente: ventana W = {{_/cfg/pes_rdqn/RDQN_HISTORY_LEN}} (relleno con ceros al inicio), LSTM({{_/cfg/pes_rdqn/RDQN_LSTM_UNITS}}), último estado oculto → {{_/arq/rdqn_capas_corto}} → {{_/n_acciones}} Q; el estado oculto no se conserva entre decisiones.
-- Transformer: W = {{_/cfg/pes_trf/TRF_HISTORY_LEN}}, proyección a d_model = {{_/cfg/pes_trf/TRF_D_MODEL}} + vector de posición fijo (Glorot, no entrenado), {{_/cfg/pes_trf/TRF_NUM_LAYERS}} bloques Pre-LN (atención causal {{_/cfg/pes_trf/TRF_NUM_HEADS}} cabezas de dim. {{_/cfg/pes_trf/TRF_KEY_DIM}} + FFN {{_/cfg/pes_trf/TRF_FF_DIM}}, residual), sin dropout, última posición → {{_/arq/trf_capas_md}} → {{_/n_acciones}} Q.
+- Transformer: W = {{_/cfg/pes_trf/TRF_HISTORY_LEN}}, proyección a d_model = {{_/cfg/pes_trf/TRF_D_MODEL}} + vector de posición fijo (Glorot, no entrenado), {{_/cfg/pes_trf/TRF_NUM_LAYERS}} bloques Post-LN sin las compuertas de Parisotto (atención causal {{_/cfg/pes_trf/TRF_NUM_HEADS}} cabezas de dim. {{_/cfg/pes_trf/TRF_KEY_DIM}} + FFN {{_/cfg/pes_trf/TRF_FF_DIM}}, residual), sin dropout, última posición → {{_/arq/trf_capas_md}} → {{_/n_acciones}} Q.
 - **RDQN y TRF**: arquitectura elegida por exploración *ad hoc* (optimizarla con BO era demasiado costoso); sólo sus hiperparámetros de entrenamiento vienen de la BO. No citar nº de ensayos, score de Optuna ni los campos de arquitectura de sus `best_params.json`.
 - **A2C** (Tabla `tab:a2c-hparams`): actor `Input({{_/dim_entrada}})→{{_/arq/a2c_actor_corto}}→Dense({{_/n_acciones}}, softmax)`, crítico `Input({{_/dim_entrada}})→{{_/arq/a2c_critico_corto}}→Dense(1)`; lr actor {{modelos_individuales/pes_a2c/hiperparametros/lr_actor|g,}} / crítico {{modelos_individuales/pes_a2c/hiperparametros/lr_critico|g,}}, decaimiento coseno hasta {{_/a2c_lr_min_pct|.2f,}} %, γ {{modelos_individuales/pes_a2c/hiperparametros/gamma|.4f,}}, β_H {{modelos_individuales/pes_a2c/hiperparametros/coef_entropia|g,}}, GAE λ {{modelos_individuales/pes_a2c/hiperparametros/gae_lambda|.4f,}}, recorte {{modelos_individuales/pes_a2c/hiperparametros/clip_grad|.3f,}}, PBRS κ {{modelos_individuales/pes_a2c/hiperparametros/pbrs_kappa|.4f,}}, penalización de gasto r ← r − {{_/a2c_coef_gasto|.4g,}}·a, sesgo inicial del logit de a = {{_/max_asignacion}}: {{modelos_individuales/pes_a2c/hiperparametros/sesgo_logit_a10|.3f,−}}, {{modelos_individuales/pes_a2c/hiperparametros/episodios|miles}} episodios, semilla {{modelos_individuales/pes_a2c/hiperparametros/semilla}}.
 - Q-Learning, Double Q-Learning, DQN y A2C {{_/reproducen_score}} el score de su mejor ensayo de Optuna ({{modelos_individuales/pes_ql/hiperparametros/score_optuna|.4f,}} / {{modelos_individuales/pes_dql/hiperparametros/score_optuna|.4f,}} / {{modelos_individuales/pes_dqn/hiperparametros/score_optuna|.4f,}} / {{modelos_individuales/pes_a2c/hiperparametros/score_optuna|.4f,}}).
@@ -192,7 +192,7 @@ Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matr
 ## [ens.pes_ens]
 - regla: Voto suave ponderado por (0,1 + c_k) sobre DQN, DQN recurrente y Transformer; factor 0,3 a a=0 si R>0; mezcla con prior de severidad gaussiano; argmax; cota de seguridad floor(S/2) si S>=6.
 - a2c: configurado pero deshabilitado
-- origen_parametros: valores fijos de config/CONFIG.py (sin optimización)
+- origen_parametros: fijados a mano sobre la referencia (commit d2f0c49, sin búsqueda sistemática); justificados a posteriori en sec:res-posthoc (sensibilidad, óptimo y regla fija)
 - confianza: 1 - H/log2({{_/n_acciones}}) (normaliza por {{_/n_acciones}} acciones)
 - nota: Recorta la severidad a {{_/max_severidad}} para miembros y prior. Sólo inferencia.
 
@@ -225,6 +225,14 @@ Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matr
 - Todos: $p_k$ = softmax de temperatura τ de los Q (o salida del actor de A2C), renormalizada sobre acciones factibles; confianza $c_k = 1 - H_{norm}(p_k)$; peso efectivo $\tilde w_k = w_k c_k^{\rho}$ (salvo `pes_ens`, que usa $w_k(0{,}1 + c_k)$).
 - `pes_ens`: pesos base {{ensambles/pes_ens/definicion/parametros/w_dqn|.2f,}} / {{ensambles/pes_ens/definicion/parametros/w_rdqn|.2f,}} / {{ensambles/pes_ens/definicion/parametros/w_trf|.1f,}} (DQN / DQN recurrente / Transformer) → el Transformer tiene el {{ensambles/pes_ens/definicion/parametros/peso_normalizado_trf|pct0}} % del peso normalizado; A2C deshabilitado; recorta S a {{_/max_severidad}}.
 - En los {{_/n_ens_optuna}} ensambles optimizados, el score de Optuna **{{_/ens_score_coincide}}** con la media del benchmark en la referencia; los {{_/n_ens_optuna}} optimizan también `w_a2c` (rango 0–3). {{_/ens_tau_optimizado}}
+
+<!-- Justificación a posteriori de pes_ens (sec:res-posthoc, tab:sensitivity, tab:fixed-rule).
+     Números literales tomados de h1/general/results/ensemble/weighted_ens_sensitivity.json,
+     weighted_ens_oracle.json y fixed_rule.json (scripts homónimos de writings/auxiliar/scripts/).
+     Revisarlos a mano si se vuelven a correr esos scripts. -->
+- **Justificación a posteriori de `pes_ens`** (sec:res-posthoc): τ, w_π, σ y el peso del Transformer tienen su máximo en el valor fijo en la referencia y en las réplicas (máximos angostos: un paso de la grilla cuesta 0,002–0,008); η, el término 0,1 y la cota, en meseta. En las réplicas, sin prior (w_π = 0) supera al Transformer por 0,004; con prior y τ = 1, por 0,001; con ambos, por 0,010 (± 0,002 EE pareado). Supera al Transformer por más de 2 EE con τ 2–30, w_π 0–0,25, σ 3–5, peso TRF 2,5–10.
+- **Óptimo** (DP de S_mejor con reconstrucción, 384 secuencias ref. + réplicas; 6 % de ciudades con empates, todas S ≤ 5): con presupuesto nunca asigna 0 y asigna S + 0,7 a S + 1,9; gaussiana centrada en S: σ = 2,7 (≈ 3); centro libre: S + 2,2, σ = 1,4. La cota cambia 2 de 1 726 decisiones; η, el 1,7 % (0,0004 por secuencia); el prior, el 37 % (+0,012 por secuencia).
+- **Regla fija sin modelo** a = min(S + k, R) (tab:fixed-rule), ref. / gen. / réplicas: k = 0 0,782 / 0,805 / 0,787; k = 1 0,900 / 0,907 / 0,906; k = 2 0,940 / 0,937 / 0,943; k = 3 0,939 / 0,940 / 0,941 (Transformer 0,927 / 0,930 / 0,929; pes_ens 0,937 / 0,939 / 0,939). k = 2 supera al Transformer en 18/21 escenarios de generalización y 5/5 réplicas; pierde con secuencias cortas (len_all_short 0,845 vs 0,936). k = 2 se leyó del óptimo con información completa (también es el mejor k en la referencia). **Lectura obligatoria al redactar** (sec:disc-rule): no invalida H1/H2 (comparan modelos entre sí) ni implica que los agentes no aprendieran (sin el óptimo, k = 0 rinde 0,78; los agentes 0,85–0,93 sólo con la recompensa); sí implica que la política óptima de mPES es simple y que en este entorno la ventaja práctica de los modelos frente a una heurística calibrada es nula.
 
 ## [decisiones]
 - unidad: % de decisiones con recursos disponibles (R > 0)
@@ -340,7 +348,8 @@ _Fuente: `h1/general/results/heldout/heldout_gap.json` (generado con `writings/a
 - Arquitecturas de DQN recurrente y Transformer elegidas ad hoc (no optimizadas): las conclusiones se refieren a los modelos finales evaluados; los resultados no identifican la causa de la ventaja del Transformer.
 - La confianza 1 - H_norm se calcula sobre softmax de valores Q (no probabilidades aprendidas, salvo A2C): es heurística, no calibrada; no se comprobó que sea mayor en decisiones acertadas.
 - El registro de confianza del Transformer (media {{confianza_transformer_registro/confianza_media|.3f,}}) usa otro cálculo que los ensambles: no comparar con tau_g ni con otros umbrales.
-- La ventaja del ensamble ponderado es compatible con el prior de severidad y tau = {{ensambles/pes_ens/definicion/parametros/tau|g}}, no con la ponderación por confianza; con un único ensamble ganador no se puede separar el aporte de cada componente.
+- La ventaja del ensamble ponderado proviene del prior de severidad y de tau = {{ensambles/pes_ens/definicion/parametros/tau|g}}, no de la ponderación por confianza, y requiere ambos (sensibilidad en sec:res-posthoc). Sus parámetros se fijaron a mano sobre la referencia y sólo se justifican a posteriori.
+- Una regla fija sin modelo, a = min(S + 2, R), calibrada con el óptimo, iguala al ensamble ponderado y supera al Transformer (sec:res-posthoc, sec:disc-rule): no presentar a los modelos como superiores a una heurística bien calibrada en este entorno.
 - "Distancia de Lieber" en documentos previos = divergencia de Kullback-Leibler.
 - h2/ es una línea suspendida: no citarla como trabajo realizado. La tesis no usa datos humanos (ds004477 sólo como contexto del entorno PES).
 
@@ -361,7 +370,9 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 - fig:heatmap-global: {{_/n_heldout}} columnas heldout_s1..s{{_/n_heldout}} a la derecha de una línea vertical
 - fig:heatmap-ens: {{_/n_heldout}} columnas fuera de muestra tras una línea vertical
 - fig:heatmap-welch: {{_/n_heldout}} columnas fuera de muestra tras una línea vertical
-- fig:ensemble-statistical-heatmaps: {{_/n_heldout}} columnas fuera de muestra tras una línea vertical
+- fig:ensemble-statistical-heatmaps: Welch por escenario (ensambles, página apaisada); {{_/n_heldout}} columnas fuera de muestra tras una línea vertical
+- fig:ensemble-cohen-scenario: d de Cohen por escenario (ensambles, página apaisada); {{_/n_heldout}} columnas fuera de muestra tras una línea vertical
+- fig:c-base … fig:c-trf: figuras por modelo en el Apéndice ap:per-model (redibujadas a tamaño de impresión por general.scripts.figures --only models)
 - fig:extra-sev-skew: curvas ordenadas en sev_bimodal, sev_gauss_high, sev_beta_highskew, len_poisson, len_extrapolate_long, joint_high_long; trazo grueso = Transformer
 - fig:ensemble-extrapolation: {{_/n_fuera_de_rango}} escenarios fuera de rango; trazo grueso = ensamble ponderado
 
@@ -369,6 +380,7 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 - entorno: win_mpes_env\Scripts\Activate.ps1 desde la raíz; comandos desde h1/; VIRTUAL_ENV, PYTHONIOENCODING=utf-8, TF_ENABLE_ONEDNN_OPTS=0.
 - replicas_fuera_de_muestra: run --suite both evalúa también heldout_s1..s{{_/n_heldout}} ({{_/ho_n_celdas}} celdas: {{_/n_modelos}} modelos × {{_/n_heldout}}); benchmark heldout escribe general/results/heldout/ (CSV + sampling_distribution.json por réplica, heldout_catalogue.json con sha256 y verificación de copias en los {{_/n_modelos}} paquetes); python writings/auxiliar/scripts/heldout_gap.py (desde la raíz, como en el Apéndice ap:orchestrator; independiente del directorio) escribe h1/general/results/heldout/heldout_gap.json (Tabla tab:heldout).
 - contexto: python writings/auxiliar/scripts/ensemble_decisions.py --output h1/general/results/ensemble/ens_decisions.json (desde la raíz; replay con TensorFlow) y luego python writings/auxiliar/scripts/build_results_context.py (regenera mpes_resultados.md y .json; --check compara con los archivos en disco).
+- justificacion_pes_ens: desde la raíz, python writings/auxiliar/scripts/weighted_ens_sensitivity.py (≈ 16 min, reanudable), weighted_ens_oracle.py (≈ 2 min; --no-audit ≈ 1 min) y fixed_rule.py (segundos); escriben weighted_ens_sensitivity.json, weighted_ens_oracle.json y fixed_rule.json en h1/general/results/ensemble/ (sec:res-posthoc).
 
 ## [reproduccion_benchmark]
 - python -m general.scripts.benchmark run --suite both

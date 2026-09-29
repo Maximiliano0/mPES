@@ -10,7 +10,7 @@ Carpetas de ``02_Images``:
 =================  ==========================================================
 ``frontpage``      logo de la portada
 ``baseline``       jugador aleatorio (``general.scripts.random_baseline``)
-``per_model``      resultados por secuencia en la referencia (benchmark)
+``per_model``      resultados por secuencia en la referencia (``figures --only models``)
 ``individual``     mapas y curvas de los modelos individuales (Resultados y Apéndice C)
 ``ensemble``       mapas y curvas de los ensambles (Resultados y Apéndice C)
 =================  ==========================================================
@@ -33,7 +33,6 @@ import shutil
 ##########################
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 RESULTS = os.path.join(ROOT, 'h1', 'general', 'results')
-WORK = os.path.join(ROOT, 'h1', 'general', 'work')
 IMAGES = os.path.join(ROOT, 'writings', '02_Images')
 CHAPTERS = os.path.join(ROOT, 'writings', '01_Chapters')
 KEEP = {os.path.join('frontpage', 'LOGO-ITBA.jpg')}
@@ -53,25 +52,6 @@ RENAMES = {'ens_06_curvas_estresores_universales': 'ens_06_curvas_extrapolacion'
 ###############
 ##  Helpers
 ###############
-def latest(pattern: str) -> str:
-    """Return the most recently modified file matching ``pattern``.
-
-    Parameters
-    ----------
-    pattern : str
-        Recursive glob pattern.
-
-    Returns
-    -------
-    str
-        Path of the newest match.
-    """
-    matches = glob.glob(pattern, recursive=True)
-    if not matches:
-        raise FileNotFoundError(f'No generated figure matches {pattern}')
-    return max(matches, key=os.path.getmtime)
-
-
 def figure_map() -> dict:
     """Map each thesis figure (``carpeta/nombre``) to the generated file it comes from.
 
@@ -82,9 +62,12 @@ def figure_map() -> dict:
     """
     mapping = {os.path.join('baseline', name): os.path.join(RESULTS, 'baseline', name)
                for name in ('random_player_sequence_performance.png', 'random_player_normalised_performance.png')}
+    # Figuras por modelo redibujadas a tamaño de impresión por general.scripts.figures
+    # (--only models) con el diseño de result_formatter de cada paquete.
     for prefix, pkg in PER_MODEL.items():
-        mapping[os.path.join('per_model', f'{prefix}_results.png')] = latest(
-            os.path.join(WORK, pkg, 'outputs', 'sev_base', '**', f'{prefix}_results_*.png'))
+        suite = 'ensemble' if pkg.startswith('pes_ens') else 'individual'
+        mapping[os.path.join('per_model', f'{prefix}_results.png')] = os.path.join(
+            RESULTS, suite, 'figures', 'modelos', f'{prefix}_results.png')
     for tag, (suite, stems) in SUITE_FIGURES.items():
         for stem in stems:
             name = RENAMES.get(f'{tag}_{stem}', f'{tag}_{stem}')

@@ -368,6 +368,38 @@ Las réplicas no entran en ninguna media bajo estrés ni en los contrastes parea
 
 ![Referencia frente a réplicas (ensembles)](../results/ensemble/figures/15_referencia_vs_heldout.png)
 
+## Justificación a posteriori de `pes_ens` y regla fija
+
+Los parámetros de `pes_ens` se fijaron a mano (ver
+[`pes_ens_explained.md`](../../ens/pes_ens/doc/pes_ens_explained.md)). Se analizaron
+después, sin cambiarlos, con tres scripts de `writings/auxiliar/scripts/`, cuyos resultados
+están en `../results/ensemble/`:
+
+- `weighted_ens_sensitivity.py` → `weighted_ens_sensitivity.json`: varía un parámetro por vez
+  (τ, w_π, σ, η, peso del Transformer, término 0,1 y cota) en `sev_base` y en las réplicas.
+- `weighted_ens_oracle.py` → `weighted_ens_oracle.json`: reconstruye la asignación óptima por
+  programación dinámica (la misma recursión que `S_mejor`, guardando la acción que alcanza
+  cada mínimo) y mide el efecto de cada regla en los estados que visita el ensamble.
+- `fixed_rule.py` → `fixed_rule.json`: evalúa la regla sin modelo `a = min(S + k, R)` en los
+  27 escenarios.
+
+| Política | Referencia | Generalización (21) | Réplicas (5) |
+|---|---:|---:|---:|
+| Regla, k = 0 | 0.782 | 0.805 | 0.787 |
+| Regla, k = 1 | 0.900 | 0.907 | 0.906 |
+| Regla, k = 2 | 0.940 | 0.937 | 0.943 |
+| Regla, k = 3 | 0.939 | 0.940 | 0.941 |
+| `pes_trf` | 0.927 | 0.930 | 0.929 |
+| `pes_ens` | 0.937 | 0.939 | 0.939 |
+
+- La regla con k = 2 supera a `pes_trf` en 18 de 21 escenarios de generalización y en las 5
+  réplicas; pierde con secuencias cortas (0.845 frente a 0.936 en `len_all_short`).
+- El desplazamiento k = 2 surge del óptimo con información completa (con presupuesto, el
+  óptimo asigna entre S + 0.7 y S + 1.9); también es el mejor k en `sev_base`.
+- Interpretación: la política óptima de mPES tiene una estructura simple, por lo que en este
+  entorno los modelos aprendidos no aventajan a una heurística calibrada con el óptimo. La
+  comparación entre modelos sigue siendo válida, pero se limita a ese entorno.
+
 ## Lectura comparativa
 
 - El mejor resultado individual es `pes_trf`, con media bajo estrés de 0.930.

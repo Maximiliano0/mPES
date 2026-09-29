@@ -134,7 +134,10 @@ general/
         ├── matrices/<metric>.csv        # model x scenario matrices
         ├── figures/                     # 01..15 PNG
         │   ├── histogramas/<sid>.*      # per-scenario distributions
-        │   └── recompensa/<sid>.*       # cumulative + running-mean reward
+        │   ├── recompensa/<sid>.*       # cumulative + running-mean reward
+        │   └── modelos/<PKG>_results.*  # six-panel reference figure per model
+        ├── ens_decisions.json           # ensemble only: rule-effect frequencies (ensemble_decisions.py)
+        ├── weighted_ens_*.json, fixed_rule.json  # ensemble only: post-hoc analysis of pes_ens
         ├── summary.json                 # machine-readable consolidation
         ├── comparison_metrics.json      # pairwise Welch / Cohen / KL
         └── report.md                    # executive summary
@@ -244,6 +247,12 @@ All figures share the publication style defined in `plotting.py`
 | Generalisation | `figures/11_perfiles_generalizacion` | Response profile across each family; best model in thick stroke |
 | Pairwise contrasts | `figures/12_pares_welch_logp`, `13_pares_cohen_d`, `14_pares_kl` | Model-versus-model comparison |
 | Held-out gap | `figures/15_referencia_vs_heldout` | Reference vs pooled held-out mean per model; light dots = each replica |
+| Per-model panels | `figures/modelos/<PKG>_results` | Layout of each package's `result_formatter`, redrawn at printed size from the reference cell |
+
+Heatmaps 01–03 and 07 are drawn at the size of a landscape thesis page, and the
+pairwise heatmaps, curves and per-model panels at the text width
+(`PAGE_WIDTH_IN` / `LANDSCAPE_WIDTH_IN` in `plotting.py`), so their font sizes are
+the printed sizes.
 
 ## Metrics per cell
 

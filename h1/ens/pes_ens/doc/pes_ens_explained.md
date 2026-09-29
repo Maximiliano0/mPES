@@ -62,6 +62,44 @@ donde $S_{\mathrm{mejor}}$ es la severidad mínima alcanzable con el
 presupuesto de la secuencia, calculada de forma exacta por programación
 dinámica en [`src/exp_utils.py`](../src/exp_utils.py).
 
+## Origen de los parámetros y justificación a posteriori
+
+Los parámetros no salen de una búsqueda sistemática: entraron ya fijos, a
+mano, en el commit `d2f0c49` (2026-05-02). La documentación de ese commit
+justifica la cota por los mínimos de ~0,75 de los primeros bloques de la
+referencia y la atenuación de $a = 0$ por el registro de respuestas; para
+$w_\pi = 0{,}17$, $\sigma = 3$, los pesos $0{,}18/0{,}9/5{,}0$ y el término
+$0{,}1$ no hay justificación. Se analizaron después, sin modificarlos, con
+tres scripts de `writings/auxiliar/scripts/` (resultados en
+`h1/general/results/ensemble/`):
+
+| Script | Qué hace | Resultado |
+|--------|----------|-----------|
+| `weighted_ens_sensitivity.py` | Varía un parámetro por vez y evalúa en `sev_base` y `heldout_s1..s5` | `weighted_ens_sensitivity.json` |
+| `weighted_ens_oracle.py` | Reconstruye la asignación óptima (DP con reconstrucción y empates) y mide el efecto de cada regla en los estados que visita el ensamble | `weighted_ens_oracle.json` |
+| `fixed_rule.py` | Evalúa la regla sin modelo $a = \min(S + k, R)$ en los 27 escenarios | `fixed_rule.json` |
+
+Resultados principales (réplicas = media de las 5 réplicas fuera de muestra):
+
+- **Sensibilidad.** $\tau$, $w_\pi$, $\sigma$ y el peso del Transformer tienen
+  su máximo en el valor elegido, en `sev_base` y en las réplicas, pero son
+  máximos angostos (un paso de la grilla cuesta 0,002–0,008). $\eta$, el
+  término $0{,}1$ y la cota están en meseta. Sin *prior* el ensamble supera
+  al Transformer en las réplicas por 0,004; con el *prior* y $\tau = 1$, por
+  0,001; con ambos, por 0,010.
+- **Óptimo.** Con presupuesto disponible, el óptimo nunca asigna 0 y asigna
+  entre $S + 0{,}7$ y $S + 1{,}9$. Una gaussiana centrada en $S$ ajusta con
+  $\sigma = 2{,}7$; con el centro libre, en $S + 2{,}2$ y $\sigma = 1{,}4$. La
+  cota cambia 2 de 1 726 decisiones; el *prior* cambia el 37 % y mejora
+  $\bar r$ en 0,012 por secuencia.
+- **Regla fija.** $a = \min(S + 2, R)$ obtiene 0,940 en la referencia, 0,937
+  en generalización y 0,943 en las réplicas: iguala al ensamble (0,937 /
+  0,939 / 0,939) y supera al Transformer (0,927 / 0,930 / 0,929). Con
+  $k = 0$ obtiene 0,782 / 0,805 / 0,787. El desplazamiento 2 se lee del
+  óptimo con información completa, por lo que la regla no es un competidor
+  en igualdad de condiciones; indica que la política óptima del entorno es
+  simple y explica por qué el *prior* ayuda.
+
 Ver la base teórica en [pes_ens_theory.md](pes_ens_theory.md) y la
 comparación completa en
 [`../../../general/doc/comparacion_modelos.md`](../../../general/doc/comparacion_modelos.md).

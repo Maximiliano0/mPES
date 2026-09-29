@@ -77,14 +77,19 @@ Tabla~\ref{tab:trf-vs-ens} se obtiene con
 \texttt{python writings/auxiliar/scripts/trf\_vs\_ens.py}, que compara
 cada ensamble con el Transformer a partir de los resultados guardados en
 \texttt{general/results/}, y la Tabla~\ref{tab:heldout}, con
-\texttt{python writings/auxiliar/scripts/heldout\_gap.py}.
+\texttt{python writings/auxiliar/scripts/heldout\_gap.py}. Los
+an\'alisis de la Secci\'on~\ref{sec:res-posthoc} se obtienen, desde la
+misma carpeta, con \texttt{weighted\_ens\_sensitivity.py} (sensibilidad),
+\texttt{weighted\_ens\_oracle.py} (asignaci\'on \'optima y efecto de cada
+regla) y \texttt{fixed\_rule.py} (regla fija en los $27$ escenarios).
 
 \section{Mapas estad\'isticos complementarios}\label{ap:stat-maps}
 
 Las figuras de este ap\'endice detallan, modelo por modelo, las
 comparaciones estad\'isticas que el texto informa de forma agregada.
 
-\begin{figure}[!htbp]
+\begin{landscape}
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{ind_03_welch_logp_por_escenario.png}
   \caption[Welch por escenario (modelos individuales)]{Modelos
@@ -93,51 +98,113 @@ comparaciones estad\'isticas que el texto informa de forma agregada.
   como $\le -10$. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
   \label{fig:heatmap-welch}
 \end{figure}
+\end{landscape}
 
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.85\linewidth]{ind_13_pares_cohen_d.png}
+  \includegraphics[width=\linewidth]{ind_13_pares_cohen_d.png}
   \caption[$d$ de Cohen entre pares (modelos individuales)]{Modelos
   individuales: $d$ de Cohen entre pares de modelos en los $21$ escenarios
   de generalizaci\'on.}
   \label{fig:pairwise-cohen}
 \end{figure}
 
-\begin{figure}[!htbp]
+\begin{landscape}
+\begin{figure}[H]
   \centering
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{ens_03_welch_logp_por_escenario.png}
-    \caption{$\log_{10} p$ de Welch.}
-  \end{subfigure}
-
-  \begin{subfigure}{\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{ens_07_cohen_d_por_escenario.png}
-    \caption{$d$ de Cohen.}
-  \end{subfigure}
-  \caption[Mapas estad\'isticos por escenario (ensambles)]{Ensambles:
-  comparaci\'on de cada escenario con la referencia del mismo ensamble. Las cinco columnas a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
+  \includegraphics[width=\linewidth]{ens_03_welch_logp_por_escenario.png}
+  \caption[Welch por escenario (ensambles)]{Ensambles: $\log_{10} p$ de
+  Welch de cada escenario frente a la referencia del mismo ensamble; los
+  valores menores que $-10$ se muestran como $\le -10$. Las cinco columnas
+  a la derecha de la l\'inea vertical son las r\'eplicas fuera de muestra.}
   \label{fig:ensemble-statistical-heatmaps}
 \end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{ens_07_cohen_d_por_escenario.png}
+  \caption[$d$ de Cohen por escenario (ensambles)]{Ensambles: $d$ de
+  Cohen de cada escenario frente a la referencia del mismo ensamble
+  (positivo: mejor que la referencia). Las cinco columnas a la derecha de
+  la l\'inea vertical son las r\'eplicas fuera de muestra.}
+  \label{fig:ensemble-cohen-scenario}
+\end{figure}
+\end{landscape}
 
 \begin{figure}[!htbp]
   \centering
   \begin{subfigure}{\linewidth}
     \centering
-    \includegraphics[width=0.85\linewidth]{ens_13_pares_cohen_d.png}
+    \includegraphics[width=0.95\linewidth]{ens_13_pares_cohen_d.png}
     \caption{$d$ de Cohen.}
   \end{subfigure}
 
   \begin{subfigure}{\linewidth}
     \centering
-    \includegraphics[width=0.85\linewidth]{ens_12_pares_welch_logp.png}
+    \includegraphics[width=0.95\linewidth]{ens_12_pares_welch_logp.png}
     \caption{$\log_{10} p$ de Welch.}
   \end{subfigure}
   \caption[Comparaci\'on entre pares (ensambles)]{Ensambles:
   comparaci\'on entre pares en los $21$ escenarios de generalizaci\'on.}
   \label{fig:ensemble-pairwise}
+\end{figure}
+
+\section{Resultados por secuencia de cada modelo}\label{ap:per-model}
+
+Las figuras de este ap\'endice muestran, para cada modelo individual, el
+desempe\~no de cada secuencia de la referencia, su distribuci\'on y sus
+estad\'isticos por bloque (Secci\'on~\ref{sec:res-individual}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_BASE_results.png}
+  \caption[Resultados por secuencia: Q-Learning base]{Resultados por secuencia de Q-Learning base (\texttt{pes\_base}) en la referencia.}
+  \label{fig:c-base}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_QL_results.png}
+  \caption[Resultados por secuencia: Q-Learning]{Resultados por secuencia de Q-Learning (\texttt{pes\_ql}) en la referencia.}
+  \label{fig:c-ql}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_DQL_results.png}
+  \caption[Resultados por secuencia: Double Q-Learning]{Resultados por secuencia de Double Q-Learning (\texttt{pes\_dql}) en la referencia.}
+  \label{fig:c-dql}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_DQN_results.png}
+  \caption[Resultados por secuencia: DQN]{Resultados por secuencia de DQN (\texttt{pes\_dqn}) en la referencia.}
+  \label{fig:c-dqn}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_RDQN_results.png}
+  \caption[Resultados por secuencia: DQN recurrente]{Resultados por secuencia del DQN recurrente (\texttt{pes\_rdqn}) en la referencia.}
+  \label{fig:c-rdqn}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_A2C_results.png}
+  \caption[Resultados por secuencia: A2C]{Resultados por secuencia de A2C (\texttt{pes\_a2c}) en la referencia.}
+  \label{fig:c-a2c}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.87\linewidth]{PES_TRF_results.png}
+  \caption[Resultados por secuencia: Transformer]{Resultados por secuencia del Transformer (\texttt{pes\_trf}) en la referencia.}
+  \label{fig:c-trf}
 \end{figure}
 
 \biblio

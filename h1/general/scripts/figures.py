@@ -20,6 +20,7 @@ renders, per suite, a coherently numbered figure set under
 ``15_referencia_vs_heldout``                     reference vs held-out replicas (overfitting)
 ``histogramas/<scenario>``                       per-sequence distribution per scenario
 ``recompensa/<scenario>``                        cumulative and running-mean reward
+``modelos/<PKG>_results``                        six-panel reference figure per model
 ===============================================  ==========================================
 
 Shared conventions (see :mod:`plotting`): each model keeps a fixed colour
@@ -41,6 +42,7 @@ Usage
 ##  Imports externos    ##
 ##########################
 import argparse
+import glob
 import json
 import os
 
@@ -52,19 +54,24 @@ import numpy
 ##  Imports internos    ##
 ##########################
 from .benchmark import (REFERENCE_MODEL, REFERENCE_SCENARIO, SUITES,
-                        SUITE_PACKAGES, comparison_metrics_path, figures_dir,
+                        SUITE_PACKAGES, WORK_ROOT, comparison_metrics_path, figures_dir,
                         generalisation_scenarios, heldout_scenarios, load_cells,
                         matrices_dir, summary_path)
-from .plotting import (ALPHA_LEVELS, BASE_LINEWIDTH, BEST_LINEWIDTH, MEAN_LINESTYLE,
-                       MEAN_LINEWIDTH, PUB_RC, HeatmapSpec, cohen_d, heatmap,
-                       histogram_pmf, model_colour, read_matrix_csv, save_figure,
-                       style_axes, symmetric_kl, welch_test)
+from .plotting import (ALPHA_LEVELS, BASE_LINEWIDTH, BEST_LINEWIDTH, LANDSCAPE_WIDTH_IN,
+                       MEAN_LINESTYLE, MEAN_LINEWIDTH, PAGE_WIDTH_IN, PRINT_BASE_LINEWIDTH,
+                       PRINT_BEST_LINEWIDTH, PRINT_RC, PUB_RC, HeatmapSpec, cohen_d,
+                       heatmap, histogram_pmf, model_colour, read_matrix_csv,
+                       save_figure, style_axes, symmetric_kl, welch_test)
 
 
 ENSEMBLE_REFERENCE = 'pes_ens'
 FAMILY_ORDER = ('severity', 'length', 'joint', 'structural')
 FAMILY_LABELS = {'severity': 'Severidad', 'length': 'Longitud',
                  'joint': 'Conjunta', 'structural': 'Estructura'}
+#: Printed size of the model x scenario heatmaps (one landscape page each).
+SCENARIO_HEATMAP_SIZE = (LANDSCAPE_WIDTH_IN, 4.7)
+#: Printed size of the model x model heatmaps (full text width).
+PAIRWISE_HEATMAP_SIZE = (PAGE_WIDTH_IN, 4.3)
 CURVE_SCENARIOS = ('sev_bimodal', 'sev_gauss_high', 'sev_beta_highskew',
                    'len_poisson', 'len_extrapolate_long', 'joint_high_long')
 UNIVERSAL_SCENARIOS = ('sev_extrapolate_high', 'joint_extrap_both',
@@ -124,8 +131,10 @@ def _load_summary(suite: str) -> dict:
         return json.load(handle)
 
 
-def _linewidth(model: str, best: "str | None") -> float:
+def _linewidth(model: str, best: "str | None", printed: bool = False) -> float:
     """Thick stroke for the best model of a panel, regular stroke otherwise."""
+    if printed:
+        return PRINT_BEST_LINEWIDTH if model == best else PRINT_BASE_LINEWIDTH
     return BEST_LINEWIDTH if model == best else BASE_LINEWIDTH
 
 
@@ -175,6 +184,7 @@ def render_matrix_figures(suite: str) -> None:
         models, scenarios, matrix = read_matrix_csv(path)
         _autoscale(spec, matrix)
         spec.separators = _heldout_separator(scenarios)
+        spec.figsize = SCENARIO_HEATMAP_SIZE
         heatmap(matrix, models, scenarios, os.path.join(output, name), spec)
     _render_action_kl(suite, output)
 
@@ -244,8 +254,8 @@ def render_curve_figures(suite: str, cells: dict) -> None:
     scenarios = sorted({scenario for model in models for scenario in cells.get(model, {})})
     best = _best_model(cells, models, scenarios)
 
-    with pyplot.rc_context(PUB_RC):
-        figure, axes = pyplot.subplots(2, 3, figsize=(15.0, 8.0), sharey=True)
+    with pyplot.rc_context(PRINT_RC):
+        figure, axes = pyplot.subplots(2, 3, figsize=(PAGE_WIDTH_IN, 5.0), sharey=True)
         for axis, scenario in zip(axes.flat, CURVE_SCENARIOS):
             for index, model in enumerate(models):
                 values = numpy.sort(_performance(cells, model, scenario))
@@ -253,9 +263,9 @@ def render_curve_figures(suite: str, cells: dict) -> None:
                     continue
                 axis.plot(numpy.arange(1, values.size + 1), values,
                           color=model_colour(model, index),
-                          linewidth=_linewidth(model, best),
+                          linewidth=_linewidth(model, best, printed=True),
                           zorder=3 if model == best else 2, label=model)
-            axis.set_title(scenario, fontsize=11)
+            axis.set_title(scenario)
             axis.set_ylim(0, 1.02)
             style_axes(axis)
         for axis in axes[1]:
@@ -263,11 +273,11 @@ def render_curve_figures(suite: str, cells: dict) -> None:
         for axis in axes[:, 0]:
             axis.set_ylabel('Rendimiento normalizado')
         handles, labels = axes[0, 0].get_legend_handles_labels()
-        figure.legend(handles, labels, loc='lower center', ncol=len(labels),
-                      frameon=False, fontsize=9.5, bbox_to_anchor=(0.5, 0.0))
+        figure.legend(handles, labels, loc='lower center', ncol=4,
+                      frameon=False, bbox_to_anchor=(0.5, 0.0))
         figure.suptitle(f'{suite.capitalize()}: desempeño por secuencia y familia de '
-                        f'perturbación (trazo grueso = {best})', fontweight='semibold')
-        figure.tight_layout(rect=(0, 0.05, 1, 0.95))
+                        f'perturbación\n(trazo grueso = {best})', fontweight='semibold')
+        figure.tight_layout(rect=(0, 0.08, 1, 0.96))
         save_figure(figure, os.path.join(output, '05_curvas_por_familia'))
 
         _render_universal(suite, cells, models, best, output)
@@ -300,7 +310,7 @@ def _render_universal(suite: str, cells: dict, models: "list[str]",
         ordered = [model for model in models if model != REFERENCE_MODEL]
         panel_models = {scenario: ordered for scenario in UNIVERSAL_SCENARIOS}
 
-    figure, axes = pyplot.subplots(1, 3, figsize=(15.0, 5.2), sharey=True)
+    figure, axes = pyplot.subplots(1, 3, figsize=(PAGE_WIDTH_IN, 3.4), sharey=True)
     for axis, scenario in zip(axes, UNIVERSAL_SCENARIOS):
         for index, model in enumerate(panel_models[scenario]):
             values = numpy.sort(_performance(cells, model, scenario))
@@ -308,11 +318,11 @@ def _render_universal(suite: str, cells: dict, models: "list[str]",
                 continue
             colour = model_colour(model, index)
             axis.plot(numpy.arange(1, values.size + 1), values, color=colour,
-                      linewidth=_linewidth(model, best),
+                      linewidth=_linewidth(model, best, printed=True),
                       zorder=3 if model == best else 2, label=model)
             axis.axhline(values.mean(), color=colour, linestyle=MEAN_LINESTYLE,
-                         linewidth=MEAN_LINEWIDTH)
-        axis.set_title(scenario, fontsize=11)
+                         linewidth=MEAN_LINEWIDTH * 0.7)
+        axis.set_title(scenario)
         axis.set_xlabel('Secuencia ordenada')
         axis.set_ylim(0, 1.02)
         style_axes(axis)
@@ -320,15 +330,15 @@ def _render_universal(suite: str, cells: dict, models: "list[str]",
     same_models = len({tuple(models_) for models_ in panel_models.values()}) == 1
     if same_models:
         handles, labels = axes[0].get_legend_handles_labels()
-        figure.legend(handles, labels, loc='lower center', ncol=len(labels),
-                      frameon=False, fontsize=9.5, bbox_to_anchor=(0.5, 0.0))
-        bottom = 0.07
+        figure.legend(handles, labels, loc='lower center', ncol=3,
+                      frameon=False, bbox_to_anchor=(0.5, 0.0))
+        bottom = 0.14
     else:
         # Sorted curves climb towards the top-right corner, leaving the bottom-right free.
         for axis in axes:
-            axis.legend(frameon=False, loc='lower right', fontsize=9.5)
+            axis.legend(frameon=False, loc='lower right')
         bottom = 0.02
-    figure.suptitle(f'{suite.capitalize()}: desempeño en escenarios de extrapolación '
+    figure.suptitle(f'{suite.capitalize()}: desempeño en escenarios de extrapolación\n'
                     f'(trazo grueso = {best}; línea punteada = media)',
                     fontweight='semibold')
     figure.tight_layout(rect=(0, bottom, 1, 0.93))
@@ -556,19 +566,22 @@ def _plot_pairwise(suite: str, summary: dict, models: "list[str]",
                         cbar_label='log10(p); más bajo = evidencia más fuerte',
                         cmap='mpes_pval', vmin=-10.0, vmax=0.0, fmt='{:.1f}',
                         clip_low_label='≤-10', xlabel='Modelo de referencia',
-                        ylabel='Modelo comparado'))
+                        ylabel='Modelo comparado', figsize=PAIRWISE_HEATMAP_SIZE,
+                        annot_fontsize=8))
     bound = max(float(numpy.nanmax(numpy.abs(effect))), 1e-3)
     heatmap(effect, models, models, os.path.join(output, '13_pares_cohen_d'),
             HeatmapSpec(title=f'{suite.capitalize()}: tamaño de efecto entre modelos',
                         cbar_label='d de Cohen', cmap='mpes_div',
                         vmin=-bound, vmax=bound, fmt='{:+.2f}',
-                        xlabel='Modelo de referencia', ylabel='Modelo comparado'))
+                        xlabel='Modelo de referencia', ylabel='Modelo comparado',
+                        figsize=PAIRWISE_HEATMAP_SIZE, annot_fontsize=8))
     heatmap(divergence, models, models, os.path.join(output, '14_pares_kl'),
             HeatmapSpec(title=f'{suite.capitalize()}: divergencia entre distribuciones',
                         cbar_label='KL simétrica del rendimiento', cmap='mpes_kl',
                         vmin=0.0, vmax=float(numpy.nanmax(divergence)) or 1.0,
                         fmt='{:.2f}', xlabel='Modelo de referencia',
-                        ylabel='Modelo comparado'))
+                        ylabel='Modelo comparado', figsize=PAIRWISE_HEATMAP_SIZE,
+                        annot_fontsize=8))
     return {'scenarios_used': common, 'models': models,
             'welch_log10_p': log_p.tolist(), 'cohen_d': effect.tolist(),
             'symmetric_kl': divergence.tolist()}
@@ -675,6 +688,166 @@ def render_distribution_figures(suite: str, cells: dict) -> None:
 
 
 ###############
+##  Per-model panels
+###############
+#: Printed size of the per-model reference figure (full text width).
+MODEL_PANEL_SIZE = (PAGE_WIDTH_IN, 4.25)
+MODEL_PANEL_RC = {**PRINT_RC, 'axes.titlesize': 8, 'axes.labelsize': 7.5,
+                  'axes.titleweight': 'bold', 'axes.labelweight': 'bold',
+                  'xtick.labelsize': 7, 'ytick.labelsize': 7, 'legend.fontsize': 6.5}
+
+
+def _package_report(model: str) -> "dict | None":
+    """Latest reference-run report JSON written by the package itself."""
+    pattern = os.path.join(WORK_ROOT, model, 'outputs', REFERENCE_SCENARIO, '**',
+                           f'{model.upper()}_results_*.json')
+    matches = glob.glob(pattern, recursive=True)
+    if not matches:
+        return None
+    with open(max(matches, key=os.path.getmtime), 'r', encoding='utf-8') as handle:
+        return json.load(handle)
+
+
+def _panel_statistics(performances: numpy.ndarray, blocks: "list[numpy.ndarray]",
+                      report: "dict | None") -> dict:
+    """Summary-table statistics, taken from the package report when available.
+
+    The benchmark cells store the per-sequence values rounded to four
+    decimals, so the report of the package run is preferred for the table;
+    both must agree on the mean.
+    """
+    computed = {
+        'overall_mean': float(numpy.mean(performances)),
+        'overall_median': float(numpy.median(performances)),
+        'overall_std': float(numpy.std(performances)),
+        'overall_min': float(numpy.min(performances)),
+        'overall_max': float(numpy.max(performances)),
+        'percentile_25': float(numpy.percentile(performances, 25)),
+        'percentile_75': float(numpy.percentile(performances, 75)),
+        'total_sequences': int(performances.size),
+        'first_block_mean': float(numpy.mean(blocks[0])),
+        'last_block_mean': float(numpy.mean(blocks[-1])),
+    }
+    computed['improvement'] = computed['last_block_mean'] - computed['first_block_mean']
+    reported = (report or {}).get('performance_statistics')
+    if not reported:
+        return computed
+    if abs(reported['overall_mean'] - computed['overall_mean']) > 1e-3:
+        raise ValueError('Package report and benchmark cell disagree on the reference mean')
+    return {key: reported.get(key, value) for key, value in computed.items()}
+
+
+def render_model_panels(suite: str, cells: dict) -> None:
+    """Render each model's six-panel reference figure at its printed size.
+
+    Reproduces the layout of the packages' ``result_formatter`` (trend,
+    distribution, per-block box plot, cumulative mean, block means and a
+    summary table) from the benchmark cell of the reference condition, so the
+    thesis can include it at ``\\linewidth`` with legible fonts. Files go to
+    ``results/<suite>/figures/modelos/<PKG>_results.png``.
+
+    Parameters
+    ----------
+    suite : str
+        Suite identifier.
+    cells : dict
+        Merged cells as returned by :func:`load_model_cells`.
+    """
+    output = os.path.join(figures_dir(suite), 'modelos')
+    for model in suite_models(suite):
+        cell = cells.get(model, {}).get(REFERENCE_SCENARIO)
+        if not cell or not cell.get('per_sequence_perf'):
+            continue
+        performances = numpy.asarray(cell['per_sequence_perf'], dtype=float)
+        per_block = int(cell.get('num_sequences_per_block') or performances.size)
+        blocks = [performances[start:start + per_block]
+                  for start in range(0, performances.size, per_block)]
+        report = _package_report(model)
+        stats = _panel_statistics(performances, blocks, report)
+        metadata = (report or {}).get('metadata', {})
+        agent = metadata.get('model_type', model.upper()).replace('_AGENT', '-Agent')
+        with pyplot.rc_context(MODEL_PANEL_RC):
+            _draw_model_panel(performances, blocks, stats,
+                              f"PES Experiment Results - Subject {metadata.get('subject_id', model)}"
+                              f'\n{agent} Performance Analysis',
+                              os.path.join(output, f'{model.upper()}_results'))
+
+
+def _draw_model_panel(performances: numpy.ndarray, blocks: "list[numpy.ndarray]",
+                      stats: dict, title: str, out_base: str) -> None:
+    """Draw one six-panel reference figure (layout of ``result_formatter``)."""
+    figure = pyplot.figure(figsize=MODEL_PANEL_SIZE)
+    grid = figure.add_gridspec(3, 3, hspace=1.25, wspace=0.45, height_ratios=[1.0, 1.0, 0.9])
+    steps = numpy.arange(1, performances.size + 1)
+    mean, std = stats['overall_mean'], stats['overall_std']
+
+    trend = figure.add_subplot(grid[0, :2])
+    trend.plot(steps, performances, 'b-o', linewidth=1.0, markersize=2, alpha=0.7)
+    trend.axhline(y=mean, color='r', linestyle='--', linewidth=1.0, label=f'Mean: {mean:.3f}')
+    trend.fill_between(steps, mean - std, mean + std, alpha=0.2, color='red')
+    trend.set(xlabel='Sequence Number', ylabel='Performance',
+              title='Performance Over All Sequences', ylim=(0, 1.05))
+    trend.legend(loc='lower left')
+
+    histogram = figure.add_subplot(grid[0, 2])
+    histogram.hist(performances, bins=15, color='skyblue', edgecolor='black',
+                   linewidth=0.5, alpha=0.7)
+    histogram.axvline(x=mean, color='red', linestyle='--', linewidth=1.0, label='Mean')
+    histogram.axvline(x=stats['overall_median'], color='green', linestyle='--',
+                      linewidth=1.0, label='Median')
+    histogram.set(xlabel='Performance', ylabel='Frequency', title='Distribution')
+    histogram.legend(loc='upper left')
+
+    boxes = figure.add_subplot(grid[1, 0])
+    drawn = boxes.boxplot(blocks, tick_labels=[f'B{i + 1}' for i in range(len(blocks))],
+                          patch_artist=True, flierprops={'markersize': 3},
+                          boxprops={'linewidth': 0.7}, whiskerprops={'linewidth': 0.7},
+                          medianprops={'linewidth': 0.9})
+    for patch in drawn['boxes']:
+        patch.set_facecolor('lightblue')
+    boxes.set(ylabel='Performance', title='Performance\nby Block', ylim=(0, 1.05))
+
+    cumulative = figure.add_subplot(grid[1, 1])
+    cumulative.plot(steps, numpy.cumsum(performances) / steps, 'g-o', linewidth=1.0, markersize=2)
+    cumulative.set(xlabel='Sequence Number', ylabel='Cumulative Mean',
+                   title='Cumulative Mean\nPerformance', ylim=(0, 1.05))
+
+    block_means = figure.add_subplot(grid[1, 2])
+    block_means.bar(range(1, len(blocks) + 1), [float(numpy.mean(b)) for b in blocks],
+                    color='steelblue', alpha=0.7)
+    block_means.set(xlabel='Block Number', ylabel='Mean Performance',
+                    title='Block-wise Mean\nPerformance', ylim=(0, 1.05))
+    block_means.set_xticks(range(1, len(blocks) + 1))
+    for axis in (trend, cumulative):
+        axis.grid(True, alpha=0.3)
+    for axis in (boxes, block_means):
+        axis.grid(True, alpha=0.3, axis='y')
+
+    summary = figure.add_subplot(grid[2, :])
+    summary.axis('off')
+    rows = [['Metric', 'Value', 'Metric', 'Value'],
+            ['Mean', f"{mean:.4f}", 'Median', f"{stats['overall_median']:.4f}"],
+            ['Std Dev', f'{std:.4f}', 'Min', f"{stats['overall_min']:.4f}"],
+            ['Max', f"{stats['overall_max']:.4f}", 'Q1', f"{stats['percentile_25']:.4f}"],
+            ['Q3', f"{stats['percentile_75']:.4f}", 'N Seq', f"{stats['total_sequences']}"],
+            ['First', f"{stats['first_block_mean']:.4f}", 'Last', f"{stats['last_block_mean']:.4f}"],
+            ['Improvement', f"{stats['improvement']:.4f}", '', '']]
+    table = summary.table(cellText=rows, cellLoc='center', loc='center', colWidths=[0.2] * 4)
+    table.auto_set_font_size(False)
+    table.set_fontsize(7)
+    table.scale(1, 1.05)
+    for column in range(len(rows[0])):
+        table[(0, column)].set_facecolor('#4CAF50')
+        table[(0, column)].set_text_props(weight='bold', color='white')
+    for row in range(2, len(rows), 2):
+        for column in range(len(rows[0])):
+            table[(row, column)].set_facecolor('#f0f0f0')
+
+    figure.suptitle(title, fontsize=9, fontweight='bold', y=1.0)
+    save_figure(figure, out_base)
+
+
+###############
 ##  Entry point
 ###############
 def render_suite(suite: str, only: "str | None" = None) -> None:
@@ -686,7 +859,7 @@ def render_suite(suite: str, only: "str | None" = None) -> None:
         Suite identifier.
     only : str, optional
         Restrict rendering to one group: ``'matrices'``, ``'curves'``,
-        ``'comparison'`` or ``'distributions'``. ``None`` renders all.
+        ``'comparison'``, ``'distributions'`` or ``'models'``. ``None`` renders all.
     """
     cells = load_model_cells()
     if only in (None, 'matrices'):
@@ -697,6 +870,8 @@ def render_suite(suite: str, only: "str | None" = None) -> None:
         render_comparison_figures(suite)
     if only in (None, 'distributions'):
         render_distribution_figures(suite, cells)
+    if only in (None, 'models'):
+        render_model_panels(suite, cells)
     print(f'[figures] {suite} -> {figures_dir(suite)}')
 
 
@@ -705,7 +880,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--suite', choices=SUITES, action='append')
     parser.add_argument('--only', choices=('matrices', 'curves', 'comparison',
-                                           'distributions'))
+                                           'distributions', 'models'))
     args = parser.parse_args()
     for suite in args.suite or list(SUITES):
         render_suite(suite, args.only)

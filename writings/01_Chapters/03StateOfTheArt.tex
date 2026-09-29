@@ -10,6 +10,57 @@ conjunto por personas y agentes artificiales~\citep{Nijjar2025,ds004477}.
 Esta tesis utiliza \'unicamente el entorno; todas las decisiones son
 tomadas por agentes artificiales.
 
+\subsection{Aprendizaje por refuerzo para decisiones secuenciales bajo incertidumbre}\label{sec:soa-seq}
+
+Las decisiones secuenciales bajo incertidumbre se formalizan como procesos
+de decisi\'on de Markov o, cuando el agente no observa todo el estado, como
+POMDP~\citep{Kaelbling1998}. Kochenderfer~\citep{Kochenderfer2015} y
+Powell~\citep{Powell2022} tratan el RL como una de varias familias de
+m\'etodos para estos problemas, junto con la programaci\'on din\'amica y la
+optimizaci\'on estoc\'astica.
+
+Una primera l\'inea aplica RL a la respuesta ante epidemias. Libin
+\emph{et al.}~\citep{Libin2021} entrenaron un agente de gradiente de
+pol\'itica (PPO, \emph{Proximal Policy Optimization}) en un modelo
+metapoblacional de gripe pand\'emica con $379$ distritos de Gran Breta\~na;
+en un distrito contrastaron la pol\'itica aprendida con una referencia
+conocida, que no pudieron establecer para el problema conjunto de $11$
+distritos. Ohi
+\emph{et al.}~\citep{Ohi2020} entrenaron un Double DQN con capas LSTM para
+fijar restricciones de movilidad en un escenario inspirado en COVID-19,
+equilibrando contagios y actividad econ\'omica. Bastani
+\emph{et al.}~\citep{Bastani2021} desplegaron en las fronteras de Grecia un
+sistema de RL que asignaba una cantidad limitada de tests e identific\'o
+$1{,}85$ veces m\'as viajeros infectados asintom\'aticos que el muestreo
+aleatorio, y Bednarski \emph{et al.}~\citep{Bednarski2021} usaron RL para
+redistribuir equipamiento m\'edico escaso entre estados de EE.\,UU.
+
+Una segunda l\'inea trata la asignaci\'on secuencial de recursos en salud y
+en operaciones. Komorowski \emph{et al.}~\citep{Komorowski2018} aprendieron,
+a partir de registros de terapia intensiva, pol\'iticas de dosificaci\'on
+para pacientes con sepsis, y Yu \emph{et al.}~\citep{Yu2021} revisan
+aplicaciones similares en salud. DeepRM~\citep{Mao2016} aprendi\'o a
+asignar tareas con demandas de varios recursos con un desempe\~no
+comparable al de heur\'isticas establecidas; Gijsbrechts
+\emph{et al.}~\citep{Gijsbrechts2022} obtuvieron con A3C resultados
+equiparables a heur\'isticas y a programaci\'on din\'amica aproximada en
+gesti\'on de inventarios, y Kong \emph{et al.}~\citep{Kong2019} mostraron
+que agentes de RL aprenden, en la mochila en l\'inea (\emph{online
+knapsack}: cada \'item se acepta o se rechaza al llegar, sin conocer los
+siguientes y con capacidad limitada), comportamientos
+consistentes con los algoritmos \'optimos conocidos. Dulac-Arnold
+\emph{et al.}~\citep{DulacArnold2021} formalizan los obst\'aculos que
+dificultan llevar estos m\'etodos a sistemas reales.
+
+mPES comparte con estos trabajos la asignaci\'on secuencial de un recurso
+escaso sin conocer la demanda futura, en una forma cercana a la mochila en
+l\'inea. Se diferencia en tres aspectos: el entorno es controlado y de bajo
+costo, el presupuesto es fijo por secuencia y existe un \'optimo exacto con
+informaci\'on completa, calculado por programaci\'on din\'amica, contra el
+cual se normaliza el desempe\~no de cada secuencia. Adem\'as, en lugar de ajustar una
+pol\'itica para un sistema real, compara arquitecturas y ensambles sobre
+los mismos escenarios.
+
 \subsection{Transformers en aprendizaje por refuerzo}\label{sec:soa-trf}
 
 En RL, el Transformer se ha empleado de dos maneras. El \emph{Decision

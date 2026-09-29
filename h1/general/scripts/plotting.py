@@ -44,6 +44,26 @@ PUB_RC = {
     'ps.fonttype':     42,
 }
 
+#: Printable area of the thesis page (A4 with 2.54 cm margins), in inches.
+#: Figures rendered at these widths are included at ``\linewidth`` (portrait)
+#: or on a ``landscape`` page, so their font sizes are the printed sizes.
+PAGE_WIDTH_IN = 6.27
+LANDSCAPE_WIDTH_IN = 9.4
+
+#: Style for figures rendered at their printed size (see ``PAGE_WIDTH_IN``).
+PRINT_RC = {
+    **PUB_RC,
+    'font.size':       8,
+    'axes.titlesize':  8.5,
+    'axes.labelsize':  8,
+    'xtick.labelsize': 7.5,
+    'ytick.labelsize': 7.5,
+    'legend.fontsize': 7.5,
+}
+#: Line widths of the per-model curves at printed size.
+PRINT_BEST_LINEWIDTH = 1.8
+PRINT_BASE_LINEWIDTH = 0.9
+
 # Soft sequential/diverging ramps shared by every heatmap in the benchmark.
 _PALETTE_ANCHORS = {
     'mpes_perf': ['#f3f7f4', '#cfe7e2', '#7fc6c0', '#3b9aa1', '#1f6e83',
@@ -214,6 +234,11 @@ class HeatmapSpec:
     separators : list of int, optional
         Column indices before which a vertical rule is drawn (e.g. the first
         held-out replica, to set it apart from the stress scenarios).
+    figsize : tuple of float, optional
+        Figure size in inches. When given, the figure is drawn at its printed
+        size with :data:`PRINT_RC`; otherwise it grows with the matrix shape.
+    annot_fontsize : float
+        Font size of the in-cell annotations.
     """
 
     title: str
@@ -229,6 +254,8 @@ class HeatmapSpec:
     xlabel: str = 'Escenario'
     ylabel: str = 'Modelo'
     separators: "list[int]" = field(default_factory=list)
+    figsize: "tuple[float, float] | None" = None
+    annot_fontsize: float = 7.0
 
 
 def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
@@ -251,10 +278,11 @@ def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
     spec : HeatmapSpec
         Rendering options (title, colormap, limits, annotation format).
     """
-    with pyplot.rc_context(PUB_RC):
-        n_rows, n_cols = matrix.shape
+    n_rows, n_cols = matrix.shape
+    printed = spec.figsize is not None
+    with pyplot.rc_context(PRINT_RC if printed else PUB_RC):
         figure, axis = pyplot.subplots(
-            figsize=(max(10.0, n_cols * 0.62), max(3.6, n_rows * 0.58)))
+            figsize=spec.figsize or (max(10.0, n_cols * 0.62), max(3.6, n_rows * 0.58)))
         figure.patch.set_facecolor('white')
 
         colour_map = matplotlib.colormaps[spec.cmap].copy()
@@ -286,9 +314,11 @@ def heatmap(matrix: numpy.ndarray, models: "list[str]", scenarios: "list[str]",
                 rgba = colour_map(norm(reference))
                 luminance = 0.299 * rgba[0] + 0.587 * rgba[1] + 0.114 * rgba[2]
                 axis.text(column, row, text, ha='center', va='center',
-                          fontsize=7, color='white' if luminance < 0.55 else '#1a1a1a')
+                          fontsize=spec.annot_fontsize,
+                          color='white' if luminance < 0.55 else '#1a1a1a')
 
-        colour_bar = figure.colorbar(image, ax=axis, shrink=0.85, pad=0.012)
+        colour_bar = figure.colorbar(image, ax=axis, shrink=0.85,
+                                     pad=0.012, fraction=0.03 if printed else 0.15)
         colour_bar.ax.tick_params(length=0)
         if spec.cbar_label:
             colour_bar.set_label(spec.cbar_label)

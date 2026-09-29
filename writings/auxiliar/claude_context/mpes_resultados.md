@@ -1,6 +1,6 @@
 # mPES — Síntesis de métricas, salidas y resultados (contexto para la tesis)
 
-> Generado por `writings/auxiliar/scripts/build_results_context.py` — no editar a mano. Fecha (UTC): 2026-09-29T01:42:29Z; commit `a8ef928` (con cambios sin confirmar). Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matrices/`, `cells/`, `heldout/`), las decisiones del replay de `writings/auxiliar/scripts/ensemble_decisions.py`, los `inputs/best_params.json`, `inputs/*_BAYESIAN_OPT/` y `config/CONFIG.py` de cada paquete, y los `.tex` de `writings/`. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. El texto redactado a mano vive en `writings/auxiliar/claude_context/mpes_resultados_notas.md`.
+> Generado por `writings/auxiliar/scripts/build_results_context.py` — no editar a mano. Fecha (UTC): 2026-09-29T13:41:44Z; commit `2ab02da` (con cambios sin confirmar). Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matrices/`, `cells/`, `heldout/`), las decisiones del replay de `writings/auxiliar/scripts/ensemble_decisions.py`, los `inputs/best_params.json`, `inputs/*_BAYESIAN_OPT/` y `config/CONFIG.py` de cada paquete, y los `.tex` de `writings/`. Es la **fuente de verdad numérica** para redactar la tesis. Los números usan punto decimal; en LaTeX se escriben con coma (`$0{,}927$`). El archivo `mpes_resultados.json` contiene los mismos datos con más precisión y por celda. El texto redactado a mano vive en `writings/auxiliar/claude_context/mpes_resultados_notas.md`.
 
 ## 0. Resumen ejecutivo (hallazgos verificados)
 
@@ -85,7 +85,7 @@
 
 - DQN: `Input(3) → Dense(64, ReLU) → Dense(64, ReLU) → Dense(11)`, replay + red objetivo.
 - DQN recurrente: ventana W = 6 (relleno con ceros al inicio), LSTM(64), último estado oculto → Dense(96) → Dense(96) → 11 Q; el estado oculto no se conserva entre decisiones.
-- Transformer: W = 6, proyección a d_model = 32 + vector de posición fijo (Glorot, no entrenado), 2 bloques Pre-LN (atención causal 4 cabezas de dim. 16 + FFN 64, residual), sin dropout, última posición → Dense(32, ReLU) → 11 Q.
+- Transformer: W = 6, proyección a d_model = 32 + vector de posición fijo (Glorot, no entrenado), 2 bloques Post-LN sin las compuertas de Parisotto (atención causal 4 cabezas de dim. 16 + FFN 64, residual), sin dropout, última posición → Dense(32, ReLU) → 11 Q.
 - **RDQN y TRF**: arquitectura elegida por exploración *ad hoc* (optimizarla con BO era demasiado costoso); sólo sus hiperparámetros de entrenamiento vienen de la BO. No citar nº de ensayos, score de Optuna ni los campos de arquitectura de sus `best_params.json`.
 - **A2C** (Tabla `tab:a2c-hparams`): actor `Input(3)→Dense(128)→Dense(11, softmax)`, crítico `Input(3)→Dense(128)→Dense(1)`; lr actor 0,000648 / crítico 0,004299, decaimiento coseno hasta 23,75 %, γ 0,8545, β_H 0,00528, GAE λ 0,9135, recorte 1,200, PBRS κ 0,1527, penalización de gasto r ← r − 0,01039·a, sesgo inicial del logit de a = 10: −1,389, 125 000 episodios, semilla 132.
 - Q-Learning, Double Q-Learning, DQN y A2C reproducen el score de su mejor ensayo de Optuna (0,8866 / 0,8963 / 0,8937 / 0,8872).
@@ -122,7 +122,7 @@ Promedio del grupo individual: severidad +0.0119, longitud +0.0095, conjunta -0.
 
 | Paquete | Nombre en el texto | Regla | Miembros | Parámetros | Origen |
 |---|---|---|---|---|---|
-| `pes_ens` | Ensamble ponderado | Voto suave ponderado por (0,1 + c_k) sobre DQN, DQN recurrente y Transformer; factor 0,3 a a=0 si R>0; mezcla con prior de severidad gaussiano; argmax; cota de seguridad floor(S/2) si S>=6. | dqn, rdqn, trf | tau = 15.0, w_dqn = 0.18, w_rdqn = 0.9, w_trf = 5.0, peso_normalizado_trf = 0.822, w_prior = 0.17, sigma_prior = 3.0 | valores fijos de config/CONFIG.py (sin optimización) |
+| `pes_ens` | Ensamble ponderado | Voto suave ponderado por (0,1 + c_k) sobre DQN, DQN recurrente y Transformer; factor 0,3 a a=0 si R>0; mezcla con prior de severidad gaussiano; argmax; cota de seguridad floor(S/2) si S>=6. | dqn, rdqn, trf | tau = 15.0, w_dqn = 0.18, w_rdqn = 0.9, w_trf = 5.0, peso_normalizado_trf = 0.822, w_prior = 0.17, sigma_prior = 3.0 | fijados a mano sobre la referencia (commit d2f0c49, sin búsqueda sistemática); justificados a posteriori en sec:res-posthoc (sensibilidad, óptimo y regla fija) |
 | `pes_ens_sprb` | Voto suave | Voto suave: promedio de p_k con pesos efectivos w_k·c_k^rho; argmax. | dqn, rdqn, trf, a2c | rho = 2.68075, tau = 1.219194, w_a2c = 0.007027, w_dqn = 0.270032, w_rdqn = 1.759607, w_trf = 0.895639 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
 | `pes_ens_accq` | Voto por acción | Voto por acción: cada miembro vota su argmax con peso w_k·c_k^rho; desempate por suma de Q estandarizados. | dqn, rdqn, trf, a2c | rho = 2.1972, tau = 1.0, w_a2c = 0.174251, w_dqn = 0.467984, w_rdqn = 2.598528, w_trf = 1.803345 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
 | `pes_ens_consensus` | Consenso | Voto ponderado + beta_a·(confianza de quienes coinciden) - beta_d·(confianza de quienes discrepan) + sum_k Qhat_k(a)·c_k; argmax. | dqn, rdqn, trf, a2c | beta_a = 2.074141, beta_d = 0.121143, rho = 0.275376, tau = 1.0, w_a2c = 1.880651, w_dqn = 1.531684, w_rdqn = 1.931138, w_trf = 2.503556 | mejor ensayo de Optuna/TPE sobre las 64 secuencias de referencia (inputs/best_params.json) |
@@ -132,6 +132,9 @@ Promedio del grupo individual: severidad +0.0119, longitud +0.0095, conjunta -0.
 - Todos: $p_k$ = softmax de temperatura τ de los Q (o salida del actor de A2C), renormalizada sobre acciones factibles; confianza $c_k = 1 - H_{norm}(p_k)$; peso efectivo $\tilde w_k = w_k c_k^{\rho}$ (salvo `pes_ens`, que usa $w_k(0{,}1 + c_k)$).
 - `pes_ens`: pesos base 0,18 / 0,90 / 5,0 (DQN / DQN recurrente / Transformer) → el Transformer tiene el 82 % del peso normalizado; A2C deshabilitado; recorta S a 9.
 - En los 5 ensambles optimizados, el score de Optuna **coincide** con la media del benchmark en la referencia; los 5 optimizan también `w_a2c` (rango 0–3). Sólo el voto suave optimiza τ (1,219); los demás usan τ = 1.
+- **Justificación a posteriori de `pes_ens`** (sec:res-posthoc): τ, w_π, σ y el peso del Transformer tienen su máximo en el valor fijo en la referencia y en las réplicas (máximos angostos: un paso de la grilla cuesta 0,002–0,008); η, el término 0,1 y la cota, en meseta. En las réplicas, sin prior (w_π = 0) supera al Transformer por 0,004; con prior y τ = 1, por 0,001; con ambos, por 0,010 (± 0,002 EE pareado). Supera al Transformer por más de 2 EE con τ 2–30, w_π 0–0,25, σ 3–5, peso TRF 2,5–10.
+- **Óptimo** (DP de S_mejor con reconstrucción, 384 secuencias ref. + réplicas; 6 % de ciudades con empates, todas S ≤ 5): con presupuesto nunca asigna 0 y asigna S + 0,7 a S + 1,9; gaussiana centrada en S: σ = 2,7 (≈ 3); centro libre: S + 2,2, σ = 1,4. La cota cambia 2 de 1 726 decisiones; η, el 1,7 % (0,0004 por secuencia); el prior, el 37 % (+0,012 por secuencia).
+- **Regla fija sin modelo** a = min(S + k, R) (tab:fixed-rule), ref. / gen. / réplicas: k = 0 0,782 / 0,805 / 0,787; k = 1 0,900 / 0,907 / 0,906; k = 2 0,940 / 0,937 / 0,943; k = 3 0,939 / 0,940 / 0,941 (Transformer 0,927 / 0,930 / 0,929; pes_ens 0,937 / 0,939 / 0,939). k = 2 supera al Transformer en 18/21 escenarios de generalización y 5/5 réplicas; pierde con secuencias cortas (len_all_short 0,845 vs 0,936). k = 2 se leyó del óptimo con información completa (también es el mejor k en la referencia). **Lectura obligatoria al redactar** (sec:disc-rule): no invalida H1/H2 (comparan modelos entre sí) ni implica que los agentes no aprendieran (sin el óptimo, k = 0 rinde 0,78; los agentes 0,85–0,93 sólo con la recompensa); sí implica que la política óptima de mPES es simple y que en este entorno la ventaja práctica de los modelos frente a una heurística calibrada es nula.
 
 ### 5.2 Resumen de desempeño (ordenado por generalización)
 
@@ -808,7 +811,8 @@ _Fuente: `h1/general/results/heldout/heldout_gap.json` (generado con `writings/a
 - Arquitecturas de DQN recurrente y Transformer elegidas ad hoc (no optimizadas): las conclusiones se refieren a los modelos finales evaluados; los resultados no identifican la causa de la ventaja del Transformer.
 - La confianza 1 - H_norm se calcula sobre softmax de valores Q (no probabilidades aprendidas, salvo A2C): es heurística, no calibrada; no se comprobó que sea mayor en decisiones acertadas.
 - El registro de confianza del Transformer (media 0,116) usa otro cálculo que los ensambles: no comparar con tau_g ni con otros umbrales.
-- La ventaja del ensamble ponderado es compatible con el prior de severidad y tau = 15, no con la ponderación por confianza; con un único ensamble ganador no se puede separar el aporte de cada componente.
+- La ventaja del ensamble ponderado proviene del prior de severidad y de tau = 15, no de la ponderación por confianza, y requiere ambos (sensibilidad en sec:res-posthoc). Sus parámetros se fijaron a mano sobre la referencia y sólo se justifican a posteriori.
+- Una regla fija sin modelo, a = min(S + 2, R), calibrada con el óptimo, iguala al ensamble ponderado y supera al Transformer (sec:res-posthoc, sec:disc-rule): no presentar a los modelos como superiores a una heurística bien calibrada en este entorno.
 - "Distancia de Lieber" en documentos previos = divergencia de Kullback-Leibler.
 - h2/ es una línea suspendida: no citarla como trabajo realizado. La tesis no usa datos humanos (ds004477 sólo como contexto del entorno PES).
 
@@ -822,8 +826,8 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 
 ## 13. Mapa del documento LaTeX
 
-- Estado del último `audit.py` (`writings/audit/AUDIT.md`): Compilación OK (40 páginas), 19 figuras y 13 tablas con label, 55 referencias internas, 21 imágenes; avisos (⚠/❌): ninguno; `.tex` no incluidos en Main.tex: `Acknowledgement.tex` (excluido de Main.tex a propósito).
-- Recuento del generador sobre los `.tex` actuales: 19 figuras y 13 tablas con label, 55 referencias internas, 21 imágenes distintas (coincide con AUDIT.md).
+- Estado del último `audit.py` (`writings/audit/AUDIT.md`): Compilación OK (60 páginas), 20 figuras y 15 tablas con label, 83 referencias internas, 21 imágenes; avisos (⚠/❌): ninguno; `.tex` no incluidos en Main.tex: `Acknowledgement.tex` (excluido de Main.tex a propósito).
+- Recuento del generador sobre los `.tex` actuales: 20 figuras y 15 tablas con label, 83 referencias internas, 21 imágenes distintas (coincide con AUDIT.md).
 - Estructura en el repositorio (en el chat los archivos están planos):
   - `writings/00_Main/`: `.latexmkrc`, `IEEEtran.cls`, `Main.tex`, `References.bib`
   - `writings/01_Chapters/`: `000NHH-Frontpage.tex`, `00Abstract.tex`, `00Abstract_en.tex`, `01Introduction.tex`, `02Background.tex`, `03StateOfTheArt.tex`, `04Materials.tex`, `05Results.tex`, `06Discussion.tex`, `07Conclusion.tex`, `Appendix.tex`, `Acknowledgement.tex (excluido de Main.tex a propósito)`
@@ -833,7 +837,7 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
   - `writings/02_Images/individual/`: `ind_01_desempeno_por_escenario.png`, `ind_03_welch_logp_por_escenario.png`, `ind_05_curvas_por_familia.png`, `ind_13_pares_cohen_d.png`
   - `writings/02_Images/ensemble/`: `ens_01_desempeno_por_escenario.png`, `ens_03_welch_logp_por_escenario.png`, `ens_06_curvas_extrapolacion.png`, `ens_07_cohen_d_por_escenario.png`, `ens_12_pares_welch_logp.png`, `ens_13_pares_cohen_d.png`
   - `writings/audit/`: `AUDIT.md`, `audit.py`
-  - `writings/auxiliar/scripts/`: `build_results_context.py`, `ensemble_decisions.py`, `heldout_gap.py`, `rebuild_thesis.py`, `sync_figures.py`, `trf_vs_ens.py`
+  - `writings/auxiliar/scripts/`: `build_results_context.py`, `ensemble_decisions.py`, `fixed_rule.py`, `heldout_gap.py`, `rebuild_thesis.py`, `sync_figures.py`, `trf_vs_ens.py`, `weighted_ens_oracle.py`, `weighted_ens_sensitivity.py`
 
 | Archivo | Sección (definida en Main.tex) | Etiquetas |
 |---|---|---|
@@ -841,24 +845,24 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 | `00Abstract.tex` | Resumen (sin numerar) | — |
 | `00Abstract_en.tex` | Abstract (sin numerar), dentro de otherlanguage{english} | — |
 | `01Introduction.tex` | 1 Introducción | `sec:motivacion`, `sec:problema`, `sec:hypothesis` |
-| `02Background.tex` | 2 Marco Teórico | `sec:background`, `sec:mdp-bg`, `eq:markov`, `eq:return`, `eq:bellman-opt`, `eq:shannon`, `sec:ensembles-bg`, `sec:stats-bg` |
-| `03StateOfTheArt.tex` | 3 Estado de la Cuestión | `sec:soa`, `sec:soa-trf` |
-| `04Materials.tex` | 4 Materiales y Métodos | `sec:methods`, `sec:env-dyn`, `eq:state-space`, `eq:state-transition`, `eq:transicion`, `eq:reward`, `sec:metric`, `eq:normalised-severity-materials`, `fig:baseline-random-raw`, `fig:baseline-random-normalised`, `fig:baseline-random`, `tab:packages`, `sec:tabular`, `tab:tabular-hparams`, `sec:deep`, `tab:deep-hparams`, `tab:a2c-hparams`, `sec:ens-methods`, `eq:ens-softmax`, `eq:shannon-norm`, `eq:ens-soft`, `eq:ens-prior`, `tab:ens-params`, `sec:scenario-catalogue`, `tab:scenarios` |
-| `05Results.tex` | 5 Resultados | `sec:results`, `sec:res-individual`, `tab:global-mean`, `fig:heatmap-global`, `fig:extra-sev-skew`, `fig:c-base`, `fig:c-ql`, `fig:c-dql`, `fig:c-dqn`, `fig:c-rdqn`, `fig:c-a2c`, `fig:c-trf`, `sec:res-ensembles`, `tab:ensemble-stress`, `tab:trf-vs-ens`, `fig:heatmap-ens`, `sec:res-freq`, `tab:ens-freq`, `sec:res-trf-vs-best`, `tab:trf-vs-best`, `fig:ensemble-extrapolation`, `fig:c-ens`, `sec:res-heldout`, `tab:heldout` |
-| `06Discussion.tex` | 6 Discusión | `sec:discussion`, `sec:disc-individual`, `sec:ens-best` |
+| `02Background.tex` | 2 Marco Teórico | `sec:background`, `sec:mdp-bg`, `eq:markov`, `eq:return`, `eq:bellman-opt`, `sec:value-bg`, `sec:memory-bg`, `sec:entropy-bg`, `eq:shannon`, `sec:ensembles-bg`, `sec:hpo-bg`, `sec:stats-bg` |
+| `03StateOfTheArt.tex` | 3 Estado de la Cuestión | `sec:soa`, `sec:soa-seq`, `sec:soa-trf` |
+| `04Materials.tex` | 4 Materiales y Métodos | `sec:methods`, `sec:env-dyn`, `eq:state-space`, `eq:state-transition`, `eq:transicion`, `eq:reward`, `sec:metric`, `eq:normalised-severity-materials`, `eq:dp-optimum`, `fig:baseline-random-raw`, `fig:baseline-random-normalised`, `fig:baseline-random`, `tab:packages`, `sec:tabular`, `tab:tabular-hparams`, `sec:deep`, `tab:deep-hparams`, `tab:a2c-hparams`, `sec:ens-methods`, `eq:ens-softmax`, `eq:shannon-norm`, `eq:ens-soft`, `eq:ens-prior`, `tab:ens-params`, `sec:scenario-catalogue`, `tab:scenarios` |
+| `05Results.tex` | 5 Resultados | `sec:results`, `sec:res-individual`, `tab:global-mean`, `fig:heatmap-global`, `fig:extra-sev-skew`, `sec:res-ensembles`, `tab:ensemble-stress`, `tab:trf-vs-ens`, `sec:res-freq`, `tab:ens-freq`, `fig:heatmap-ens`, `sec:res-trf-vs-best`, `tab:trf-vs-best`, `fig:ensemble-extrapolation`, `fig:c-ens`, `sec:res-heldout`, `tab:heldout`, `sec:res-posthoc`, `tab:sensitivity`, `tab:fixed-rule` |
+| `06Discussion.tex` | 6 Discusión | `sec:discussion`, `sec:disc-individual`, `sec:ens-best`, `sec:disc-rule` |
 | `07Conclusion.tex` | 7 Conclusiones | `sec:conclusion`, `sec:limitations`, `sec:future` |
-| `Appendix.tex` | Apéndice | `ap:repro`, `tab:repro-commands`, `ap:orchestrator`, `ap:stat-maps`, `fig:heatmap-welch`, `fig:pairwise-cohen`, `fig:ensemble-statistical-heatmaps`, `fig:ensemble-pairwise` |
+| `Appendix.tex` | Apéndice | `ap:repro`, `tab:repro-commands`, `ap:orchestrator`, `ap:stat-maps`, `fig:heatmap-welch`, `fig:pairwise-cohen`, `fig:ensemble-statistical-heatmaps`, `fig:ensemble-cohen-scenario`, `fig:ensemble-pairwise`, `ap:per-model`, `fig:c-base`, `fig:c-ql`, `fig:c-dql`, `fig:c-dqn`, `fig:c-rdqn`, `fig:c-a2c`, `fig:c-trf` |
 
 **Secciones y subsecciones** (numeración calculada; etiqueta entre paréntesis):
 
 - `01Introduction.tex` — 1 Introducción: 1.1 Motivación (`sec:motivacion`); 1.2 Definición del problema (`sec:problema`); 1.3 Preguntas e hipótesis (`sec:hypothesis`); 1.4 Contribuciones
-- `02Background.tex` — 2 Marco Teórico (`sec:background`): 2.1 Procesos de decisión de Markov (`sec:mdp-bg`); 2.2 Aprendizaje por refuerzo basado en valores; 2.3 Memoria, atención y actor–crítico; 2.4 Entropía como medida de confianza; 2.5 Ensambles (`sec:ensembles-bg`); 2.6 Optimización bayesiana de hiperparámetros; 2.7 Comparación estadística (`sec:stats-bg`)
-- `03StateOfTheArt.tex` — 3 Estado de la Cuestión (`sec:soa`): 3.1 Transformers en aprendizaje por refuerzo (`sec:soa-trf`); 3.2 Ensambles en aprendizaje por refuerzo; 3.3 Generalización bajo variaciones controladas
+- `02Background.tex` — 2 Marco Teórico (`sec:background`): 2.1 Procesos de decisión de Markov (`sec:mdp-bg`); 2.2 Aprendizaje por refuerzo basado en valores (`sec:value-bg`); 2.3 Memoria, atención y actor–crítico (`sec:memory-bg`); 2.4 Entropía como medida de confianza (`sec:entropy-bg`); 2.5 Ensambles (`sec:ensembles-bg`); 2.6 Optimización bayesiana de hiperparámetros (`sec:hpo-bg`); 2.7 Comparación estadística (`sec:stats-bg`)
+- `03StateOfTheArt.tex` — 3 Estado de la Cuestión (`sec:soa`): 3.1 Aprendizaje por refuerzo para decisiones secuenciales bajo incertidumbre (`sec:soa-seq`); 3.2 Transformers en aprendizaje por refuerzo (`sec:soa-trf`); 3.3 Ensambles en aprendizaje por refuerzo; 3.4 Generalización bajo variaciones controladas
 - `04Materials.tex` — 4 Materiales y Métodos (`sec:methods`): 4.1 Implementación; 4.2 Entorno (`sec:env-dyn`); 4.3 Métrica de desempeño (`sec:metric`); 4.4 Modelos individuales; 4.4.1 Modelos tabulares (`sec:tabular`); 4.4.2 Modelos con redes neuronales (`sec:deep`); 4.5 Ensambles (`sec:ens-methods`); 4.6 Optimización de hiperparámetros; 4.7 Escenarios de generalización (`sec:scenario-catalogue`); 4.8 Protocolo de evaluación
-- `05Results.tex` — 5 Resultados (`sec:results`): 5.1 Mejor modelo individual (`sec:res-individual`); 5.2 Ensambles (`sec:res-ensembles`); 5.2.1 Efecto de las reglas fijas sobre la decisión (`sec:res-freq`); 5.3 Transformer frente al mejor ensamble (`sec:res-trf-vs-best`); 5.4 Réplicas fuera de muestra (`sec:res-heldout`)
-- `06Discussion.tex` — 6 Discusión (`sec:discussion`): 6.1 Interpretación de la ventaja del Transformer (`sec:disc-individual`); 6.2 Efecto de la regla de combinación (`sec:ens-best`)
+- `05Results.tex` — 5 Resultados (`sec:results`): 5.1 Mejor modelo individual (`sec:res-individual`); 5.2 Ensambles (`sec:res-ensembles`); 5.2.1 Efecto de las reglas fijas sobre la decisión (`sec:res-freq`); 5.3 Transformer frente al mejor ensamble (`sec:res-trf-vs-best`); 5.4 Réplicas fuera de muestra (`sec:res-heldout`); 5.5 Justificación a posteriori del ensamble ponderado (`sec:res-posthoc`)
+- `06Discussion.tex` — 6 Discusión (`sec:discussion`): 6.1 Interpretación de la ventaja del Transformer (`sec:disc-individual`); 6.2 Efecto de la regla de combinación (`sec:ens-best`); 6.3 Alcance de los resultados frente a una regla fija (`sec:disc-rule`)
 - `07Conclusion.tex` — 7 Conclusiones (`sec:conclusion`): 7.1 Respuesta a las preguntas de investigación; 7.2 Limitaciones del estudio (`sec:limitations`); 7.3 Trabajo futuro (`sec:future`); 7.4 Conclusión general
-- `Appendix.tex` — Apéndice: A Comandos de reproducción (`ap:repro`); B Ejecución de la evaluación (`ap:orchestrator`); C Mapas estadísticos complementarios (`ap:stat-maps`)
+- `Appendix.tex` — Apéndice: A Comandos de reproducción (`ap:repro`); B Ejecución de la evaluación (`ap:orchestrator`); C Mapas estadísticos complementarios (`ap:stat-maps`); D Resultados por secuencia de cada modelo (`ap:per-model`)
 
 **Figuras de la tesis** (label → archivo en `02_Images/<carpeta>/`; título corto; capítulo):
 
@@ -867,20 +871,21 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
   - `fig:baseline-random-normalised` → baseline/random_player_normalised_performance.png (Desempeño normalizado)
 - `fig:heatmap-global` → individual/ind_01_desempeno_por_escenario.png (Desempeño medio por escenario (modelos individuales); 05Results.tex; 5 columnas heldout_s1..s5 a la derecha de una línea vertical)
 - `fig:extra-sev-skew` → individual/ind_05_curvas_por_familia.png (Curvas por secuencia en seis escenarios (modelos individuales); 05Results.tex; curvas ordenadas en sev_bimodal, sev_gauss_high, sev_beta_highskew, len_poisson, len_extrapolate_long, joint_high_long; trazo grueso = Transformer)
-- `fig:c-base` → per_model/PES_BASE_results.png (Resultados por secuencia: Q-Learning base; 05Results.tex)
-- `fig:c-ql` → per_model/PES_QL_results.png (Resultados por secuencia: Q-Learning; 05Results.tex)
-- `fig:c-dql` → per_model/PES_DQL_results.png (Resultados por secuencia: Double Q-Learning; 05Results.tex)
-- `fig:c-dqn` → per_model/PES_DQN_results.png (Resultados por secuencia: DQN; 05Results.tex)
-- `fig:c-rdqn` → per_model/PES_RDQN_results.png (Resultados por secuencia: DQN recurrente; 05Results.tex)
-- `fig:c-a2c` → per_model/PES_A2C_results.png (Resultados por secuencia: A2C; 05Results.tex)
-- `fig:c-trf` → per_model/PES_TRF_results.png (Resultados por secuencia: Transformer; 05Results.tex)
 - `fig:heatmap-ens` → ensemble/ens_01_desempeno_por_escenario.png (Desempeño medio por escenario (ensambles); 05Results.tex; 5 columnas fuera de muestra tras una línea vertical)
 - `fig:ensemble-extrapolation` → ensemble/ens_06_curvas_extrapolacion.png (Curvas de los ensambles en los escenarios fuera de rango; 05Results.tex; 3 escenarios fuera de rango; trazo grueso = ensamble ponderado)
 - `fig:c-ens` → per_model/PES_ENS_results.png (Resultados por secuencia: ensamble ponderado; 05Results.tex)
 - `fig:heatmap-welch` → individual/ind_03_welch_logp_por_escenario.png (Welch por escenario (modelos individuales); Appendix.tex; 5 columnas fuera de muestra tras una línea vertical)
 - `fig:pairwise-cohen` → individual/ind_13_pares_cohen_d.png ($d$ de Cohen entre pares (modelos individuales); Appendix.tex)
-- `fig:ensemble-statistical-heatmaps` → ensemble/ens_03_welch_logp_por_escenario.png + ensemble/ens_07_cohen_d_por_escenario.png (Mapas estadísticos por escenario (ensambles); Appendix.tex; 5 columnas fuera de muestra tras una línea vertical)
+- `fig:ensemble-statistical-heatmaps` → ensemble/ens_03_welch_logp_por_escenario.png (Welch por escenario (ensambles); Appendix.tex; Welch por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)
+- `fig:ensemble-cohen-scenario` → ensemble/ens_07_cohen_d_por_escenario.png ($d$ de Cohen por escenario (ensambles); Appendix.tex; d de Cohen por escenario (ensambles, página apaisada); 5 columnas fuera de muestra tras una línea vertical)
 - `fig:ensemble-pairwise` → ensemble/ens_13_pares_cohen_d.png + ensemble/ens_12_pares_welch_logp.png (Comparación entre pares (ensambles); Appendix.tex)
+- `fig:c-base` → per_model/PES_BASE_results.png (Resultados por secuencia: Q-Learning base; Appendix.tex)
+- `fig:c-ql` → per_model/PES_QL_results.png (Resultados por secuencia: Q-Learning; Appendix.tex)
+- `fig:c-dql` → per_model/PES_DQL_results.png (Resultados por secuencia: Double Q-Learning; Appendix.tex)
+- `fig:c-dqn` → per_model/PES_DQN_results.png (Resultados por secuencia: DQN; Appendix.tex)
+- `fig:c-rdqn` → per_model/PES_RDQN_results.png (Resultados por secuencia: DQN recurrente; Appendix.tex)
+- `fig:c-a2c` → per_model/PES_A2C_results.png (Resultados por secuencia: A2C; Appendix.tex)
+- `fig:c-trf` → per_model/PES_TRF_results.png (Resultados por secuencia: Transformer; Appendix.tex)
 
 **Tablas de la tesis** (label → título corto; capítulo):
 
@@ -896,12 +901,14 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 - `tab:ens-freq` → Frecuencia con que las reglas cambian la decisión (05Results.tex)
 - `tab:trf-vs-best` → Transformer frente al ensamble ponderado (05Results.tex)
 - `tab:heldout` → Referencia frente a las réplicas fuera de muestra (05Results.tex)
+- `tab:sensitivity` → Sensibilidad del ensamble ponderado (05Results.tex)
+- `tab:fixed-rule` → Regla fija frente a los modelos (05Results.tex)
 - `tab:repro-commands` → Comandos de reproducción (Appendix.tex)
 
 **Figuras generadas en `h1/general/results/` que la tesis NO usa** (no están en `02_Images/`):
 
-- individual: `02_degradacion_por_escenario`, `04_kl_acciones_por_escenario`, `06_curvas_estresores_universales`, `07_cohen_d_por_escenario`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `12_pares_welch_logp`, `14_pares_kl`, `15_referencia_vs_heldout`, `histogramas/ (subcarpeta)`, `recompensa/ (subcarpeta)`
-- ensemble: `02_degradacion_por_escenario`, `04_kl_acciones_por_escenario`, `05_curvas_por_familia`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `14_pares_kl`, `15_referencia_vs_heldout`, `histogramas/ (subcarpeta)`, `recompensa/ (subcarpeta)`
+- individual: `02_degradacion_por_escenario`, `04_kl_acciones_por_escenario`, `06_curvas_estresores_universales`, `07_cohen_d_por_escenario`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `12_pares_welch_logp`, `14_pares_kl`, `15_referencia_vs_heldout`, `histogramas/ (subcarpeta)`, `modelos/ (subcarpeta)`, `recompensa/ (subcarpeta)`
+- ensemble: `02_degradacion_por_escenario`, `04_kl_acciones_por_escenario`, `05_curvas_por_familia`, `08_ranking_desempeno`, `09_degradacion_por_familia`, `10_desempeno_vs_estabilidad`, `11_perfiles_generalizacion`, `14_pares_kl`, `15_referencia_vs_heldout`, `histogramas/ (subcarpeta)`, `modelos/ (subcarpeta)`, `recompensa/ (subcarpeta)`
 - agent_internals: `trf_agent_confidences`, `trf_agent_cumulative_performance`, `trf_agent_normalised_performance`, `trf_agent_remapped_confidences`
 - baseline: ninguna
 - Cómo incluirlas: Agregar el stem a SUITE_FIGURES en writings/auxiliar/scripts/sync_figures.py y ejecutarlo (sync_figures borra de 02_Images todo lo que no esté en su lista); nombre destino ind_<stem>.png o ens_<stem>.png.
@@ -910,13 +917,16 @@ Contrastados contra los `.tex` actuales el 2026-09-28 (los cinco puntos sobre 04
 
 - `build_results_context.py`: Genera ``mpes_resultados.md`` y ``mpes_resultados.json`` (contexto numérico de la tesis).
 - `ensemble_decisions.py`: Frecuencia con que las reglas fijas de los ensambles cambian la decisión.
+- `fixed_rule.py`: Regla fija ``a = min(S + k, R)`` frente a los modelos, en todos los escenarios.
 - `heldout_gap.py`: Caída de cada modelo entre la referencia y sus réplicas fuera de muestra.
 - `rebuild_thesis.py`: Rebuild the LaTeX manuscript and regenerate the PDF in writings/out.
 - `sync_figures.py`: Sincroniza las figuras de la tesis con las que genera ``h1/``.
 - `trf_vs_ens.py`: Comparación de cada ensamble con el Transformer individual en generalización.
+- `weighted_ens_oracle.py`: Asignación óptima exacta frente a las reglas fijas del ensamble ponderado.
+- `weighted_ens_sensitivity.py`: Sensibilidad uno-a-la-vez de los parámetros fijos del ensamble ponderado.
 
-**Claves bibliográficas disponibles en `References.bib`** (34; únicas citables sin agregar entradas): `BCINE2022`, `Towers2024`, `SuttonBarto2018`, `Watkins1992`, `Hasselt2010`, `Ng1999`, `Mnih2015`, `Lin1992`, `Kingma2015`, `Hasselt2016`, `Huber1964`, `Hausknecht2015`, `Williams1992`, `Mnih2016`, `Vaswani2017`, `Parisotto2020`, `Chen2021`, `Lakshminarayanan2017`, `Bergstra2011`, `Akiba2019`, `Cohen1988`, `Welch1947`, `Kuhl2021`, `ds004477`, `Nijjar2025`, `Henderson2018`, `Cobbe2020`, `Kirk2023`, `mPES2026`, `Glorot2010`, `Shannon1948`, `Schulman2016`, `Wiering2008`, `Parisi2021`.
-- Citadas en los capítulos incluidos: 34; sin citar: ninguna; citadas pero ausentes del `.bib`: ninguna.
+**Claves bibliográficas disponibles en `References.bib`** (54; únicas citables sin agregar entradas): `BCINE2022`, `Towers2024`, `SuttonBarto2018`, `Watkins1992`, `Hasselt2010`, `Ng1999`, `Mnih2015`, `Lin1992`, `Kingma2015`, `Hasselt2016`, `Huber1964`, `Hausknecht2015`, `Williams1992`, `Mnih2016`, `Vaswani2017`, `Parisotto2020`, `Chen2021`, `Lakshminarayanan2017`, `Bergstra2011`, `Akiba2019`, `Cohen1988`, `Welch1947`, `Kuhl2021`, `ds004477`, `Nijjar2025`, `Henderson2018`, `Cobbe2020`, `Kirk2023`, `mPES2026`, `Glorot2010`, `Shannon1948`, `Schulman2016`, `Wiering2008`, `Parisi2021`, `Kaelbling1998`, `Kochenderfer2015`, `Powell2022`, `DulacArnold2021`, `Libin2021`, `Ohi2020`, `Bastani2021`, `Bednarski2021`, `Komorowski2018`, `Yu2021`, `Mao2016`, `Gijsbrechts2022`, `Kong2019`, `Alshiekh2018`, `Jacobs1991`, `Cawley2010`, `Hochreiter1997`, `Student1908`, `Spearman1904`, `Pascanu2013`.
+- Citadas en los capítulos incluidos: 54; sin citar: ninguna; citadas pero ausentes del `.bib`: ninguna.
 
 ## 14. Reproducción
 

@@ -179,6 +179,7 @@
 \hypersetup{bookmarksdepth=3} % marcadores del PDF independientes de tocdepth
 \addtolength{\intextsep}{0.5\baselineskip} % media l\'inea extra entre figuras/tablas y el texto
 \addtolength{\textfloatsep}{0.5\baselineskip}
+\newcommand{\sectionbreak}{\clearpage} % cada cap\'itulo del cuerpo empieza en una p\'agina nueva
 
 \section{Introducción} % section/chapter name
     \subfile{../01_Chapters/01Introduction} % including the subfile for the chapter
@@ -200,6 +201,7 @@
 
 \section{Conclusiones}
     \subfile{../01_Chapters/07Conclusion}
+\renewcommand{\sectionbreak}{} % referencias y ap\'endice manejan sus propios saltos
 
 % \section{Acknowledgements}
 %     \subfile{01_Chapters/Acknowledgements}

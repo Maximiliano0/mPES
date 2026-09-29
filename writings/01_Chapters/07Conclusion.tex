@@ -23,7 +23,20 @@ compuerta del Transformer alcanz\'o un desempe\~no equivalente y los
 otros cuatro ensambles quedaron por debajo. La ventaja del ensamble ponderado no se explica por
 la ponderaci\'on por confianza: su acci\'on final difiere de la del
 Transformer en el $61\%$ de las decisiones de la referencia, en buena
-medida por la temperatura alta y el \emph{prior} de severidad.
+medida por la temperatura alta y el \emph{prior} de severidad. El
+an\'alisis a posteriori muestra que la ventaja requiere ambos, que el
+\emph{prior} est\'a centrado por debajo de la asignaci\'on \'optima y que
+la cota de seguridad no tiene efecto.
+
+\textbf{Una regla fija como referencia.} Una regla sin modelo que asigna
+la severidad m\'as dos unidades, calibrada con la asignaci\'on \'optima,
+obtiene $0{,}937$ en generalizaci\'on y $0{,}943$ en las r\'eplicas fuera
+de muestra: iguala al ensamble ponderado y supera al Transformer. En
+mPES, por lo tanto, los modelos aprendidos no aportan una ventaja
+pr\'actica frente a una heur\'istica bien calibrada. La comparaci\'on
+entre arquitecturas y reglas de combinaci\'on sigue siendo v\'alida, pero
+se refiere a un entorno cuya pol\'itica \'optima tiene una estructura
+simple.
 
 \textbf{Ponderaci\'on por confianza.} El dise\~no no permite determinar si
 ponderar por la confianza mejora a una votaci\'on simple, porque todos los
@@ -37,12 +50,22 @@ individual.
     \item Los escenarios de generalizaci\'on usan una \'unica semilla
     ($42$), lo que impide estimar la variabilidad de sus medias y
     construir intervalos de confianza para el ordenamiento.
+    \item Cada modelo se entren\'o una sola vez, con la semilla de su
+    mejor ensayo; como el RL profundo es sensible a la
+    semilla~\citep{Henderson2018}, otro entrenamiento podr\'ia cambiar las
+    diferencias peque\~nas entre modelos.
     \item Los hiperpar\'ametros se ajustaron sobre la referencia; las
     r\'eplicas fuera de muestra (Secci\'on~\ref{sec:res-heldout}) no
     muestran sobreajuste, pero usan las frecuencias de esa referencia.
     \item Las arquitecturas del DQN recurrente y del Transformer se
     eligieron \emph{ad hoc}; otras configuraciones podr\'ian modificar el
     ordenamiento.
+    \item Los par\'ametros del ensamble ponderado se fijaron a mano sobre
+    la referencia y s\'olo se justificaron a posteriori; est\'an en
+    m\'aximos angostos de la sensibilidad.
+    \item El entorno admite una regla fija casi \'optima, por lo que los
+    resultados no indican cu\'anto aportan estos modelos en problemas
+    cuya pol\'itica \'optima no tenga una estructura simple.
     \item La confianza se calcula sobre valores $Q$ transformados y no
     sobre probabilidades calibradas, y no se verific\'o su relaci\'on con
     el acierto de las decisiones.
@@ -57,18 +80,24 @@ individual.
     \item Relacionar la confianza con el acierto de cada decisi\'on
     mediante curvas de calibraci\'on.
     \item Aprender pesos $w_k(s)$ dependientes del estado.
+    \item Incluir como l\'inea de base heur\'isticas calibradas con el
+    \'optimo y evaluar los modelos en variantes del entorno en las que
+    ninguna regla simple sea casi \'optima.
 \end{itemize}
 
 \subsection{Conclusi\'on general}
 
-\enlargethispage{2\baselineskip} % evita que las \'ultimas l\'ineas queden solas en una p\'agina
 En el entorno controlado de mPES, el Transformer causal es el modelo
 individual con mejor desempe\~no, en las condiciones de entrenamiento y
 fuera de ellas, aunque no es el que menos se degrada en su peor
 escenario. La combinaci\'on de modelos lo super\'o en un solo caso y por un
 margen despreciable, mediante una regla que suaviza las preferencias de
-los miembros y las mezcla con un \emph{prior} de severidad. En
-consecuencia, H1 no se refuta y H2 se refuta. Estas conclusiones se limitan al entorno y a los modelos
+los miembros y las mezcla con un \emph{prior} de severidad. Una regla
+fija calibrada con la asignaci\'on \'optima alcanza ese mismo nivel, de
+modo que en este entorno la ventaja de los modelos aprendidos frente a
+una heur\'istica bien calibrada es nula. En consecuencia, los resultados
+respaldan H1 y no respaldan H2, dentro de un entorno cuya pol\'itica
+\'optima es simple. Estas conclusiones se limitan al entorno y a los modelos
 evaluados.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
