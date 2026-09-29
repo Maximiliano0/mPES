@@ -819,13 +819,12 @@ Contrastados contra los datos de este archivo (2026-09-24). Corregirlos cuando s
 - Estado del último `audit.py` (2026-09-24): Compilación OK (59 páginas), 21 figuras y 13 tablas con label, 88 referencias, 24 imágenes, sin refs rotas, labels duplicados, imágenes huérfanas, citas faltantes, palabras inglesas ni TODO; único aviso: Acknowledgement.tex huérfano.
 - Estructura en el repositorio (en el chat los archivos están planos):
   - `writings/00_Main/`: `Main.tex`, `References.bib`, `apa.bst`, `IEEEtran.cls`, `mPES_citation.bib`, `Lakshminarayanan2017.bib`
-  - `writings/01_Chapters/`: `000NHH-Frontpage.tex`, `00Abstract.tex`, `00Abstract_en.tex`, `01Introduction.tex`, `02Background.tex`, `03StateOfTheArt.tex`, `04Materials.tex`, `05Results.tex`, `06Discussion.tex`, `07Conclusion.tex`, `Appendix.tex`, `Acknowledgement.tex (huérfano: no incluido por Main.tex)`
+  - `writings/01_Chapters/`: `000NHH-Frontpage.tex`, `00Abstract.tex`, `00Abstract_en.tex`, `01Introduction.tex`, `02Background.tex`, `03StateOfTheArt.tex`, `04Materials.tex`, `05Results.tex`, `06Discussion.tex`, `07Conclusion.tex`, `Appendix.tex`, `Acknowledgement.tex (excluido de Main.tex a propósito)`
   - `writings/02_Images/frontpage/`: `LOGO-ITBA.jpg`
   - `writings/02_Images/baseline/`: `random_player_sequence_performance.png`, `random_player_normalised_performance.png`
   - `writings/02_Images/per_model/`: `PES_A2C_results.png`, `PES_BASE_results.png`, `PES_DQL_results.png`, `PES_DQN_results.png`, `PES_ENS_results.png`, `PES_QL_results.png`, `PES_RDQN_results.png`, `PES_TRF_results.png`
-  - `writings/02_Images/individual/`: `ind_01_desempeno_por_escenario.png`, `ind_03_welch_logp_por_escenario.png`, `ind_04_kl_acciones_por_escenario.png`, `ind_05_curvas_por_familia.png`, `ind_13_pares_cohen_d.png`
-  - `writings/02_Images/ensemble/`: `ens_01_desempeno_por_escenario.png`, `ens_03_welch_logp_por_escenario.png`, `ens_04_kl_acciones_por_escenario.png`, `ens_06_curvas_extrapolacion.png`, `ens_07_cohen_d_por_escenario.png`, `ens_12_pares_welch_logp.png`, `ens_13_pares_cohen_d.png`
-  - `writings/02_Images/agent_internals/`: `trf_agent_confidences.png`
+  - `writings/02_Images/individual/`: `ind_01_desempeno_por_escenario.png`, `ind_03_welch_logp_por_escenario.png`, `ind_05_curvas_por_familia.png`, `ind_13_pares_cohen_d.png`
+  - `writings/02_Images/ensemble/`: `ens_01_desempeno_por_escenario.png`, `ens_03_welch_logp_por_escenario.png`, `ens_06_curvas_extrapolacion.png`, `ens_07_cohen_d_por_escenario.png`, `ens_12_pares_welch_logp.png`, `ens_13_pares_cohen_d.png`
   - `writings/audit/`: `audit.py`, `AUDIT.md`
   - `writings/auxiliar/scripts/`: `sync_figures.py`, `ensemble_decisions.py`, `rebuild_thesis.py`, `heldout_gap.py`
 

@@ -30,11 +30,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 - Imágenes referenciadas con `\includegraphics`: **21**.
 - ✅ Todas las imágenes referenciadas existen.
 
-**Imágenes huérfanas en `02_Images/` (no referenciadas, 3 archivos):**
-
-- `02_Images/agent_internals/trf_agent_confidences.png`
-- `02_Images/ensemble/ens_04_kl_acciones_por_escenario.png`
-- `02_Images/individual/ind_04_kl_acciones_por_escenario.png`
+- ✅ Sin imágenes huérfanas.
 
 ## 3. Citas y bibliografía (numérico, unsrtnat)
 
