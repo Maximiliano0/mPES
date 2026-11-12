@@ -20,14 +20,12 @@ $1\%$ por debajo del DQN, que s\'olo observa el estado actual. Tampoco se
 debe a la cantidad de par\'ametros: el Transformer tiene un $21\%$ menos
 que el DQN recurrente.
 
-\begin{destacado}
 Descartados esos dos factores, la ventaja se atribuye a la atenci\'on
 causal, que pondera cada estado de la ventana seg\'un su relaci\'on con el
 estado actual en lugar de resumirla en un \'unico estado oculto, como hace
 la LSTM. Como no se evalu\'o una variante sin atenci\'on, este efecto no
 puede separarse del de las conexiones residuales con normalizaci\'on de
 capa ni del de los hiperpar\'ametros.
-\end{destacado}
 
 La ventaja se conserva en generalizaci\'on: el Transformer obtiene la
 mayor media en $15$ de los $21$ escenarios
@@ -58,7 +56,6 @@ por su confianza; s\'olo difieren en la regla de combinaci\'on
     del $5\%$ de las decisiones, la mejora no puede atribuirse a \'el.
 \end{itemize}
 
-\begin{destacado}
 La ventaja del ensamble ponderado proviene del \emph{prior} y de la
 temperatura alta m\'as que de la ponderaci\'on por confianza, y requiere
 ambos. Con las preferencias de los miembros casi planas, el \emph{prior}
@@ -69,7 +66,6 @@ $S + 1{,}6$, lo que equivale a una regla con $k \approx 1{,}6$: el mismo
 exceso medio que la asignaci\'on \'optima y $0{,}4$ unidades menos que la
 regla $a = \min(S + 2, R)$. El Transformer, en cambio, asigna en promedio
 $S + 2{,}4$.
-\end{destacado}
 
 En las r\'eplicas \emph{held-out}, la temperatura alta sin \emph{prior}
 y el \emph{prior} con $\tau = 1$ superan al Transformer en a lo sumo un

@@ -21,7 +21,7 @@ Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 - Figuras con label: **22**.
 - Tablas con label: **18**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **122**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **124**.
 
 - ✅ Sin referencias rotas.
 

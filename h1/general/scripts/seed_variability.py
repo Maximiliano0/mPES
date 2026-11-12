@@ -248,8 +248,33 @@ def run_one(key: str, seed: int) -> Tuple[Dict[str, float], float]:
     return evaluate(pandemic, tools, factory), elapsed
 
 
+def spread(values: List[float]) -> Dict[str, float]:
+    """Mean, sample standard deviation, minimum and maximum of ``values`` (``nan`` when empty).
+
+    Parameters
+    ----------
+    values : list of float
+        Mean ``r̄`` of each run.
+
+    Returns
+    -------
+    dict
+        ``media``, ``desviacion`` (``ddof=1``; ``0`` with a single value), ``minimo`` and ``maximo``.
+    """
+    if not values:
+        nan = float('nan')
+        return {'media': nan, 'desviacion': nan, 'minimo': nan, 'maximo': nan}
+    array = numpy.asarray(values, dtype=float)
+    return {'media': float(array.mean()), 'desviacion': float(array.std(ddof=1)) if array.size > 1 else 0.0,
+            'minimo': float(array.min()), 'maximo': float(array.max())}
+
+
 def summarise() -> dict:
-    """Collect every ``result.json`` into per-model statistics and write the summary JSON."""
+    """Collect every ``result.json`` into per-model statistics and write the summary JSON.
+
+    The delivered model (seed ``0``) is reported apart from the retrained seeds: its configuration and seed come
+    from the best Optuna trial, so it is not an unbiased draw of the seed distribution.
+    """
     summary: dict = {'escenarios': SCENARIOS, 'modelos': {}}
     for key in ORDER:
         folder = os.path.join(WORK, MODELS[key]['pkg'].split('.')[1])
@@ -261,17 +286,20 @@ def summarise() -> dict:
                     runs.append(json.load(handle))
         if not runs:
             continue
-        ref = numpy.array([r['medias']['sev_base'] for r in runs])
-        held = numpy.array([numpy.mean([r['medias'][s] for s in SCENARIOS[1:]]) for r in runs])
+        corridas = [{'semilla': r['semilla'], 'referencia': r['medias']['sev_base'],
+                     'heldout': float(numpy.mean([r['medias'][s] for s in SCENARIOS[1:]])),
+                     'horas': r['segundos'] / 3600} for r in runs]
+        delivered = [c for c in corridas if c['semilla'] == 0]
+        retrained = [c for c in corridas if c['semilla'] != 0]
         summary['modelos'][key] = {
-            'paquete': MODELS[key]['pkg'], 'n': len(runs),
-            'corridas': [{'semilla': r['semilla'], 'referencia': r['medias']['sev_base'],
-                          'heldout': float(numpy.mean([r['medias'][s] for s in SCENARIOS[1:]])),
-                          'horas': r['segundos'] / 3600} for r in runs],
-            'referencia': {'media': float(ref.mean()), 'desviacion': float(ref.std(ddof=1)) if len(runs) > 1 else 0.0,
-                           'minimo': float(ref.min()), 'maximo': float(ref.max())},
-            'heldout': {'media': float(held.mean()), 'desviacion': float(held.std(ddof=1)) if len(runs) > 1 else 0.0,
-                        'minimo': float(held.min()), 'maximo': float(held.max())}}
+            'paquete': MODELS[key]['pkg'], 'corridas': corridas,
+            'entregado': ({'referencia': delivered[0]['referencia'], 'heldout': delivered[0]['heldout']}
+                          if delivered else None),
+            'semillas_nuevas': {'n': len(retrained),
+                                'referencia': spread([c['referencia'] for c in retrained]),
+                                'heldout': spread([c['heldout'] for c in retrained])},
+            'todas': {'n': len(corridas), 'referencia': spread([c['referencia'] for c in corridas]),
+                      'heldout': spread([c['heldout'] for c in corridas])}}
     os.makedirs(os.path.dirname(SUMMARY_FILE), exist_ok=True)
     with open(SUMMARY_FILE, 'w', encoding='utf-8') as handle:
         json.dump(summary, handle, indent=1, ensure_ascii=False)
@@ -313,8 +341,10 @@ def main() -> None:
             keep_awake(False)
     summary = summarise()
     for key, info in summary['modelos'].items():
-        log(f"{key}: n={info['n']}  ref {info['referencia']['media']:.4f} ± {info['referencia']['desviacion']:.4f}"
-            f"  held-out {info['heldout']['media']:.4f} ± {info['heldout']['desviacion']:.4f}")
+        new = info['semillas_nuevas']
+        log(f"{key}: semillas nuevas n={new['n']}  ref {new['referencia']['media']:.4f} ± "
+            f"{new['referencia']['desviacion']:.4f}  held-out {new['heldout']['media']:.4f} ± "
+            f"{new['heldout']['desviacion']:.4f}")
 
 
 if __name__ == '__main__':

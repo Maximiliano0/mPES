@@ -6,9 +6,9 @@
   "director": "Dr. Ing. Rodrigo Ramele",
   "programa": "Maestría en Ciencia de Datos, Instituto Tecnológico de Buenos Aires (ITBA), 2026",
   "generado_por": "writings/auxiliar/scripts/build_results_context.py (no editar a mano)",
-  "generado_utc": "2026-09-29T20:42:11Z",
+  "generado_utc": "2026-11-12T16:25:02Z",
   "git": {
-   "commit": "dc70474",
+   "commit": "0f42c33",
    "sucio": true
   },
   "fuente": "h1/general/results/{individual,ensemble}/ (summary.json, comparison_metrics.json, matrices/*.csv), h1/general/results/heldout/, decisiones: h1/general/results/ensemble/ens_decisions.json; inputs/best_params.json, inputs/*_BAYESIAN_OPT/ y config/CONFIG.py de cada paquete; writings/ (Main.tex, 01_Chapters, References.bib, audit/AUDIT.md). Texto redactado: writings/auxiliar/claude_context/mpes_resultados_notas.md.",
@@ -7181,7 +7181,8 @@
      "ens_06_curvas_extrapolacion.png",
      "ens_07_cohen_d_por_escenario.png",
      "ens_12_pares_welch_logp.png",
-     "ens_13_pares_cohen_d.png"
+     "ens_13_pares_cohen_d.png",
+     "ens_politica_vs_regla.png"
     ]
    },
    "writings/audit/": [
@@ -7193,7 +7194,9 @@
     "ensemble_decisions.py",
     "fixed_rule.py",
     "heldout_gap.py",
+    "policy_vs_rule.py",
     "rebuild_thesis.py",
+    "seed_comparison.py",
     "sync_figures.py",
     "trf_vs_ens.py",
     "weighted_ens_oracle.py",
@@ -7228,6 +7231,7 @@
     "labels": [
      "sec:motivacion",
      "sec:problema",
+     "sec:aplicaciones",
      "sec:hypothesis"
     ],
     "secciones": [
@@ -7246,12 +7250,18 @@
      {
       "nivel": "subsection",
       "numero": "1.3",
-      "titulo": "Preguntas e hipótesis",
-      "label": "sec:hypothesis"
+      "titulo": "Decisiones reales y condiciones de aplicación",
+      "label": "sec:aplicaciones"
      },
      {
       "nivel": "subsection",
       "numero": "1.4",
+      "titulo": "Objetivos, preguntas e hipótesis",
+      "label": "sec:hypothesis"
+     },
+     {
+      "nivel": "subsection",
+      "numero": "1.5",
       "titulo": "Contribuciones",
       "label": null
      }
@@ -7325,7 +7335,7 @@
    },
    {
     "archivo": "03StateOfTheArt.tex",
-    "seccion": "3 Estado de la Cuestión",
+    "seccion": "3 Estado del Arte",
     "labels": [
      "sec:soa",
      "sec:soa-seq",
@@ -7382,6 +7392,7 @@
      "tab:deep-hparams",
      "tab:a2c-hparams",
      "sec:ens-methods",
+     "tab:ens-packages",
      "eq:ens-softmax",
      "eq:shannon-norm",
      "eq:ens-soft",
@@ -7563,7 +7574,7 @@
      {
       "nivel": "subsection",
       "numero": "7.1",
-      "titulo": "Respuesta a las preguntas de investigación",
+      "titulo": "Objetivos y preguntas de investigación",
       "label": null
      },
      {
@@ -7608,7 +7619,13 @@
      "fig:c-dqn",
      "fig:c-rdqn",
      "fig:c-a2c",
-     "fig:c-trf"
+     "fig:c-trf",
+     "ap:complementarios",
+     "ap:model-choice",
+     "tab:model-choice",
+     "ap:policy-rule",
+     "fig:policy-rule",
+     "tab:policy-rule"
     ],
     "secciones": [
      {
@@ -7634,6 +7651,24 @@
       "numero": "D",
       "titulo": "Resultados por secuencia de cada modelo",
       "label": "ap:per-model"
+     },
+     {
+      "nivel": "section",
+      "numero": "E",
+      "titulo": "Análisis complementarios",
+      "label": "ap:complementarios"
+     },
+     {
+      "nivel": "subsection",
+      "numero": "E.1",
+      "titulo": "Criterio de elección de los modelos",
+      "label": "ap:model-choice"
+     },
+     {
+      "nivel": "subsection",
+      "numero": "E.2",
+      "titulo": "Política aprendida frente a la regla fija",
+      "label": "ap:policy-rule"
      }
     ],
     "label_capitulo": null
@@ -7659,6 +7694,7 @@
    "fig:c-rdqn": "per_model/PES_RDQN_results.png (Resultados por secuencia: DQN recurrente; Appendix.tex)",
    "fig:c-a2c": "per_model/PES_A2C_results.png (Resultados por secuencia: A2C; Appendix.tex)",
    "fig:c-trf": "per_model/PES_TRF_results.png (Resultados por secuencia: Transformer; Appendix.tex)",
+   "fig:policy-rule": "ensemble/ens_politica_vs_regla.png (Política aprendida frente a la regla fija; Appendix.tex)",
    "fig:baseline-random-raw": "baseline/random_player_sequence_performance.png (Severidad cruda; 04Materials.tex)",
    "fig:baseline-random-normalised": "baseline/random_player_normalised_performance.png (Desempeño normalizado; 04Materials.tex)"
   },
@@ -7667,6 +7703,7 @@
    "tab:tabular-hparams": "Hiperparámetros de los modelos tabulares (04Materials.tex)",
    "tab:deep-hparams": "Hiperparámetros de los modelos de tipo DQN (04Materials.tex)",
    "tab:a2c-hparams": "Hiperparámetros de A2C (04Materials.tex)",
+   "tab:ens-packages": "Ensambles (04Materials.tex)",
    "tab:ens-params": "Parámetros de los ensambles (04Materials.tex)",
    "tab:scenarios": "Escenarios de evaluación (04Materials.tex)",
    "tab:global-mean": "Desempeño de los modelos individuales (05Results.tex)",
@@ -7677,7 +7714,9 @@
    "tab:heldout": "Referencia frente a las réplicas held-out (05Results.tex)",
    "tab:sensitivity": "Sensibilidad del ensamble ponderado (05Results.tex)",
    "tab:fixed-rule": "Regla fija y modelos frente al óptimo (05Results.tex)",
-   "tab:repro-commands": "Comandos de reproducción (Appendix.tex)"
+   "tab:repro-commands": "Comandos de reproducción (Appendix.tex)",
+   "tab:model-choice": "Criterio de elección de los modelos (Appendix.tex)",
+   "tab:policy-rule": "Exceso medio de asignación y desempeño (Appendix.tex)"
   },
   "figuras_generadas_no_incluidas": {
    "individual": [
@@ -7706,6 +7745,7 @@
     "11_perfiles_generalizacion",
     "14_pares_kl",
     "15_referencia_vs_heldout",
+    "politica_vs_regla_slide",
     "histogramas/ (subcarpeta)",
     "modelos/ (subcarpeta)",
     "recompensa/ (subcarpeta)"
@@ -7724,7 +7764,9 @@
    "ensemble_decisions.py": "Frecuencia con que las reglas fijas de los ensambles cambian la decisión.",
    "fixed_rule.py": "Regla fija ``a = min(S + k, R)`` frente a los modelos, en todos los escenarios.",
    "heldout_gap.py": "Caída de cada modelo entre la referencia y sus réplicas fuera de muestra.",
+   "policy_vs_rule.py": "Política aprendida frente a la regla fija ``a = min(S + k, R)`` y al óptimo.",
    "rebuild_thesis.py": "Rebuild the LaTeX manuscript and regenerate the PDF in writings/out.",
+   "seed_comparison.py": "Variabilidad entre semillas frente a las diferencias entre modelos (Apéndice E.3).",
    "sync_figures.py": "Sincroniza las figuras de la tesis con las que genera ``h1/``.",
    "trf_vs_ens.py": "Comparación de cada ensamble con el Transformer individual en generalización.",
    "weighted_ens_oracle.py": "Asignación óptima exacta frente a las reglas fijas del ensamble ponderado.",
@@ -7784,12 +7826,24 @@
    "Hochreiter1997",
    "Student1908",
    "Spearman1904",
-   "Pascanu2013"
+   "Pascanu2013",
+   "Mehrotra2020",
+   "Emanuel2020",
+   "HolguinVeras2013",
+   "YuLina2021",
+   "Sinclair2023",
+   "Agarwal2021"
   ],
   "bib_citadas": [
    "BCINE2022",
    "Kuhl2021",
    "Parisi2021",
+   "Mehrotra2020",
+   "Bednarski2021",
+   "HolguinVeras2013",
+   "YuLina2021",
+   "Sinclair2023",
+   "Emanuel2020",
    "SuttonBarto2018",
    "Kaelbling1998",
    "Watkins1992",
@@ -7825,7 +7879,6 @@
    "Libin2021",
    "Ohi2020",
    "Bastani2021",
-   "Bednarski2021",
    "Komorowski2018",
    "Yu2021",
    "Mao2016",
@@ -7840,27 +7893,28 @@
    "mPES2026",
    "Towers2024",
    "Mnih2016",
-   "Student1908"
+   "Student1908",
+   "Agarwal2021"
   ],
   "bib_no_citadas": [],
   "bib_faltantes": [],
   "estado_audit": {
    "archivo": "writings/audit/AUDIT.md",
    "compilacion_ok": true,
-   "paginas": 56,
-   "figuras_con_label": 21,
-   "tablas_con_label": 15,
-   "referencias_internas": 98,
-   "imagenes": 21,
+   "paginas": 65,
+   "figuras_con_label": 22,
+   "tablas_con_label": 18,
+   "referencias_internas": 121,
+   "imagenes": 22,
    "tex_huerfanos": [
     "Acknowledgement.tex"
    ],
    "avisos": [],
    "recuento_del_generador": {
-    "figuras_con_label": 21,
-    "tablas_con_label": 15,
-    "referencias_internas": 98,
-    "imagenes": 21
+    "figuras_con_label": 22,
+    "tablas_con_label": 18,
+    "referencias_internas": 121,
+    "imagenes": 22
    }
   }
  },

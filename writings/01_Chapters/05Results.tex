@@ -17,7 +17,6 @@ se encuentran en el Ap\'endice~\ref{ap:stat-maps}
 
 \subsection{Mejor modelo individual}\label{sec:res-individual}
 
-\begin{destacado}
 El Transformer es el mejor modelo individual
 (Tabla~\ref{tab:global-mean}): tiene la mayor media en la referencia y
 en generalizaci\'on, la menor dispersi\'on entre secuencias y la mayor
@@ -26,7 +25,7 @@ En generalizaci\'on supera al resto de los modelos optimizados entre un
 $3{,}4\%$ (DQN) y un $6{,}7\%$ (Q-Learning), con una ventaja de tama\~no
 medio frente a DQN ($d = 0{,}50$), el DQN recurrente ($d = 0{,}57$) y
 Q-Learning ($d = 0{,}79$).
-\end{destacado}
+
 \begin{table}[H]
 \centering
 \caption[Desempe\~no de los modelos individuales]{Modelos individuales:
@@ -183,12 +182,10 @@ en promedio probabilidad $0{,}19$ y supera a la segunda en
 $0{,}02$--$0{,}03$), y el \emph{prior} cambia la acci\'on votada en el
 $41\%$ y el $32\%$ de las decisiones; la cota, menos del $0{,}5\%$.
 
-\begin{destacado}
 En los dos ensambles que igualan o superan al Transformer, la decisi\'on no
 proviene s\'olo del voto ponderado por confianza, sino de la regla: el
 \emph{prior} y la temperatura alta en el ensamble ponderado, y el umbral
 de confianza en la compuerta del Transformer.
-\end{destacado}
 
 \begin{table}[H]
 \centering
@@ -235,16 +232,14 @@ mayor media en \texttt{len\_all\_short} y \texttt{joint\_low\_short} (un
 $3{,}0\%$ y un $2{,}9\%$ m\'as) y, por menos del $0{,}1\%$, en
 \texttt{len\_poisson}.
 
-\begin{destacado}
 En la extrapolaci\'on de severidad y en la conjunta, el ensamble ponderado
 alcanza el \'optimo en todas las secuencias ($\sigma = 0$;
 Figura~\ref{fig:ensemble-extrapolation}), pero decide siempre como su miembro Transformer: la diferencia con el
 Transformer individual proviene de que el ensamble recorta la severidad a
 $9$ antes de transmitirla a sus miembros.
-\end{destacado}
 
 La Figura~\ref{fig:c-ens} muestra
-su desempe\~no por secuencia en la referencia, donde tiene la menor
+el desempe\~no por secuencia del ensamble ponderado en la referencia, donde tiene la menor
 dispersi\'on de todos los modelos ($\sigma = 0{,}035$).
 
 \begin{table}[H]
@@ -303,12 +298,10 @@ mismas $320$ secuencias, el ensamble ponderado supera al Transformer en un
 $1{,}1\%$ (prueba $t$ pareada~\citep{Student1908}, $p < 10^{-7}$) y tiene
 mayor media en las cinco r\'eplicas.
 
-\begin{destacado}
 Elegir la configuraci\'on sobre las $64$ secuencias de la referencia no
 produjo sobreajuste (\emph{overfitting}): el sesgo de
 selecci\'on de la Secci\'on~\ref{sec:hpo-bg} no sobrestim\'o el desempe\~no en la referencia, y cada modelo obtiene el mismo desempe\~no en secuencias que no
 intervinieron en su entrenamiento ni en su optimizaci\'on.
-\end{destacado}
 
 \begin{table}[H]
 \centering
@@ -363,13 +356,22 @@ par\'ametro por vez:
     sumo un $0{,}1\%$.
 \end{itemize}
 
-\begin{destacado}
-En las r\'eplicas, sin \emph{prior}
+La \'ultima columna de la Tabla~\ref{tab:sensitivity} indica con qu\'e
+valores el ensamble supera al Transformer en las r\'eplicas
+\emph{held-out}. Como ambos se eval\'uan sobre las mismas $320$
+secuencias, la comparaci\'on es pareada: se calcula, secuencia por
+secuencia, la diferencia de $\bar r$ entre el ensamble y el Transformer,
+y se considera que lo supera cuando la media de esas diferencias es mayor
+que dos veces su error est\'andar (su desviaci\'on est\'andar dividida por
+$\sqrt{320}$), lo que equivale aproximadamente a una prueba $t$ pareada
+con $p < 0{,}05$. Con los valores fijos, la diferencia media es
+$0{,}010$, con un error est\'andar de $0{,}002$. En las r\'eplicas, sin \emph{prior}
 ($w_\pi = 0$) el ensamble supera al Transformer en un $0{,}4\%$; con el
-\emph{prior} y $\tau = 1$, en un $0{,}1\%$, y con ambos, en un $1{,}1\%$.
+\emph{prior} y $\tau = 1$, la diferencia es de un $0{,}1\%$, no
+significativa, y con ambos, de un $1{,}1\%$.
 La ventaja proviene, por lo tanto, de combinar la temperatura alta con
 el \emph{prior}.
-\end{destacado}
+
 \begin{table}[H]
 \centering
 \caption[Sensibilidad del ensamble ponderado]{Sensibilidad del ensamble
@@ -456,14 +458,12 @@ escenarios de secuencias cortas (\texttt{len\_all\_short}, $0{,}845$, y
 $S + 2$ y deja sin usar un excedente que los modelos aprendieron a
 aprovechar; con secuencias largas, en cambio, conviene un $k$ menor.
 
-\begin{destacado}
 El valor $k = 2$
 se eligi\'o a partir de la asignaci\'on \'optima y es tambi\'en el mejor
 en la referencia, sobre la que se ajustaron los modelos: la regla es un
 punto de comparaci\'on calibrado, no un competidor en igualdad de
 condiciones. Sin calibraci\'on ($k = 0$), queda muy por debajo de todos
 los modelos entrenados.
-\end{destacado}
 
 \begin{table}[H]
 \centering

@@ -230,7 +230,7 @@ Fuentes: `h1/general/results/` (`summary.json`, `comparison_metrics.json`, `matr
      Convenciones de redacción desde writing_v1_4: en el texto, las diferencias entre medias se expresan como variación porcentual respecto de la media de comparación (d y p no);
      las réplicas se llaman "réplicas held-out" (no "fuera de muestra"); los parámetros de pes_ens se fijaron "ad hoc" (no "a mano"); "máximos agudos" (no "angostos").
      Desde writing_v1_6: audit/<grupo>/mean_a_minus_S da el exceso medio a−S de pes_ens en decisiones con recursos (all: final +1,57, sin prior +2,17, TRF +2,42):
-     el prior RESTA asignación (S+2,2 → S+1,6, equivalente a k≈1,6, igual al exceso medio del óptimo); §5.5 cierra con un destacado de síntesis que usa ese dato y §6.2 lo retoma.
+     el prior RESTA asignación (S+2,2 → S+1,6, equivalente a k≈1,6, igual al exceso medio del óptimo); §5.5 cierra con un párrafo de síntesis que usa ese dato y §6.2 lo retoma.
      Números literales tomados de h1/general/results/ensemble/weighted_ens_sensitivity.json,
      weighted_ens_oracle.json y fixed_rule.json (scripts homónimos de writings/auxiliar/scripts/).
      Revisarlos a mano si se vuelven a correr esos scripts. -->

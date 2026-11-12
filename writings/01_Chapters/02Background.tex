@@ -42,17 +42,29 @@ Q^{*}(s_{t+1}, a') \,\middle|\, s_t = s,\, a_t = a\right]
 \end{equation}
 
 Donde la esperanza se toma sobre el estado siguiente y la recompensa. La
-pol\'itica \'optima elige en cada estado $\arg\max_a Q^{*}(s, a)$. Si la
-din\'amica y toda la secuencia se conocen de antemano, la
-Ecuaci\'on~\eqref{eq:bellman-opt} se resuelve exactamente por
-programaci\'on din\'amica~\citep{SuttonBarto2018}; ese \'optimo con
-informaci\'on completa define aqu\'i la cota superior de la m\'etrica (Secci\'on~\ref{sec:metric}).
+pol\'itica \'optima elige en cada estado $\arg\max_a Q^{*}(s, a)$.
 
 Cuando el agente no observa todas las variables de las que dependen la
 recompensa y la evoluci\'on futura, el problema es un MDP parcialmente
 observable (POMDP)~\citep{Kaelbling1998}: la observaci\'on actual no
 resume la historia, y las observaciones pasadas pueden aportar
 informaci\'on \'util para decidir.
+
+En mPES, que la Secci\'on~\ref{sec:env-dyn} formaliza, en cada paso se
+presenta una ciudad con una severidad inicial $S$ y el agente le asigna
+entre $0$ y $10$ unidades de un presupuesto de $30$ por secuencia. El
+estado $(R, t, S)$ re\'une los recursos restantes, el paso dentro de la
+secuencia y la severidad de la ciudad actual. La severidad de cada ciudad
+incorporada se multiplica por $1{,}4$ en cada paso y cada unidad que
+recibi\'o la reduce en $0{,}4$; la recompensa es la suma, con signo
+negativo, de esas severidades. Como el estado no incluye la longitud $L$
+de la secuencia, de $3$ a $10$ pasos, ni las severidades de las ciudades
+anteriores, el problema es parcialmente observable. Si se conocen de
+antemano todas las severidades y $L$, la asignaci\'on que minimiza la
+suma de las severidades finales se calcula exactamente por
+programaci\'on din\'amica~\citep{SuttonBarto2018}, y el desempe\~no de
+cada secuencia se normaliza entre no asignar nada ($0$) y esa
+asignaci\'on ($1$) (Secci\'on~\ref{sec:metric}).
 
 \subsection{Aprendizaje por refuerzo basado en valores}\label{sec:value-bg}
 
@@ -90,7 +102,7 @@ eligen la acci\'on de mayor valor con los siguientes m\'etodos:
     que no cambia las pol\'iticas \'optimas y puede acelerar el
     aprendizaje cuando la recompensa informa poco sobre el progreso; en
     esta tesis, $\Phi(s) = -\sum_i S_i$, con $S_i$ las severidades
-    actuales (Secci\'on~\ref{sec:env-dyn}).
+    actuales de las ciudades incorporadas.
 \end{itemize}
 
 \subsection{Memoria, atenci\'on y actor--cr\'itico}\label{sec:memory-bg}
@@ -105,11 +117,11 @@ primeras arquitecturas:
     al DQN con cuadros apilados en entornos parcialmente observables y se
     degrada menos cuando cambia la calidad de las observaciones.
     \item \textbf{Transformer}~\citep{Vaswani2017}: reemplaza la
-    recurrencia por atenci\'on de producto escalar. Cada estado de la
+    recurrencia por autoatenci\'on de producto escalar. Cada estado de la
     ventana se proyecta a dimensi\'on $d_{\mathrm{model}}$ y se le suma un
     vector de posici\'on que indica su orden; las $W$ filas resultantes
-    forman la matriz $X$. Una cabeza de atenci\'on combina las posiciones
-    con pesos que dependen de su similitud.
+    forman la matriz $X$. Una cabeza de autoatenci\'on con m\'ascara causal
+    pondera las posiciones seg\'un su similitud.
     \begin{equation}
     \mathrm{At}(X) \;=\; \mathrm{softmax}\!\left(\frac{(XW_q)(XW_k)^{\top}}{\sqrt{d_h}} + M\right) XW_v
     \qquad
@@ -117,10 +129,11 @@ primeras arquitecturas:
     \label{eq:attention}
     \end{equation}
     Donde $W_q$, $W_k$ y $W_v$ son matrices aprendidas de
-    $d_{\mathrm{model}} \times d_h$, la \emph{softmax} se aplica por filas y
+    $d_{\mathrm{model}} \times d_h$ que proyectan la misma $X$ en consultas,
+    claves y valores, la \emph{softmax} se aplica por filas y
     la m\'ascara causal $M$ impide que cada posici\'on atienda a las
-    posteriores. La atenci\'on de varias cabezas concatena $h$ cabezas con
-    par\'ametros propios y las proyecta de nuevo a $d_{\mathrm{model}}$,
+    posteriores. La autoatenci\'on de varias cabezas concatena $h$ cabezas
+    y las proyecta a $d_{\mathrm{model}}$,
     $\mathrm{MHA}(X) = [\mathrm{At}_1(X), \ldots, \mathrm{At}_h(X)]\,W_o$.
     Cada bloque aplica esa atenci\'on y una capa \emph{feed-forward} por
     posici\'on, $\mathrm{FF}(x) = \max(0,\, x W_1 + b_1)\, W_2 + b_2$, cada

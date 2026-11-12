@@ -16,23 +16,23 @@ Fig. 5.3 = `fig:heatmap-ens`, Ec. 2.4 = `eq:attention`, Sec. 7.3 = Trabajo futur
 pasó a §1.4 y «Contribuciones» a §1.5.
 
 **Presupuesto de páginas**: el cuerpo (Introducción → Conclusiones) ocupaba las págs. 1–37 al recibir los dictámenes;
-después de B1 ocupaba las págs. 1–38 y después de B2 ocupaba las págs. 1–39 después de B3 ocupaba las págs. 1–40 y después de B4/B5 ocupaba las págs. 1–41. **Después de B8 ocupa las págs. 1–42: supera el tope en 2 págs.** El autor lo aceptó de forma transitoria; hay que compensarlo con R2 (recuadros → párrafos) y/o R9 antes de agregar más texto. Ojo: cada capítulo empieza en página nueva, así que un desborde chico cuesta una página entera; la Introducción ocupa ahora media pág. 4. Las estimaciones de abajo suman unas +2,5 págs. sin compensar. Las compensaciones posibles son quitar los recuadros (R2) y
+después de B1 ocupaba las págs. 1–38 y después de B2 ocupaba las págs. 1–39 después de B3 ocupaba las págs. 1–40 y después de B4/B5 ocupaba las págs. 1–41. **Después de B8 ocupa las págs. 1–42: supera el tope en 2 págs.** R2 (2026-11-12) no recuperó páginas: los finales de capítulo cortos (Cap. 3 pág. 12, Cap. 6 pág. 39, Cap. 7 pág. 42) son los puntos donde recortar ~10–15 renglones libera una página entera. El autor lo aceptó de forma transitoria; hay que compensarlo con R2 (recuadros → párrafos) y/o R9 antes de agregar más texto. Ojo: cada capítulo empieza en página nueva, así que un desborde chico cuesta una página entera; la Introducción ocupa ahora media pág. 4. Las estimaciones de abajo suman unas +2,5 págs. sin compensar. Las compensaciones posibles son quitar los recuadros (R2) y
 llevar los mapas completos al apéndice (R9). Medir después de cada bloque con `/thesis-audit`.
 
-Estados: ⬜ pendiente · 🟨 en curso · ✅ hecho · ❓ requiere decisión del autor
+Estados: ⬜ pendiente · 🟨 en curso · ✅ hecho · ❓ requiere decisión del autor · 🚫 descartada por el autor
 
 ## Tabla resumen
 
 | ID | Jurado | Tema | Dónde | Tipo | Págs. | Estado |
 |----|--------|------|-------|------|-------|--------|
-| R5 | R | «Estado de la Cuestión» → «Estado del Arte» | `Main.tex:198` | trivial | 0 | ⬜ |
+| R5 | R | «Estado de la Cuestión» → «Estado del Arte» | `Main.tex:198` | trivial | 0 (medido) | ✅ |
 | B4 | B | Desplegar el acrónimo mPES | `01Introduction.tex:9` | trivial | 0 | ✅ |
-| R4 | R | Ec. 2.4 es autoatención enmascarada, no atención genérica | `02Background.tex:107-135` | menor | +0,05 | ⬜ |
-| R10 | R | Llevar al texto el criterio de «dos errores estándar pareados» de la Tabla 5.7 | `05Results.tex:351-379` | menor | +0,15 | ⬜ |
-| R8 | R | Por qué la LSTM no conserva el estado oculto | `04Materials.tex:239-243` | menor | +0,1 | ⬜ |
-| R7 | R | Qué es «Q-Learning tabular optimizado» | `04Materials.tex:165-201` | menor | +0,15 | ⬜ |
-| R6 | R | Cuántas ciudades están activas y cómo se elige cada una por *trial* | `04Materials.tex:18-87` | mayor | +0,2 | ⬜ |
-| R3 | R | El Cap. 2 remite al Cap. 4 antes de presentar el entorno | `01Introduction.tex` §1.2, `02Background.tex` | mayor | +0,2 | ⬜ |
+| R4 | R | Ec. 2.4 es autoatención enmascarada, no atención genérica | `02Background.tex` §2.3 | menor | 0 (medido) | ✅ |
+| R10 | R | Llevar al texto el criterio de «dos errores estándar pareados» de la Tabla 5.7 | `05Results.tex` §5.5 | menor | 0 (medido) | ✅ |
+| R8 | R | Por qué la LSTM no conserva el estado oculto | `04Materials.tex` §4.4.2 | menor | 0 (medido) | ✅ |
+| R7 | R | Qué es «Q-Learning tabular optimizado» | `04Materials.tex` §4.4, §4.4.1 | menor | 0 (medido) | ✅ |
+| R6 | R | Cuántas ciudades están activas y cómo se elige cada una por *trial* | `04Materials.tex` §4.2 | mayor | 0 (medido; pág. 23 llena) | ✅ |
+| R3 | R | El Cap. 2 remite al Cap. 4 antes de presentar el entorno | `02Background.tex` §2.1, §2.2 | mayor | 0 (medido; pág. 9 llena) | ✅ |
 | B2 | B | Objetivo general y objetivos específicos en la Sec. 1.3 (hoy §1.4) | `01Introduction.tex` §1.4, §1.5; `07Conclusion.tex` §7.1 | mayor | +1,0 (medido; ~0,6 real) | ✅ |
 | B1 | B | Decisiones reales que podrían usar el marco y bajo qué condiciones | `01Introduction.tex` §1.3 (nueva) | mayor | +1,0 (medido) | ✅ |
 | B5 | B | Tabla análoga a la 4.1 para los ensambles | `04Materials.tex` §4.5 | menor | +1,0 (medido: cuerpo 1–41) | ✅ |
@@ -41,9 +41,9 @@ Estados: ⬜ pendiente · 🟨 en curso · ✅ hecho · ❓ requiere decisión d
 | B8 | B | H2 depende de la composición del ensamble | `06Discussion.tex` §6.2 | mayor | +1,0 (medido: cuerpo 1–42) | ✅ |
 | B7 | B | Complejidad de variantes cuya política óptima no es simple | `06Discussion.tex` §6.3 | mayor | 0 (medido, después de recortar) | ✅ |
 | B9 | B | Conexión con PES y las decisiones humano-agente de [32] | `07Conclusion.tex` §7.3 | menor | 0 (medido) | ✅ |
-| R9 | R | Figs. 5.1 y 5.3: demasiados valores (7 × 27 = 189 celdas cada una) | `05Results.tex:54-63, 218-225` | mayor | −0,3 | ❓ |
-| R2 | R | Recuadros `destacado`: criterio poco claro e inusual en el ITBA | 13 recuadros en Caps. 3–7 | mayor | −0,5 | ❓ |
-| R1 | R | Tono escueto y algo artificial: suavizar y explicar más | toda la tesis | mayor | +0,5–1 | ⬜ |
+| R9 | R | Figs. 5.1 y 5.3: demasiados valores (7 × 27 = 189 celdas cada una) | `05Results.tex:54-63, 218-225` | mayor | 0 | 🚫 |
+| R2 | R | Recuadros `destacado`: criterio poco claro e inusual en el ITBA | 12 recuadros en Caps. 3–7 | mayor | 0 (medido: cuerpo sigue en 1–42) | ✅ |
+| R1 | R | Tono escueto y algo artificial: suavizar y explicar más | toda la tesis | mayor | 0 | 🚫 |
 
 ## Detalle por observación
 
@@ -155,10 +155,26 @@ compañeros en el protocolo humano-agente de PES.
 telegráficas por párrafos que expliquen el porqué y conectar cada sección con la siguiente. Hay que vigilar el
 presupuesto de páginas. El agente `thesis-judge` sirve para la verificación.
 
+*Descartada (2026-11-12):* decisión del autor; la considera irrelevante (el jurado calificó el criterio «Redacción»
+como «Total»). No se hace la pasada de tono. Queda sin atender la repetición de las cifras $0{,}4\%$/$1{,}1\%$ en
+§6.2 anotada en R2.
+
 **R2 — Recuadros.** ❓ Opciones: (a) quitarlos todos y convertirlos en párrafos, con o sin una frase de cierre en
 negrita (recomendado: es lo habitual en las tesis del ITBA, el jurado lo señala y libera espacio); (b) conservarlos y
 explicar el criterio en la Introducción. Hay 13: Cap. 3 (1), Cap. 4 (2), Cap. 5 (6), Cap. 6 (3) y Cap. 7 (1). El
 entorno `destacado` del preámbulo puede quedar definido aunque no se use.
+
+*Hecho R2 (2026-11-12):* decisión del autor, opción (a) sin negrita. Se quitaron los 12 entornos `destacado` que
+quedaban (Cap. 3: 1; Cap. 4: 2; Cap. 5: 6; Cap. 6: 2; Cap. 7: 1); el texto queda como párrafo normal, sin cambiar
+ninguna palabra. En §5.1 y §5.5 se agregó una línea en blanco antes de la tabla siguiente. El preámbulo de `Main.tex`
+no se tocó: el entorno queda definido y sin uso. Se actualizó `mpes_resultados_notas.md` («párrafo de síntesis»).
+Auditoría en verde, 65 págs. **El cuerpo sigue en 1–42**: los capítulos se acortaron, pero ninguno liberó su última
+página. Páginas finales cortas, candidatas para recuperar una página entera recortando ~10–15 renglones: Cap. 3
+(pág. 12, ~10 renglones), Cap. 6 (pág. 39, ~12) y Cap. 7 (pág. 42, ~14). Para R1: sin el recuadro se nota la
+repetición de las cifras $0{,}4\%$/$1{,}1\%$ entre el párrafo de síntesis de §6.2 y los dos párrafos siguientes.
+*Ajustes por el juez (incorporados):* en §5.3, «muestra su desempeño» → «muestra el desempeño por secuencia del
+ensamble ponderado» (el «su» quedaba ambiguo con el Transformer); en §3, «mPES comparte…» y «Se diferencia en que…»
+se unieron en un solo párrafo. Auditoría en verde; cuerpo 1–42 (la pág. 12 del Cap. 3 baja a ~9 renglones).
 
 **R3 — Referencias del Cap. 2 al Cap. 4.** Las del Cap. 2 son `sec:metric` (l. 49), `sec:env-dyn` (l. 93),
 `eq:shannon-norm` (l. 160), `sec:ens-methods` (l. 163, 185), `eq:ens-softmax` (l. 170) y `sec:res-heldout` (l. 204);
@@ -167,11 +183,35 @@ descripción mínima del entorno (una ciudad por paso, presupuesto, severidad qu
 óptimo con información completa) y que el Cap. 2 remita a §1.2 o defina el concepto sin remitir hacia adelante.
 Conservar sólo las remisiones que digan «se usa en…».
 
+*Hecho R3 (2026-11-12):* directiva del autor: dar en el Cap. 2 un resumen del entorno sin desarrollarlo. Párrafo
+nuevo al final de §2.1 («En mPES, que la Sección 4.2 formaliza…», pág. 6): ciudad por paso con severidad inicial $S$,
+asignación de 0 a 10 de un presupuesto de 30, estado $(R,t,S)$, severidad ×1,4 por paso y −0,4 por unidad,
+recompensa negativa, $L$ de 3 a 10 fuera del estado → parcialmente observable, óptimo por programación dinámica y
+normalización 0–1. Se quitaron las remisiones al entorno de §2.1 (métrica, l. 49) y §2.2 (PBRS, l. 93); la frase de
+§2.1 sobre resolver Bellman por programación dinámica pasó al párrafo nuevo (evita repetirla y compensa el espacio:
+la primera versión desbordaba 2 renglones). Se conservan las remisiones de ensambles y evaluación (§4.5, §5.4).
+Auditoría en verde, 65 págs.; cuerpo 1–42 (pág. 9 llena: no queda margen en el Cap. 2).
+*Ajuste por el juez (incorporado):* el cierre decía que la Ec. de Bellman «se resuelve exactamente» y que la métrica
+usa «ese óptimo», pero la Ec. 2.3 usa el retorno descontado y el óptimo de la métrica minimiza la suma de severidades
+finales (Ec. 4.6). Ahora dice «la asignación que minimiza la suma de las severidades finales se calcula exactamente
+por programación dinámica». La confusión venía de la frase original de §2.1. Cuerpo 1–42.
+
 **R4 — Ec. 2.4.** Presentarla como «capa de autoatención con máscara causal». Opcional: dar antes la forma genérica
 $\mathrm{Atención}(Q,K,V)=\mathrm{softmax}(QK^\top/\sqrt{d_h})V$ y luego la autoatención, con $Q = XW_q$ y lo demás
 análogo, más la máscara $M$.
 
+*Hecho R4 (2026-11-12):* en `02Background.tex` §2.3 (pág. 8) el Transformer «reemplaza la recurrencia por
+autoatención de producto escalar»; «Una cabeza de autoatención con máscara causal pondera las posiciones según su
+similitud»; el párrafo «Donde…» dice que $W_q$, $W_k$, $W_v$ «proyectan la misma $X$ en consultas, claves y valores»,
+y «La autoatención de varias cabezas…». La ecuación no cambió. Se compensó el espacio acortando dos frases (la pág. 9
+está llena). Auditoría en verde, 65 págs.; cuerpo 1–42.
+
 **R5 — Título del Cap. 3.** Cambiar `\section{Estado de la Cuestión}` por `\section{Estado del Arte}` en `Main.tex:198`.
+
+*Hecho R5 (2026-11-12):* `Main.tex:198` → `\section{Estado del Arte}` (mayúsculas como los demás capítulos; la
+etiqueta `sec:soa` no cambia). Se regeneró el contexto curado con `build_results_context.py` (sólo cambió el mapa del
+documento LaTeX, que además quedó al día con B1–B9 y R2–R3; ningún número de resultados). Auditoría en verde, 65
+págs.; cuerpo 1–42.
 No hay otras menciones en el texto.
 
 **R6 — Ciudades activas y selección por *trial*.** Del código (`h1/ml/pes_trf/ext/pandemic.py`, `new_city`, `reset`):
@@ -181,10 +221,27 @@ secuencia. En la evaluación, la fila correspondiente de `initial_severity.csv`/
 entrenamiento, un sorteo de las distribuciones empíricas de esos archivos (`number_cities_prob`, `severity_prob`).
 Escribirlo explícitamente en §4.2, cerca de la Ec. 4.4.
 
+*Hecho R6 (2026-11-12):* tres frases en `04Materials.tex` §4.2 (págs. 13–14): (1) «llega la ciudad siguiente de la
+secuencia, que el agente no elige: sólo decide cuántas unidades de recurso le asigna»; (2) los 9 recursos
+preasignados van a dos ciudades iniciales del protocolo heredado de PES (`INIT_NO_OF_CITIES = 2`, severidades 4 y 3,
+recursos 3 y 6 con `numpy.random.seed(3)` en `__main__.py`), que no intervienen en las decisiones ni en la métrica;
+(3) «Las ciudades incorporadas siguen activas hasta el final de la secuencia (en el paso $t$ hay $t+1$)». La primera
+versión desbordaba 1 renglón; se compactaron (1) y (3). Auditoría en verde, 65 págs.; cuerpo 1–42 (pág. 23 llena).
+*Ajuste por el juez (incorporado):* en la evaluación las dos ciudades iniciales siguen visibles y evolucionando
+($t+3$ en pantalla), así que (3) dice ahora «en el paso $t$ hay $t+1$, sin contar las dos iniciales». El juez
+verificó contra el código las cuatro afirmaciones (9 = 3 + 6 con `seed(3)`; fuera del estado y de la métrica; $t+1$;
+el agente no elige la ciudad). Cuerpo 1–42.
+
 **R7 — Q-Learning optimizado.** Explicar que «optimizado» significa que sus hiperparámetros ($\alpha_{lr}$, $\gamma$,
 $\varepsilon_0$, $\varepsilon_{\min}$ y número de episodios; `h1/tabular/pes_ql/ext/optimize_rl.py:197-201`) se eligieron
 con optimización bayesiana (TPE, §4.6), mientras que Q-Learning base usa los valores originales de PES. El algoritmo
 es el mismo. Ajustar la descripción de la Tabla 4.1 y la §4.4.1 y adelantar una remisión a §4.6.
+
+*Hecho R7 (2026-11-12):* directiva del autor: aclararlo una sola vez. En `04Materials.tex` §4.4 (pág. 16), la primera
+mención antes de la Tabla 4.1 dice ahora que Q-Learning base usa los hiperparámetros originales de PES, sin
+optimizar, y Q-Learning los elegidos por optimización bayesiana (remisión a §2.6), como los demás modelos. En §4.4.1
+se quitó la frase que lo repetía («Q-Learning base y Q-Learning reducen $\varepsilon$ linealmente»). La tabla no
+cambia. Auditoría en verde, 65 págs.; cuerpo 1–42.
 
 **R8 — LSTM sin estado oculto entre decisiones.** Justificar con
 `h1/ml/pes_rdqn/doc/pes_rdqn_theory.md` §4: la variante truncada reinicia la LSTM en cada pasada y procesa una ventana
@@ -193,16 +250,44 @@ fija de $W = 6$ estados. Así el *buffer* de repetición guarda ventanas de form
 aísla la arquitectura y no la cantidad de historia. Mencionar la alternativa (propagar el estado dentro del episodio)
 como trabajo futuro o limitación.
 
+*Hecho R8 (2026-11-12):* en `04Materials.tex` §4.4.2, ítem «DQN recurrente» (pág. 17): la LSTM parte de cero en cada
+ventana, como en las actualizaciones aleatorias de Hausknecht y Stone; así el *buffer* guarda ventanas de forma fija
+muestreadas de manera independiente, y la LSTM recibe la misma información que el Transformer, de modo que su
+comparación aísla la arquitectura (remisión a §6.1). Sin cita nueva. Para no desbordar el Cap. 4 se acortaron tres
+frases del mismo capítulo sin cambiar su contenido (§4.3 programación dinámica; §4.4.2 introducción de las redes; A2C).
+Auditoría en verde, 65 págs.; cuerpo 1–42.
+*Ajustes por el juez (incorporados):* «análogo a las actualizaciones aleatorias» (en DRQN se desenrollan segmentos y
+al jugar se conserva el estado; el PDF del repo es sólo un puntero LFS, la analogía se apoya en el artículo) y «su
+diferencia no proviene de la entrada» en lugar de «su comparación aísla la arquitectura», que chocaba con §6.1 (el
+efecto no se separa de las conexiones residuales ni de los hiperparámetros). El juez verificó en el código que el
+estado oculto parte de cero al decidir y al entrenar y que el *buffer* guarda ventanas (6, 3) muestreadas
+uniformemente. Cuerpo 1–42.
+
 **R9 — Figuras 5.1 y 5.3.** ❓ Opciones: (a) en el cuerpo, una figura compacta por familia de escenarios (referencia,
 media de severidad, de longitud, conjunta, estructural, fuera de rango y media *held-out*: 7 × 7 = 49 valores) y los
 mapas completos en el Apéndice C (recomendado); (b) quitar los números de las celdas y dejar sólo el color. La opción
 (a) requiere una figura nueva en `h1/general/scripts/figures.py` (agente `python-h1`), luego
 `writings/auxiliar/scripts/sync_figures.py` y ajustar el texto que cita «15 de 21 escenarios».
 
+*Descartada (2026-11-12):* decisión del autor; considera la observación irrelevante. Las Figuras 5.1 y 5.3 quedan
+como están. Consecuencia para el presupuesto: era la principal compensación prevista; el cuerpo sigue en 1–42 y
+quedan como opciones los finales de capítulo cortos (Cap. 3 pág. 12, Cap. 6 pág. 39, Cap. 7 pág. 42).
+
 **R10 — Criterio de la Tabla 5.7.** Explicar en el texto: para cada configuración se calcula, secuencia por secuencia
 en las 320 secuencias *held-out*, la diferencia de $\bar r$ con el Transformer; «supera» significa que la media de esas
 diferencias es mayor que dos veces su error estándar (aprox. 95 % de confianza para una diferencia positiva). Verificar
 el cálculo exacto en `writings/auxiliar/scripts/weighted_ens_sensitivity.py` antes de redactarlo.
+
+*Hecho R10 (2026-11-12):* en `05Results.tex` §5.5 «Sensibilidad» (pág. 33 aprox.), el párrafo que sigue a la lista
+explica ahora el criterio: comparación pareada en las 320 secuencias *held-out*; «supera» = media de las diferencias
+de $\bar r$ (ensamble − Transformer) mayor que dos errores estándar (desviación/$\sqrt{320}$), ≈ prueba $t$ pareada con
+$p < 0{,}05$; con los valores fijos, $0{,}010$ ± $0{,}002$. Verificado en `weighted_ens_sensitivity.py` (l. 368–375) y
+en su JSON: el criterio reproduce la última columna de la tabla (p. ej. $\tau = 30$: 2,2 EE → sí; $\tau = 1$: 1,1 → no;
+$w_\pi = 0{,}35$: 1,7 → no; peso base 1: 1,8 → no). El título de la tabla no cambió. Auditoría en verde, 65 págs.;
+cuerpo 1–42.
+*Ajuste por el juez (incorporado):* la frase siguiente decía que con el *prior* y $\tau = 1$ el ensamble «supera» al
+Transformer en un $0{,}1\%$, lo que contradecía el criterio ($t = 1{,}15$; la tabla excluye $\tau = 1$). Ahora dice
+«la diferencia es de un $0{,}1\%$, no significativa». El juez verificó el criterio en las 28 configuraciones.
 
 ## Orden de trabajo sugerido
 
@@ -228,6 +313,20 @@ No es una corrección del texto: son tres temas para llevar preparados. Material
   directamente a las funciones de entrenamiento (nunca a `train_*`, que sobrescriben `inputs/`) y escribe sólo en
   `h1/general/work/seeds/`. Evaluar los entregados con el arnés reproduce la tesis (0,887/0,881; 0,894/0,891;
   0,927/0,929). Las huellas de los modelos entregados están en `h1/general/work/seeds/hashes_entregados.txt`. Para
-  relanzarlo (es reanudable): `utils\scripts\run_seed_variability.ps1`. Duración estimada: unas 11 h (Q-Learning
-  ~25 min, DQN ~2 h, Transformer ~8–9 h). **Al terminar:** verificar las huellas, agregar el Apéndice E.3 y la
-  remisión de un renglón en §7.3, y completar `dict/defensa/README.md`.
+  relanzarlo (es reanudable): `utils\scripts\run_seed_variability.ps1`.
+  - *Estado (2026-11-12):* Q-Learning y DQN terminados (5 semillas cada uno, 3 min y 18 min por semilla). El
+    Transformer falló al iniciar por un error del arnés (llamaba a `DQNTraining`); se corrigió y se relanzó el
+    2026-11-12 a las 12:06. Fin estimado: 18:00–21:00 del mismo día. Commit `0f42c33` («waiting for seed
+    variability», rama `correcciones-jurado`).
+  - *Parcial (semillas nuevas, sin el entregado):* Q-Learning ref $0{,}859 \pm 0{,}022$ (0,836–0,895), DQN
+    $0{,}874 \pm 0{,}005$ (0,866–0,880). El DQN entregado (0,894) supera a las 5 semillas nuevas: el entregado viene
+    del mejor ensayo de Optuna y no es un sorteo insesgado, por eso el resumen lo separa de las semillas nuevas.
+  - *Pendiente de decisión:* si las 3 semillas del Transformer no separan con claridad su rango del de DQN, agregar
+    1004 y 1005 (`run --models trf --seeds 1004 1005`, unas 4–6 h; más rápido en paralelo en otro equipo).
+  - **Al terminar** (pasos 1–3 automáticos si la sesión sigue abierta):
+    1. Huellas: desde `h1/`, `sha256sum -c general/work/seeds/hashes_entregados.txt`.
+    2. Resumen: desde `h1/`, `python -m general.scripts.seed_variability summary`.
+    3. Comparación y filas LaTeX: `python writings/auxiliar/scripts/seed_comparison.py` →
+       `h1/general/results/individual/seed_comparison.json`.
+    4. Proponer (flujo de siempre: propuesta → permiso) el Apéndice E.3 con la tabla, la remisión de un renglón en
+       §7.3 (cuerpo: hoy 1–42) y la sección 3 de `dict/defensa/README.md`.
