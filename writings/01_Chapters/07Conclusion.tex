@@ -4,9 +4,9 @@
 
 \label{sec:conclusion}
 
-\subsection{Respuesta a las preguntas de investigaci\'on}
+\subsection{Objetivos y preguntas de investigaci\'on}
 
-\textbf{Mejor modelo individual.} Los resultados respaldan la hip\'otesis
+\textbf{Mejor modelo individual (objetivos 1 y 2).} Los resultados respaldan la hip\'otesis
 H1. El Transformer causal obtuvo el mayor desempe\~no medio entre los
 modelos individuales, en la referencia y en los escenarios de
 generalizaci\'on. En estos \'ultimos super\'o en un $3\%$ al DQN y en un
@@ -15,7 +15,7 @@ desempe\~no con severidades fuera de rango, aunque no fue el m\'as estable
 en su peor escenario: con secuencias largas perdi\'o un $7\%$ respecto de
 su referencia, frente al $6\%$ del DQN.
 
-\textbf{Ensambles frente al mejor modelo individual.} Los resultados no
+\textbf{Ensambles frente al mejor modelo individual (objetivos 3 y 4).} Los resultados no
 respaldan la hip\'otesis H2. S\'olo el ensamble ponderado super\'o al Transformer,
 en un $1{,}1\%$ en generalizaci\'on, una diferencia significativa pero de
 tama\~no despreciable. La
@@ -26,7 +26,7 @@ decisi\'on a la de la regla fija calibrada con el \'optimo. El estudio \emph{pos
 \emph{prior} est\'a centrado por debajo de la asignaci\'on \'optima y que
 la cota de seguridad no tiene efecto.
 
-\textbf{Ponderaci\'on por confianza.} El dise\~no no permite determinar si
+\textbf{Ponderaci\'on por confianza (objetivo 3).} El dise\~no no permite determinar si
 ponderar por la confianza supera a una votaci\'on simple, porque todos los
 ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al Transformer.
 
@@ -50,19 +50,36 @@ ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al T
 \subsection{Trabajo futuro}\label{sec:future}
 
 \begin{itemize}
-    \item Repetir la evaluaci\'on con semillas independientes para
-    obtener intervalos de confianza del ordenamiento de la
-    Tabla~\ref{tab:global-mean}.
+    \item Repetir el entrenamiento con semillas independientes. Cada
+    modelo se entren\'o una sola vez y la evaluaci\'on es determinista,
+    por lo que la dispersi\'on informada proviene de las secuencias y no
+    del entrenamiento. En RL profundo, cambiar s\'olo la semilla puede
+    producir diferencias significativas entre ejecuciones del mismo
+    algoritmo~\citep{Henderson2018}, y con pocas ejecuciones se recomienda
+    informar intervalos de confianza en lugar de medias
+    puntuales~\citep{Agarwal2021}. As\'i se sabr\'ia si se conservan el
+    ordenamiento de la Tabla~\ref{tab:global-mean} y las diferencias de
+    efecto despreciable, como la del ensamble ponderado frente al
+    Transformer.
     \item Relacionar la confianza con el acierto de cada decisi\'on
-    mediante curvas de calibraci\'on.
+    mediante curvas de calibraci\'on y usar los agentes de mPES, adaptados
+    al protocolo de PES, como compa\~neros en sus experimentos
+    humano--agente~\citep{Nijjar2025}. En ellos, los grupos superaron a
+    los individuos, pero que los participantes confiaran m\'as en un
+    agente \emph{humanizado} no mejor\'o necesariamente el desempe\~no.
+    Agentes con desempe\~nos conocidos respecto del \'optimo, entre
+    $0{,}87$ y $0{,}94$ en la referencia, y con una confianza calibrada
+    permitir\'ian estudiar c\'omo influyen la calidad del agente y su
+    confianza en las decisiones conjuntas.
     \item Aprender pesos $w_k(s)$ dependientes del estado.
     \item Enriquecer el entorno para que ninguna regla simple sea
     \'optima, eliminando las simplificaciones que hacen simple a la
     pol\'itica \'optima (Secci\'on~\ref{sec:disc-rule}): contagio entre
     ciudades; varios recursos con costos y eficacias distintos; una
     din\'amica estoc\'astica, o con $\alpha$ y $\beta$ desconocidos y
-    variables entre secuencias; y asignaciones que puedan repartirse en
-    varios pasos en lugar de fijarse al incorporar cada ciudad.
+    variables entre secuencias; asignaciones que puedan repartirse en
+    varios pasos en lugar de fijarse al incorporar cada ciudad, y
+    objetivos que incluyan criterios de equidad.
 \end{itemize}
 
 \subsection{Conclusi\'on general}

@@ -6,7 +6,8 @@
 Esta tesis compara arquitecturas de aprendizaje por refuerzo (RL,
 \emph{Reinforcement Learning}) en una simulaci\'on de pandemia en la que un
 agente distribuye un presupuesto fijo entre ciudades que se presentan sucesivamente, sin conocer cu\'antas
-restan ni cu\'al ser\'a su severidad. El entorno, \textbf{mPES}, extiende el \emph{Pandemic
+restan ni cu\'al ser\'a su severidad. El entorno, \textbf{mPES} (\emph{Multiple Pandemic
+Experiment Suite}), extiende el \emph{Pandemic
 Experiment Scenario} (PES) del BCI-NE Lab de la Universidad de
 Essex~\citep{BCINE2022}.
 
@@ -30,7 +31,100 @@ computacional~\citep{Kuhl2021}, desde los compartimentales hasta
 simulaciones espaciales de COVID-19 basadas en agentes~\citep{Parisi2021}:
 s\'olo conserva el crecimiento de la severidad y el efecto de los recursos.
 
-\subsection{Preguntas e hip\'otesis}\label{sec:hypothesis}
+\subsection{Decisiones reales y condiciones de aplicaci\'on}\label{sec:aplicaciones}
+
+La decisi\'on que modela mPES aparece cuando un recurso escaso se almacena
+de forma centralizada y la demanda se revela progresivamente: una ola
+epid\'emica que alcanza a distintas regiones en momentos distintos, un
+desastre cuyas zonas afectadas se relevan sucesivamente o una ruta de
+distribuci\'on que visita sus destinos en orden. Quien decide enfrenta
+entonces el mismo dilema que el agente: asignar lo suficiente a la demanda
+presente o reservar recursos para demandas que todav\'ia no conoce,
+sabiendo que una asignaci\'on insuficiente agrava el da\~no y que una
+excesiva puede dejarlo sin recursos ante una demanda m\'as grave.
+
+En salud, durante la pandemia de COVID-19, la FEMA, la agencia federal de
+emergencias de EE.\,UU., debi\'o repartir su reserva de respiradores entre
+estados cuya demanda alcanzaba el pico en momentos
+distintos~\citep{Mehrotra2020}, una decisi\'on que tambi\'en se abord\'o
+con RL~\citep{Bednarski2021}; a diferencia de mPES, la demanda era
+estoc\'astica y los estados pod\'ian cederse respiradores entre s\'i. En
+log\'istica humanitaria, Holgu\'in-Veras \emph{et
+al.}~\citep{HolguinVeras2013} proponen medir el da\~no de no entregar un
+bien mediante un costo de privaci\'on que crece con el tiempo que la
+poblaci\'on pasa sin \'el, una idea coherente con la severidad creciente
+de mPES. Yu \emph{et al.}~\citep{YuLina2021} incorporaron ese costo, junto con
+criterios de eficiencia y equidad, a la asignaci\'on de suministros de
+socorro en varios per\'iodos, la resolvieron con Q-Learning y compararon
+la pol\'itica obtenida con una soluci\'on exacta por programaci\'on
+din\'amica, un contraste an\'alogo al de esta tesis. En
+la distribuci\'on de insumos, un banco de alimentos que reparte una oferta
+fija entre localidades que visita en secuencia conoce la demanda de cada
+una reci\'en al llegar, una informaci\'on parcial an\'aloga a la del
+agente, aunque sabe cu\'antas localidades visitar\'a y persigue adem\'as
+un reparto equitativo~\citep{Sinclair2023}.
+
+Ninguno de estos casos cumple todas las simplificaciones de mPES, que la
+Secci\'on~\ref{sec:disc-rule} analiza. Las tres primeras son que las
+ciudades evolucionan de forma independiente, que hay un \'unico recurso y
+que la din\'amica es determinista y conocida. Las otras dos son que la
+asignaci\'on de cada ciudad se fija al incorporarla, de modo que un error
+no puede corregirse en pasos posteriores, y que el objetivo s\'olo busca
+reducir la severidad total. La asignaci\'on de recursos m\'edicos, en
+cambio, pondera junto con el beneficio valores como el trato igualitario o
+la prioridad a los m\'as graves~\citep{Emanuel2020}. Estas condiciones no
+s\'olo permiten calcular el \'optimo con informaci\'on completa, sino que
+tambi\'en determinan qu\'e informaci\'on necesita el agente. Con contagio
+entre ciudades o una din\'amica estoc\'astica, lo que el agente observa
+resumir\'ia todav\'ia menos de lo relevante para decidir, y el
+ordenamiento de las arquitecturas podr\'ia cambiar, en particular la
+ventaja del Transformer, que procesa los estados anteriores mediante
+atenci\'on. A la inversa, en mPES, que s\'i cumple esas condiciones, una
+regla fija calibrada con el \'optimo alcanza el nivel del mejor ensamble
+(Secci\'on~\ref{sec:disc-rule}).
+
+Por eso, frente a decisiones reales, mPES no ofrece una pol\'itica para
+trasladar, sino un entorno controlado donde comparar arquitecturas contra
+un \'optimo exacto. En \'el puede medirse, adem\'as, c\'omo se degrada
+cada una cuando la severidad o la longitud de las secuencias difieren de
+las del entrenamiento, como ocurre cuando una nueva ola o un nuevo
+desastre no se parece a los anteriores. Esa comparaci\'on es la que deja
+de ser posible en los problemas reales, que agregan las complejidades
+descritas y carecen de un \'optimo conocido.
+
+\subsection{Objetivos, preguntas e hip\'otesis}\label{sec:hypothesis}
+
+El objetivo general de esta tesis es determinar qu\'e esquema de
+decisi\'on basado en aprendizaje por refuerzo, ya sea un modelo individual
+o una combinaci\'on de modelos entrenados, obtiene el mejor desempe\~no en
+un entorno simulado de asignaci\'on secuencial de recursos limitados y lo
+conserva cuando las condiciones difieren de las del entrenamiento. Para
+alcanzarlo se plantean los siguientes objetivos espec\'ificos:
+
+\begin{enumerate}
+    \item Entrenar modelos tabulares y redes neuronales con y sin memoria
+    de los estados anteriores, ajustar mediante optimizaci\'on bayesiana
+    sus hiperpar\'ametros de entrenamiento, salvo en un modelo de
+    referencia sin optimizar, y evaluarlos con un mismo protocolo.
+    \item Evaluar la generalizaci\'on de cada modelo en escenarios que
+    modifican la severidad, la longitud de las secuencias o ambas,
+    incluidos valores fuera de las cotas del entorno, y medir en r\'eplicas
+    \emph{held-out} si el ajuste sobre las secuencias de referencia produjo
+    sobreajuste.
+    \item Determinar si las redes ya entrenadas pueden combinarse en un
+    ensamble que supere al mejor modelo individual, ponderando a cada una
+    por la confianza derivada de la entrop\'ia de Shannon de su
+    distribuci\'on de acciones, usada como aproximaci\'on a su
+    incertidumbre.
+    \item Identificar de qu\'e componentes de la regla de combinaci\'on
+    proviene la decisi\'on de los ensambles y contrastar esa decisi\'on con
+    la asignaci\'on \'optima.
+\end{enumerate}
+
+Los objetivos espec\'ificos~1 y~2 responden principalmente a la primera de
+las siguientes preguntas de investigaci\'on y aportan los modelos y el
+protocolo de evaluaci\'on que usa la segunda; los objetivos~3 y~4
+responden a la segunda:
 
 \begin{enumerate}
     \item ?`Qu\'e modelo individual obtiene el mayor desempe\~no, y lo
@@ -55,16 +149,17 @@ desempe\~no del mejor modelo individual.}
 \subsection{Contribuciones}
 
 \begin{enumerate}
-    \item Una comparaci\'on de seis modelos de RL, evaluados con el mismo protocolo
-    y las mismas secuencias, con
-    hiperpar\'ametros de entrenamiento ajustados por optimizaci\'on
-    bayesiana.
-    \item Seis reglas para combinar las redes neuronales sin reentrenarlas, en
-    las que cada red se pondera seg\'un la entrop\'ia de su
-    distribuci\'on de acciones.
-    \item Una evaluaci\'on reproducible (Ap\'endice~\ref{ap:repro}) en $21$
-    escenarios de generalizaci\'on, $18$ de los cuales cambian la severidad,
-    la longitud de las secuencias o ambas.
+    \item Un banco de pruebas reproducible (Ap\'endice~\ref{ap:repro}) para
+    la asignaci\'on secuencial de recursos, con un \'optimo exacto contra el
+    que se normaliza el desempe\~no, $21$ escenarios de generalizaci\'on y
+    cinco r\'eplicas \emph{held-out}.
+    \item Una comparaci\'on de siete modelos de RL, seis de ellos con
+    hiperpar\'ametros optimizados, sobre las mismas secuencias.
+    \item Un an\'alisis de seis reglas de ensamble que mide cu\'anto
+    cambian la decisi\'on sus componentes fijos y muestra que la ventaja
+    del mejor ensamble proviene del \emph{prior} de severidad y de la
+    temperatura m\'as que de la ponderaci\'on por confianza, con una regla
+    fija calibrada con el \'optimo como referencia.
 \end{enumerate}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

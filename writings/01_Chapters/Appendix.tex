@@ -81,7 +81,10 @@ cada ensamble con el Transformer a partir de los resultados guardados en
 an\'alisis de la Secci\'on~\ref{sec:res-posthoc} se obtienen del mismo
 modo con \texttt{weighted\_ens\_sensitivity.py} (sensibilidad),
 \texttt{weighted\_ens\_oracle.py} (asignaci\'on \'optima y efecto de cada
-regla) y \texttt{fixed\_rule.py} (regla fija en los $27$ escenarios).
+regla) y \texttt{fixed\_rule.py} (regla fija en los $27$ escenarios). Las
+comparaciones del Ap\'endice~\ref{ap:complementarios} se obtienen con
+\texttt{policy\_vs\_rule.py}, que lee las decisiones registradas por la
+evaluaci\'on sin volver a ejecutar los modelos.
 
 \section{Mapas estad\'isticos complementarios}\label{ap:stat-maps}
 
@@ -184,6 +187,114 @@ estad\'isticos por bloque (Secci\'on~\ref{sec:res-individual}).
   \caption[Resultados por secuencia: Transformer]{Resultados por secuencia del Transformer (\texttt{pes\_trf}) en la referencia.}
   \label{fig:c-trf}
 \end{figure}
+
+\section{An\'alisis complementarios}\label{ap:complementarios}
+
+Esta secci\'on re\'une dos an\'alisis que complementan la discusi\'on: el
+criterio con que se eligieron los modelos y la pol\'itica que aprendi\'o
+cada uno frente a la regla fija y a la asignaci\'on \'optima.
+
+\subsection{Criterio de elecci\'on de los modelos}\label{ap:model-choice}
+
+La Tabla~\ref{tab:model-choice} resume el criterio de la
+Secci\'on~\ref{sec:methods}: cada modelo incorpora una capacidad que otro
+del conjunto no tiene. Los modelos tabulares no integran ning\'un ensamble
+por su menor capacidad de generalizaci\'on, y A2C no integra el ensamble
+ponderado porque, durante su ajuste \emph{ad hoc}, incluirlo reduc\'ia su
+desempe\~no.
+
+\begin{table}[H]
+\centering
+\caption[Criterio de elecci\'on de los modelos]{Capacidad que incorpora
+cada modelo, referencia de la que proviene y participaci\'on en los
+ensambles.}
+\label{tab:model-choice}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Modelo} & \textbf{Capacidad que incorpora} & \textbf{Referencia} & \textbf{Ensambles} \\
+\midrule
+Q-Learning base   & Referencia sin optimizar             & \citep{Watkins1992}    & no \\
+Q-Learning        & Optimizaci\'on de hiperpar\'ametros  & \citep{Bergstra2011}   & no \\
+Double Q-Learning & Menor sobreestimaci\'on              & \citep{Hasselt2010}    & no \\
+DQN               & Red que generaliza entre estados     & \citep{Mnih2015}       & los seis \\
+DQN recurrente    & Memoria por recurrencia              & \citep{Hausknecht2015} & los seis \\
+Transformer       & Memoria por atenci\'on causal        & \citep{Parisotto2020}  & los seis \\
+A2C               & Gradiente de pol\'itica              & \citep{Mnih2016}       & cinco \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Pol\'itica aprendida frente a la regla fija}\label{ap:policy-rule}
+
+La Figura~\ref{fig:policy-rule} muestra cu\'anto asigna cada pol\'itica
+seg\'un la severidad inicial de la ciudad, en las decisiones tomadas con
+recursos disponibles de las $384$ secuencias de la referencia y de las
+r\'eplicas \emph{held-out}. La asignaci\'on \'optima
+(Ecuaci\'on~\eqref{eq:dp-optimum}) excede la severidad en $1{,}6$ unidades
+en promedio. La regla $a = \min(S + 2, R)$ la excede en $1{,}5$, y no
+en $2$, porque el presupuesto restante y el m\'aximo de $10$ unidades la
+recortan. El ensamble ponderado sigue al \'optimo en todo el rango
+($S + 1{,}6$). El Transformer asigna de m\'as con severidades bajas
+($S + 2{,}2$), y DQN asigna alrededor de $7{,}7$ unidades casi con
+independencia de la severidad ($S + 3{,}0$). Estos excesos corresponden a
+las trayectorias propias de cada modelo; el $S + 2{,}4$ del Transformer
+en la Secci\'on~\ref{sec:ens-best} se calcul\'o en los estados que visita
+el ensamble ponderado.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{ens_politica_vs_regla.png}
+  \caption[Pol\'itica aprendida frente a la regla fija]{Asignaci\'on media
+  seg\'un la severidad inicial, en las decisiones con recursos de la
+  referencia y de las cinco r\'eplicas \emph{held-out}. Entre
+  par\'entesis, el exceso medio sobre la severidad; l\'inea punteada:
+  $a = S$.}
+  \label{fig:policy-rule}
+\end{figure}
+
+La Tabla~\ref{tab:policy-rule} extiende la comparaci\'on a los trece
+modelos. La cercan\'ia al exceso medio del \'optimo no los ordena por s\'i
+sola: el consenso con \emph{prior} asigna en promedio lo mismo que el
+\'optimo y queda por debajo del Transformer, y Q-Learning base, con un
+exceso moderado, es el de menor desempe\~no. Adem\'as del exceso medio,
+importa c\'omo var\'ia la asignaci\'on con la severidad y con el
+presupuesto restante, que la regla fija s\'olo captura a trav\'es del
+recorte por $R$.
+
+\begin{table}[H]
+\centering
+\caption[Exceso medio de asignaci\'on y desempe\~no]{Exceso medio de la
+asignaci\'on sobre la severidad ($a - S$) en las decisiones con recursos y
+desempe\~no medio $\bar r$, en la referencia y en las r\'eplicas
+\emph{held-out}.}
+\label{tab:policy-rule}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{$a - S$} & \multicolumn{2}{c}{$\bar r$} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\textbf{Pol\'itica} & \textbf{Ref.} & \textbf{\emph{Held-out}} & \textbf{Ref.} & \textbf{\emph{Held-out}} \\
+\midrule
+\'Optimo                    & $+1{,}6$ & $+1{,}6$ & $1{,}000$ & $1{,}000$ \\
+Regla $a = \min(S + 2, R)$  & $+1{,}5$ & $+1{,}5$ & $0{,}940$ & $0{,}943$ \\
+\midrule
+Ensamble ponderado          & $+1{,}4$ & $+1{,}6$ & $0{,}937$ & $0{,}939$ \\
+Compuerta del Transformer   & $+2{,}6$ & $+2{,}2$ & $0{,}928$ & $0{,}928$ \\
+Transformer                 & $+2{,}5$ & $+2{,}2$ & $0{,}927$ & $0{,}929$ \\
+Consenso con \emph{prior}   & $+1{,}6$ & $+1{,}6$ & $0{,}918$ & $0{,}915$ \\
+Voto por acci\'on           & $+1{,}1$ & $+1{,}1$ & $0{,}914$ & $0{,}916$ \\
+Voto suave                  & $+1{,}0$ & $+1{,}2$ & $0{,}914$ & $0{,}917$ \\
+DQN recurrente              & $+0{,}5$ & $+0{,}7$ & $0{,}899$ & $0{,}903$ \\
+Double Q-Learning           & $+2{,}7$ & $+2{,}6$ & $0{,}896$ & $0{,}900$ \\
+DQN                         & $+3{,}0$ & $+3{,}0$ & $0{,}894$ & $0{,}891$ \\
+Consenso                    & $+3{,}0$ & $+2{,}8$ & $0{,}889$ & $0{,}893$ \\
+A2C                         & $+3{,}0$ & $+3{,}1$ & $0{,}887$ & $0{,}887$ \\
+Q-Learning                  & $+2{,}2$ & $+1{,}8$ & $0{,}887$ & $0{,}881$ \\
+Q-Learning base             & $+2{,}0$ & $+2{,}0$ & $0{,}871$ & $0{,}860$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \biblio
 \end{document}

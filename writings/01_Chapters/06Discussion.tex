@@ -79,11 +79,25 @@ agudos, pero estos coinciden en la referencia y en las r\'eplicas
 \emph{held-out}, por lo que la ventaja se mantiene en ellas
 (Secci\'on~\ref{sec:res-heldout}).
 
-\begin{destacado}
-La ponderaci\'on por confianza, por s\'i sola, no basta para superar al
-mejor miembro: los dos ensambles que s\'olo promedian o votan con ella
-quedan por debajo del Transformer individual.
-\end{destacado}
+Los dos ensambles que s\'olo promedian o votan ponderando por la confianza
+quedan por debajo del Transformer individual, pero ese resultado depende
+tambi\'en de la composici\'on del ensamble y de sus pesos, no s\'olo de la
+regla. En el voto suave y en el voto por acci\'on, la optimizaci\'on
+asign\'o al DQN recurrente un peso base mayor que al Transformer
+(Tabla~\ref{tab:ens-params}); en la extrapolaci\'on de severidad, donde el
+DQN recurrente es el miembro m\'as d\'ebil, ambos ensambles quedan por
+debajo de tres de sus cuatro miembros (Secci\'on~\ref{sec:res-ensembles}),
+lo que indica que un miembro de bajo desempe\~no con peso suficiente
+degrada la decisi\'on.
+A la inversa, cuando el Transformer concentra el peso y A2C queda fuera,
+como en el ensamble ponderado, el promedio con temperatura alta supera al
+Transformer en un $0{,}4\%$ en las r\'eplicas \emph{held-out} aun sin
+\emph{prior} (Secci\'on~\ref{sec:res-posthoc}). Con otra composici\'on, por
+ejemplo varias instancias del Transformer entrenadas con semillas
+distintas~\citep{Lakshminarayanan2017}, podr\'ian obtenerse ensambles que
+verifiquen la H2, siempre que una variante sin ponderaci\'on permita
+atribuir la ventaja a la confianza: los resultados no la respaldan para los miembros y las
+reglas evaluados, pero no la descartan en general.
 
 \subsection{Alcance de los resultados frente a una regla fija}\label{sec:disc-rule}
 
@@ -104,14 +118,43 @@ superan porque aprendieron a utilizar el presupuesto que la regla deja sin
 asignar.
 
 El resultado es an\'alogo al de Kong \emph{et al.}~\citep{Kong2019}, en el
-que el RL redescubre los algoritmos cl\'asicos de los problemas que estudia. Sin embargo, la regla fija
-requiere un \'optimo calculable con informaci\'on completa y expresable de forma
-simple, dos condiciones que provienen de las simplificaciones de mPES:
-ciudades que evolucionan de forma independiente, un \'unico recurso y una
-din\'amica determinista y conocida. Con ciudades que interact\'uan, varios
-recursos o una din\'amica estoc\'astica o desconocida, no existe un
-\'optimo contra el cual calibrar una regla ni garant\'ia de que la
-pol\'itica \'optima admita una expresi\'on simple.
+que el RL redescubre los algoritmos cl\'asicos de los problemas que
+estudia. La pol\'itica \'optima de mPES es simple porque el problema se
+descompone: la severidad final de cada ciudad depende s\'olo de su propia
+asignaci\'on, por lo que el \'optimo es una mochila acotada que se resuelve
+ciudad por ciudad (Ecuaci\'on~\eqref{eq:dp-optimum}), y la din\'amica fija
+un equilibrio en $a = S$ (Ecuaci\'on~\eqref{eq:rule-dynamics}). Cada
+simplificaci\'on que se elimine rompe parte de esa estructura. Con
+contagio entre ciudades, la severidad de cada una depende de las
+asignaciones a las dem\'as, y la programaci\'on din\'amica debe incluir
+en su estado las severidades de todas las ciudades activas, cuyo n\'umero
+de combinaciones crece de forma exponencial. Con varios recursos, la
+mochila pasa a ser multidimensional y el n\'umero de acciones crece de
+forma combinatoria; si la asignaci\'on puede repartirse en varios pasos,
+cada decisi\'on abarca todas las ciudades activas. En ambos casos el
+\'optimo sigue siendo calculable a esta escala, pero no tiene por qu\'e
+admitir una regla simple. Con una din\'amica estoc\'astica, el
+\'optimo con informaci\'on completa incorpora un azar que ninguna
+pol\'itica puede anticipar, por lo que $1 - \bar r$ dejar\'ia de medir
+s\'olo el error del agente, y con $\alpha$ y $\beta$ variables entre
+secuencias el agente deber\'ia inferirlos dentro de cada una. Si el
+objetivo incluye criterios de equidad, el \'optimo depende de c\'omo se
+ponderen eficiencia y equidad~\citep{Sinclair2023}.
+
+Donde el \'optimo deje de ser calculable, como con contagio, $\bar r$
+deber\'ia normalizarse contra la mejor pol\'itica conocida
+y ya no medir\'ia la distancia al \'optimo; aun donde siga si\'endolo, no
+habr\'ia una regla fija simple con la cual comparar. Sin haberlo evaluado,
+es esperable que la ventaja del ensamble ponderado se reduzca, porque
+proviene de un \emph{prior} que aproxima una pol\'itica simple
+(Secci\'on~\ref{sec:ens-best}). Si la observaci\'on del agente incluyera
+las severidades activas, los modelos tabulares dejar\'ian de ser
+practicables; si no, procesar los estados anteriores podr\'ia resultar
+m\'as \'util, aunque en mPES la ventana por s\'i sola no dio ventaja
+(Secci\'on~\ref{sec:disc-individual}). Sin ese \emph{prior}, la H2
+depender\'ia de la ponderaci\'on por confianza y de
+las dem\'as reglas, que en mPES no bastaron por s\'i solas para superar al
+Transformer.
 
 \biblio
 \end{document}

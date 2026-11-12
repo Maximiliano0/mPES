@@ -167,6 +167,25 @@ $[0{,}744;\,1{,}000]$).
 La Tabla~\ref{tab:packages} enumera los modelos, su paquete y el nombre
 que se usa en el texto; las figuras usan el nombre del paquete.
 
+Los modelos se eligieron para que cada uno incorpore una capacidad que
+otro del conjunto no tiene y permita observar su efecto. El punto de
+partida fue DQN~\citep{Mnih2015}, el m\'etodo de referencia del RL
+profundo basado en valores; los dem\'as se incorporaron a partir de la
+bibliograf\'ia revisada (Cap\'itulos~\ref{sec:background}
+y~\ref{sec:soa}). Q-Learning base es la referencia sin optimizar;
+Q-Learning mide cu\'anto aporta la optimizaci\'on de hiperpar\'ametros, y
+Double Q-Learning, la reducci\'on de la
+sobreestimaci\'on~\citep{Hasselt2010}. DQN reemplaza la tabla por una red
+que generaliza entre estados; el DQN recurrente~\citep{Hausknecht2015} y
+el Transformer~\citep{Parisotto2020} agregan memoria de los estados
+anteriores, que el problema parcialmente observable puede requerir
+(Secci\'on~\ref{sec:env-dyn}), mediante recurrencia o atenci\'on, y
+A2C~\citep{Mnih2016} representa a los m\'etodos de gradiente de
+pol\'itica frente a los basados en valores. Ninguno de los siete modelos
+se excluy\'o despu\'es de evaluarlo: s\'olo se descartaron configuraciones
+durante la exploraci\'on de arquitecturas y la optimizaci\'on, y el
+Cap\'itulo~\ref{sec:results} informa todos los modelos entrenados.
+
 \begin{table}[!htb]
 \centering
 \caption[Modelos individuales]{Modelos individuales. Q-Learning base se
@@ -316,9 +335,39 @@ Episodios & $125\,000$ \\
 
 \subsection{Ensambles}\label{sec:ens-methods}
 
-Los ensambles no se entrenan: cargan los modelos ya entrenados de DQN,
+\begin{table}[!htb]
+\centering
+\caption[Ensambles]{Ensambles. Todos combinan DQN, DQN recurrente y
+Transformer sin reentrenarlos; la \'ultima columna indica si incorporan
+adem\'as el actor de A2C.}
+\label{tab:ens-packages}
+\small
+\begin{tabular}{@{}llp{4.5cm}c@{}}
+\toprule
+\textbf{Paquete} & \textbf{Nombre en el texto} & \textbf{Regla de combinaci\'on} & \textbf{A2C} \\
+\midrule
+\texttt{pes\_ens}                   & Ensamble ponderado        & Promedio de distribuciones ponderado por confianza, con \emph{prior} de severidad y cota de seguridad & no \\
+\texttt{pes\_ens\_sprb}             & Voto suave                & Promedio de distribuciones ponderado por confianza & s\'i \\
+\texttt{pes\_ens\_accq}             & Voto por acci\'on         & Voto por la acci\'on preferida de cada miembro; empates por valores $Q$ & s\'i \\
+\texttt{pes\_ens\_consensus}        & Consenso                  & Voto con t\'erminos de acuerdo y desacuerdo entre miembros & s\'i \\
+\texttt{pes\_ens\_consensus\_prior} & Consenso con \emph{prior} & Consenso sobre distribuciones, con \emph{prior} de severidad y cota de seguridad & s\'i \\
+\texttt{pes\_ens\_trf\_guard}       & Compuerta del Transformer & Acci\'on del Transformer si su confianza supera un umbral; si no, voto suave & s\'i \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Los ensambles (Tabla~\ref{tab:ens-packages}) no se entrenan: cargan los modelos ya entrenados de DQN,
 DQN recurrente y Transformer, y cinco de las seis variantes incorporan el
-actor de A2C. Para cada miembro $k$, en un estado con $R$ recursos, la
+actor de A2C. Los modelos tabulares no forman parte de ning\'un ensamble
+porque son los de menor capacidad de generalizaci\'on: no comparten
+informaci\'on entre estados y obtienen las menores medias en los
+escenarios de generalizaci\'on (Tabla~\ref{tab:global-mean}). A2C se excluy\'o del ensamble ponderado
+porque, durante el ajuste \emph{ad hoc} de sus par\'ametros, incluirlo
+reduc\'ia su desempe\~no en la referencia; en cuatro de los otros cinco
+ensambles, la optimizaci\'on le asign\'o a A2C el menor peso base de sus
+miembros (Tabla~\ref{tab:ens-params}).
+
+Para cada miembro $k$, en un estado con $R$ recursos, la
 distribuci\'on sobre las acciones factibles se obtiene de sus valores $Q$
 con una \emph{softmax} de temperatura $\tau$
 (Secci\'on~\ref{sec:ensembles-bg}).

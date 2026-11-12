@@ -72,6 +72,9 @@ def figure_map() -> dict:
         for stem in stems:
             name = RENAMES.get(f'{tag}_{stem}', f'{tag}_{stem}')
             mapping[os.path.join(suite, f'{name}.png')] = os.path.join(RESULTS, suite, 'figures', f'{stem}.png')
+    # Apéndice D: política aprendida frente a la regla fija (writings/auxiliar/scripts/policy_vs_rule.py).
+    mapping[os.path.join('ensemble', 'ens_politica_vs_regla.png')] = os.path.join(
+        RESULTS, 'ensemble', 'figures', 'politica_vs_regla.png')
     return mapping
 
 
