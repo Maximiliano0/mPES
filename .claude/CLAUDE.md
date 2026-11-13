@@ -33,7 +33,7 @@ tope de páginas, enmascarado −1e9, semillas): @memoria.md
 - **Convenciones LaTeX y de redacción**: siguen `writings/auxiliar/claude_context/instrucciones_sistema.md` §5–§7
   (acentos escapados `m\'as`, decimales `$0{,}927$`, `$36\%$`, anglicismos en `\emph{}`, terminología fija
   texto ↔ paquete, ecuación + párrafo «Donde …», sin palabras inglesas fuera de `\emph{}`/`\texttt{}`).
-- **Tope de 40 páginas para el cuerpo** (Introducción → Conclusiones; preliminares, referencias y apéndice no
+- **Tope de 42 páginas para el cuerpo** (Introducción → Conclusiones; preliminares, referencias y apéndice no
   cuentan). El número vigente de páginas del cuerpo está en `dict/correcciones.md`. Toda corrección que agregue texto debe informar
   el impacto en páginas después de compilar.
 - No cambies el preámbulo de `Main.tex` ni el orden de capítulos sin pedido explícito.

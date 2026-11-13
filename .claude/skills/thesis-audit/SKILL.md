@@ -22,7 +22,7 @@ Modo: `$ARGUMENTS` (vacío o `full` = auditar y compilar; `quick` = `--no-tex`, 
    TinyTeX (`pdflatex`, `bibtex`, `latexmk`) ya está en el PATH. Si el entorno virtual no existe, usa el Python del
    sistema: `audit.py` sólo usa la biblioteca estándar.
 3. Hallazgos esperados que no se corrigen: el aviso de `Acknowledgement.tex` huérfano (excluido a propósito).
-4. Tras compilar en modo full, mide el cuerpo de la tesis (tope: 40 páginas de Introducción a Conclusiones):
+4. Tras compilar en modo full, mide el cuerpo de la tesis (tope: 42 páginas de Introducción a Conclusiones):
 
    ```bash
    pdftotext -layout writings/out/*.pdf - | grep -n "^7\. Conclusiones\|^Referencias Bibliogr" | head -2

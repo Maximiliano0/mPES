@@ -37,7 +37,7 @@ los 3–4 a H2.
 - No cambies el preámbulo de `Main.tex` ni el orden de capítulos salvo pedido explícito.
 - Terminal: sólo compilación y auditoría (`python audit\audit.py` con cwd `writings/`) y los scripts de
   `writings/auxiliar/scripts/` que no escriban fuera de `writings/`.
-- Tope de 40 páginas para el cuerpo (Introducción → Conclusiones). Informa el número de páginas del cuerpo tras
+- Tope de 42 páginas para el cuerpo (Introducción → Conclusiones). Informa el número de páginas del cuerpo tras
   compilar si agregaste texto.
 
 ## Tono

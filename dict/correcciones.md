@@ -16,7 +16,7 @@ Fig. 5.3 = `fig:heatmap-ens`, Ec. 2.4 = `eq:attention`, Sec. 7.3 = Trabajo futur
 pasó a §1.4 y «Contribuciones» a §1.5.
 
 **Presupuesto de páginas**: el cuerpo (Introducción → Conclusiones) ocupaba las págs. 1–37 al recibir los dictámenes;
-después de B1 ocupaba las págs. 1–38 y después de B2 ocupaba las págs. 1–39 después de B3 ocupaba las págs. 1–40 y después de B4/B5 ocupaba las págs. 1–41. **Después de B8 ocupa las págs. 1–42: supera el tope en 2 págs.** R2 (2026-11-12) no recuperó páginas: los finales de capítulo cortos (Cap. 3 pág. 12, Cap. 6 pág. 39, Cap. 7 pág. 42) son los puntos donde recortar ~10–15 renglones libera una página entera. El autor lo aceptó de forma transitoria; hay que compensarlo con R2 (recuadros → párrafos) y/o R9 antes de agregar más texto. Ojo: cada capítulo empieza en página nueva, así que un desborde chico cuesta una página entera; la Introducción ocupa ahora media pág. 4. Las estimaciones de abajo suman unas +2,5 págs. sin compensar. Las compensaciones posibles son quitar los recuadros (R2) y
+después de B1 ocupaba las págs. 1–38 y después de B2 ocupaba las págs. 1–39 después de B3 ocupaba las págs. 1–40 y después de B4/B5 ocupaba las págs. 1–41. **Después de B8 ocupa las págs. 1–42. El 2026-11-13 el autor fijó el tope en 42 págs. (antes 40): el cuerpo queda así, sin recortes, y no puede crecer más.** R2 (2026-11-12) no recuperó páginas: los finales de capítulo cortos (Cap. 3 pág. 12, Cap. 6 pág. 39, Cap. 7 pág. 42) son los puntos donde recortar ~10–15 renglones libera una página entera. El autor lo aceptó de forma transitoria; hay que compensarlo con R2 (recuadros → párrafos) y/o R9 antes de agregar más texto. Ojo: cada capítulo empieza en página nueva, así que un desborde chico cuesta una página entera; la Introducción ocupa ahora media pág. 4. Las estimaciones de abajo suman unas +2,5 págs. sin compensar. Las compensaciones posibles son quitar los recuadros (R2) y
 llevar los mapas completos al apéndice (R9). Medir después de cada bloque con `/thesis-audit`.
 
 Estados: ⬜ pendiente · 🟨 en curso · ✅ hecho · ❓ requiere decisión del autor · 🚫 descartada por el autor
@@ -308,25 +308,23 @@ No es una corrección del texto: son tres temas para llevar preparados. Material
   con `writings/auxiliar/scripts/policy_vs_rule.py` a partir de las decisiones registradas, sin volver a ejecutar
   modelos. Óptimo $S+1{,}6$, regla $S+2$ → $S+1{,}5$ efectivo, ponderado $S+1{,}6$, Transformer $S+2{,}2$ (en sus
   propias trayectorias; el $S+2{,}4$ de §6.2 se mide en los estados del ensamble) y DQN ≈ 7,7 constante.
-- **Variabilidad entre semillas** 🟨 (lanzada el 2026-11-11 a las 18:59): `h1/general/scripts/seed_variability.py`,
-  con 5 semillas de Q-Learning y de DQN y 3 del Transformer (1001…), más el modelo entregado de cada uno. Llama
-  directamente a las funciones de entrenamiento (nunca a `train_*`, que sobrescriben `inputs/`) y escribe sólo en
-  `h1/general/work/seeds/`. Evaluar los entregados con el arnés reproduce la tesis (0,887/0,881; 0,894/0,891;
-  0,927/0,929). Las huellas de los modelos entregados están en `h1/general/work/seeds/hashes_entregados.txt`. Para
-  relanzarlo (es reanudable): `utils\scripts\run_seed_variability.ps1`.
-  - *Estado (2026-11-12):* Q-Learning y DQN terminados (5 semillas cada uno, 3 min y 18 min por semilla). El
-    Transformer falló al iniciar por un error del arnés (llamaba a `DQNTraining`); se corrigió y se relanzó el
-    2026-11-12 a las 12:06. Fin estimado: 18:00–21:00 del mismo día. Commit `0f42c33` («waiting for seed
-    variability», rama `correcciones-jurado`).
-  - *Parcial (semillas nuevas, sin el entregado):* Q-Learning ref $0{,}859 \pm 0{,}022$ (0,836–0,895), DQN
-    $0{,}874 \pm 0{,}005$ (0,866–0,880). El DQN entregado (0,894) supera a las 5 semillas nuevas: el entregado viene
-    del mejor ensayo de Optuna y no es un sorteo insesgado, por eso el resumen lo separa de las semillas nuevas.
-  - *Pendiente de decisión:* si las 3 semillas del Transformer no separan con claridad su rango del de DQN, agregar
-    1004 y 1005 (`run --models trf --seeds 1004 1005`, unas 4–6 h; más rápido en paralelo en otro equipo).
-  - **Al terminar** (pasos 1–3 automáticos si la sesión sigue abierta):
-    1. Huellas: desde `h1/`, `sha256sum -c general/work/seeds/hashes_entregados.txt`.
-    2. Resumen: desde `h1/`, `python -m general.scripts.seed_variability summary`.
-    3. Comparación y filas LaTeX: `python writings/auxiliar/scripts/seed_comparison.py` →
-       `h1/general/results/individual/seed_comparison.json`.
-    4. Proponer (flujo de siempre: propuesta → permiso) el Apéndice E.3 con la tabla, la remisión de un renglón en
-       §7.3 (cuerpo: hoy 1–42) y la sección 3 de `dict/defensa/README.md`.
+- **Variabilidad entre semillas** ✅: Apéndice E.3 (`ap:seeds`, `tab:seeds`) y sección 3 de
+  `dict/defensa/README.md`. `h1/general/scripts/seed_variability.py` reentrena con la configuración entregada,
+  llamando directamente a las funciones de entrenamiento (nunca a `train_*`, que sobrescriben `inputs/`), y evalúa
+  con el protocolo determinista, que reproduce a los entregados (0,887/0,881; 0,894/0,891; 0,927/0,929). Semillas
+  nuevas: Q-Learning y DQN 5 (1001–1005), Transformer 4 (1001, 1002, 1004, 1005; la 1003 se cortó al ~15 % por
+  decisión del autor y queda para otra PC: `run --models trf --seeds 1003`). Huellas de los entregados verificadas
+  (`h1/general/work/seeds/hashes_entregados.txt`); modelos por semilla versionados con Git LFS (commit `9a45569`).
+  - *Resultados* (`h1/general/results/individual/seed_comparison.json`): Q-Learning $0{,}859 \pm 0{,}022$ /
+    $0{,}866 \pm 0{,}016$; DQN $0{,}874 \pm 0{,}005$ / $0{,}876 \pm 0{,}005$; Transformer $0{,}927 \pm 0{,}009$ /
+    $0{,}927 \pm 0{,}010$ (ref. / *held-out*). La peor semilla del Transformer supera a la mejor de DQN; DQN y
+    Q-Learning se superponen (la mejor de Q-Learning supera a las 5 de DQN); el DQN entregado supera a sus 5
+    semillas (sesgo de Optuna) y el Transformer entregado queda dentro de una DE de su media; la ventaja del ponderado
+    sobre la media del Transformer (0,010 y 0,012) es del orden de su desviación estándar. Alcance: referencia y
+    réplicas, no los 21 escenarios de generalización.
+  - *Hecho (2026-11-13):* Apéndice E.3 nuevo (p. 59 del PDF; no cuenta para el tope) y primer ítem de §7.3
+    reescrito («Extender el reentrenamiento… a los demás modelos, a los ensambles y a los escenarios de
+    generalización», remite al Apéndice E.3). Ajustes de `thesis-judge` aplicados: «se conserva la ventaja del
+    Transformer» en lugar de «el ordenamiento»; alcance sin los 21 escenarios; la quinta semilla del Transformer se
+    interrumpió por costo; §7.3 ya no dice «cada modelo se entrenó una sola vez»; $n$ = semillas nuevas en el
+    epígrafe. Auditoría en verde, 66 páginas; cuerpo 1–42, sin cambios.

@@ -65,6 +65,46 @@ Mensajes para la lámina:
 - Ojo: aquí el Transformer da $S+2{,}2$ en sus propias trayectorias. El $S+2{,}4$ de la §6.2 se midió en los estados
   que visita el ensamble ponderado.
 
-## 3. Variabilidad entre semillas
+## 3. Variabilidad entre semillas (Tabla E.3, §7.3)
 
-Pendiente (fase 2: reentrenamiento con varias semillas; ver `dict/correcciones.md`).
+Los modelos entregados salen del mejor ensayo de Optuna, que fija también la semilla, así que no son un sorteo
+insesgado. Se reentrenaron con la configuración entregada: Q-Learning y DQN con 5 semillas nuevas (1001–1005) y el
+Transformer con 4 (1001, 1002, 1004, 1005). La evaluación es la misma, determinista, y reproduce los valores de los
+entregados. Fuente: `h1/general/results/individual/seed_comparison.json`.
+
+| Modelo | $n$ | Entregado ref. | Entregado *held-out* | Nuevas ref. | Rango | Nuevas *held-out* | Rango |
+|---|---|---|---|---|---|---|---|
+| Q-Learning | 5 | 0,887 | 0,881 | 0,859 ± 0,022 | 0,836–0,895 | 0,866 ± 0,016 | 0,842–0,886 |
+| DQN | 5 | 0,894 | 0,891 | 0,874 ± 0,005 | 0,866–0,880 | 0,876 ± 0,005 | 0,868–0,881 |
+| Transformer | 4 | 0,927 | 0,929 | 0,927 ± 0,009 | 0,914–0,933 | 0,927 ± 0,010 | 0,912–0,934 |
+
+Mensajes para la lámina:
+
+- La ventaja del Transformer no depende de la semilla: su peor semilla supera a la mejor de DQN en 0,035 (ref.) y
+  0,032 (*held-out*); las medias difieren en 0,053 y 0,052.
+- DQN y Q-Learning no se separan: sus rangos se superponen, la diferencia de medias (0,015 y 0,010) es menor que la
+  desviación estándar de Q-Learning y la mejor semilla de Q-Learning (0,895 / 0,886) supera a las 5 de DQN.
+- El sesgo de selección de Optuna se ve en DQN, cuyo entregado (0,894) supera a las 5 semillas nuevas, pero no en
+  el Transformer: su entregado queda dentro de una desviación estándar de la media.
+- El ensamble ponderado (0,937 y 0,939) supera a las 4 semillas del Transformer, pero su ventaja sobre la media
+  (0,010 y 0,012) es del orden de la desviación estándar entre semillas y el ensamble no se reentrenó. Es coherente
+  con el «efecto despreciable» de la tesis; no se puede generalizar.
+- Alcance: sólo la referencia y las 5 réplicas (misma distribución); no los 21 escenarios de generalización. La
+  semilla 1003 del Transformer se interrumpió por costo, no por su resultado (iba al ~15 % del entrenamiento).
+
+Para preguntas (no está en la tesis):
+
+- *¿Por qué media ± DE y no intervalos de confianza, si §7.3 cita a Agarwal et al.?* Con $n = 4$–$5$ un intervalo
+  $t$ al 95 % es ancho; §7.3 lo deja como trabajo futuro. Calcularlo desde `seed_variability.json` si se pide.
+- *¿Por qué el Transformer entregado no muestra sesgo de selección?* Su ensayo de Optuna dio $\bar r = 0{,}9245$
+  (`h1/ml/pes_trf/inputs/best_params.json`), pero el modelo final, reentrenado con la semilla 42+i+1, dio 0,927: la
+  selección eligió la configuración, y el reentrenamiento volvió a sortear la semilla. En Q-Learning y DQN el
+  modelo final reproduce el puntaje del ensayo (0,8866 y 0,8937).
+- *Indicio adicional del sesgo:* en Q-Learning, la distancia entre el entregado y la media de sus semillas es mayor
+  en la referencia (0,027), donde seleccionó Optuna, que en *held-out* (0,016).
+
+Costo en la notebook (CPU): 3 min por semilla de Q-Learning, 18 min de DQN y 3,3–7 h del Transformer, según la
+limitación térmica. Falta la semilla 1003 del Transformer: desde `h1/`,
+`python -m general.scripts.seed_variability run --models trf --seeds 1003`, luego `summary` y
+`python writings/auxiliar/scripts/seed_comparison.py` desde la raíz. Los modelos por semilla están en
+`h1/general/work/seeds/` (Git LFS).

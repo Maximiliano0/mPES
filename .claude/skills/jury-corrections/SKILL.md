@@ -38,7 +38,7 @@ Claude no tiene), y explicando qué falta.
 
 1. Aplicar exactamente lo aprobado. Si al aplicarlo aparece algo no previsto, detenerse y consultar.
 2. Ejecutar la skill `thesis-audit` en modo full: todo en verde, sin referencias indefinidas.
-3. Informar las páginas del cuerpo (tope 40, de Introducción a Conclusiones).
+3. Informar las páginas del cuerpo (tope 42, de Introducción a Conclusiones).
 4. En cambios mayores, pasarle al agente `thesis-judge` el texto del jurado y el fragmento nuevo, sin la valoración
    propia, y reportar su veredicto.
 5. Actualizar `dict/correcciones.md`: estado ✅, una línea «Hecho:» con archivo, sección y página del PDF, y las

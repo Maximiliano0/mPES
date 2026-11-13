@@ -190,9 +190,10 @@ estad\'isticos por bloque (Secci\'on~\ref{sec:res-individual}).
 
 \section{An\'alisis complementarios}\label{ap:complementarios}
 
-Esta secci\'on re\'une dos an\'alisis que complementan la discusi\'on: el
-criterio con que se eligieron los modelos y la pol\'itica que aprendi\'o
-cada uno frente a la regla fija y a la asignaci\'on \'optima.
+Esta secci\'on re\'une tres an\'alisis que complementan la discusi\'on: el
+criterio con que se eligieron los modelos, la pol\'itica que aprendi\'o
+cada uno frente a la regla fija y a la asignaci\'on \'optima, y la
+variabilidad entre semillas de entrenamiento.
 
 \subsection{Criterio de elecci\'on de los modelos}\label{ap:model-choice}
 
@@ -295,6 +296,56 @@ Q-Learning base             & $+2{,}0$ & $+2{,}0$ & $0{,}871$ & $0{,}860$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Variabilidad entre semillas de entrenamiento}\label{ap:seeds}
+
+Los modelos entregados provienen del mejor ensayo de la optimizaci\'on
+bayesiana, que fija tambi\'en su semilla, por lo que no son una muestra
+insesgada de la variabilidad entre entrenamientos. Para estimarla, se
+reentrenaron Q-Learning y DQN con cinco semillas nuevas, y el Transformer,
+cuyo entrenamiento es el m\'as costoso, con cuatro (la quinta se
+interrumpi\'o por su costo antes de completarse), todos con la
+configuraci\'on entregada. Se evaluaron con el mismo protocolo determinista,
+que reproduce los valores de los modelos entregados, en la referencia y en
+las r\'eplicas \emph{held-out} (Tabla~\ref{tab:seeds}); el an\'alisis no
+incluye los $21$ escenarios de generalizaci\'on.
+
+\begin{table}[H]
+\centering
+\caption[Variabilidad entre semillas de entrenamiento]{Desempe\~no medio
+$\bar r$ del modelo entregado y de los reentrenados con semillas nuevas
+(media $\pm$ desviaci\'on est\'andar y rango), en la referencia y en las
+r\'eplicas \emph{held-out}. $n$: n\'umero de semillas nuevas.}
+\label{tab:seeds}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+ & & \multicolumn{2}{c}{\textbf{Entregado}} & \multicolumn{4}{c}{\textbf{Semillas nuevas}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-8}
+\textbf{Modelo} & $n$ & \textbf{Ref.} & \textbf{\emph{Held-out}} & \textbf{Ref.} & \textbf{Rango} & \textbf{\emph{Held-out}} & \textbf{Rango} \\
+\midrule
+Q-Learning  & 5 & $0{,}887$ & $0{,}881$ & $0{,}859 \pm 0{,}022$ & $0{,}836$--$0{,}895$ & $0{,}866 \pm 0{,}016$ & $0{,}842$--$0{,}886$ \\
+DQN         & 5 & $0{,}894$ & $0{,}891$ & $0{,}874 \pm 0{,}005$ & $0{,}866$--$0{,}880$ & $0{,}876 \pm 0{,}005$ & $0{,}868$--$0{,}881$ \\
+Transformer & 4 & $0{,}927$ & $0{,}929$ & $0{,}927 \pm 0{,}009$ & $0{,}914$--$0{,}933$ & $0{,}927 \pm 0{,}010$ & $0{,}912$--$0{,}934$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La ventaja del Transformer se conserva entre semillas: su peor semilla
+supera a la mejor de DQN en $0{,}035$ en la referencia y en $0{,}032$ en
+las r\'eplicas, y sus medias difieren en $0{,}053$ y $0{,}052$. DQN y
+Q-Learning, en cambio, se superponen: sus medias difieren en $0{,}015$ y
+$0{,}010$, menos que la desviaci\'on est\'andar de Q-Learning, y la mejor
+semilla de Q-Learning supera a las cinco de DQN. Los entregados de
+Q-Learning y DQN quedan por encima de la media de sus semillas, y el de
+DQN, por encima de las cinco, lo que es consistente con el sesgo de
+selecci\'on de la optimizaci\'on; el del Transformer queda dentro de una
+desviaci\'on est\'andar de su media. El ensamble ponderado ($0{,}937$ y
+$0{,}939$) supera a las cuatro semillas del Transformer, pero su ventaja
+sobre la media ($0{,}010$ y $0{,}012$) es del orden de la desviaci\'on
+est\'andar entre semillas, y el ensamble no se reentren\'o, por lo que
+este an\'alisis no permite generalizarla.
 
 \biblio
 \end{document}

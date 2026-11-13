@@ -50,17 +50,19 @@ ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al T
 \subsection{Trabajo futuro}\label{sec:future}
 
 \begin{itemize}
-    \item Repetir el entrenamiento con semillas independientes. Cada
-    modelo se entren\'o una sola vez y la evaluaci\'on es determinista,
-    por lo que la dispersi\'on informada proviene de las secuencias y no
-    del entrenamiento. En RL profundo, cambiar s\'olo la semilla puede
-    producir diferencias significativas entre ejecuciones del mismo
-    algoritmo~\citep{Henderson2018}, y con pocas ejecuciones se recomienda
-    informar intervalos de confianza en lugar de medias
-    puntuales~\citep{Agarwal2021}. As\'i se sabr\'ia si se conservan el
-    ordenamiento de la Tabla~\ref{tab:global-mean} y las diferencias de
-    efecto despreciable, como la del ensamble ponderado frente al
-    Transformer.
+    \item Extender el reentrenamiento con semillas independientes a los
+    dem\'as modelos, a los ensambles y a los escenarios de
+    generalizaci\'on. Los resultados informados provienen de un \'unico
+    entrenamiento por modelo y de una evaluaci\'on determinista, por lo que
+    su dispersi\'on proviene de las secuencias y no del entrenamiento. En
+    RL profundo, cambiar s\'olo la semilla puede producir diferencias
+    significativas~\citep{Henderson2018}, y con pocas ejecuciones se
+    recomienda informar intervalos de confianza~\citep{Agarwal2021}. Un
+    primer reentrenamiento de Q-Learning, DQN y el Transformer, en la
+    referencia y las r\'eplicas, conserva la ventaja del Transformer pero
+    no separa a DQN de Q-Learning (Ap\'endice~\ref{ap:seeds}); falta
+    verificarlo en las diferencias de efecto despreciable, como la del
+    ensamble ponderado frente al Transformer.
     \item Relacionar la confianza con el acierto de cada decisi\'on
     mediante curvas de calibraci\'on y usar los agentes de mPES, adaptados
     al protocolo de PES, como compa\~neros en sus experimentos

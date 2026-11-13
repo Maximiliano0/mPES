@@ -19,10 +19,10 @@ contradice, manda `correcciones.md`.
 - Si al aplicar algo aprobado aparece un imprevisto (por ejemplo, una página que se desborda), se detiene y consulta.
 - Después de aplicar: `/thesis-audit`, medir páginas del cuerpo y actualizar `dict/correcciones.md`.
 
-## Tope de 40 páginas = sólo el cuerpo
+## Tope de 42 páginas = sólo el cuerpo
 
 Cuenta de la Introducción a las Conclusiones. Portada, resúmenes, índices, referencias y apéndice no cuentan
-(decisión del autor, 2026-09-28). Se mide con `pdftotext -layout` sobre el PDF compilado: el cuerpo termina en la
+(decisión del autor, 2026-09-28). El 2026-11-13 el autor fijó el tope en 42 páginas (antes 40), igual al cuerpo actual: no se recorta para bajar a 40, y ninguna corrección nueva puede pasar de 42. Se mide con `pdftotext -layout` sobre el PDF compilado: el cuerpo termina en la
 página anterior a «Referencias». Cada capítulo empieza en página nueva, así que una línea de más en el final de un
 capítulo cuesta una página entera. Toda corrección que agregue texto informa su impacto en páginas.
 
@@ -60,8 +60,9 @@ páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`.
   sobre la mejor).
 - Modelos por semilla y `result.json` en `h1/general/work/seeds/` (binarios en Git LFS: `git lfs pull`). El
   `run_stdout.log` de entrenamiento (~550 MB) no se versiona.
-- Pendiente con los resultados finales: proponer el Apéndice E.3 y una línea en §7.3, completar
-  `dict/defensa/README.md` y la sección Defensa de `correcciones.md`, y bajar el cuerpo de 42 a 40 páginas.
+- En la tesis: Apéndice E.3 (`ap:seeds`) y primer ítem de §7.3 (2026-11-13); material en `dict/defensa/README.md`
+  §3. Si se agrega la semilla 1003, actualizar la Tabla E.3, su párrafo y esa sección con `seed_comparison.py`.
+- Sin pendientes de páginas: el cuerpo ocupa 1–42, justo en el tope.
 
 ## Restaurar la memoria local (opcional)
 
