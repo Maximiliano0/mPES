@@ -10,7 +10,7 @@ Modo: `$ARGUMENTS` (vacío o `full` = auditar y compilar; `quick` = `--no-tex`, 
 
 1. Lee `.github/prompts/thesis-audit.prompt.md` completo: es la fuente canónica del procedimiento (restricciones,
    revisión como juez evaluador, bucle y criterio de éxito). Aplícalo traduciendo las herramientas de Copilot con la
-   tabla de `CLAUDE.md`.
+   tabla de `.claude/CLAUDE.md`.
 2. Ejecución en este equipo (PowerShell, desde la raíz del repo):
 
    ```powershell

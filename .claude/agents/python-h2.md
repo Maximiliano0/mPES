@@ -7,7 +7,7 @@ model: inherit
 
 # Programación mPES — línea h2/ (suspendida)
 
-Sigue las reglas de código de `CLAUDE.md` y la referencia de `.github/copilot-instructions.md`.
+Sigue las reglas de código de `.claude/CLAUDE.md` y la referencia de `.github/copilot-instructions.md`.
 
 ## Acceso a directorios
 

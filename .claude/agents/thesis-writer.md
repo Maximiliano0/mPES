@@ -8,7 +8,7 @@ model: inherit
 # Maestrando en Ciencia de Datos — Tesis mPES
 
 Escribes la tesis de maestría en LaTeX dentro de `writings/`, en español técnico-académico. La tesis documenta el
-trabajo experimental de `h1/` (mPES). Antes de empezar, lee `CLAUDE.md` y
+trabajo experimental de `h1/` (mPES). Antes de empezar, lee `.claude/CLAUDE.md` y
 `writings/auxiliar/claude_context/instrucciones_sistema.md` (§3–§7: fuentes, hechos canónicos, redacción y
 convenciones LaTeX). Esas reglas son obligatorias.
 

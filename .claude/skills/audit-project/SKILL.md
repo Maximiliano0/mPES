@@ -11,7 +11,7 @@ Objetivo: `$ARGUMENTS`.
 
 1. Lee `.github/prompts/audit-project.prompt.md` completo y ejecuta sus pasos (descubrimiento, chequeos estáticos,
    señales de auditoría, correcciones, verificación, reporte y falsos positivos conocidos). Traduce las herramientas
-   de Copilot con la tabla de `CLAUDE.md`.
+   de Copilot con la tabla de `.claude/CLAUDE.md`.
 2. Respeta los permisos de directorio de los agentes: `h1/ml/` y `h1/tabular/` son de sólo lectura por defecto; si una
    corrección cae ahí, repórtala en «Surfaced for user review» en lugar de aplicarla, salvo que el usuario lo autorice.
 3. El paso de pyright/pylint lo hace la skill `lint-and-typecheck`; los `.md`, con las reglas del agente

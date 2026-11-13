@@ -6,7 +6,7 @@ por refuerzo y reglas de ensamble en una asignación secuencial de recursos limi
 del PES del BCI-NE Lab, Universidad de Essex).
 
 La referencia completa del proyecto (paquetes, layout, dependencias, estilo de código) está en
-[.github/copilot-instructions.md](.github/copilot-instructions.md); este archivo no la repite, sólo agrega lo
+[.github/copilot-instructions.md](../.github/copilot-instructions.md); este archivo no la repite, sólo agrega lo
 específico de Claude Code. Si ambos se contradicen, avisa al usuario.
 
 ## Mapa rápido
@@ -19,7 +19,7 @@ específico de Claude Code. Si ambos se contradicen, avisa al usuario.
 | `h2/` | Línea suspendida; no citarla como trabajo realizado | 🔒 (salvo agente `python-h2`) |
 | `writings/` | Tesis LaTeX (`00_Main/Main.tex`, `01_Chapters/`, `02_Images/`, `audit/`) | ✅ (agente `thesis-writer`) |
 | `writings/auxiliar/claude_context/` | Contexto curado: `instrucciones_sistema.md`, `mpes_resultados.{md,json}` | regenerar con script |
-| `dict/` | Pre-dictámenes del jurado (PDF) y [correcciones.md](dict/correcciones.md) | ✅ |
+| `dict/` | Pre-dictámenes del jurado (PDF) y [correcciones.md](../dict/correcciones.md) | ✅ |
 | `utils/` | `config/` (pyright, pylint, markdownlint, requirements) y `scripts/` | ✅ |
 
 ## Reglas de la tesis (`writings/`)

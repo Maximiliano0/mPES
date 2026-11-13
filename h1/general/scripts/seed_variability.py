@@ -49,7 +49,7 @@ SCENARIOS = ['sev_base'] + [f'heldout_s{i}' for i in range(1, 6)]
 MODELS = {
     'ql':  {'pkg': 'tabular.pes_ql', 'delivered': 'q.npy', 'seeds': [1001, 1002, 1003, 1004, 1005]},
     'dqn': {'pkg': 'ml.pes_dqn', 'delivered': 'dqn_model.keras', 'seeds': [1001, 1002, 1003, 1004, 1005]},
-    'trf': {'pkg': 'ml.pes_trf', 'delivered': 'trf_model.keras', 'seeds': [1001, 1002, 1003]},
+    'trf': {'pkg': 'ml.pes_trf', 'delivered': 'trf_model.keras', 'seeds': [1001, 1002, 1003, 1004, 1005]},
 }
 ORDER = ('ql', 'dqn', 'trf')
 _ES_CONTINUOUS = 0x80000000

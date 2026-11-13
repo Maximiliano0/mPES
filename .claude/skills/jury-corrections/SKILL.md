@@ -47,5 +47,5 @@ Claude no tiene), y explicando qué falta.
 
 ## Convenciones
 
-Las de `writings/auxiliar/claude_context/instrucciones_sistema.md` §5–§7 y `CLAUDE.md`. No inventar datos ni citas:
+Las de `writings/auxiliar/claude_context/instrucciones_sistema.md` §5–§7 y `.claude/CLAUDE.md`. No inventar datos ni citas:
 toda cifra sale de `h1/` o de `mpes_resultados.json`, y toda cita nueva necesita un DOI o una URL verificados.
