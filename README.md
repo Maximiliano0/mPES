@@ -221,7 +221,8 @@ The full comparison is documented in
 
 The delivered models come from the best Optuna trial, so their training seed
 is not an unbiased draw. This study retrains Q-Learning and DQN with 5 new
-seeds and the Transformer with 3 (from 1001), evaluates them greedily on the
+seeds (1001–1005) and the Transformer with 4 (1001, 1002, 1004, 1005; 1003 is
+pending), evaluates them greedily on the
 reference and the held-out replicas, and reports the delivered model apart
 from the new seeds. It calls the training functions directly — never the
 packages' `train_*` scripts, which overwrite `inputs/` — and writes only to
@@ -235,9 +236,13 @@ python -m general.scripts.seed_variability run        # same run in the foregrou
 python -m general.scripts.seed_variability summary    # -> results/individual/seed_variability.json
 ```
 
-Approximate cost on a laptop CPU: 3 min (Q-Learning), 18 min (DQN) and 3 h
-(Transformer) per seed. Status: Q-Learning and DQN finished; the Transformer
-seeds are in progress.
+Approximate cost on a laptop CPU: 3 min (Q-Learning), 18 min (DQN) and 3–6.5 h
+(Transformer, depending on thermal throttling) per seed. Status: 14 seeds
+finished; summary in `h1/general/results/individual/seed_variability.json` and
+model comparison in `seed_comparison.json` (same folder). Per-seed models are
+versioned in `h1/general/work/seeds/` (binaries via Git LFS; run `git lfs pull`).
+To add the missing seed: `python -m general.scripts.seed_variability run --models trf --seeds 1003`
+(from `h1/`), then `summary` and `writings/auxiliar/scripts/seed_comparison.py`.
 
 ---
 

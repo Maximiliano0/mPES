@@ -48,9 +48,16 @@ páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`.
 
 ## Variabilidad por semilla (estado al 2026-11-13)
 
-- Q-Learning, DQN y Transformer reentrenados con 5 semillas nuevas cada uno (1001–1005) con
-  `h1/general/scripts/seed_variability.py`. Resumen en `h1/general/results/individual/seed_variability.json` y
-  comparación en `seed_comparison.json` (`writings/auxiliar/scripts/seed_comparison.py`).
+- Q-Learning y DQN reentrenados con 5 semillas nuevas (1001–1005) y el Transformer con 4 (1001, 1002, 1004, 1005)
+  con `h1/general/scripts/seed_variability.py`. La 1003 del Transformer se cortó al ~15 % (decisión del autor,
+  2026-11-13) y queda para ampliar el estudio en otra PC (`run --models trf --seeds 1003` desde `h1/`, luego
+  `summary` y `seed_comparison.py`). Resumen en `h1/general/results/individual/seed_variability.json` y comparación
+  en `seed_comparison.json` (`writings/auxiliar/scripts/seed_comparison.py`).
+- Resultados (r̄, semillas nuevas, media ± DE): QL $0{,}859 \pm 0{,}022$ / held-out $0{,}866 \pm 0{,}016$;
+  DQN $0{,}874 \pm 0{,}005$ / $0{,}876 \pm 0{,}005$; Transformer (n = 4) $0{,}927 \pm 0{,}009$ / $0{,}927 \pm 0{,}010$.
+  Transformer − DQN: $5{,}3$ puntos en referencia y $5{,}2$ en held-out, sin superposición de rangos. DQN y QL se
+  superponen. El ensamble ponderado entregado supera a todas las semillas del Transformer (+$0{,}4$ y +$0{,}5$ puntos
+  sobre la mejor).
 - Modelos por semilla y `result.json` en `h1/general/work/seeds/` (binarios en Git LFS: `git lfs pull`). El
   `run_stdout.log` de entrenamiento (~550 MB) no se versiona.
 - Pendiente con los resultados finales: proponer el Apéndice E.3 y una línea en §7.3, completar

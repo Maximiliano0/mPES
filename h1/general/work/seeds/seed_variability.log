@@ -72,3 +72,9 @@
 [2026-11-13 09:40:29] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
 [2026-11-13 09:40:29] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
 [2026-11-13 09:40:29] trf: semillas nuevas n=3  ref 0.9261 ± 0.0105  held-out 0.9252 ± 0.0112
+[2026-11-13 16:39:59] trf semilla 1002: fin en 6.95 h; referencia 0.9298, held-out 0.9335
+[2026-11-13 16:39:59] trf semilla 1003: inicio
+[2026-11-13 17:34:55] corte manual: trf semilla 1003 interrumpida (~15 %); el estudio queda con 4 semillas nuevas del Transformer
+[2026-11-13 17:35:06] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
+[2026-11-13 17:35:06] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
+[2026-11-13 17:35:06] trf: semillas nuevas n=4  ref 0.9270 ± 0.0088  held-out 0.9273 ± 0.0101
