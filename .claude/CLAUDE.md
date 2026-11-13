@@ -9,6 +9,9 @@ La referencia completa del proyecto (paquetes, layout, dependencias, estilo de c
 [.github/copilot-instructions.md](../.github/copilot-instructions.md); este archivo no la repite, sólo agrega lo
 específico de Claude Code. Si ambos se contradicen, avisa al usuario.
 
+Decisiones del autor y estado de trabajo que antes vivían en la memoria local de Claude Code (flujo de correcciones,
+tope de páginas, enmascarado −1e9, semillas): @memoria.md
+
 ## Mapa rápido
 
 | Ruta | Contenido | Escritura por defecto |
