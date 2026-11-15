@@ -1,6 +1,6 @@
 # Auditoría LaTeX — `writings/`
 
-Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
+Raíz: `C:\Users\vegam\Documents\Trabajo\ml\mPES\writings`
 
 ## 1. Sintaxis y compilación
 

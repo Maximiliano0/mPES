@@ -302,10 +302,8 @@ Q-Learning base             & $+2{,}0$ & $+2{,}0$ & $0{,}871$ & $0{,}860$ \\
 Los modelos entregados provienen del mejor ensayo de la optimizaci\'on
 bayesiana, que fija tambi\'en su semilla, por lo que no son una muestra
 insesgada de la variabilidad entre entrenamientos. Para estimarla, se
-reentrenaron Q-Learning y DQN con cinco semillas nuevas, y el Transformer,
-cuyo entrenamiento es el m\'as costoso, con cuatro (la quinta se
-interrumpi\'o por su costo antes de completarse), todos con la
-configuraci\'on entregada. Se evaluaron con el mismo protocolo determinista,
+reentrenaron Q-Learning, DQN y el Transformer con diez semillas nuevas
+cada uno, todos con la configuraci\'on entregada. Se evaluaron con el mismo protocolo determinista,
 que reproduce los valores de los modelos entregados, en la referencia y en
 las r\'eplicas \emph{held-out} (Tabla~\ref{tab:seeds}); el an\'alisis no
 incluye los $21$ escenarios de generalizaci\'on.
@@ -325,27 +323,30 @@ r\'eplicas \emph{held-out}. $n$: n\'umero de semillas nuevas.}
 \cmidrule(lr){3-4}\cmidrule(lr){5-8}
 \textbf{Modelo} & $n$ & \textbf{Ref.} & \textbf{\emph{Held-out}} & \textbf{Ref.} & \textbf{Rango} & \textbf{\emph{Held-out}} & \textbf{Rango} \\
 \midrule
-Q-Learning  & 5 & $0{,}887$ & $0{,}881$ & $0{,}859 \pm 0{,}022$ & $0{,}836$--$0{,}895$ & $0{,}866 \pm 0{,}016$ & $0{,}842$--$0{,}886$ \\
-DQN         & 5 & $0{,}894$ & $0{,}891$ & $0{,}874 \pm 0{,}005$ & $0{,}866$--$0{,}880$ & $0{,}876 \pm 0{,}005$ & $0{,}868$--$0{,}881$ \\
-Transformer & 4 & $0{,}927$ & $0{,}929$ & $0{,}927 \pm 0{,}009$ & $0{,}914$--$0{,}933$ & $0{,}927 \pm 0{,}010$ & $0{,}912$--$0{,}934$ \\
+Q-Learning  & 10 & $0{,}887$ & $0{,}881$ & $0{,}865 \pm 0{,}017$ & $0{,}836$--$0{,}895$ & $0{,}869 \pm 0{,}016$ & $0{,}842$--$0{,}889$ \\
+DQN         & 10 & $0{,}894$ & $0{,}891$ & $0{,}869 \pm 0{,}009$ & $0{,}858$--$0{,}880$ & $0{,}871 \pm 0{,}009$ & $0{,}860$--$0{,}881$ \\
+Transformer & 10 & $0{,}927$ & $0{,}929$ & $0{,}919 \pm 0{,}012$ & $0{,}895$--$0{,}933$ & $0{,}920 \pm 0{,}011$ & $0{,}901$--$0{,}934$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 La ventaja del Transformer se conserva entre semillas: su peor semilla
-supera a la mejor de DQN en $0{,}035$ en la referencia y en $0{,}032$ en
-las r\'eplicas, y sus medias difieren en $0{,}053$ y $0{,}052$. DQN y
-Q-Learning, en cambio, se superponen: sus medias difieren en $0{,}015$ y
-$0{,}010$, menos que la desviaci\'on est\'andar de Q-Learning, y la mejor
-semilla de Q-Learning supera a las cinco de DQN. Los entregados de
-Q-Learning y DQN quedan por encima de la media de sus semillas, y el de
-DQN, por encima de las cinco, lo que es consistente con el sesgo de
-selecci\'on de la optimizaci\'on; el del Transformer queda dentro de una
-desviaci\'on est\'andar de su media. El ensamble ponderado ($0{,}937$ y
-$0{,}939$) supera a las cuatro semillas del Transformer, pero su ventaja
-sobre la media ($0{,}010$ y $0{,}012$) es del orden de la desviaci\'on
-est\'andar entre semillas, y el ensamble no se reentren\'o, por lo que
-este an\'alisis no permite generalizarla.
+supera a la mejor de DQN en $0{,}016$ en la referencia y en $0{,}020$ en
+las r\'eplicas, y sus medias difieren en $0{,}050$ y $0{,}049$. DQN y
+Q-Learning, en cambio, se superponen: sus medias difieren en $0{,}003$ y
+$0{,}002$, mucho menos que la desviaci\'on est\'andar de Q-Learning, y la
+mejor semilla de Q-Learning supera a las diez de DQN. Tres semillas de DQN
+convergieron a la misma pol\'itica trivial, asignar siempre el m\'aximo
+disponible, $\min(R, 10)$, que da $0{,}858$ y $0{,}860$ y fija el
+m\'inimo de su rango. Los entregados de Q-Learning y DQN quedan por
+encima de la media de sus semillas, y el de DQN, por encima de las diez,
+lo que es consistente con el sesgo de selecci\'on de la optimizaci\'on;
+el del Transformer queda dentro de una desviaci\'on est\'andar de su
+media. El ensamble ponderado ($0{,}937$ y $0{,}939$) supera a las diez
+semillas del Transformer, y su ventaja sobre la media ($0{,}019$ en ambos
+casos) equivale a entre $1{,}5$ y $1{,}7$ desviaciones est\'andar entre
+semillas; como el ensamble no se reentren\'o, este an\'alisis no permite
+generalizarla.
 
 \biblio
 \end{document}

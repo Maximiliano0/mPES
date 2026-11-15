@@ -46,23 +46,27 @@ sugerencias. El texto que leyó el jurado es el de master @ `9a1cdc4` (`dict/mPE
 números de tabla, figura y cita corresponden a ese PDF. Seguimiento con IDs (B1–B9, R1–R10), estados y presupuesto de
 páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`.
 
-## Variabilidad por semilla (estado al 2026-11-13)
+## Variabilidad por semilla (estado al 2026-11-15)
 
-- Q-Learning y DQN reentrenados con 5 semillas nuevas (1001–1005) y el Transformer con 4 (1001, 1002, 1004, 1005)
-  con `h1/general/scripts/seed_variability.py`. La 1003 del Transformer se cortó al ~15 % (decisión del autor,
-  2026-11-13) y queda para ampliar el estudio en otra PC (`run --models trf --seeds 1003` desde `h1/`, luego
-  `summary` y `seed_comparison.py`). Resumen en `h1/general/results/individual/seed_variability.json` y comparación
-  en `seed_comparison.json` (`writings/auxiliar/scripts/seed_comparison.py`).
-- Resultados (r̄, semillas nuevas, media ± DE): QL $0{,}859 \pm 0{,}022$ / held-out $0{,}866 \pm 0{,}016$;
-  DQN $0{,}874 \pm 0{,}005$ / $0{,}876 \pm 0{,}005$; Transformer (n = 4) $0{,}927 \pm 0{,}009$ / $0{,}927 \pm 0{,}010$.
-  Transformer − DQN: $5{,}3$ puntos en referencia y $5{,}2$ en held-out, sin superposición de rangos. DQN y QL se
-  superponen. El ensamble ponderado entregado supera a todas las semillas del Transformer (+$0{,}4$ y +$0{,}5$ puntos
-  sobre la mejor).
-- Modelos por semilla y `result.json` en `h1/general/work/seeds/` (binarios en Git LFS: `git lfs pull`). El
-  `run_stdout.log` de entrenamiento (~550 MB) no se versiona.
-- En la tesis: Apéndice E.3 (`ap:seeds`) y primer ítem de §7.3 (2026-11-13); material en `dict/defensa/README.md`
-  §3. Si se agrega la semilla 1003, actualizar la Tabla E.3, su párrafo y esa sección con `seed_comparison.py`.
-- Sin pendientes de páginas: el cuerpo ocupa 1–42, justo en el tope.
+- Q-Learning, DQN y el Transformer reentrenados con 10 semillas nuevas cada uno (1001–1010) con
+  `h1/general/scripts/seed_variability.py`. Las últimas 16 (QL y DQN 1006–1010; Transformer 1003 y 1006–1010) se
+  corrieron el 2026-11-14 en otra PC, sin cambios de código (`--models/--seeds`, 8 procesos en paralelo: DQN y el
+  Transformer son de un hilo por diseño). Esa PC reproduce exactamente los valores anteriores. Resumen en
+  `h1/general/results/individual/seed_variability.json` y comparación en `seed_comparison.json`
+  (`writings/auxiliar/scripts/seed_comparison.py`).
+- Resultados (r̄, semillas nuevas, n = 10, media ± DE, ref. / held-out): QL $0{,}865 \pm 0{,}017$ /
+  $0{,}869 \pm 0{,}016$; DQN $0{,}869 \pm 0{,}009$ / $0{,}871 \pm 0{,}009$; Transformer $0{,}919 \pm 0{,}012$ /
+  $0{,}920 \pm 0{,}011$. Transformer − DQN: $5{,}0$ y $4{,}9$ puntos, sin superposición de rangos (peor Transformer
+  0,895 > mejor DQN 0,880). DQN y QL se superponen. El ensamble ponderado supera a las 10 semillas del Transformer;
+  su ventaja sobre la media (0,019) equivale a 1,5–1,7 DE.
+- DQN 1007, 1009 y 1010 convergen a la política trivial $\min(R, 10)$ en todas las decisiones (0,858 / 0,860):
+  redes distintas, trayectorias idénticas. No es un error.
+- Modelos por semilla y `result.json` en `h1/general/work/seeds/` (binarios en Git LFS: `git lfs pull`). Los
+  `run_stdout*.log` de entrenamiento (cientos de MB) no se versionan.
+- En la tesis: Apéndice E.3 (`ap:seeds`, actualizado a n = 10 el 2026-11-15) y primer ítem de §7.3 (sin cantidades;
+  no cambió); material en `dict/defensa/README.md` §3.
+- Páginas: recompilado el 2026-11-15, 66 páginas; el cuerpo sigue en 1–42 (tope) y E.3 ocupa las págs. 65–66 del
+  PDF.
 
 ## Restaurar la memoria local (opcional)
 

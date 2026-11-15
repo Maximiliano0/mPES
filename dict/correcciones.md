@@ -328,3 +328,17 @@ No es una corrección del texto: son tres temas para llevar preparados. Material
     Transformer» en lugar de «el ordenamiento»; alcance sin los 21 escenarios; la quinta semilla del Transformer se
     interrumpió por costo; §7.3 ya no dice «cada modelo se entrenó una sola vez»; $n$ = semillas nuevas en el
     epígrafe. Auditoría en verde, 66 páginas; cuerpo 1–42, sin cambios.
+  - *Ampliado a 10 semillas (2026-11-15):* en otra PC (Python 3.12.10; la evaluación de los modelos existentes y el
+    reentrenamiento de QL 1001 reproducen exactamente los valores anteriores) se entrenaron QL y DQN 1006–1010 y el
+    Transformer 1003 y 1006–1010, sin cambios de código (`--models/--seeds`, 8 procesos en paralelo; commit
+    `f0b532d`). Semillas nuevas, $n = 10$ (ref. / *held-out*): Q-Learning $0{,}865 \pm 0{,}017$ /
+    $0{,}869 \pm 0{,}016$; DQN $0{,}869 \pm 0{,}009$ / $0{,}871 \pm 0{,}009$; Transformer $0{,}919 \pm 0{,}012$ /
+    $0{,}920 \pm 0{,}011$. Se mantienen la ventaja del Transformer (peor semilla 0,895 > mejor DQN 0,880), la
+    superposición DQN–Q-Learning y el sesgo del DQN entregado. Cambia la ventaja del ponderado sobre la media del
+    Transformer: 0,019, unas 1,5–1,7 DE (antes «del orden de la DE»). Nuevo: DQN 1007, 1009 y 1010 convergen a
+    $\min(R, 10)$ en todas las decisiones (0,858 / 0,860). Apéndice E.3 actualizado (primer párrafo, Tabla E.3 y
+    párrafo de resultados) y `dict/defensa/README.md` §3; §7.3 sin cambios (no cita cantidades y sus afirmaciones
+    siguen valiendo). Auditoría en verde (TinyTeX nuevo en esta PC): 66 páginas, sin Overfull/Underfull ni
+    warnings; cuerpo 1–42, sin cambios (medido con las etiquetas de página del PDF; E.3 en las págs. 65–66 del PDF).
+    `CONFIG.py` de `pes_ens` volvió a la versión del commit (tenía un cambio ajeno) y `pes_ens` reproduce su
+    referencia (0,9373125, las 64 secuencias idénticas).
