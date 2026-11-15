@@ -51,18 +51,16 @@ ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al T
 
 \begin{itemize}
     \item Extender el reentrenamiento con semillas independientes a los
-    dem\'as modelos, a los ensambles y a los escenarios de
-    generalizaci\'on. Los resultados informados provienen de un \'unico
+    escenarios de generalizaci\'on. Los resultados informados provienen de un \'unico
     entrenamiento por modelo y de una evaluaci\'on determinista, por lo que
     su dispersi\'on proviene de las secuencias y no del entrenamiento. En
     RL profundo, cambiar s\'olo la semilla puede producir diferencias
     significativas~\citep{Henderson2018}, y con pocas ejecuciones se
-    recomienda informar intervalos de confianza~\citep{Agarwal2021}. Un
-    primer reentrenamiento de Q-Learning, DQN y el Transformer, en la
-    referencia y las r\'eplicas, conserva la ventaja del Transformer pero
-    no separa a DQN de Q-Learning (Ap\'endice~\ref{ap:seeds}); falta
-    verificarlo en las diferencias de efecto despreciable, como la del
-    ensamble ponderado frente al Transformer.
+    recomienda informar intervalos de confianza~\citep{Agarwal2021}. Con
+    diez semillas por modelo, en la referencia y las r\'eplicas, el
+    Transformer conserva la mayor media pero se superpone con el DQN
+    recurrente, y el ensamble ponderado supera a su Transformer en nueve
+    de diez combinaciones de miembros (Ap\'endice~\ref{ap:seeds}).
     \item Relacionar la confianza con el acierto de cada decisi\'on
     mediante curvas de calibraci\'on y usar los agentes de mPES, adaptados
     al protocolo de PES, como compa\~neros en sus experimentos

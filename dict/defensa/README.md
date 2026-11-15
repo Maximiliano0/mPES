@@ -68,38 +68,71 @@ Mensajes para la lámina:
 ## 3. Variabilidad entre semillas (Tabla E.3, §7.3)
 
 Los modelos entregados salen del mejor ensayo de Optuna, que fija también la semilla, así que no son un sorteo
-insesgado. Se reentrenaron con la configuración entregada Q-Learning, DQN y el Transformer con 10 semillas nuevas
-cada uno (1001–1010). La evaluación es la misma, determinista, y reproduce los valores de los entregados. Fuente:
-`h1/general/results/individual/seed_comparison.json`.
+insesgado. Se reentrenaron con la configuración entregada todos los modelos individuales salvo Q-Learning base, con
+10 semillas nuevas cada uno (1001–1010). La evaluación es la misma, determinista, y reproduce los valores de los
+entregados. Fuente: `h1/general/results/individual/seed_comparison.json` (`writings/auxiliar/scripts/seed_comparison.py`).
 
 | Modelo | $n$ | Entregado ref. | Entregado *held-out* | Nuevas ref. | Rango | Nuevas *held-out* | Rango |
 |---|---|---|---|---|---|---|---|
 | Q-Learning | 10 | 0,887 | 0,881 | 0,865 ± 0,017 | 0,836–0,895 | 0,869 ± 0,016 | 0,842–0,889 |
+| Double Q-Learning | 10 | 0,896 | 0,900 | 0,874 ± 0,008 | 0,855–0,881 | 0,876 ± 0,008 | 0,860–0,883 |
 | DQN | 10 | 0,894 | 0,891 | 0,869 ± 0,009 | 0,858–0,880 | 0,871 ± 0,009 | 0,860–0,881 |
+| DQN recurrente | 10 | 0,899 | 0,903 | 0,902 ± 0,020 | 0,864–0,921 | 0,898 ± 0,023 | 0,862–0,924 |
+| A2C | 10 | 0,887 | 0,887 | 0,842 ± 0,035 | 0,786–0,887 | 0,842 ± 0,037 | 0,780–0,887 |
 | Transformer | 10 | 0,927 | 0,929 | 0,919 ± 0,012 | 0,895–0,933 | 0,920 ± 0,011 | 0,901–0,934 |
 
 Mensajes para la lámina:
 
-- La ventaja del Transformer no depende de la semilla: su peor semilla supera a la mejor de DQN en 0,016 (ref.) y
-  0,020 (*held-out*); las medias difieren en 0,050 y 0,049.
-- DQN y Q-Learning no se separan: sus rangos se superponen, la diferencia de medias (0,003 y 0,002) es mucho menor
-  que la desviación estándar de Q-Learning y la mejor semilla de Q-Learning (0,895 / 0,889) supera a las 10 de DQN.
+- La ventaja del Transformer sobre DQN no depende de la semilla: su peor semilla supera a la mejor de DQN en 0,016
+  (ref.) y 0,020 (*held-out*); las medias difieren en 0,050 y 0,049.
+- **Frente al DQN recurrente, sí depende:** las medias difieren en 0,016 y 0,022 y los rangos se superponen (la mejor
+  semilla del DQN recurrente, 0,921 / 0,924, supera a la peor del Transformer). El Transformer conserva la mayor media.
+- DQN, Double Q-Learning y Q-Learning no se separan: las medias difieren en menos de 0,01 y la mejor semilla de
+  Q-Learning (0,895 / 0,889) supera a las 10 de DQN.
+- A2C es el más sensible a la semilla (DE 0,035 / 0,037) y su entregado iguala a la mejor de sus semillas.
 - Tres semillas de DQN (1007, 1009 y 1010) convergieron a la política trivial «asignar el máximo disponible»,
   $\min(R, 10)$, en el 100 % de las decisiones: redes distintas, trayectorias idénticas, 0,858 y 0,860. Fijan el
   mínimo de DQN.
-- El sesgo de selección de Optuna se ve en DQN, cuyo entregado (0,894) supera a las 10 semillas nuevas, pero no en
-  el Transformer: su entregado queda dentro de una desviación estándar de la media.
-- El ensamble ponderado (0,937 y 0,939) supera a las 10 semillas del Transformer; su ventaja sobre la media (0,019
-  en ambos casos) equivale a 1,5–1,7 desviaciones estándar entre semillas, pero el ensamble no se reentrenó, así que
-  no se puede generalizar.
+- El sesgo de selección de Optuna se ve en Double Q-Learning y DQN, cuyos entregados superan a sus 10 semillas
+  nuevas, y en A2C; no en el Transformer (entregado dentro de una DE de la media) ni en el DQN recurrente (entregado
+  por debajo de la media en la referencia).
 - Alcance: sólo la referencia y las 5 réplicas (misma distribución); no los 21 escenarios de generalización.
+
+### Ensambles con miembros de otras semillas (Tabla E.4)
+
+Regla y parámetros de cada ensamble fijos; sus miembros (DQN, DQN recurrente, Transformer y A2C) se reemplazan por
+modelos reentrenados. Diez combinaciones comunes a los seis ensambles: la mejor semilla de cada miembro, la peor, la
+más cercana a su media y 7 sorteadas (criterio: $\bar r$ medio en la referencia y las réplicas). El ponderado no usa
+A2C. Con los miembros entregados se reproducen exactamente las celdas del benchmark. Fuente:
+`h1/general/results/ensemble/ensemble_seeds.json` (`h1/general/scripts/ensemble_seeds.py`).
+
+| Ensamble | Entregado ref. | Entregado *held-out* | Combinaciones ref. | Rango | Combinaciones *held-out* | Rango | Superan a su Transformer |
+|---|---|---|---|---|---|---|---|
+| Ensamble ponderado | 0,937 | 0,939 | 0,928 ± 0,006 | 0,916–0,937 | 0,932 ± 0,004 | 0,927–0,940 | 9 / 9 |
+| Compuerta del Transformer | 0,928 | 0,928 | 0,919 ± 0,015 | 0,894–0,934 | 0,921 ± 0,013 | 0,900–0,935 | 5 / 4 |
+| Consenso con *prior* | 0,918 | 0,915 | 0,895 ± 0,022 | 0,854–0,924 | 0,892 ± 0,022 | 0,854–0,916 | 0 / 0 |
+| Voto por acción | 0,914 | 0,916 | 0,909 ± 0,018 | 0,862–0,925 | 0,905 ± 0,017 | 0,868–0,928 | 2 / 0 |
+| Voto suave | 0,914 | 0,917 | 0,908 ± 0,020 | 0,856–0,925 | 0,903 ± 0,019 | 0,866–0,927 | 1 / 0 |
+| Consenso | 0,889 | 0,893 | 0,872 ± 0,015 | 0,853–0,896 | 0,870 ± 0,013 | 0,857–0,890 | 0 / 0 |
+
+Mensajes para la lámina:
+
+- El ensamble ponderado es el único que mejora al Transformer de forma estable: lo supera en 9 de 10 combinaciones
+  (+0,009 / +0,010 en promedio) y su DE (0,006 / 0,004) es menos de la mitad de la del Transformer. Su ventaja es
+  pequeña, pero no depende de la semilla de los miembros.
+- La compuerta reproduce a su Transformer (diferencia media 0,000 / −0,001).
+- Los votos y los consensos quedan por debajo de su Transformer en casi todas las combinaciones y varían más que él
+  (DE 0,013–0,022).
+- Los seis entregados quedan por encima de la media de sus combinaciones: sus parámetros se ajustaron con los
+  miembros entregados.
 
 Para preguntas (no está en la tesis):
 
 - *¿Por qué media ± DE y no intervalos de confianza, si §7.3 cita a Agarwal et al.?* La tabla describe la
   dispersión entre semillas. Con $n = 10$, el intervalo $t$ al 95 % de la media (referencia / *held-out*) es
-  Q-Learning 0,853–0,878 / 0,857–0,881, DQN 0,862–0,875 / 0,864–0,877 y Transformer 0,910–0,927 / 0,912–0,928: los
-  del Transformer y DQN no se superponen; los de DQN y Q-Learning, sí.
+  Q-Learning 0,853–0,877 / 0,857–0,881, Double Q-Learning 0,868–0,880 / 0,870–0,881, DQN 0,862–0,875 / 0,864–0,877,
+  DQN recurrente 0,888–0,916 / 0,881–0,914, A2C 0,817–0,867 / 0,815–0,868 y Transformer 0,910–0,927 / 0,912–0,928.
+  Los del Transformer y DQN no se superponen; los del Transformer y el DQN recurrente, sí (por poco).
 - *¿Por qué tres semillas de DQN dan exactamente el mismo valor?* Porque las tres redes, aunque tienen pesos
   distintos, eligen la acción máxima en todos los estados que visitan; recorren las mismas trayectorias. Es una
   política degenerada a la que DQN converge con algunas semillas (asignar todo hasta agotar el presupuesto), no un
@@ -111,8 +144,9 @@ Para preguntas (no está en la tesis):
 - *Indicio adicional del sesgo:* en Q-Learning, la distancia entre el entregado y la media de sus semillas es mayor
   en la referencia (0,022), donde seleccionó Optuna, que en *held-out* (0,012).
 
-Costo en CPU: 2–3 min por semilla de Q-Learning, 18–25 min de DQN y 3,1–7 h del Transformer. DQN y el Transformer
-usan un solo hilo (determinismo), así que las semillas se pueden correr en paralelo en procesos separados: las 16
-últimas (2026-11-14) tardaron 3,2 h en 8 procesos. Para regenerar el resumen: desde `h1/`,
-`python -m general.scripts.seed_variability summary`, y `python writings/auxiliar/scripts/seed_comparison.py` desde
+Costo en CPU por semilla: 1–3 min (tabulares), 18–25 min (DQN), ~30 min (A2C) y 3–7 h (DQN recurrente,
+Transformer); los ensambles sólo se evalúan (6 × 11 en ~30 min). DQN, el DQN recurrente y el Transformer usan un solo
+hilo (determinismo), así que las semillas se pueden correr en paralelo en procesos separados. Para regenerar los
+resúmenes: desde `h1/`, `python -m general.scripts.seed_variability summary` y
+`python -m general.scripts.ensemble_seeds summary`, y `python writings/auxiliar/scripts/seed_comparison.py` desde
 la raíz. Los modelos por semilla están en `h1/general/work/seeds/` (Git LFS).

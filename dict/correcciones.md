@@ -342,3 +342,13 @@ No es una corrección del texto: son tres temas para llevar preparados. Material
     warnings; cuerpo 1–42, sin cambios (medido con las etiquetas de página del PDF; E.3 en las págs. 65–66 del PDF).
     `CONFIG.py` de `pes_ens` volvió a la versión del commit (tenía un cambio ajeno) y `pes_ens` reproduce su
     referencia (0,9373125, las 64 secuencias idénticas).
+  - *Ampliado a los 6 modelos y a los ensambles (2026-11-15, aprobado por el autor):* Double Q-Learning, DQN
+    recurrente y A2C con 10 semillas (commit `559d3e6`) y los 6 ensambles con 10 combinaciones de semillas de sus
+    miembros (`h1/general/scripts/ensemble_seeds.py`). Apéndice E.3: primer párrafo (todos los modelos salvo
+    Q-Learning base), Tabla E.3 con 6 filas, párrafo de resultados reescrito (nuevo: el Transformer y el DQN
+    recurrente se superponen; A2C es el más sensible a la semilla) y Tabla E.4 + párrafo nuevos para los ensambles
+    (el ponderado supera a su Transformer en 9/10 combinaciones y es el más estable). §7.3: el primer ítem ahora
+    pide extender el estudio sólo a los escenarios de generalización y resume el resultado (más corto que antes).
+    Números generados por `writings/auxiliar/scripts/seed_comparison.py` (extendido a 6 modelos y 6 ensambles).
+    Auditoría en verde (Tabla E.3 en `\footnotesize`, Tabla E.4 con `adjustbox` para evitar Overfull): 67 páginas;
+    cuerpo 1–42 sin cambios, §7.3 en la pág. 41; E.3 en las págs. 65–67 del PDF. `dict/defensa/README.md` §3 al día.
