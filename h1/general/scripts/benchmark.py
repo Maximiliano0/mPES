@@ -303,6 +303,36 @@ def _collect_performance(log_path: str, outputs_dir: str, metrics: dict) -> "lis
     return []
 
 
+def run_package(pkg: str, scenario_csvs: "tuple[str, str]", env_overrides: dict, log_path: str,
+                outputs_dir: str) -> "tuple[int, list[float]]":
+    """Run one package on the given scenario CSVs exactly as :func:`run_cell` does, without writing a cell.
+
+    Parameters
+    ----------
+    pkg : str
+        Package name (key of ``PACKAGE_GROUPS``).
+    scenario_csvs : tuple of str
+        ``(initial_severity.csv, sequence_lengths.csv)`` copied over the package inputs for the run.
+    env_overrides : dict
+        Extra environment variables (``MPES_OUTPUTS_PATH`` must point to ``outputs_dir``).
+    log_path : str
+        File that receives the subprocess stdout and stderr.
+    outputs_dir : str
+        Folder where the package writes its results.
+
+    Returns
+    -------
+    tuple
+        Subprocess return code and per-sequence performance vector (empty if none was found).
+    """
+    stashes = _stash_then_copy(scenario_csvs, pkg)
+    try:
+        return_code = _spawn(pkg, env_overrides, log_path)
+    finally:
+        _restore(stashes)
+    return return_code, _collect_performance(log_path, outputs_dir, {})
+
+
 ###############
 ##  Cell execution
 ###############

@@ -47,7 +47,13 @@ Notes
   ``floor = severity // 2`` (and ``floor`` is feasible), the decision
   is forced to ``floor``.  Otherwise ``argmax`` selects the final
   action.
+- If the environment variable ``MPES_MODEL_ROOT`` is set, every member
+  model is read from that folder (same file names as in each producing
+  package's ``inputs/``), as in the other ensemble packages.  It is used
+  by ``general/scripts/ensemble_seeds.py`` to swap member seeds; unset,
+  nothing changes.
 """
+import os
 
 # ==================== RESOURCE ALLOCATION SETTINGS ====================
 AVAILABLE_RESOURCES_PER_SEQUENCE = 39   # Total resource budget per sequence
@@ -117,11 +123,21 @@ SEED = 42
 # ``history_len`` is only used by recurrent members; ignore for others.
 # ``weight`` is the relative voting weight (re-normalised internally).
 # Set ``enabled=False`` to skip a member without removing its config.
+# ``MPES_MODEL_ROOT`` (optional) replaces every path by an absolute one
+# inside that folder; ``os.path.join(pkg_root, abs_path)`` keeps it as is.
+MODEL_ROOT = os.environ.get('MPES_MODEL_ROOT', '').strip()
+
+
+def _member_path(relative: str) -> str:
+    """Return ``relative`` or, with ``MPES_MODEL_ROOT`` set, the same file name inside that folder."""
+    return os.path.join(MODEL_ROOT, os.path.basename(relative)) if MODEL_ROOT else relative
+
+
 ENS_MEMBER_MODELS = [
     {
         'name':        'dqn',
         'role':        'q_dense',
-        'path':        '../../ml/pes_dqn/inputs/dqn_model.keras',
+        'path':        _member_path('../../ml/pes_dqn/inputs/dqn_model.keras'),
         'history_len': 1,
         'weight':      0.18,
         'enabled':     True,
@@ -129,7 +145,7 @@ ENS_MEMBER_MODELS = [
     {
         'name':        'a2c',
         'role':        'actor',
-        'path':        '../../ml/pes_a2c/inputs/ac_actor.keras',
+        'path':        _member_path('../../ml/pes_a2c/inputs/ac_actor.keras'),
         'history_len': 1,
         'weight':      1.0,
         'enabled':     False,  # A2C actor is currently very weak; disable by default
@@ -137,7 +153,7 @@ ENS_MEMBER_MODELS = [
     {
         'name':        'rdqn',
         'role':        'q_recurrent',
-        'path':        '../../ml/pes_rdqn/inputs/rdqn_model.keras',
+        'path':        _member_path('../../ml/pes_rdqn/inputs/rdqn_model.keras'),
         'history_len': 6,
         'weight':      0.9,
         'enabled':     True,
@@ -145,7 +161,7 @@ ENS_MEMBER_MODELS = [
     {
         'name':        'trf',
         'role':        'q_recurrent',
-        'path':        '../../ml/pes_trf/inputs/trf_model.keras',
+        'path':        _member_path('../../ml/pes_trf/inputs/trf_model.keras'),
         'history_len': 6,
         'weight':      5.0,
         'enabled':     True,

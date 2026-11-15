@@ -220,30 +220,46 @@ The full comparison is documented in
 ### Seed variability
 
 The delivered models come from the best Optuna trial, so their training seed
-is not an unbiased draw. This study retrains Q-Learning, DQN and the
-Transformer with 10 new seeds each (1001–1010), evaluates them greedily on the
+is not an unbiased draw. This study retrains the six trainable individual
+models (Q-Learning, Double Q-Learning, DQN, recurrent DQN, A2C and the
+Transformer) with 10 new seeds each (1001–1010), evaluates them greedily on the
 reference and the held-out replicas, and reports the delivered model apart
-from the new seeds. It calls the training functions directly — never the
-packages' `train_*` scripts, which overwrite `inputs/` — and writes only to
-`h1/general/work/seeds/`. Runs are resumable.
+from the new seeds. It trains each package as its `train_*` script does (the
+recurrent DQN takes its architecture from `config/CONFIG.py`) but calls the
+training functions directly — never the `train_*` scripts, which overwrite
+`inputs/` — and writes only to `h1/general/work/seeds/`. Runs are resumable.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File utils\scripts\run_seed_variability.ps1   # detached run (from the root)
 
 cd h1
-python -m general.scripts.seed_variability run        # same run in the foreground (default seeds 1001-1005)
-python -m general.scripts.seed_variability run --models trf --seeds 1006 1007   # any other seeds
+python -m general.scripts.seed_variability run        # same run in the foreground (6 models, seeds 1001-1010)
+python -m general.scripts.seed_variability run --models trf --seeds 1006 1007   # any subset
 python -m general.scripts.seed_variability summary    # -> results/individual/seed_variability.json
 ```
 
-Approximate cost on a laptop CPU: 2–3 min (Q-Learning), 18–25 min (DQN) and
-3–7 h (Transformer) per seed. DQN and the Transformer are single-threaded by
-design (determinism), so several seeds can run in parallel as separate
-processes with disjoint `--seeds`. Status: 30 seeds finished (10 per model);
-summary in `h1/general/results/individual/seed_variability.json` and model
-comparison in `seed_comparison.json` (same folder, from
-`writings/auxiliar/scripts/seed_comparison.py`). Per-seed models are versioned
-in `h1/general/work/seeds/` (binaries via Git LFS; run `git lfs pull`).
+Approximate cost on a laptop CPU per seed: 1–3 min (tabular), 20–25 min (DQN),
+about 30 min (A2C) and 3–7 h (recurrent DQN, Transformer). DQN, the recurrent
+DQN and the Transformer are single-threaded by design (determinism), so seeds
+can run in parallel as separate processes with disjoint `--models`/`--seeds`;
+A2C uses several threads and runs in its own process. Status: 60 seeds
+finished (10 per model). Per-seed models are versioned in
+`h1/general/work/seeds/` (binaries via Git LFS; run `git lfs pull`).
+
+**Ensembles.** `h1/general/scripts/ensemble_seeds.py` keeps each ensemble's
+rule and tuned parameters and swaps its members for retrained seeds (via
+`MPES_MODEL_ROOT`): ten member-seed combinations (best, worst and closest to
+the mean of every member, plus seven random ones) shared by the six ensembles,
+evaluated on the reference and the held-out replicas exactly as the benchmark
+runs them. The delivered ensemble is evaluated too as a control (it reproduces
+the benchmark cells). One ensemble must not run in two processes at once.
+
+```powershell
+cd h1
+python -m general.scripts.ensemble_seeds plan       # -> results/ensemble/ensemble_seeds_plan.json
+python -m general.scripts.ensemble_seeds run --ensembles pes_ens pes_ens_sprb
+python -m general.scripts.ensemble_seeds summary    # -> results/ensemble/ensemble_seeds.json
+```
 
 ---
 

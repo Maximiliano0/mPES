@@ -1,11 +1,14 @@
 """Partial estimate of the seed-to-seed variability of the individual models.
 
-Retrains Q-Learning (``pes_ql``), DQN (``pes_dqn``) and the Transformer
-(``pes_trf``) with the best configuration of each package and several new
-training seeds, and evaluates every model greedily on the reference
-(``sev_base``) and the five held-out replicas. The delivered model of each
-package is evaluated with the same code, so the delivered seed is one more
-sample of the distribution.
+Retrains Q-Learning (``pes_ql``), Double Q-Learning (``pes_dql``), DQN
+(``pes_dqn``), the recurrent DQN (``pes_rdqn``), A2C (``pes_a2c``) and the
+Transformer (``pes_trf``) with the best configuration of each package and
+several new training seeds, and evaluates every model greedily on the
+reference (``sev_base``) and the five held-out replicas. The delivered model of
+each package is evaluated with the same code, so the delivered seed is one more
+sample of the distribution. Each package is trained as its ``train_*`` script
+does: ``pes_rdqn`` takes its architecture and episode count from
+``config/CONFIG.py`` (``best_params.json`` keeps stale architecture keys).
 
 The packages' ``train_*`` scripts are **never** called: they overwrite the
 delivered model (``inputs/*.keras``, ``inputs/q.npy``). This harness calls the
@@ -18,7 +21,12 @@ Usage (from ``h1/``, with ``win_mpes_env`` activated)::
 
     python -m general.scripts.seed_variability run
     python -m general.scripts.seed_variability run --models ql dqn --seeds 1001 1002
+    python -m general.scripts.seed_variability run --models a2c --seeds 1003
     python -m general.scripts.seed_variability summary
+
+``run`` without ``--models`` covers the six models with seeds 1001-1010; A2C is then trained in a child process.
+DQN, the recurrent DQN and the Transformer are single-threaded by design, so seeds can also run in parallel as
+separate processes with disjoint ``--models``/``--seeds``.
 """
 
 ##########################
@@ -29,6 +37,7 @@ import ctypes
 import importlib
 import json
 import os
+import subprocess
 import sys
 import time
 from datetime import datetime
@@ -46,12 +55,21 @@ SCENARIO_ROOT = os.path.join(GENERAL, 'work', 'pes_ens', 'scenarios')
 SUMMARY_FILE = os.path.join(GENERAL, 'results', 'individual', 'seed_variability.json')
 LOG_FILE = os.path.join(WORK, 'seed_variability.log')
 SCENARIOS = ['sev_base'] + [f'heldout_s{i}' for i in range(1, 6)]
+NEW_SEEDS = list(range(1001, 1011))
 MODELS = {
-    'ql':  {'pkg': 'tabular.pes_ql', 'delivered': 'q.npy', 'seeds': [1001, 1002, 1003, 1004, 1005]},
-    'dqn': {'pkg': 'ml.pes_dqn', 'delivered': 'dqn_model.keras', 'seeds': [1001, 1002, 1003, 1004, 1005]},
-    'trf': {'pkg': 'ml.pes_trf', 'delivered': 'trf_model.keras', 'seeds': [1001, 1002, 1003, 1004, 1005]},
+    'ql':   {'pkg': 'tabular.pes_ql', 'delivered': 'q.npy', 'seeds': NEW_SEEDS},
+    'dql':  {'pkg': 'tabular.pes_dql', 'delivered': 'q.npy', 'seeds': NEW_SEEDS},
+    'dqn':  {'pkg': 'ml.pes_dqn', 'delivered': 'dqn_model.keras', 'seeds': NEW_SEEDS},
+    'rdqn': {'pkg': 'ml.pes_rdqn', 'delivered': 'rdqn_model.keras', 'seeds': NEW_SEEDS},
+    'a2c':  {'pkg': 'ml.pes_a2c', 'delivered': 'ac_actor.keras', 'seeds': NEW_SEEDS},
+    'trf':  {'pkg': 'ml.pes_trf', 'delivered': 'trf_model.keras', 'seeds': NEW_SEEDS},
 }
-ORDER = ('ql', 'dqn', 'trf')
+ORDER = ('ql', 'dql', 'dqn', 'rdqn', 'a2c', 'trf')
+TABULAR = ('ql', 'dql')
+# ``pes_a2c`` sets TensorFlow intra-op threads to 0 (automatic) at import time and the other networks to 1; TF
+# refuses to change it once initialised, so A2C runs in its own process when requested with other networks.
+ISOLATED = ('a2c',)
+MODEL_MODULES = {'dqn': 'dqn_model', 'rdqn': 'rdqn_model', 'a2c': 'ac_model', 'trf': 'transformer_model'}
 _ES_CONTINUOUS = 0x80000000
 _ES_SYSTEM_REQUIRED = 0x00000001
 
@@ -156,8 +174,25 @@ def dqn_policy(pandemic, model_module, network) -> Callable[[], Callable]:
     return factory
 
 
-def trf_policy(pandemic, model_module, network, history_len: int) -> Callable[[], Callable]:
-    """Greedy windowed policy, identical to ``eval_qf`` in ``pes_trf/ext/train_transformer.py``."""
+def windowed_policy(agent: Callable, model_module, network, history_len: int) -> Callable[[], Callable]:
+    """Greedy windowed policy, identical to ``eval_qf`` in ``train_transformer.py`` and ``train_rdqn.py``.
+
+    Parameters
+    ----------
+    agent : callable
+        ``trf_agent_meta_cognitive`` or ``rdqn_agent_meta_cognitive`` of the package.
+    model_module : module
+        ``transformer_model`` or ``rdqn_model`` (``normalize_state`` and ``HistoryDeque``).
+    network : keras.Model
+        Q-network fed with a window of ``history_len`` normalised states.
+    history_len : int
+        Window length.
+
+    Returns
+    -------
+    callable
+        Factory of a policy whose window is reset at the start of every sequence.
+    """
     def factory() -> Callable:
         history = model_module.HistoryDeque(history_len, 3)
         current = {'seqid': -1}
@@ -169,7 +204,19 @@ def trf_policy(pandemic, model_module, network, history_len: int) -> Callable[[]
             norm = model_module.normalize_state(state, env.max_resources, env.max_seq_length, env.max_severity)
             history.append_step(norm)
             q_values = network(history.current_window()[numpy.newaxis], training=False).numpy()[0].copy()
-            return int(pandemic.trf_agent_meta_cognitive(q_values, state[0], 10000)[0])
+            return int(agent(q_values, state[0], 10000)[0])
+        return policy
+    return factory
+
+
+def a2c_policy(pandemic, model_module, network) -> Callable[[], Callable]:
+    """Greedy actor policy, identical to ``eval_qf`` in ``pes_a2c/ext/train_a2c.py``."""
+    def factory() -> Callable:
+        def policy(env, state, _seqid) -> int:
+            norm = model_module.normalize_state(state, env.available_resources_states - 1, env.trial_no_states - 1,
+                                                env.severity_states - 1)
+            probs = network(norm[numpy.newaxis, :], training=False)[0].numpy().copy()
+            return int(pandemic.ac_agent_meta_cognitive(probs, state[0], 10000)[0])
         return policy
     return factory
 
@@ -189,13 +236,127 @@ def deep_kwargs(params: dict, seed: int) -> dict:
             'target_ratio': hp['target_ratio'], 'learning_starts': starts}
 
 
+def rdqn_config(pkg: str):
+    """Return ``config/CONFIG.py`` of ``pes_rdqn``, the source of its architecture and episode count."""
+    return importlib.import_module(f'{pkg}.config.CONFIG')
+
+
+def train_tabular(key: str, pandemic, pkg: str, params: dict, seed: int) -> numpy.ndarray:
+    """Train a Q-table as ``train_rl.py`` of ``pes_ql`` or ``pes_dql`` does.
+
+    Parameters
+    ----------
+    key : str
+        ``ql`` or ``dql``.
+    pandemic : module
+        ``ext.pandemic`` of the package.
+    pkg : str
+        Dotted package name.
+    params : dict
+        ``best_params.json`` of the package.
+    seed : int
+        Training seed.
+
+    Returns
+    -------
+    numpy.ndarray
+        Trained Q-table.
+    """
+    hp = params['hyperparameters']
+    env = training_env(pandemic, pkg)
+    episodes = int(hp['num_episodes'])
+    if key == 'ql':
+        _rewards, q_table, _conf = pandemic.QLearning(
+            env, hp['learning_rate'], hp['discount_factor'], hp['epsilon_initial'], hp['epsilon_min'], episodes,
+            seed=seed, track_confidence=False)
+        return q_table
+    env.verbose = False
+    decay_rate = (hp['epsilon_min'] / hp['epsilon_initial']) ** (
+        1.0 / ((hp['target_ratio'] - hp['warmup_ratio']) * episodes))
+    _rewards, q_table, _conf = pandemic.QLearning(
+        env, hp['learning_rate'], hp['discount_factor'], hp['epsilon_initial'], hp['epsilon_min'], episodes,
+        decay_rate=decay_rate, warmup_ratio=hp['warmup_ratio'], target_ratio=hp['target_ratio'],
+        double_q=bool(params.get('double_q', True)), penalty_coeff=float(hp['penalty_coeff']), seed=seed,
+        track_confidence=False)
+    return q_table
+
+
+def train_network(key: str, pandemic, pkg: str, params: dict, seed: int):
+    """Train a network as the ``train_*.py`` script of the package does.
+
+    Parameters
+    ----------
+    key : str
+        ``dqn``, ``rdqn``, ``a2c`` or ``trf``.
+    pandemic : module
+        ``ext.pandemic`` of the package.
+    pkg : str
+        Dotted package name.
+    params : dict
+        ``best_params.json`` of the package.
+    seed : int
+        Training seed.
+
+    Returns
+    -------
+    keras.Model
+        Q-network, or the actor for ``a2c``.
+    """
+    hp = params['hyperparameters']
+    env = training_env(pandemic, pkg)
+    if key == 'a2c':
+        env.verbose = False
+        layers = int(hp['n_hidden_layers'])
+        _rewards, actor, _conf = pandemic.A2CTraining(
+            env, hp['actor_lr'], hp['critic_lr'], hp['discount_factor'], hp['entropy_coeff'],
+            hp.get('epsilon_initial', 0.0), hp.get('epsilon_min', 0.0), int(hp['num_episodes']),
+            actor_hidden=[int(hp['actor_hidden_dim'])] * layers, critic_hidden=[int(hp['critic_hidden_dim'])] * layers,
+            seed=seed, compute_confidence=False, warmup_ratio=hp.get('warmup_ratio', 0.0),
+            target_ratio=hp.get('target_ratio', 1.0), penalty_coeff=hp['penalty_coeff'], gae_lambda=hp['gae_lambda'],
+            max_grad_norm=hp['max_grad_norm'], lr_min_ratio=hp['lr_min_ratio'],
+            spend_cost_coeff=hp['spend_cost_coeff'], last_action_bias=hp['last_action_bias'])
+        return actor
+    kwargs = deep_kwargs(params, seed)
+    episodes = int(hp['num_episodes'])
+    if key == 'trf':
+        kwargs.update({name: hp[name] for name in ('history_len', 'd_model', 'num_heads', 'key_dim',
+                                                   'ff_dim', 'num_layers', 'dropout')})
+        train = pandemic.TRFTraining
+    elif key == 'rdqn':
+        cfg = rdqn_config(pkg)
+        env.verbose = False
+        kwargs.update({'hidden_units': list(cfg.RDQN_HIDDEN_UNITS), 'history_len': int(cfg.RDQN_HISTORY_LEN),
+                       'lstm_units': int(cfg.RDQN_LSTM_UNITS)})
+        episodes = int(cfg.RDQN_EPISODES)
+        train = pandemic.RDQNTraining
+    else:
+        train = pandemic.DQNTraining
+    _rewards, network, _conf = train(env, hp['learning_rate'], hp['discount_factor'], hp['epsilon_initial'],
+                                     hp['epsilon_min'], episodes, **kwargs)
+    return network
+
+
+def network_policy(key: str, pandemic, pkg: str, network) -> Callable[[], Callable]:
+    """Greedy evaluation policy of a trained network, as in the ``eval_qf`` of each package."""
+    model_module = importlib.import_module(f'{pkg}.ext.{MODEL_MODULES[key]}')
+    if key == 'dqn':
+        return dqn_policy(pandemic, model_module, network)
+    if key == 'a2c':
+        return a2c_policy(pandemic, model_module, network)
+    if key == 'rdqn':
+        return windowed_policy(pandemic.rdqn_agent_meta_cognitive, model_module, network,
+                               int(rdqn_config(pkg).RDQN_HISTORY_LEN))
+    history_len = int(best_params(pkg)['hyperparameters']['history_len'])
+    return windowed_policy(pandemic.trf_agent_meta_cognitive, model_module, network, history_len)
+
+
 def run_one(key: str, seed: int) -> Tuple[Dict[str, float], float]:
     """Train (or load, for the delivered model) one model and evaluate it.
 
     Parameters
     ----------
     key : str
-        ``ql``, ``dqn`` or ``trf``.
+        One of ``ORDER``.
     seed : int
         Training seed; ``0`` evaluates the delivered model without training.
 
@@ -209,41 +370,24 @@ def run_one(key: str, seed: int) -> Tuple[Dict[str, float], float]:
     pandemic = importlib.import_module(f'{pkg}.ext.pandemic')
     tools = importlib.import_module(f'{pkg}.ext.tools')
     params = best_params(pkg)
-    hp = params['hyperparameters']
     out_dir = os.path.join(WORK, pkg.split('.')[1], 'entregado' if seed == 0 else f'seed_{seed}')
     os.makedirs(out_dir, exist_ok=True)
     delivered = os.path.join(package_inputs(pkg), spec['delivered'])
     start = time.perf_counter()
-    if key == 'ql':
+    if key in TABULAR:
         if seed == 0:
             q_table = numpy.load(delivered)
         else:
-            _rewards, q_table, _conf = pandemic.QLearning(
-                training_env(pandemic, pkg), hp['learning_rate'], hp['discount_factor'], hp['epsilon_initial'],
-                hp['epsilon_min'], int(hp['num_episodes']), seed=seed, track_confidence=False)
-            numpy.save(os.path.join(out_dir, 'q.npy'), q_table)
+            q_table = train_tabular(key, pandemic, pkg, params, seed)
+            numpy.save(os.path.join(out_dir, spec['delivered']), q_table)
         factory = ql_policy(q_table)
     else:
-        tf = importlib.import_module('tensorflow')
-        model_module = importlib.import_module(f'{pkg}.ext.{"dqn_model" if key == "dqn" else "transformer_model"}')
         if seed == 0:
-            network = tf.keras.models.load_model(delivered, safe_mode=False)
+            network = importlib.import_module('tensorflow').keras.models.load_model(delivered, safe_mode=False)
         else:
-            kwargs = deep_kwargs(params, seed)
-            if key == 'trf':
-                kwargs.update({name: hp[name] for name in ('history_len', 'd_model', 'num_heads', 'key_dim',
-                                                           'ff_dim', 'num_layers', 'dropout')})
-                train = pandemic.TRFTraining
-            else:
-                train = pandemic.DQNTraining
-            _rewards, network, _conf = train(training_env(pandemic, pkg), hp['learning_rate'],
-                                             hp['discount_factor'], hp['epsilon_initial'], hp['epsilon_min'],
-                                             int(hp['num_episodes']), **kwargs)
+            network = train_network(key, pandemic, pkg, params, seed)
             network.save(os.path.join(out_dir, spec['delivered']))
-        if key == 'dqn':
-            factory = dqn_policy(pandemic, model_module, network)
-        else:
-            factory = trf_policy(pandemic, model_module, network, int(hp['history_len']))
+        factory = network_policy(key, pandemic, pkg, network)
     elapsed = time.perf_counter() - start
     return evaluate(pandemic, tools, factory), elapsed
 
@@ -306,6 +450,35 @@ def summarise() -> dict:
     return summary
 
 
+def run_model(key: str, seeds: List[int]) -> None:
+    """Train and evaluate the pending seeds of one model (the delivered model first), skipping finished ones.
+
+    Parameters
+    ----------
+    key : str
+        One of ``ORDER``.
+    seeds : list of int
+        New training seeds; the delivered model (seed ``0``) is always added in front.
+    """
+    check_training_inputs(MODELS[key]['pkg'])
+    for seed in [0] + list(seeds):
+        folder = os.path.join(WORK, MODELS[key]['pkg'].split('.')[1], 'entregado' if seed == 0 else f'seed_{seed}')
+        result_file = os.path.join(folder, 'result.json')
+        if os.path.isfile(result_file):
+            log(f'{key} semilla {seed}: ya hecha, se omite')
+            continue
+        log(f'{key} semilla {seed}: inicio')
+        means, seconds = run_one(key, seed)
+        # Atomic write: parallel processes read every result.json in summarise().
+        partial = result_file + '.tmp'
+        with open(partial, 'w', encoding='utf-8') as handle:
+            json.dump({'modelo': key, 'semilla': seed, 'segundos': seconds, 'medias': means}, handle, indent=1)
+        os.replace(partial, result_file)
+        log(f'{key} semilla {seed}: fin en {seconds / 3600:.2f} h; referencia '
+            f"{means['sev_base']:.4f}, held-out {numpy.mean([means[s] for s in SCENARIOS[1:]]):.4f}")
+        summarise()
+
+
 ###############
 ##  Main
 ###############
@@ -320,23 +493,16 @@ def main() -> None:
     if args.command == 'run':
         keep_awake(True)
         try:
+            isolated = [key for key in args.models if key in ISOLATED
+                        and any(other != key and other not in TABULAR for other in args.models)]
             for key in args.models:
-                check_training_inputs(MODELS[key]['pkg'])
-                for seed in [0] + (args.seeds or MODELS[key]['seeds']):
-                    folder = os.path.join(WORK, MODELS[key]['pkg'].split('.')[1],
-                                          'entregado' if seed == 0 else f'seed_{seed}')
-                    result_file = os.path.join(folder, 'result.json')
-                    if os.path.isfile(result_file):
-                        log(f'{key} semilla {seed}: ya hecha, se omite')
-                        continue
-                    log(f'{key} semilla {seed}: inicio')
-                    means, seconds = run_one(key, seed)
-                    with open(result_file, 'w', encoding='utf-8') as handle:
-                        json.dump({'modelo': key, 'semilla': seed, 'segundos': seconds, 'medias': means}, handle,
-                                  indent=1)
-                    log(f'{key} semilla {seed}: fin en {seconds / 3600:.2f} h; referencia '
-                        f"{means['sev_base']:.4f}, held-out {numpy.mean([means[s] for s in SCENARIOS[1:]]):.4f}")
-                    summarise()
+                if key not in isolated:
+                    run_model(key, args.seeds or MODELS[key]['seeds'])
+            for key in isolated:
+                seeds = [str(seed) for seed in args.seeds] if args.seeds else []
+                log(f'{key}: en un proceso propio (configuración de hilos de TensorFlow incompatible)')
+                subprocess.run([sys.executable, '-m', 'general.scripts.seed_variability', 'run', '--models', key]
+                               + (['--seeds'] + seeds if seeds else []), cwd=H1, check=False)
         finally:
             keep_awake(False)
     summary = summarise()

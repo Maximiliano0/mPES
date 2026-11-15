@@ -147,3 +147,278 @@
 [2026-11-15 00:09:56] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
 [2026-11-15 00:09:56] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
 [2026-11-15 00:09:56] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 00:35:20] a2c: en un proceso propio (configuración de hilos de TensorFlow incompatible)
+[2026-11-15 00:35:20] a2c: en un proceso propio (configuración de hilos de TensorFlow incompatible)
+[2026-11-15 00:39:08] dql semilla 0: inicio
+[2026-11-15 00:39:13] dql semilla 0: fin en 0.00 h; referencia 0.8963, held-out 0.9002
+[2026-11-15 00:39:14] rdqn semilla 0: inicio
+[2026-11-15 00:39:40] rdqn semilla 0: fin en 0.00 h; referencia 0.8987, held-out 0.9029
+[2026-11-15 00:39:41] a2c semilla 0: inicio
+[2026-11-15 00:39:49] a2c semilla 0: fin en 0.00 h; referencia 0.8872, held-out 0.8869
+[2026-11-15 00:48:59] dql semilla 0: ya hecha, se omite
+
+[2026-11-15 00:48:59] rdqn semilla 1001: inicio
+[2026-11-15 00:48:59] a2c semilla 1001: inicio
+[2026-11-15 00:48:59] dql semilla 1001: inicio
+[2026-11-15 00:48:59] a2c semilla 1006: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1002: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1003: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1004: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1006: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1005: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1007: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1008: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1009: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1010: inicio
+[2026-11-15 00:51:19] dql semilla 1001: fin en 0.04 h; referencia 0.8662, held-out 0.8660
+[2026-11-15 00:51:19] dql semilla 1002: inicio
+[2026-11-15 00:53:30] dql semilla 1002: fin en 0.04 h; referencia 0.8698, held-out 0.8725
+[2026-11-15 00:53:30] dql semilla 1003: inicio
+[2026-11-15 00:55:35] dql semilla 1003: fin en 0.03 h; referencia 0.8547, held-out 0.8595
+[2026-11-15 00:55:35] dql semilla 1004: inicio
+[2026-11-15 00:57:36] dql semilla 1004: fin en 0.03 h; referencia 0.8790, held-out 0.8803
+[2026-11-15 00:57:36] dql semilla 1005: inicio
+[2026-11-15 01:01:50] corrida 2 cortada por reinicio manual a las 00:58 (dql 1001-1004 terminadas); se relanza
+[2026-11-15 01:01:52] dql semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] a2c semilla 1006: inicio
+[2026-11-15 01:01:52] dql semilla 1001: ya hecha, se omite
+[2026-11-15 01:01:52] a2c semilla 1001: inicio
+[2026-11-15 01:01:52] dql semilla 1002: ya hecha, se omite
+[2026-11-15 01:01:52] dql semilla 1003: ya hecha, se omite
+[2026-11-15 01:01:52] dql semilla 1004: ya hecha, se omite
+[2026-11-15 01:01:52] dql semilla 1005: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1001: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1003: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1004: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1002: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1005: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1006: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1007: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1008: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1010: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1009: inicio
+[2026-11-15 01:04:18] dql semilla 1005: fin en 0.04 h; referencia 0.8789, held-out 0.8825
+[2026-11-15 01:04:18] dql semilla 1006: inicio
+[2026-11-15 01:06:25] dql semilla 1006: fin en 0.04 h; referencia 0.8809, held-out 0.8762
+[2026-11-15 01:06:25] dql semilla 1007: inicio
+[2026-11-15 01:08:32] dql semilla 1007: fin en 0.04 h; referencia 0.8809, held-out 0.8781
+[2026-11-15 01:08:32] dql semilla 1008: inicio
+[2026-11-15 01:10:27] dql semilla 1008: fin en 0.03 h; referencia 0.8789, held-out 0.8819
+[2026-11-15 01:10:27] dql semilla 1009: inicio
+[2026-11-15 01:10:46] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:10:46] rdqn semilla 1006: inicio
+[2026-11-15 01:10:54] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:10:54] rdqn semilla 1004: inicio
+[2026-11-15 01:10:57] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:10:57] a2c semilla 1001: inicio
+[2026-11-15 01:11:05] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:11:05] a2c semilla 1001: inicio
+[2026-11-15 01:11:09] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:09] rdqn semilla 1004: inicio
+[2026-11-15 01:11:15] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:15] rdqn semilla 1001: inicio
+[2026-11-15 01:11:17] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:17] rdqn semilla 1001: inicio
+[2026-11-15 01:11:22] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:22] rdqn semilla 1010: inicio
+[2026-11-15 01:11:24] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:11:24] a2c semilla 1006: inicio
+[2026-11-15 01:11:28] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:28] rdqn semilla 1009: inicio
+[2026-11-15 01:11:32] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:32] rdqn semilla 1002: inicio
+[2026-11-15 01:11:46] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:11:46] a2c semilla 1006: inicio
+[2026-11-15 01:12:05] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:05] rdqn semilla 1007: inicio
+[2026-11-15 01:12:07] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:07] rdqn semilla 1009: inicio
+[2026-11-15 01:12:08] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:08] rdqn semilla 1008: inicio
+[2026-11-15 01:12:10] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:10] rdqn semilla 1005: inicio
+[2026-11-15 01:12:11] dql semilla 1009: fin en 0.03 h; referencia 0.8739, held-out 0.8757
+[2026-11-15 01:12:11] dql semilla 1010: inicio
+[2026-11-15 01:12:13] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:13] rdqn semilla 1007: inicio
+[2026-11-15 01:12:18] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:18] rdqn semilla 1003: inicio
+[2026-11-15 01:12:27] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:27] rdqn semilla 1008: inicio
+[2026-11-15 01:12:29] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:29] rdqn semilla 1006: inicio
+[2026-11-15 01:12:32] dql semilla 0: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1001: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1002: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1003: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1004: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1005: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1006: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1007: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1008: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1009: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1010: inicio
+[2026-11-15 01:12:34] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:34] rdqn semilla 1003: inicio
+[2026-11-15 01:19:31] corrida 2 relanzada en 6 carriles (prioridad inferior a la normal, CPUs 2-11)
+[2026-11-15 01:19:37] dql semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1001: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1002: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1003: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1004: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1005: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1006: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1007: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1008: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1009: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1010: inicio
+[2026-11-15 01:19:37] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] a2c semilla 1006: inicio
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 1001: inicio
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 1003: inicio
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 1005: inicio
+[2026-11-15 01:21:26] dql semilla 1010: fin en 0.03 h; referencia 0.8793, held-out 0.8829
+[2026-11-15 01:21:26] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 01:21:26] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 01:21:26] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 01:21:26] rdqn: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 01:21:26] a2c: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 01:21:26] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 01:21:27] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:21:27] a2c semilla 1001: inicio
+[2026-11-15 01:33:20] a2c semilla 1006: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:33:20] a2c semilla 1007: inicio
+[2026-11-15 01:35:14] a2c semilla 1001: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:35:14] a2c semilla 1002: inicio
+[2026-11-15 01:47:59] a2c semilla 1007: fin en 0.24 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:47:59] a2c semilla 1008: inicio
+[2026-11-15 01:49:53] a2c semilla 1002: fin en 0.24 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:49:53] a2c semilla 1003: inicio
+[2026-11-15 02:01:46] a2c semilla 1008: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 02:01:46] a2c semilla 1009: inicio
+[2026-11-15 02:03:38] a2c semilla 1003: fin en 0.23 h; referencia 0.8108, held-out 0.8135
+[2026-11-15 02:03:38] a2c semilla 1004: inicio
+[2026-11-15 02:15:45] a2c semilla 1009: fin en 0.23 h; referencia 0.8872, held-out 0.8869
+[2026-11-15 02:15:45] a2c semilla 1010: inicio
+[2026-11-15 02:17:35] a2c semilla 1004: fin en 0.23 h; referencia 0.7857, held-out 0.7796
+[2026-11-15 02:17:35] a2c semilla 1005: inicio
+[2026-11-15 02:29:42] a2c semilla 1010: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 02:29:42] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:29:42] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:29:42] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:29:42] rdqn: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 02:29:42] a2c: semillas nuevas n=9  ref 0.8479 ± 0.0304  held-out 0.8488 ± 0.0320
+[2026-11-15 02:29:42] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:29:43] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:29:43] rdqn semilla 1010: inicio
+[2026-11-15 02:31:24] a2c semilla 1005: fin en 0.23 h; referencia 0.7857, held-out 0.7796
+[2026-11-15 02:31:24] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:31:24] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:31:24] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:31:24] rdqn: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 02:31:24] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:31:24] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:31:25] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:31:25] rdqn semilla 1009: inicio
+[2026-11-15 02:41:00] rdqn semilla 1007: fin en 1.34 h; referencia 0.9209, held-out 0.9171
+[2026-11-15 02:41:00] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:41:00] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:41:00] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:41:00] rdqn: semillas nuevas n=1  ref 0.9209 ± 0.0000  held-out 0.9171 ± 0.0000
+[2026-11-15 02:41:00] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:41:00] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:41:02] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:41:02] rdqn semilla 1008: inicio
+[2026-11-15 02:41:25] rdqn semilla 1003: fin en 1.35 h; referencia 0.8642, held-out 0.8617
+[2026-11-15 02:41:25] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:41:25] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:41:25] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:41:25] rdqn: semillas nuevas n=2  ref 0.8925 ± 0.0401  held-out 0.8894 ± 0.0392
+[2026-11-15 02:41:25] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:41:25] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:41:26] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:41:26] rdqn semilla 1004: inicio
+[2026-11-15 02:41:42] rdqn semilla 1005: fin en 1.35 h; referencia 0.9182, held-out 0.9198
+[2026-11-15 02:41:42] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:41:42] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:41:42] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:41:42] rdqn: semillas nuevas n=3  ref 0.9011 ± 0.0320  held-out 0.8995 ± 0.0328
+[2026-11-15 02:41:42] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:41:42] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:41:43] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:41:43] rdqn semilla 1006: inicio
+[2026-11-15 02:43:40] rdqn semilla 1001: fin en 1.39 h; referencia 0.9092, held-out 0.8976
+[2026-11-15 02:43:40] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:43:40] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:43:40] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:43:40] rdqn: semillas nuevas n=4  ref 0.9031 ± 0.0264  held-out 0.8991 ± 0.0268
+[2026-11-15 02:43:40] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:43:40] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:43:41] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:43:41] rdqn semilla 1002: inicio
+[2026-11-15 03:48:31] rdqn semilla 1010: fin en 1.30 h; referencia 0.8978, held-out 0.8909
+[2026-11-15 03:48:31] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 03:48:31] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 03:48:31] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 03:48:31] rdqn: semillas nuevas n=5  ref 0.9021 ± 0.0230  held-out 0.8974 ± 0.0235
+[2026-11-15 03:48:31] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 03:48:31] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 03:50:17] rdqn semilla 1009: fin en 1.30 h; referencia 0.8714, held-out 0.8628
+[2026-11-15 03:50:17] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 03:50:17] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 03:50:17] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 03:50:17] rdqn: semillas nuevas n=6  ref 0.8969 ± 0.0241  held-out 0.8916 ± 0.0253
+[2026-11-15 03:50:17] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 03:50:17] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:00:02] rdqn semilla 1004: fin en 1.30 h; referencia 0.8994, held-out 0.9094
+[2026-11-15 04:00:02] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:00:02] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:00:02] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:00:02] rdqn: semillas nuevas n=7  ref 0.8973 ± 0.0220  held-out 0.8942 ± 0.0241
+[2026-11-15 04:00:02] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:00:02] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:00:33] rdqn semilla 1008: fin en 1.31 h; referencia 0.9168, held-out 0.9119
+[2026-11-15 04:00:33] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:00:33] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:00:33] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:00:33] rdqn: semillas nuevas n=8  ref 0.8997 ± 0.0215  held-out 0.8964 ± 0.0232
+[2026-11-15 04:00:33] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:00:33] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:00:56] rdqn semilla 1006: fin en 1.31 h; referencia 0.9038, held-out 0.8805
+[2026-11-15 04:00:56] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:00:56] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:00:56] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:00:56] rdqn: semillas nuevas n=9  ref 0.9002 ± 0.0202  held-out 0.8946 ± 0.0223
+[2026-11-15 04:00:57] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:00:57] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:01:18] rdqn semilla 1002: fin en 1.28 h; referencia 0.9199, held-out 0.9236
+[2026-11-15 04:01:18] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:01:18] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:01:18] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:01:18] rdqn: semillas nuevas n=10  ref 0.9022 ± 0.0200  held-out 0.8975 ± 0.0229
+[2026-11-15 04:01:18] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:01:18] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111

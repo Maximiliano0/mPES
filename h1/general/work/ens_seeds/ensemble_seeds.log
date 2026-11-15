@@ -1,0 +1,193 @@
+[2026-11-15 06:31:22] c01_mejores  {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:31:22] c02_peores   {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:31:22] c03_media    {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:31:22] c04_azar1    {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:31:22] c05_azar2    {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:31:22] c06_azar3    {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:31:22] c07_azar4    {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:31:22] c08_azar5    {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:31:22] c09_azar6    {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:31:22] c10_azar7    {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 06:33:07] pes_ens entregado: inicio (miembros entregados)
+[2026-11-15 06:33:07] pes_ens_sprb entregado: inicio (miembros entregados)
+[2026-11-15 06:33:07] pes_ens_accq entregado: inicio (miembros entregados)
+[2026-11-15 06:33:07] pes_ens_consensus entregado: inicio (miembros entregados)
+[2026-11-15 06:33:07] pes_ens_consensus_prior entregado: inicio (miembros entregados)
+[2026-11-15 06:33:07] pes_ens_trf_guard entregado: inicio (miembros entregados)
+[2026-11-15 06:35:04] pes_ens_consensus entregado: inicio (miembros entregados)
+[2026-11-15 06:35:04] pes_ens_sprb entregado: inicio (miembros entregados)
+[2026-11-15 06:35:04] pes_ens_trf_guard entregado: inicio (miembros entregados)
+[2026-11-15 06:35:19] pes_ens entregado: fin; referencia 0.9373, held-out 0.9388
+[2026-11-15 06:35:19] pes_ens c01_mejores: inicio {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:35:47] pes_ens_consensus_prior entregado: fin; referencia 0.9177, held-out 0.9148
+[2026-11-15 06:35:47] pes_ens_consensus_prior c01_mejores: inicio {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:35:48] pes_ens_accq entregado: fin; referencia 0.9142, held-out 0.9162
+[2026-11-15 06:35:48] pes_ens_accq c01_mejores: inicio {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:37:27] pes_ens c01_mejores: fin; referencia 0.9365, held-out 0.9396
+[2026-11-15 06:37:27] pes_ens c02_peores: inicio {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:37:41] pes_ens_sprb entregado: fin; referencia 0.9142, held-out 0.9170
+[2026-11-15 06:37:41] pes_ens_sprb c01_mejores: inicio {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:37:41] pes_ens_trf_guard entregado: fin; referencia 0.9279, held-out 0.9276
+[2026-11-15 06:37:41] pes_ens_trf_guard c01_mejores: inicio {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:37:42] pes_ens_consensus entregado: fin; referencia 0.8893, held-out 0.8931
+[2026-11-15 06:37:42] pes_ens_consensus c01_mejores: inicio {'dqn': 1005, 'rdqn': 1002, 'trf': 1004, 'a2c': 1009}
+[2026-11-15 06:38:20] pes_ens_consensus_prior c01_mejores: fin; referencia 0.9244, held-out 0.9161
+[2026-11-15 06:38:20] pes_ens_consensus_prior c02_peores: inicio {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:38:21] pes_ens_accq c01_mejores: fin; referencia 0.9255, held-out 0.9284
+[2026-11-15 06:38:21] pes_ens_accq c02_peores: inicio {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:39:41] pes_ens c02_peores: fin; referencia 0.9267, held-out 0.9274
+[2026-11-15 06:39:41] pes_ens c03_media: inicio {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:40:18] pes_ens_sprb c01_mejores: fin; referencia 0.9254, held-out 0.9275
+[2026-11-15 06:40:18] pes_ens_sprb c02_peores: inicio {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:40:19] pes_ens_trf_guard c01_mejores: fin; referencia 0.9316, held-out 0.9344
+[2026-11-15 06:40:19] pes_ens_trf_guard c02_peores: inicio {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:40:20] pes_ens_consensus c01_mejores: fin; referencia 0.8890, held-out 0.8902
+[2026-11-15 06:40:20] pes_ens_consensus c02_peores: inicio {'dqn': 1007, 'rdqn': 1003, 'trf': 1009, 'a2c': 1005}
+[2026-11-15 06:40:52] pes_ens_consensus_prior c02_peores: fin; referencia 0.8807, held-out 0.8689
+[2026-11-15 06:40:52] pes_ens_consensus_prior c03_media: inicio {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:40:53] pes_ens_accq c02_peores: fin; referencia 0.8625, held-out 0.8677
+[2026-11-15 06:40:53] pes_ens_accq c03_media: inicio {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:41:52] pes_ens c03_media: fin; referencia 0.9311, held-out 0.9357
+[2026-11-15 06:41:52] pes_ens c04_azar1: inicio {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:42:51] pes_ens_sprb c02_peores: fin; referencia 0.8558, held-out 0.8664
+[2026-11-15 06:42:51] pes_ens_sprb c03_media: inicio {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:42:54] pes_ens_trf_guard c02_peores: fin; referencia 0.8937, held-out 0.9007
+[2026-11-15 06:42:54] pes_ens_trf_guard c03_media: inicio {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:42:57] pes_ens_consensus c02_peores: fin; referencia 0.8572, held-out 0.8567
+[2026-11-15 06:42:57] pes_ens_consensus c03_media: inicio {'dqn': 1001, 'rdqn': 1001, 'trf': 1003, 'a2c': 1001}
+[2026-11-15 06:43:26] pes_ens_consensus_prior c03_media: fin; referencia 0.9148, held-out 0.9077
+[2026-11-15 06:43:26] pes_ens_consensus_prior c04_azar1: inicio {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:43:26] pes_ens_accq c03_media: fin; referencia 0.9139, held-out 0.9024
+[2026-11-15 06:43:26] pes_ens_accq c04_azar1: inicio {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:44:06] pes_ens c04_azar1: fin; referencia 0.9265, held-out 0.9291
+[2026-11-15 06:44:06] pes_ens c05_azar2: inicio {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:45:20] pes_ens_sprb c03_media: fin; referencia 0.9056, held-out 0.9036
+[2026-11-15 06:45:20] pes_ens_sprb c04_azar1: inicio {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:45:24] pes_ens_trf_guard c03_media: fin; referencia 0.9180, held-out 0.9206
+[2026-11-15 06:45:24] pes_ens_trf_guard c04_azar1: inicio {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:45:30] pes_ens_consensus c03_media: fin; referencia 0.8534, held-out 0.8619
+[2026-11-15 06:45:30] pes_ens_consensus c04_azar1: inicio {'dqn': 1005, 'rdqn': 1006, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:45:59] pes_ens_accq c04_azar1: fin; referencia 0.9130, held-out 0.8916
+[2026-11-15 06:45:59] pes_ens_accq c05_azar2: inicio {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:45:59] pes_ens_consensus_prior c04_azar1: fin; referencia 0.8747, held-out 0.8626
+[2026-11-15 06:45:59] pes_ens_consensus_prior c05_azar2: inicio {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:46:18] pes_ens c05_azar2: fin; referencia 0.9255, held-out 0.9281
+[2026-11-15 06:46:18] pes_ens c06_azar3: inicio {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:47:52] pes_ens_sprb c04_azar1: fin; referencia 0.9103, held-out 0.8929
+[2026-11-15 06:47:52] pes_ens_sprb c05_azar2: inicio {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:47:54] pes_ens_trf_guard c04_azar1: fin; referencia 0.9339, held-out 0.9351
+[2026-11-15 06:47:54] pes_ens_trf_guard c05_azar2: inicio {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:48:03] pes_ens_consensus c04_azar1: fin; referencia 0.8580, held-out 0.8598
+[2026-11-15 06:48:03] pes_ens_consensus c05_azar2: inicio {'dqn': 1009, 'rdqn': 1006, 'trf': 1009, 'a2c': 1003}
+[2026-11-15 06:48:29] pes_ens c06_azar3: fin; referencia 0.9334, held-out 0.9338
+[2026-11-15 06:48:29] pes_ens c07_azar4: inicio {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:48:31] pes_ens_consensus_prior c05_azar2: fin; referencia 0.8543, held-out 0.8539
+[2026-11-15 06:48:31] pes_ens_consensus_prior c06_azar3: inicio {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:48:33] pes_ens_accq c05_azar2: fin; referencia 0.9100, held-out 0.8986
+[2026-11-15 06:48:33] pes_ens_accq c06_azar3: inicio {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:50:24] pes_ens_sprb c05_azar2: fin; referencia 0.9081, held-out 0.8889
+[2026-11-15 06:50:24] pes_ens_sprb c06_azar3: inicio {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:50:27] pes_ens_trf_guard c05_azar2: fin; referencia 0.8955, held-out 0.9005
+[2026-11-15 06:50:27] pes_ens_trf_guard c06_azar3: inicio {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:50:39] pes_ens_consensus c05_azar2: fin; referencia 0.8857, held-out 0.8863
+[2026-11-15 06:50:39] pes_ens_consensus c06_azar3: inicio {'dqn': 1004, 'rdqn': 1007, 'trf': 1002, 'a2c': 1004}
+[2026-11-15 06:50:41] pes_ens c07_azar4: fin; referencia 0.9253, held-out 0.9317
+[2026-11-15 06:50:41] pes_ens c08_azar5: inicio {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:51:04] pes_ens_consensus_prior c06_azar3: fin; referencia 0.9064, held-out 0.9077
+[2026-11-15 06:51:04] pes_ens_consensus_prior c07_azar4: inicio {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:51:05] pes_ens_accq c06_azar3: fin; referencia 0.9209, held-out 0.9181
+[2026-11-15 06:51:05] pes_ens_accq c07_azar4: inicio {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:52:51] pes_ens c08_azar5: fin; referencia 0.9352, held-out 0.9357
+[2026-11-15 06:52:51] pes_ens c09_azar6: inicio {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:52:54] pes_ens_sprb c06_azar3: fin; referencia 0.9209, held-out 0.9183
+[2026-11-15 06:52:54] pes_ens_sprb c07_azar4: inicio {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:52:57] pes_ens_trf_guard c06_azar3: fin; referencia 0.9334, held-out 0.9339
+[2026-11-15 06:52:57] pes_ens_trf_guard c07_azar4: inicio {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:53:16] pes_ens_consensus c06_azar3: fin; referencia 0.8957, held-out 0.8878
+[2026-11-15 06:53:16] pes_ens_consensus c07_azar4: inicio {'dqn': 1004, 'rdqn': 1005, 'trf': 1007, 'a2c': 1006}
+[2026-11-15 06:53:39] pes_ens_consensus_prior c07_azar4: fin; referencia 0.9119, held-out 0.9092
+[2026-11-15 06:53:39] pes_ens_consensus_prior c08_azar5: inicio {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:53:41] pes_ens_accq c07_azar4: fin; referencia 0.9055, held-out 0.9137
+[2026-11-15 06:53:41] pes_ens_accq c08_azar5: inicio {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:55:00] pes_ens c09_azar6: fin; referencia 0.9280, held-out 0.9299
+[2026-11-15 06:55:00] pes_ens c10_azar7: inicio {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 06:55:28] pes_ens_sprb c07_azar4: fin; referencia 0.9201, held-out 0.9210
+[2026-11-15 06:55:28] pes_ens_sprb c08_azar5: inicio {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:55:28] pes_ens_trf_guard c07_azar4: fin; referencia 0.9207, held-out 0.9250
+[2026-11-15 06:55:28] pes_ens_trf_guard c08_azar5: inicio {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:55:52] pes_ens_consensus c07_azar4: fin; referencia 0.8740, held-out 0.8641
+[2026-11-15 06:55:52] pes_ens_consensus c08_azar5: inicio {'dqn': 1001, 'rdqn': 1010, 'trf': 1005, 'a2c': 1004}
+[2026-11-15 06:56:06] pes_ens_consensus_prior c08_azar5: fin; referencia 0.8873, held-out 0.8895
+[2026-11-15 06:56:06] pes_ens_consensus_prior c09_azar6: inicio {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:56:15] pes_ens_accq c08_azar5: fin; referencia 0.9075, held-out 0.9010
+[2026-11-15 06:56:15] pes_ens_accq c09_azar6: inicio {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:57:20] pes_ens c10_azar7: fin; referencia 0.9162, held-out 0.9273
+[2026-11-15 06:57:20] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 06:57:20] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=7 ref 0.9066 ± 0.0236  held-out 0.9027 ± 0.0216
+[2026-11-15 06:57:20] pes_ens_accq: entregado ref 0.9142 | combinaciones n=8 ref 0.9073 ± 0.0193  held-out 0.9027 ± 0.0185
+[2026-11-15 06:57:20] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=7 ref 0.8733 ± 0.0173  held-out 0.8724 ± 0.0149
+[2026-11-15 06:57:20] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=8 ref 0.8943 ± 0.0239  held-out 0.8894 ± 0.0244
+[2026-11-15 06:57:20] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=7 ref 0.9181 ± 0.0172  held-out 0.9214 ± 0.0152
+[2026-11-15 06:58:02] pes_ens_trf_guard c08_azar5: fin; referencia 0.9301, held-out 0.9260
+[2026-11-15 06:58:02] pes_ens_trf_guard c09_azar6: inicio {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:58:02] pes_ens_sprb c08_azar5: fin; referencia 0.9105, held-out 0.8953
+[2026-11-15 06:58:02] pes_ens_sprb c09_azar6: inicio {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:58:20] pes_ens_consensus c08_azar5: fin; referencia 0.8663, held-out 0.8680
+[2026-11-15 06:58:20] pes_ens_consensus c09_azar6: inicio {'dqn': 1010, 'rdqn': 1007, 'trf': 1007, 'a2c': 1008}
+[2026-11-15 06:58:34] pes_ens_consensus_prior c09_azar6: fin; referencia 0.9077, held-out 0.9100
+[2026-11-15 06:58:34] pes_ens_consensus_prior c10_azar7: inicio {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 06:58:39] pes_ens_accq c09_azar6: fin; referencia 0.9195, held-out 0.9206
+[2026-11-15 06:58:39] pes_ens_accq c10_azar7: inicio {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 07:00:29] pes_ens_trf_guard c09_azar6: fin; referencia 0.9201, held-out 0.9254
+[2026-11-15 07:00:29] pes_ens_trf_guard c10_azar7: inicio {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 07:00:31] pes_ens_sprb c09_azar6: fin; referencia 0.9194, held-out 0.9201
+[2026-11-15 07:00:31] pes_ens_sprb c10_azar7: inicio {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 07:00:44] pes_ens_consensus c09_azar6: fin; referencia 0.8805, held-out 0.8702
+[2026-11-15 07:00:44] pes_ens_consensus c10_azar7: inicio {'dqn': 1009, 'rdqn': 1008, 'trf': 1001, 'a2c': 1007}
+[2026-11-15 07:00:55] pes_ens_consensus_prior c10_azar7: fin; referencia 0.8906, held-out 0.8935
+[2026-11-15 07:00:55] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 07:00:55] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=9 ref 0.9085 ± 0.0209  held-out 0.9038 ± 0.0198
+[2026-11-15 07:00:55] pes_ens_accq: entregado ref 0.9142 | combinaciones n=9 ref 0.9087 ± 0.0185  held-out 0.9047 ± 0.0183
+[2026-11-15 07:00:55] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=9 ref 0.8733 ± 0.0154  held-out 0.8717 ± 0.0130
+[2026-11-15 07:00:55] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 07:00:55] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=9 ref 0.9197 ± 0.0155  held-out 0.9224 ± 0.0133
+[2026-11-15 07:00:59] pes_ens_accq c10_azar7: fin; referencia 0.9163, held-out 0.9079
+[2026-11-15 07:00:59] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 07:00:59] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=9 ref 0.9085 ± 0.0209  held-out 0.9038 ± 0.0198
+[2026-11-15 07:00:59] pes_ens_accq: entregado ref 0.9142 | combinaciones n=10 ref 0.9095 ± 0.0176  held-out 0.9050 ± 0.0173
+[2026-11-15 07:00:59] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=9 ref 0.8733 ± 0.0154  held-out 0.8717 ± 0.0130
+[2026-11-15 07:00:59] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 07:00:59] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=9 ref 0.9197 ± 0.0155  held-out 0.9224 ± 0.0133
+[2026-11-15 07:02:43] pes_ens_trf_guard c10_azar7: fin; referencia 0.9161, held-out 0.9089
+[2026-11-15 07:02:43] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 07:02:43] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=9 ref 0.9085 ± 0.0209  held-out 0.9038 ± 0.0198
+[2026-11-15 07:02:43] pes_ens_accq: entregado ref 0.9142 | combinaciones n=10 ref 0.9095 ± 0.0176  held-out 0.9050 ± 0.0173
+[2026-11-15 07:02:43] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=9 ref 0.8733 ± 0.0154  held-out 0.8717 ± 0.0130
+[2026-11-15 07:02:43] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 07:02:43] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=10 ref 0.9193 ± 0.0146  held-out 0.9210 ± 0.0133
+[2026-11-15 07:02:48] pes_ens_sprb c10_azar7: fin; referencia 0.9028, held-out 0.8978
+[2026-11-15 07:02:48] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 07:02:48] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=10 ref 0.9079 ± 0.0198  held-out 0.9032 ± 0.0188
+[2026-11-15 07:02:48] pes_ens_accq: entregado ref 0.9142 | combinaciones n=10 ref 0.9095 ± 0.0176  held-out 0.9050 ± 0.0173
+[2026-11-15 07:02:48] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=9 ref 0.8733 ± 0.0154  held-out 0.8717 ± 0.0130
+[2026-11-15 07:02:48] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 07:02:48] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=10 ref 0.9193 ± 0.0146  held-out 0.9210 ± 0.0133
+[2026-11-15 07:02:54] pes_ens_consensus c10_azar7: fin; referencia 0.8580, held-out 0.8598
+[2026-11-15 07:02:55] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 07:02:55] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=10 ref 0.9079 ± 0.0198  held-out 0.9032 ± 0.0188
+[2026-11-15 07:02:55] pes_ens_accq: entregado ref 0.9142 | combinaciones n=10 ref 0.9095 ± 0.0176  held-out 0.9050 ± 0.0173
+[2026-11-15 07:02:55] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=10 ref 0.8718 ± 0.0153  held-out 0.8705 ± 0.0128
+[2026-11-15 07:02:55] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 07:02:55] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=10 ref 0.9193 ± 0.0146  held-out 0.9210 ± 0.0133
+[2026-11-15 08:54:21] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 08:54:21] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=10 ref 0.9079 ± 0.0198  held-out 0.9032 ± 0.0188
+[2026-11-15 08:54:21] pes_ens_accq: entregado ref 0.9142 | combinaciones n=10 ref 0.9095 ± 0.0176  held-out 0.9050 ± 0.0173
+[2026-11-15 08:54:21] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=10 ref 0.8718 ± 0.0153  held-out 0.8705 ± 0.0128
+[2026-11-15 08:54:21] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 08:54:21] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=10 ref 0.9193 ± 0.0146  held-out 0.9210 ± 0.0133
+[2026-11-15 08:54:40] pes_ens: entregado ref 0.9373 | combinaciones n=10 ref 0.9284 ± 0.0059  held-out 0.9318 ± 0.0042
+[2026-11-15 08:54:40] pes_ens_sprb: entregado ref 0.9142 | combinaciones n=10 ref 0.9079 ± 0.0198  held-out 0.9032 ± 0.0188
+[2026-11-15 08:54:40] pes_ens_accq: entregado ref 0.9142 | combinaciones n=10 ref 0.9095 ± 0.0176  held-out 0.9050 ± 0.0173
+[2026-11-15 08:54:40] pes_ens_consensus: entregado ref 0.8893 | combinaciones n=10 ref 0.8718 ± 0.0153  held-out 0.8705 ± 0.0128
+[2026-11-15 08:54:40] pes_ens_consensus_prior: entregado ref 0.9177 | combinaciones n=10 ref 0.8953 ± 0.0216  held-out 0.8919 ± 0.0225
+[2026-11-15 08:54:40] pes_ens_trf_guard: entregado ref 0.9279 | combinaciones n=10 ref 0.9193 ± 0.0146  held-out 0.9210 ± 0.0133

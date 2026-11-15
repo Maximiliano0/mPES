@@ -67,6 +67,16 @@ páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`.
   no cambió); material en `dict/defensa/README.md` §3.
 - Páginas: recompilado el 2026-11-15, 66 páginas; el cuerpo sigue en 1–42 (tope) y E.3 ocupa las págs. 65–66 del
   PDF.
+- Ampliado el 2026-11-15 a Double Q-Learning, DQN recurrente y A2C (10 semillas cada uno; el DQN recurrente usa la
+  arquitectura de `CONFIG.py`, LSTM 64, no la de `best_params.json`). Semillas nuevas (ref. / held-out): DQL
+  $0{,}874 \pm 0{,}009$ / $0{,}876 \pm 0{,}008$; RDQN $0{,}902 \pm 0{,}020$ / $0{,}898 \pm 0{,}023$; A2C
+  $0{,}842 \pm 0{,}035$ / $0{,}842 \pm 0{,}037$. Todavía no está en la tesis.
+- Ensambles (2026-11-15, `h1/general/scripts/ensemble_seeds.py`): reglas y parámetros fijos, miembros de 10
+  combinaciones de semillas (mejores, peores, más cercanas a la media y 7 al azar). Ponderado $0{,}928 \pm 0{,}006$ /
+  $0{,}932 \pm 0{,}004$ y supera a su Transformer en 9 de 10; compuerta ≈ su Transformer; los ensambles con A2C
+  (votos, consensos) tienen desvíos de 0,015–0,022 y casi nunca superan a su Transformer. Los entregados quedan por
+  encima de la media de sus combinaciones. Resumen en `h1/general/results/ensemble/ensemble_seeds.json`. Todavía no
+  está en la tesis.
 
 ## Restaurar la memoria local (opcional)
 
