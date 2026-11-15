@@ -261,6 +261,22 @@ python -m general.scripts.ensemble_seeds run --ensembles pes_ens pes_ens_sprb
 python -m general.scripts.ensemble_seeds summary    # -> results/ensemble/ensemble_seeds.json
 ```
 
+**Long runs on a laptop** (`utils/scripts/seed_run/`, from the repository root). Each *lane* is a hidden
+console that runs its jobs one after another, detached from VS Code, at below-normal priority and with logical
+CPUs 0–1 left free, so the machine stays usable. Do not launch more lanes than free CPUs, and never run one
+ensemble in two lanes.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File utils\scripts\seed_run\power_on.ps1        # no sleep on AC (saves settings)
+powershell -ExecutionPolicy Bypass -File utils\scripts\seed_run\launch_lanes.ps1 -Module seed_variability `
+    -Lane '--models rdqn --seeds 1001;--models rdqn --seeds 1002', '--models a2c --seeds 1001 1002'
+powershell -ExecutionPolicy Bypass -File utils\scripts\seed_run\launch_lanes.ps1 -Module ensemble_seeds `
+    -Lane '--ensembles pes_ens', '--ensembles pes_ens_sprb'
+powershell -ExecutionPolicy Bypass -File utils\scripts\seed_run\status.ps1          # progress
+powershell -ExecutionPolicy Bypass -File utils\scripts\seed_run\stop.ps1            # stop cleanly (resumable)
+powershell -ExecutionPolicy Bypass -File utils\scripts\seed_run\power_restore.ps1   # restore power settings
+```
+
 ---
 
 ## 📝 Thesis
