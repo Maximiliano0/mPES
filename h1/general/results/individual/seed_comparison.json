@@ -5,21 +5,21 @@
         "referencia": 0.8866404545110582,
         "heldout": 0.8812739905076168
       },
-      "n_semillas_nuevas": 5,
+      "n_semillas_nuevas": 10,
       "referencia": {
-        "media": 0.8592599295876802,
-        "desviacion": 0.022430600291663376,
+        "media": 0.8651218148923251,
+        "desviacion": 0.017276833093964144,
         "minimo": 0.8357447249403218,
         "maximo": 0.8951532835462357,
-        "entregado_menos_media_puntos": 2.738052492337806,
+        "entregado_menos_media_puntos": 2.1518639618733126,
         "entregado_supera_todas": false
       },
       "heldout": {
-        "media": 0.865691713926379,
-        "desviacion": 0.016218493115615875,
+        "media": 0.8689631020746793,
+        "desviacion": 0.016348283080486244,
         "minimo": 0.8415390588792245,
-        "maximo": 0.8856036769360205,
-        "entregado_menos_media_puntos": 1.5582276581237786,
+        "maximo": 0.8894464427224417,
+        "entregado_menos_media_puntos": 1.2310888432937483,
         "entregado_supera_todas": false
       }
     },
@@ -28,21 +28,21 @@
         "referencia": 0.8937286762082891,
         "heldout": 0.8914855710478162
       },
-      "n_semillas_nuevas": 5,
+      "n_semillas_nuevas": 10,
       "referencia": {
-        "media": 0.8741468057931041,
-        "desviacion": 0.005249536726869217,
-        "minimo": 0.8663935568191524,
+        "media": 0.8685743125073906,
+        "desviacion": 0.008831896641230385,
+        "minimo": 0.8579614408532934,
         "maximo": 0.8795046431040424,
-        "entregado_menos_media_puntos": 1.9581870415184999,
+        "entregado_menos_media_puntos": 2.515436370089852,
         "entregado_supera_todas": true
       },
       "heldout": {
-        "media": 0.8756318600397224,
-        "desviacion": 0.005133681708796644,
-        "minimo": 0.8683701699882611,
+        "media": 0.8705088559764894,
+        "desviacion": 0.00875395812130753,
+        "minimo": 0.8597879424633591,
         "maximo": 0.8809038450471973,
-        "entregado_menos_media_puntos": 1.5853711008093851,
+        "entregado_menos_media_puntos": 2.0976715071326812,
         "entregado_supera_todas": true
       }
     },
@@ -51,21 +51,21 @@
         "referencia": 0.9271801296208225,
         "heldout": 0.9286458783085955
       },
-      "n_semillas_nuevas": 4,
+      "n_semillas_nuevas": 10,
       "referencia": {
-        "media": 0.927008020935063,
-        "desviacion": 0.0087515033615886,
-        "minimo": 0.9140740049901485,
+        "media": 0.9186373320329265,
+        "desviacion": 0.012147586464445604,
+        "minimo": 0.8952918269759631,
         "maximo": 0.933343245697504,
-        "entregado_menos_media_puntos": 0.01721086857595644,
+        "entregado_menos_media_puntos": 0.8542797587896,
         "entregado_supera_todas": false
       },
       "heldout": {
-        "media": 0.9273008261217237,
-        "desviacion": 0.0100552891465479,
-        "minimo": 0.9124823352088471,
+        "media": 0.9195882493837629,
+        "desviacion": 0.011108328136579818,
+        "minimo": 0.901359759486571,
         "maximo": 0.9336300496044071,
-        "entregado_menos_media_puntos": 0.13450521868717535,
+        "entregado_menos_media_puntos": 0.9057628924832528,
         "entregado_supera_todas": false
       }
     }
@@ -73,39 +73,39 @@
   "comparaciones": {
     "trf_vs_dqn": {
       "referencia": {
-        "diferencia_puntos": 5.2861215141958855,
+        "diferencia_puntos": 5.006301952553594,
         "rangos_superpuestos": false,
-        "peor_alto_menos_mejor_bajo_puntos": 3.4569361886106043
+        "peor_alto_menos_mejor_bajo_puntos": 1.5787183871920685
       },
       "heldout": {
-        "diferencia_puntos": 5.166896608200133,
+        "diferencia_puntos": 4.907939340727352,
         "rangos_superpuestos": false,
-        "peor_alto_menos_mejor_bajo_puntos": 3.157849016164982
+        "peor_alto_menos_mejor_bajo_puntos": 2.045591443937367
       }
     },
     "dqn_vs_ql": {
       "referencia": {
-        "diferencia_puntos": 1.488687620542395,
+        "diferencia_puntos": 0.34524976150654973,
         "rangos_superpuestos": true,
-        "peor_alto_menos_mejor_bajo_puntos": -2.875972672708327
+        "peor_alto_menos_mejor_bajo_puntos": -3.719184269294229
       },
       "heldout": {
-        "diferencia_puntos": 0.9940146113343373,
+        "diferencia_puntos": 0.15457539018101096,
         "rangos_superpuestos": true,
-        "peor_alto_menos_mejor_bajo_puntos": -1.723350694775938
+        "peor_alto_menos_mejor_bajo_puntos": -2.9658500259082565
       }
     }
   },
   "ensamble_ponderado": {
     "referencia": {
       "rbar": 0.9373125,
-      "menos_media_trf_puntos": 1.0304479064937033,
+      "menos_media_trf_puntos": 1.867516796707347,
       "menos_maximo_trf_puntos": 0.39692543024959503,
       "supera_todas_trf": true
     },
     "heldout": {
       "rbar": 0.938848125,
-      "menos_media_trf_puntos": 1.1547298878276324,
+      "menos_media_trf_puntos": 1.9259875616237099,
       "menos_maximo_trf_puntos": 0.5218075395592936,
       "supera_todas_trf": true
     }
