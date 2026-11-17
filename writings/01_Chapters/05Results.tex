@@ -4,11 +4,11 @@
 
 \label{sec:results}
 
-Salvo indicaci\'on en contrario, los valores corresponden al
+Salvo indicaci\'on contraria, los valores corresponden al
 desempe\~no normalizado $\bar r$
 (Ecuaci\'on~\eqref{eq:normalised-severity-materials}) medio de cada
-escenario; \emph{referencia} es la condici\'on de entrenamiento y
-\emph{generalizaci\'on}, la media en los $21$ escenarios. Las diferencias
+escenario; \emph{referencia} designa la condici\'on de entrenamiento, y
+\emph{generalizaci\'on}, el conjunto de los $21$ escenarios. Las diferencias
 entre medias se expresan como variaci\'on porcentual respecto de la media
 de comparaci\'on. Los mapas
 estad\'isticos por escenario y las matrices de comparaci\'on entre pares
@@ -277,7 +277,7 @@ Escenarios con mayor media (de $21$) & $3$ & $18$ \\
 \vspace{-\baselineskip} % entre figuras consecutivas, sin el espacio extra
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{PES_ENS_results.png}
+  \makebox[\linewidth][c]{\includegraphics[width=1.15\linewidth]{PES_ENS_results.png}}
   \caption[Resultados por secuencia: ensamble ponderado]{Resultados por secuencia del ensamble ponderado (\texttt{pes\_ens}) en la referencia.}
   \label{fig:c-ens}
 \end{figure}
@@ -359,11 +359,11 @@ par\'ametro por vez:
 La \'ultima columna de la Tabla~\ref{tab:sensitivity} indica con qu\'e
 valores el ensamble supera al Transformer en las r\'eplicas
 \emph{held-out}. Como ambos se eval\'uan sobre las mismas $320$
-secuencias, la comparaci\'on es pareada: se calcula, secuencia por
+secuencias, en la comparaci\'on se calcula, secuencia por
 secuencia, la diferencia de $\bar r$ entre el ensamble y el Transformer,
 y se considera que lo supera cuando la media de esas diferencias es mayor
 que dos veces su error est\'andar (su desviaci\'on est\'andar dividida por
-$\sqrt{320}$), lo que equivale aproximadamente a una prueba $t$ pareada
+$\sqrt{320}$), lo que equivale aproximadamente a una prueba $t$
 con $p < 0{,}05$. Con los valores fijos, la diferencia media es
 $0{,}010$, con un error est\'andar de $0{,}002$. En las r\'eplicas, sin \emph{prior}
 ($w_\pi = 0$) el ensamble supera al Transformer en un $0{,}4\%$; con el
@@ -501,6 +501,15 @@ Q-Learning base & $0{,}871$ & $0{,}851$ & $0{,}860$ & $-9{,}3\%$ & $2$ \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Variabilidad entre semillas}\label{sec:res-seeds}
+
+Con diez semillas nuevas por modelo (Tablas~\ref{tab:seeds}
+y~\ref{tab:ens-seeds}), el Transformer conserva la mayor media en la
+referencia y las r\'eplicas ($0{,}919$ y $0{,}920$), pero sus rangos se
+superponen con los del DQN recurrente ($0{,}902$ y $0{,}898$). El ensamble
+ponderado ($0{,}928$ y $0{,}932$) supera al Transformer de la misma
+combinaci\'on en nueve de las diez combinaciones de semillas.
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

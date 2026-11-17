@@ -1,6 +1,6 @@
 # Auditoría LaTeX — `writings/`
 
-Raíz: `C:\Users\vegam\Documents\Trabajo\ml\mPES\writings`
+Raíz: `C:\Users\maxvega\Documents\Win_mPES\writings`
 
 ## 1. Sintaxis y compilación
 
@@ -8,7 +8,7 @@ Raíz: `C:\Users\vegam\Documents\Trabajo\ml\mPES\writings`
 
 - `01_Chapters/Acknowledgement.tex`
 
-- ✅ Compilación exitosa — **67 páginas**.
+- ✅ Compilación exitosa — **65 páginas**.
 - 📄 PDF: `out/mPES-Esquemas-para-Toma-de-Decision-Artificial-en-Escenarios-Secuenciales.pdf`
 
 - ✅ Sin Overfull \hbox.
@@ -21,7 +21,7 @@ Raíz: `C:\Users\vegam\Documents\Trabajo\ml\mPES\writings`
 
 - Figuras con label: **22**.
 - Tablas con label: **20**.
-- Referencias internas (`\ref`/`\autoref`/`\eqref`): **127**.
+- Referencias internas (`\ref`/`\autoref`/`\eqref`): **141**.
 
 - ✅ Sin referencias rotas.
 
@@ -35,6 +35,11 @@ Raíz: `C:\Users\vegam\Documents\Trabajo\ml\mPES\writings`
 ## 3. Citas y bibliografía (numérico, unsrtnat)
 
 - ✅ Todas las claves citadas existen en `References.bib`.
+
+**Entradas `.bib` no citadas:**
+
+- `DulacArnold2021`
+- `Williams1992`
 
 ## 4. Coherencia y cohesión
 

@@ -7,13 +7,16 @@
 \subsection{Objetivos y preguntas de investigaci\'on}
 
 \textbf{Mejor modelo individual (objetivos 1 y 2).} Los resultados respaldan la hip\'otesis
-H1. El Transformer causal obtuvo el mayor desempe\~no medio entre los
+H1 en media. El Transformer causal obtuvo el mayor desempe\~no medio entre los
 modelos individuales, en la referencia y en los escenarios de
 generalizaci\'on. En estos \'ultimos super\'o en un $3\%$ al DQN y en un
 $5\%$ al DQN recurrente, diferencias de tama\~no medio. Mantuvo el
 desempe\~no con severidades fuera de rango, aunque no fue el m\'as estable
 en su peor escenario: con secuencias largas perdi\'o un $7\%$ respecto de
-su referencia, frente al $6\%$ del DQN.
+su referencia, frente al $6\%$ del DQN. Con diez semillas, conserva la
+mayor media en la referencia y las r\'eplicas, aunque algunos
+entrenamientos del DQN recurrente lo superan
+(Secci\'on~\ref{sec:disc-seeds}).
 
 \textbf{Ensambles frente al mejor modelo individual (objetivos 3 y 4).} Los resultados no
 respaldan la hip\'otesis H2. S\'olo el ensamble ponderado super\'o al Transformer,
@@ -28,7 +31,7 @@ la cota de seguridad no tiene efecto.
 
 \textbf{Ponderaci\'on por confianza (objetivo 3).} El dise\~no no permite determinar si
 ponderar por la confianza supera a una votaci\'on simple, porque todos los
-ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al Transformer.
+ensambles aplican esa ponderaci\'on, que por s\'i sola no bast\'o para superar al Transformer.
 
 \subsection{Limitaciones del estudio}\label{sec:limitations}
 
@@ -45,26 +48,23 @@ ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al T
     \item El entorno admite una regla fija casi \'optima, por lo que los
     resultados no indican cu\'anto aportan estos modelos en problemas
     cuya pol\'itica \'optima no tenga una estructura simple.
+    \item Las comparaciones en los $21$ escenarios usan un \'unico
+    entrenamiento por modelo; su dispersi\'on, sus $d$ de Cohen y sus
+    valores $p$ reflejan las secuencias y no la semilla
+    (Secci\'on~\ref{sec:disc-seeds}).
 \end{itemize}
 
 \subsection{Trabajo futuro}\label{sec:future}
 
 \begin{itemize}
-    \item Extender el reentrenamiento con semillas independientes a los
-    escenarios de generalizaci\'on. Los resultados informados provienen de un \'unico
-    entrenamiento por modelo y de una evaluaci\'on determinista, por lo que
-    su dispersi\'on proviene de las secuencias y no del entrenamiento. En
-    RL profundo, cambiar s\'olo la semilla puede producir diferencias
-    significativas~\citep{Henderson2018}, y con pocas ejecuciones se
-    recomienda informar intervalos de confianza~\citep{Agarwal2021}. Con
-    diez semillas por modelo, en la referencia y las r\'eplicas, el
-    Transformer conserva la mayor media pero se superpone con el DQN
-    recurrente, y el ensamble ponderado supera a su Transformer en nueve
-    de diez combinaciones de miembros (Ap\'endice~\ref{ap:seeds}).
+    \item Extender el reentrenamiento con semillas nuevas a los
+    escenarios de generalizaci\'on (Secciones~\ref{sec:res-seeds}
+    y~\ref{sec:disc-seeds}).
     \item Relacionar la confianza con el acierto de cada decisi\'on
     mediante curvas de calibraci\'on y usar los agentes de mPES, adaptados
     al protocolo de PES, como compa\~neros en sus experimentos
-    humano--agente~\citep{Nijjar2025}. En ellos, los grupos superaron a
+    humano--agente. Por ejemplo, en Nijjar \emph{et al.}~\citep{Nijjar2025}
+    los grupos superaron a
     los individuos, pero que los participantes confiaran m\'as en un
     agente \emph{humanizado} no mejor\'o necesariamente el desempe\~no.
     Agentes con desempe\~nos conocidos respecto del \'optimo, entre
@@ -84,7 +84,7 @@ ensambles aplican esa ponderaci\'on. Por s\'i sola, no bast\'o para superar al T
 
 \subsection{Conclusi\'on general}
 
-En mPES, el Transformer causal es el mejor modelo individual, y la
+En mPES, el Transformer causal es el mejor modelo individual en promedio, y la
 combinaci\'on de modelos lo supera en un solo caso y por un margen
 despreciable: los resultados respaldan H1 y no respaldan H2. Una regla fija
 calibrada con la asignaci\'on \'optima alcanza ese mismo nivel, porque la

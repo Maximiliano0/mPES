@@ -78,11 +78,14 @@ def compare(high: dict, low: dict) -> dict:
     Returns
     -------
     dict
-        Difference of means in points of ``r̄`` (x100) and whether the ranges overlap.
+        Difference of means in points of ``r̄`` (x100) and as a percentage of the ``low`` mean, whether the ranges
+        overlap, and the worst ``high`` seed minus the best ``low`` seed in points and as a percentage of the latter.
     """
     return {'diferencia_puntos': 100.0 * (high['media'] - low['media']),
+            'diferencia_porcentual': 100.0 * (high['media'] - low['media']) / low['media'],
             'rangos_superpuestos': bool(high['minimo'] <= low['maximo']),
-            'peor_alto_menos_mejor_bajo_puntos': 100.0 * (high['minimo'] - low['maximo'])}
+            'peor_alto_menos_mejor_bajo_puntos': 100.0 * (high['minimo'] - low['maximo']),
+            'peor_alto_menos_mejor_bajo_porcentual': 100.0 * (high['minimo'] - low['maximo']) / low['maximo']}
 
 
 def latex_number(value: float) -> str:
@@ -138,16 +141,22 @@ def ensemble_entry(info: dict, trf: dict) -> dict:
     Returns
     -------
     dict
-        Delivered ``r̄``, spread of the combinations and, per group, the mean difference with the Transformer seed
-        of each combination and how many combinations exceed it.
+        Delivered ``r̄``, spread of the combinations and, per group, the difference with the Transformer seed of
+        each combination (mean in points; mean, minimum and maximum as a percentage of that Transformer) and how
+        many combinations exceed it.
     """
     rows = list(info['combinaciones'].values())
     entry: dict = {'entregado': info[DELIVERED], 'n': len(rows)}
     for group in GROUPS:
-        delta = numpy.asarray([row[group] - trf[row['semillas']['trf']][group] for row in rows])
+        own_trf = numpy.asarray([trf[row['semillas']['trf']][group] for row in rows])
+        delta = numpy.asarray([row[group] for row in rows]) - own_trf
+        percent = 100.0 * delta / own_trf
         stats = info['semillas_variadas'][group]
         entry[group] = {**stats, 'entregado_menos_media_puntos': 100.0 * (info[DELIVERED][group] - stats['media']),
                         'menos_su_transformer_puntos': float(100.0 * delta.mean()),
+                        'menos_su_transformer_porcentual': {'media': float(percent.mean()),
+                                                            'minimo': float(percent.min()),
+                                                            'maximo': float(percent.max())},
                         'supera_a_su_transformer': int((delta > 0).sum())}
     return entry
 

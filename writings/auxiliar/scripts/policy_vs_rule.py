@@ -196,7 +196,7 @@ def plot(summary: Dict[str, dict], base_path: str, slide: bool) -> None:
         colours = {'pes_trf': MODEL_COLOURS['pes_trf'], 'pes_ens': PALETTE['blue_dark'],
                    'pes_dqn': MODEL_COLOURS['pes_dqn']}
         curves = [('optimo', 'Óptimo', PALETTE['ink'], '-', 2.6),
-                  ('regla', f'Regla $a = S + {RULE_K}$', PALETTE['ink'], '--', 1.3)]
+                  ('regla', f'Regla $a = \\min(S + {RULE_K}, R)$', PALETTE['ink'], '--', 1.3)]
         curves += [(m, NAMES[m], colours[m], '-', 1.7) for m in PLOTTED]
         for key, label, colour, style, width in curves:
             points = summary[key]['por_severidad']

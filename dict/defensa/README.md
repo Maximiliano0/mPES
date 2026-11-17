@@ -65,7 +65,9 @@ Mensajes para la lámina:
 - Ojo: aquí el Transformer da $S+2{,}2$ en sus propias trayectorias. El $S+2{,}4$ de la §6.2 se midió en los estados
   que visita el ensamble ponderado.
 
-## 3. Variabilidad entre semillas (Tabla E.3, §7.3)
+## 3. Variabilidad entre semillas (§4.9, §5.6, §6.4; Tablas E.3 y E.4)
+
+En la tesis desde el 2026-11-16: método en §4.9, resultados en §5.6, discusión en §6.4 y detalle en el Apéndice E.3.
 
 Los modelos entregados salen del mejor ensayo de Optuna, que fija también la semilla, así que no son un sorteo
 insesgado. Se reentrenaron con la configuración entregada todos los modelos individuales salvo Q-Learning base, con
@@ -128,7 +130,7 @@ Mensajes para la lámina:
 
 Para preguntas (no está en la tesis):
 
-- *¿Por qué media ± DE y no intervalos de confianza, si §7.3 cita a Agarwal et al.?* La tabla describe la
+- *¿Por qué media ± DE y no intervalos de confianza, si §6.4 cita a Agarwal et al.?* La tabla describe la
   dispersión entre semillas. Con $n = 10$, el intervalo $t$ al 95 % de la media (referencia / *held-out*) es
   Q-Learning 0,853–0,877 / 0,857–0,881, Double Q-Learning 0,868–0,880 / 0,870–0,881, DQN 0,862–0,875 / 0,864–0,877,
   DQN recurrente 0,888–0,916 / 0,881–0,914, A2C 0,817–0,867 / 0,815–0,868 y Transformer 0,910–0,927 / 0,912–0,928.

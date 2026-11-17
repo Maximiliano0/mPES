@@ -93,7 +93,7 @@ comparaciones estad\'isticas que el texto presenta de forma agregada.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{ind_13_pares_cohen_d.png}
+  \includegraphics[width=0.75\linewidth]{ind_13_pares_cohen_d.png}
   \caption[$d$ de Cohen entre pares (modelos individuales)]{Modelos individuales: $d$ de Cohen entre pares de modelos en los $21$ escenarios de generalizaci\'on.}
   \label{fig:pairwise-cohen}
 \end{figure}
@@ -263,7 +263,7 @@ importa c\'omo var\'ia la asignaci\'on con la severidad y con el
 presupuesto restante, que la regla fija s\'olo captura a trav\'es del
 recorte por $R$.
 
-\begin{table}[H]
+\begin{table}[!t]
 \centering
 \caption[Exceso medio de asignaci\'on y desempe\~no]{Exceso medio de la
 asignaci\'on sobre la severidad ($a - S$) en las decisiones con recursos y
@@ -299,17 +299,13 @@ Q-Learning base             & $+2{,}0$ & $+2{,}0$ & $0{,}871$ & $0{,}860$ \\
 
 \subsection{Variabilidad entre semillas de entrenamiento}\label{ap:seeds}
 
-Los modelos entregados provienen del mejor ensayo de la optimizaci\'on
-bayesiana, que fija tambi\'en su semilla, por lo que no son una muestra
-insesgada de la variabilidad entre entrenamientos. Para estimarla, se
-reentrenaron con diez semillas nuevas cada uno, con la configuraci\'on
-entregada, todos los modelos individuales salvo Q-Learning base, que no se
-optimiz\'o. Se evaluaron con el mismo protocolo determinista,
-que reproduce los valores de los modelos entregados, en la referencia y en
-las r\'eplicas \emph{held-out} (Tabla~\ref{tab:seeds}); el an\'alisis no
-incluye los $21$ escenarios de generalizaci\'on.
+Esta secci\'on detalla el estudio de la Secci\'on~\ref{sec:seeds-methods},
+cuyos resultados resumen las Secciones~\ref{sec:res-seeds}
+y~\ref{sec:disc-seeds}. Se reentrenaron todos los modelos individuales
+salvo Q-Learning base, que no se optimiz\'o; el protocolo determinista
+reproduce los valores de los modelos entregados (Tabla~\ref{tab:seeds}).
 
-\begin{table}[H]
+\begin{table}[!t]
 \centering
 \caption[Variabilidad entre semillas de entrenamiento]{Desempe\~no medio
 $\bar r$ del modelo entregado y de los reentrenados con semillas nuevas
@@ -334,34 +330,27 @@ Transformer       & 10 & $0{,}927$ & $0{,}929$ & $0{,}919 \pm 0{,}012$ & $0{,}89
 \end{tabular}
 \end{table}
 
-La ventaja del Transformer sobre DQN se conserva entre semillas: su peor
-semilla supera a la mejor de DQN en $0{,}016$ en la referencia y en
-$0{,}020$ en las r\'eplicas, y sus medias difieren en $0{,}050$ y
-$0{,}049$. Frente al DQN recurrente, en cambio, las medias difieren en
-$0{,}016$ y $0{,}022$ y los rangos se superponen: la mejor semilla del DQN
-recurrente ($0{,}921$ y $0{,}924$) supera a la peor del Transformer. El
-Transformer conserva la mayor media, pero su ventaja sobre el DQN
-recurrente depende de la semilla. DQN, Double Q-Learning y Q-Learning
-tambi\'en se superponen: sus medias difieren en menos de $0{,}01$, y la
-mejor semilla de Q-Learning supera a las diez de DQN. Tres semillas de DQN
-convergieron a la misma pol\'itica trivial, asignar siempre el m\'aximo
-disponible, $\min(R, 10)$, que da $0{,}858$ y $0{,}860$ y fija el
-m\'inimo de su rango. A2C es el modelo m\'as sensible a la semilla
-(desviaci\'on est\'andar de $0{,}035$ y $0{,}037$). Los entregados quedan
-por encima de la media de sus semillas, salvo el del DQN recurrente en la
-referencia, lo que es consistente con el sesgo de selecci\'on de la
-optimizaci\'on: los de Double Q-Learning y DQN superan a sus diez
-semillas, el de A2C iguala a la mejor y el del Transformer queda dentro de
-una desviaci\'on est\'andar de su media.
+El Transformer supera a DQN con cualquier semilla: sus medias difieren en
+un $5{,}8\%$ en la referencia y un $5{,}6\%$ en las r\'eplicas, y su peor
+semilla supera a la mejor de DQN en un $1{,}8\%$ y un $2{,}3\%$. Frente al
+DQN recurrente, la diferencia de medias baja a un $1{,}8\%$ y un $2{,}5\%$
+y los rangos se superponen, por lo que esa ventaja depende de la semilla.
+DQN, Double Q-Learning y Q-Learning tampoco se separan: sus medias difieren
+en a lo sumo un $1{,}1\%$. Tres semillas de DQN convergieron a la
+pol\'itica trivial $\min(R, 10)$, que da $0{,}858$ y $0{,}860$. A2C es el
+m\'as sensible a la semilla y su distribuci\'on es multimodal: seis de sus
+diez semillas dan ese mismo $\bar r$, tres quedan por debajo y una
+reproduce al modelo entregado. Los entregados superan a la media de sus
+semillas, salvo el DQN recurrente en la referencia, lo que es consistente
+con el sesgo de selecci\'on de la optimizaci\'on.
 
-Para medir cu\'anto se traslada esta variabilidad a los ensambles, se
-mantuvieron la regla y los par\'ametros de cada uno y se reemplazaron sus
-miembros (DQN, DQN recurrente, Transformer y A2C) por modelos
-reentrenados. Se armaron diez combinaciones de semillas, comunes a los
-seis ensambles: la mejor semilla de cada miembro, la peor, la m\'as
-cercana a su media y siete sorteadas, con las semillas ordenadas por su
-$\bar r$ medio en la referencia y las r\'eplicas. El ensamble ponderado no
-usa A2C. Con los miembros entregados, el mismo procedimiento reproduce
+En los ensambles, los miembros reemplazados son DQN, DQN recurrente,
+Transformer y A2C (el ensamble ponderado no usa A2C), y las semillas de
+cada miembro se ordenan por su $\bar r$ medio en los seis escenarios del
+estudio (la referencia y las cinco r\'eplicas). Los sorteos son
+independientes por miembro y pueden repetir semillas, y las combinaciones
+incluyen extremos elegidos, por lo que su desviaci\'on est\'andar no es la
+de una muestra aleatoria. Con los miembros entregados, el mismo procedimiento reproduce
 exactamente los valores de la Secci\'on~\ref{sec:res-ensembles}
 (Tabla~\ref{tab:ens-seeds}).
 
@@ -395,16 +384,15 @@ Consenso                    & $0{,}889$ & $0{,}893$ & $0{,}872 \pm 0{,}015$ & $0
 \end{table}
 
 El ensamble ponderado es el \'unico que mejora al Transformer de forma
-estable: supera al Transformer que contiene en nueve de las diez
-combinaciones, en $0{,}009$ y $0{,}010$ en promedio, y su desviaci\'on
-est\'andar entre combinaciones ($0{,}006$ y $0{,}004$) es menos de la
-mitad de la del Transformer. Su ventaja, aunque peque\~na, no depende de
-la semilla de los miembros. La compuerta del Transformer reproduce a su
-Transformer: la diferencia media es de $0{,}000$ y $-0{,}001$, y lo
-supera en cinco y cuatro combinaciones. Los votos y los consensos quedan
-por debajo de su Transformer en casi todas las combinaciones y var\'ian
-m\'as que el propio Transformer (desviaci\'on est\'andar de $0{,}013$ a
-$0{,}022$). Como en los modelos individuales, los seis entregados quedan
+consistente: supera al Transformer de la misma combinaci\'on en nueve de
+las diez, en un $1{,}0\%$ y un $1{,}1\%$ en promedio. El signo de su
+ventaja se mantiene, pero su tama\~no depende de la semilla: llega al
+$3{,}5\%$ y al $3{,}0\%$ con los peores Transformers y casi se anula con
+los mejores. La compuerta del Transformer lo reproduce: la diferencia
+media es de $0{,}0\%$ y $-0{,}1\%$, y lo supera en cinco y cuatro
+combinaciones. Los votos y los consensos quedan por debajo de su
+Transformer en casi todas las combinaciones, con desviaciones est\'andar
+de $0{,}013$ a $0{,}022$. Como en los modelos individuales, los seis entregados quedan
 por encima de la media de sus combinaciones, lo que es consistente con que
 sus par\'ametros se ajustaron con los miembros entregados.
 

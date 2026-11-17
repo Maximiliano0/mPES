@@ -19,10 +19,7 @@ optimizaci\'on estoc\'astica.
 Una primera l\'inea aplica RL a la respuesta ante epidemias. Libin
 \emph{et al.}~\citep{Libin2021} entrenaron un agente de gradiente de
 pol\'itica (PPO, \emph{Proximal Policy Optimization}) en un modelo
-metapoblacional de gripe pand\'emica con $379$ distritos de Gran Breta\~na.
-En un distrito contrastaron la pol\'itica aprendida con una referencia
-conocida, que no pudieron establecer para el problema conjunto de $11$
-distritos. Ohi
+metapoblacional de gripe pand\'emica con $379$ distritos de Gran Breta\~na. Ohi
 \emph{et al.}~\citep{Ohi2020} entrenaron un Double DQN con capas LSTM para
 fijar restricciones de movilidad en un escenario inspirado en COVID-19,
 equilibrando contagios y actividad econ\'omica. Bastani
@@ -44,9 +41,7 @@ equiparables a los de heur\'isticas y de programaci\'on din\'amica aproximada en
 gesti\'on de inventarios, y Kong \emph{et al.}~\citep{Kong2019} mostraron
 que, en la mochila en l\'inea (\emph{online knapsack}), donde cada \'item
 se acepta o se rechaza al llegar sin conocer los siguientes, agentes de RL
-aprenden comportamientos coherentes con los algoritmos \'optimos conocidos. Dulac-Arnold
-\emph{et al.}~\citep{DulacArnold2021} formalizan los obst\'aculos para
-llevar estos m\'etodos a sistemas reales.
+aprenden comportamientos coherentes con los algoritmos \'optimos conocidos.
 
 mPES comparte con estos trabajos la asignaci\'on secuencial de un recurso
 escaso sin conocer la demanda futura, en una forma cercana a la mochila en
@@ -59,8 +54,8 @@ los mismos escenarios.
 
 \subsection{Transformers en aprendizaje por refuerzo}\label{sec:soa-trf}
 
-En RL, el Transformer se ha empleado de dos maneras. El \emph{Decision
-Transformer}~\citep{Chen2021} aprende de trayectorias ya registradas y
+En RL, el Transformer se ha empleado de dos maneras. La primera, el
+\emph{Decision Transformer}~\citep{Chen2021}, aprende de trayectorias ya registradas y
 genera acciones condicionadas al retorno deseado. La segunda lo usa
 como codificador de la historia en un agente que aprende interactuando
 con el entorno: Parisotto \emph{et al.}~\citep{Parisotto2020} mostraron
@@ -99,6 +94,25 @@ variaciones controladas del entorno. Siguiendo esa recomendaci\'on, cada
 modelo se eval\'ua en $21$ escenarios de generalizaci\'on, tres de
 ellos por encima de las cotas del entorno
 (Secci\'on~\ref{sec:scenario-catalogue}).
+
+\subsection{Variabilidad entre semillas de entrenamiento}\label{sec:soa-seeds}
+
+En RL profundo, el resultado de un entrenamiento depende de la semilla
+aleatoria, que fija la inicializaci\'on de las redes, la exploraci\'on y
+el muestreo de la experiencia. Henderson \emph{et al.}~\citep{Henderson2018}
+mostraron que dos grupos de cinco semillas del mismo algoritmo, con los
+mismos hiperpar\'ametros, pueden dar curvas de aprendizaje
+significativamente distintas, de modo que comparar algoritmos con pocas
+ejecuciones puede llevar a conclusiones opuestas. Colas
+\emph{et al.}~\citep{Colas2018} plantearon la elecci\'on del n\'umero de
+semillas como un problema de potencia estad\'istica, con la prueba $t$ y
+el intervalo de confianza \emph{bootstrap}, y Agarwal
+\emph{et al.}~\citep{Agarwal2021} mostraron que, con pocas ejecuciones,
+las medias puntuales son poco confiables y recomendaron informar su
+incertidumbre. En esa l\'inea, esta tesis reentrena los modelos
+optimizados con diez semillas nuevas, eval\'ua los ensambles con
+combinaciones de esos modelos e informa la media, la desviaci\'on
+est\'andar y el rango entre semillas (Secci\'on~\ref{sec:seeds-methods}).
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

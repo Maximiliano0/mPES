@@ -79,9 +79,7 @@ entre ciudades o una din\'amica estoc\'astica, lo que el agente observa
 resumir\'ia todav\'ia menos de lo relevante para decidir, y el
 ordenamiento de las arquitecturas podr\'ia cambiar, en particular la
 ventaja del Transformer, que procesa los estados anteriores mediante
-atenci\'on. A la inversa, en mPES, que s\'i cumple esas condiciones, una
-regla fija calibrada con el \'optimo alcanza el nivel del mejor ensamble
-(Secci\'on~\ref{sec:disc-rule}).
+atenci\'on.
 
 Por eso, frente a decisiones reales, mPES no ofrece una pol\'itica para
 trasladar, sino un entorno controlado donde comparar arquitecturas contra
@@ -156,10 +154,8 @@ desempe\~no del mejor modelo individual.}
     \item Una comparaci\'on de siete modelos de RL, seis de ellos con
     hiperpar\'ametros optimizados, sobre las mismas secuencias.
     \item Un an\'alisis de seis reglas de ensamble que mide cu\'anto
-    cambian la decisi\'on sus componentes fijos y muestra que la ventaja
-    del mejor ensamble proviene del \emph{prior} de severidad y de la
-    temperatura m\'as que de la ponderaci\'on por confianza, con una regla
-    fija calibrada con el \'optimo como referencia.
+    cambian la decisi\'on sus componentes fijos y muestra de d\'onde
+    proviene la ventaja del mejor ensamble.
 \end{enumerate}
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove

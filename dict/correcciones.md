@@ -11,8 +11,9 @@ Las referencias a números de sección, tabla, figura y cita corresponden al PDF
 Fig. 5.3 = `fig:heatmap-ens`, Ec. 2.4 = `eq:attention`, Sec. 7.3 = Trabajo futuro, Sec. 7.4 = Conclusión general,
 [32] = `Nijjar2025`, [48] = `Henderson2018`, [51] = `mPES2026`.
 
-**Numeración actual de las citas (cambia con cada cita nueva):** después de B1, [32] → [38] `Nijjar2025`,
-[48] → [53] `Henderson2018`, [51] → [56] `mPES2026`; `Bednarski2021` pasó a ser [5]. La Introducción también se renumeró: «Preguntas e hipótesis»
+**Numeración actual de las citas (cambia con cada cita nueva o eliminada):** después de A26 (revisión del autor,
+2026-11-16), [32] → [37] `Nijjar2025`, [48] → [51] `Henderson2018`, [51] → [56] `mPES2026`; `Colas2018` es [54],
+`Agarwal2021` [55] y `Bednarski2021` [5]. La Introducción también se renumeró: «Preguntas e hipótesis»
 pasó a §1.4 y «Contribuciones» a §1.5.
 
 **Presupuesto de páginas**: el cuerpo (Introducción → Conclusiones) ocupaba las págs. 1–37 al recibir los dictámenes;
@@ -298,6 +299,143 @@ Transformer en un $0{,}1\%$, lo que contradecía el criterio ($t = 1{,}15$; la t
 5. Pasada de tono R1, capítulo por capítulo.
 6. Revisión independiente con `thesis-judge` contra ambos dictámenes, compilación final y medición de páginas.
 7. Opcional: nota de respuesta al jurado con el cambio aplicado en cada punto (archivo y página).
+
+## Revisión del autor sobre el PDF
+
+El autor anota el PDF de `writings/out/` y Claude aplica las anotaciones. Antes de recompilar se guarda una copia del
+PDF anotado en `dict/revisiones/`, porque la compilación lo sobrescribe.
+
+### Capítulos 1–3 (2026-11-16) ✅
+
+PDF anotado: [revisiones/mPES_revision_autor_cap1-3.pdf](revisiones/mPES_revision_autor_cap1-3.pdf) (6 anotaciones;
+las páginas son las del PDF).
+
+| ID | Pág. | Sección | Cambio |
+|----|------|---------|--------|
+| A1 | 8 | §1.3 (`01Introduction.tex`) | Se eliminó «A la inversa, en mPES, … alcanza el nivel del mejor ensamble (Sección 6.3).» |
+| A2 | 10 | §1.5, contribución 3 | «…y muestra que la ventaja … como referencia» → «…y muestra de dónde proviene la ventaja del mejor ensamble» |
+| A3 | 14 | §2, ítem Actor–crítico | «estos métodos de gradiente de política [25], como A2C, aprenden» → «dos modelos aprenden»; sale la cita `Williams1992` |
+| A4 | 16 | §3.1 | Se eliminó la oración de Libin *et al.* sobre la referencia en un distrito |
+| A5 | 17 | §3.1 | Se eliminó la oración de Dulac-Arnold *et al.*; sale la cita `DulacArnold2021` |
+| A6 | 17 | §3.2 | «El *Decision Transformer* [51] aprende» → «La primera, el *Decision Transformer* [51], aprende» |
+
+Ajustes de forma al aplicar: en A2, «de dónde» con tilde (interrogativa indirecta); en A6, la coma de cierre de la
+aposición. Auditoría en verde: 67 páginas; cuerpo 1–42, sin cambios; las citas posteriores a [25] bajan uno o dos
+números.
+
+### Capítulo 4, primera parte (2026-11-16) ✅
+
+PDF anotado: [revisiones/mPES_revision_autor_cap4a.pdf](revisiones/mPES_revision_autor_cap4a.pdf) (10 anotaciones).
+Todas en `04Materials.tex`.
+
+| ID | Pág. | Sección | Cambio | Estado |
+|----|------|---------|--------|--------|
+| A7 | 19 | §4.2, presupuesto | Las dos ciudades iniciales existen para la visualización y el tutorial de la interfaz de PES (no usada aquí) y no intervienen porque decisiones y métrica sólo consideran las ciudades de la secuencia y no hay contagio entre ciudades | ✅ |
+| A8 | 21 | §4.3 | Se eliminó «Ambas cotas se calculan al terminar la secuencia y no intervienen en las decisiones.» | ✅ |
+| A9 | 21 | §4.3, DP | «…hasta la primera y guarda la acción que alcanza cada mínimo; con esas acciones se reconstruye…» | ✅ |
+| A10 | 22 | §4.4 | «El punto de partida fue DQN [14], el método de referencia del RL profundo» → «Q-Learning, … del RL» | ✅ |
+| A11 | 22 | §4.4 | Se eliminó «como los demás modelos, y mide cuánto aporta esa optimización» | ✅ |
+| A12 | 22 | §4.4 | «Double Q-Learning mide la reducción de» → «reduce»; «la tabla por una red que generaliza» → «las tablas por redes que generalizan» | ✅ |
+| A13 | 22 | §4.4 | Se eliminó la «y» antes de «el Capítulo 5 informa…» | ✅ |
+
+Ajuste de forma: en A13, sin la «y» quedaba una coma entre dos oraciones; se puso punto. Auditoría en verde: 67
+páginas; cuerpo 1–42, sin cambios.
+
+### Capítulos 4 (final) y 5, apéndice C (2026-11-16) ✅
+
+PDF anotado: [revisiones/mPES_revision_autor_cap4b-5.pdf](revisiones/mPES_revision_autor_cap4b-5.pdf) (7 anotaciones).
+
+| ID | Pág. | Sección | Cambio | Estado |
+|----|------|---------|--------|--------|
+| A14 | 25 | §4.5 (`04Materials.tex`) | «las menores medias en los escenarios de generalización» → «en estos escenarios» | ✅ |
+| A15 | 30 | §5, intro (`05Results.tex`) | «Salvo indicación en contrario» → «contraria» | ✅ |
+| A16 | 30 | §5, intro | «*referencia* designa la condición de entrenamiento, y *generalización*, el conjunto de los 21 escenarios» (sin «la media») | ✅ |
+| A17 | 37 | §5.3, Fig. 5.5 | Figura a 1,15 del ancho de texto, centrada con `\makebox` (invade los márgenes); sigue en la pág. 37 | ✅ |
+| A18 | 39 | §5.5 | «la comparación es pareada: se calcula» → «en la comparación se calcula» | ✅ |
+| A19 | 39 | §5.5 | «prueba $t$ pareada» → «prueba $t$» | ✅ |
+| A20 | 56 | Apéndice C | Fig. C.1 a 0,75 del ancho: entra en la pág. 55, debajo de la introducción del apéndice, y desaparece la página casi vacía | ✅ |
+
+Ajustes de forma: en A14 se evitó «en en»; en A15 se conservó la coma; en A18 se quitaron los dos puntos, que con
+«en la comparación» dejaban la oración incompleta. Auditoría en verde: 66 páginas (una menos, por A20); cuerpo 1–42.
+
+### Capítulo 7 y estudio de semillas en el cuerpo (2026-11-16) 🟨
+
+PDF anotado: [revisiones/mPES_revision_autor_cap7.pdf](revisiones/mPES_revision_autor_cap7.pdf) (3 anotaciones).
+
+| ID | Pág. | Sección | Cambio | Estado |
+|----|------|---------|--------|--------|
+| A21 | 40 | §7.1 | «…aplican esa ponderación, que por sí sola no bastó para superar al Transformer» | ✅ |
+| A22 | 41 | §7.3 → §5.6, §6.4 | El estudio de semillas ya se hizo: sale de Trabajo futuro y pasa al cuerpo (ver A24) | ✅ |
+| A23 | 41 | §7.3 | «…humano–agente. Por ejemplo, en Nijjar *et al.* [37] los grupos superaron…» | ✅ |
+| A24 | — | §4.9 | Método del estudio de semillas en Materiales y Métodos (pedido del autor, junto con A22) | ✅ |
+
+A22 + A24, por el tope de 42: el cuerpo lleva un resumen y el detalle sigue en el Apéndice E.3.
+
+- §4.9 «Variabilidad entre semillas» (`sec:seeds-methods`), pág. 23: el método.
+- §5.6 «Variabilidad entre semillas» (`sec:res-seeds`), pág. 35: los resultados, con cifras de las Tablas E.3 y E.4.
+- §6.4 «Robustez frente a la semilla de entrenamiento» (`sec:disc-seeds`), pág. 39: absorbe las citas de Henderson y
+  Agarwal y explica que H1 se sostiene en media y que la ventaja del ponderado es pequeña pero estable.
+- §7.3: el primer ítem queda en «Extender el reentrenamiento … a los escenarios de generalización (Sección 5.6)».
+- E.3: sus dos párrafos de método se reducen a los detalles que no están en §4.9; las tablas y los resultados no
+  cambian.
+
+Auditoría en verde: 66 páginas; cuerpo 1–42 (cada capítulo absorbió su sección en el hueco de su última página). Ajuste
+de forma en A21: coma antes de la relativa explicativa.
+
+**A25 — Revisión de `thesis-judge` sobre A22/A24 (aprobada por el autor) ✅.** Las cifras y el método eran correctos;
+se corrigió la interpretación:
+
+- §6.4 reescrita:
+  - el estudio sólo cubre la referencia y las réplicas;
+  - la ventaja del ponderado mantiene el signo (9 de 10), pero su tamaño depende de la semilla: es mayor con los
+    peores Transformers;
+  - con 10 semillas, el DQN recurrente supera en media al DQN, lo que debilita el argumento de §6.1 sobre la
+    ventana;
+  - se aclara la excepción del DQN recurrente entregado;
+  - la cita de Agarwal se reformuló, porque no se informan intervalos de confianza.
+- §6.1: «con un único entrenamiento por modelo».
+- §7.1: «respaldan H1 en media», más una oración sobre las semillas.
+- §7.2: ítem nuevo; las comparaciones en los 21 escenarios reflejan las secuencias y no la semilla. Recupera lo que
+  respondía a B3.
+- §7.3: «semillas nuevas», con remisión a §5.6 y §6.4.
+- §7.4: «en promedio».
+- §4.9 y §5.6: precisiones de palabras, sin renglones nuevos.
+- E.3:
+  - distribución multimodal de A2C (6 de 10 semillas con el $\bar r$ de la política trivial de DQN);
+  - criterio de orden: los seis escenarios;
+  - sorteos con repetición y extremos elegidos;
+  - se quitaron las comparaciones ambiguas de desviaciones estándar.
+
+No se agregaron intervalos de confianza ni valores $p$ entre semillas: no los genera ningún script. Auditoría en
+verde: 66 páginas; cuerpo 1–42, con las págs. 23 y 35 llenas y unos 50 pt libres en la 39.
+
+**A26 — §3.5 «Variabilidad entre semillas de entrenamiento» (`sec:soa-seeds`), pedido del autor ✅.** Antecedentes
+del estudio de semillas:
+
+- Henderson *et al.* [51]: dos grupos de cinco semillas dan curvas significativamente distintas.
+- Colas *et al.* [54], cita nueva (arXiv:1806.08295, verificada en arXiv): el número de semillas como potencia
+  estadística, con la prueba $t$ y el intervalo *bootstrap*.
+- Agarwal *et al.* [55]: con pocas ejecuciones, las medias puntuales no son confiables.
+
+Cierra con «En esa línea, esta tesis…» y remite a §4.9, sin afirmar que se informan intervalos de confianza. Las citas
+desde [54] se corren: `Agarwal2021` pasa de [58] a [55] porque ahora se cita antes, y `mPES2026` de [54] a [56].
+Auditoría en verde: 66 páginas; cuerpo 1–42 (§3.5 en la pág. 12, con 214 pt libres).
+
+### Apéndice E (2026-11-16) ✅
+
+PDF anotado: [revisiones/mPES_revision_autor_apE.pdf](revisiones/mPES_revision_autor_apE.pdf) (4 comentarios).
+
+| ID | Pág. | Sección | Cambio | Estado |
+|----|------|---------|--------|--------|
+| A27 | 57 | E.2, Fig. E.1 | Leyenda «Regla $a = \min(S + 2, R)$ (S + 1,5)», como en la Tabla E.2; `policy_vs_rule.py` + `sync_figures.py` | ✅ |
+| A28 | 57 | E.2 | Blanco bajo el texto: Tablas E.2 y E.3 de `[H]` a `[!t]`; el texto de E.3 llena la pág. 57 | ✅ |
+| A29 | 59 | E.3, individuales | Párrafo simplificado (~17 → ~13 renglones) y comparaciones en porcentaje | ✅ |
+| A30 | 60 | E.3, ensambles | Comparaciones en porcentaje (1,0 % / 1,1 %; hasta 3,5 % / 3,0 %; compuerta 0,0 % / −0,1 %) | ✅ |
+
+Porcentajes respecto de la media de comparación, como en el Cap. 5. Salen de `seed_comparison.py`, que ahora agrega
+`diferencia_porcentual`, `peor_alto_menos_mejor_bajo_porcentual` y `menos_su_transformer_porcentual` a
+`seed_comparison.json`; los valores anteriores no cambian. pylint 10/10 en los dos scripts. Auditoría en verde:
+65 páginas (una menos); cuerpo 1–42.
 
 ## Defensa (Bernardez, «Recomendaciones adicionales»)
 

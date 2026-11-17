@@ -35,8 +35,11 @@ Donde $R$ son los recursos restantes, $t$ el paso dentro de la secuencia
 y $S$ la severidad inicial de la ciudad actual; hay
 $31 \times 11 \times 10 = 3\,410$ estados. Cada secuencia dispone de $39$
 recursos; el protocolo heredado de PES preasigna $9$ a dos ciudades
-iniciales, que no intervienen en las decisiones ni en la m\'etrica, por lo
-que el agente administra $30$. Al elegir la acci\'on $a_t$ en el estado
+iniciales, con fines de visualizaci\'on y de tutorial de la interfaz
+gr\'afica, que no se emplea en este trabajo. Esas ciudades no intervienen
+en las decisiones ni en la m\'etrica, porque ambas consideran s\'olo las
+ciudades de la secuencia y no hay contagio entre ciudades; por eso el
+agente administra $30$. Al elegir la acci\'on $a_t$ en el estado
 $s_t = (R_t, t, S_t)$, el entorno pasa al estado siguiente.
 \begin{equation}
 s_{t+1} \;=\; \bigl(R_t - \min(a_t, R_t),\; t + 1,\; S_{t+1}\bigr)
@@ -105,8 +108,7 @@ de antemano toda la secuencia. Con ellas se define el desempe\~no normalizado.
 \end{equation}
 
 Donde $\bar r = 0$ equivale a no asignar recursos y $\bar r = 1$ a la
-asignaci\'on \'optima. Ambas cotas se calculan al terminar la
-secuencia y no intervienen en las decisiones.
+asignaci\'on \'optima.
 
 \textbf{Asignaci\'on \'optima.} La asignaci\'on de cada ciudad se fija al
 incorporarse y su severidad no depende de las dem\'as ciudades. Por eso,
@@ -125,9 +127,9 @@ V_c(r) \;=\; \min_{0 \le a \le \min(10,\, r)} \bigl[f_c(a) + V_{c+1}(r - a)\bigr
 
 Donde $V_c(r)$ es la m\'inima severidad final de las ciudades
 $c, \ldots, L-1$ con $r$ recursos disponibles. La recursi\'on recorre las
-ciudades desde la \'ultima hasta la primera; guardando la acci\'on que
-alcanza cada m\'inimo se reconstruye la asignaci\'on \'optima de cada
-ciudad (Secci\'on~\ref{sec:res-posthoc}).
+ciudades desde la \'ultima hasta la primera y guarda la acci\'on que
+alcanza cada m\'inimo; con esas acciones se reconstruye la asignaci\'on
+\'optima de cada ciudad (Secci\'on~\ref{sec:res-posthoc}).
 
 La Ecuaci\'on~\eqref{eq:dp-optimum} es la forma finita y determinista de
 la ecuaci\'on de Bellman (Ecuaci\'on~\eqref{eq:bellman-opt}), pero
@@ -171,22 +173,21 @@ que se usa en el texto; las figuras usan el nombre del paquete.
 
 Los modelos se eligieron para que cada uno incorpore una capacidad que
 otro del conjunto no tiene y permita observar su efecto. El punto de
-partida fue DQN~\citep{Mnih2015}, el m\'etodo de referencia del RL
-profundo basado en valores; los dem\'as se incorporaron a partir de la
+partida fue Q-Learning, el m\'etodo de referencia del RL basado en
+valores; los dem\'as se incorporaron a partir de la
 bibliograf\'ia revisada (Cap\'itulos~\ref{sec:background}
 y~\ref{sec:soa}). Q-Learning base usa los hiperpar\'ametros originales de
 PES, sin optimizar; Q-Learning usa los elegidos por optimizaci\'on
-bayesiana (Secci\'on~\ref{sec:hpo-bg}), como los dem\'as modelos, y mide
-cu\'anto aporta esa optimizaci\'on. Double Q-Learning mide la reducci\'on de
-la sobreestimaci\'on~\citep{Hasselt2010}. DQN reemplaza la tabla por una red
-que generaliza entre estados; el DQN recurrente~\citep{Hausknecht2015} y
+bayesiana (Secci\'on~\ref{sec:hpo-bg}). Double Q-Learning reduce la
+sobreestimaci\'on~\citep{Hasselt2010}. DQN reemplaza las tablas por redes
+que generalizan entre estados; el DQN recurrente~\citep{Hausknecht2015} y
 el Transformer~\citep{Parisotto2020} agregan memoria de los estados
 anteriores, que el problema parcialmente observable puede requerir
 (Secci\'on~\ref{sec:env-dyn}), mediante recurrencia o atenci\'on, y
 A2C~\citep{Mnih2016} representa a los m\'etodos de gradiente de
 pol\'itica frente a los basados en valores. Ninguno de los siete modelos
 se excluy\'o despu\'es de evaluarlo: s\'olo se descartaron configuraciones
-durante la exploraci\'on de arquitecturas y la optimizaci\'on, y el
+durante la exploraci\'on de arquitecturas y la optimizaci\'on. El
 Cap\'itulo~\ref{sec:results} informa todos los modelos entrenados.
 
 \begin{table}[!htb]
@@ -367,8 +368,8 @@ Los ensambles (Tabla~\ref{tab:ens-packages}) no se entrenan: cargan los modelos 
 DQN recurrente y Transformer, y cinco de las seis variantes incorporan el
 actor de A2C. Los modelos tabulares no forman parte de ning\'un ensamble
 porque son los de menor capacidad de generalizaci\'on: no comparten
-informaci\'on entre estados y obtienen las menores medias en los
-escenarios de generalizaci\'on (Tabla~\ref{tab:global-mean}). A2C se excluy\'o del ensamble ponderado
+informaci\'on entre estados y obtienen las menores medias en estos
+escenarios (Tabla~\ref{tab:global-mean}). A2C se excluy\'o del ensamble ponderado
 porque, durante el ajuste \emph{ad hoc} de sus par\'ametros, incluirlo
 reduc\'ia su desempe\~no en la referencia; en cuatro de los otros cinco
 ensambles, la optimizaci\'on le asign\'o a A2C el menor peso base de sus
@@ -584,6 +585,19 @@ escenario se calculan la media y la desviaci\'on est\'andar de $\bar r$ y
 la degradaci\'on. Las comparaciones entre dos modelos agrupan las
 secuencias de los $21$ escenarios de generalizaci\'on y se resumen con la
 $d$ de Cohen y el valor $p$ de Welch (Secci\'on~\ref{sec:stats-bg}).
+
+\subsection{Variabilidad entre semillas}\label{sec:seeds-methods}
+
+Los modelos entregados provienen del mejor ensayo de la optimizaci\'on,
+que fija tambi\'en su semilla, por lo que no estiman la variabilidad entre
+entrenamientos. Para estimarla, cada modelo optimizado se reentren\'o con
+diez semillas nuevas y la configuraci\'on entregada, y se evalu\'o con el
+mismo protocolo en la referencia y en las r\'eplicas, sin los $21$
+escenarios. En cada ensamble se mantuvieron la regla y los par\'ametros y
+se reemplazaron sus miembros por modelos reentrenados, en diez
+combinaciones de semillas comunes a los seis ensambles: la mejor de cada miembro,
+la peor, la m\'as cercana a su media y siete sorteadas
+(Ap\'endice~\ref{ap:seeds}).
 
 \biblio % Needed for referencing to working when compiling individual subfiles - Do not remove
 \end{document}

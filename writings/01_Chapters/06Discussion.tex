@@ -14,8 +14,9 @@ la asignaci\'on \'optima y a una regla fija calibrada con ella
 \subsection{Interpretaci\'on de la ventaja del Transformer}\label{sec:disc-individual}
 
 La ventaja del Transformer no puede atribuirse a la ventana de estados: el
-DQN recurrente recibe la misma ventana de seis estados y en
-generalizaci\'on queda un $4\%$ por debajo del Transformer y un
+DQN recurrente recibe la misma ventana de seis estados y, con un \'unico
+entrenamiento por modelo, en generalizaci\'on queda un $4\%$ por debajo
+del Transformer y un
 $1\%$ por debajo del DQN, que s\'olo observa el estado actual. Tampoco se
 debe a la cantidad de par\'ametros: el Transformer tiene un $21\%$ menos
 que el DQN recurrente.
@@ -151,6 +152,32 @@ m\'as \'util, aunque en mPES la ventana por s\'i sola no dio ventaja
 depender\'ia de la ponderaci\'on por confianza y de
 las dem\'as reglas, que en mPES no bastaron por s\'i solas para superar al
 Transformer.
+
+\subsection{Robustez frente a la semilla de entrenamiento}\label{sec:disc-seeds}
+
+En RL profundo, cambiar s\'olo la semilla puede producir diferencias
+significativas~\citep{Henderson2018}, y se recomienda informar la
+variabilidad entre ejecuciones y no s\'olo la media~\citep{Agarwal2021}.
+En la referencia y las r\'eplicas, las \'unicas condiciones del estudio,
+el Transformer sigue siendo el mejor modelo individual en promedio y el
+ensamble ponderado, el \'unico ensamble que lo supera de forma
+consistente (Secci\'on~\ref{sec:res-seeds}; Tablas~\ref{tab:seeds}
+y~\ref{tab:ens-seeds}). Es menos firme, en cambio, el ordenamiento entre
+los modelos con memoria: la ventaja del Transformer sobre el DQN
+recurrente depende de la semilla, de modo que H1 se sostiene en media y
+no para cada entrenamiento. Adem\'as, con diez semillas el DQN recurrente
+supera en media al DQN ($0{,}902$ frente a $0{,}869$ en la referencia),
+mientras que el DQN entregado supera a sus diez semillas: la conclusi\'on
+de la Secci\'on~\ref{sec:disc-individual} de que la ventana no da
+ventaja descansa en un \'unico entrenamiento y en escenarios que este
+estudio no cubre. La ventaja del ensamble ponderado mantiene su signo en
+nueve de las diez combinaciones, pero su tama\~no depende de la semilla:
+es mayor con los peores Transformers y casi se anula con los mejores,
+como cabe esperar de un \emph{prior} que acerca la decisi\'on a una regla
+fija (Secci\'on~\ref{sec:ens-best}). Salvo el DQN recurrente en la
+referencia, los modelos entregados quedan por encima de la media de sus
+semillas, lo que es consistente con el sesgo de selecci\'on de la
+optimizaci\'on.
 
 \biblio
 \end{document}

@@ -44,7 +44,14 @@ aviso». No proponer incluirlo.
 Dos pre-dictámenes (Bernardez y Robino) en `dict/*.pdf`; ambos aprueban la defensa y las observaciones son
 sugerencias. El texto que leyó el jurado es el de master @ `9a1cdc4` (`dict/mPES_pre_dictamenes.pdf`), así que sus
 números de tabla, figura y cita corresponden a ese PDF. Seguimiento con IDs (B1–B9, R1–R10), estados y presupuesto de
-páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`.
+páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`. Al 2026-11-16 están todas cerradas (✅),
+salvo R1 y R9, descartadas por el autor (🚫); las nuevas correcciones del escrito siguen el mismo flujo.
+
+## Trabajo en dos PCs
+
+El autor alterna entre la notebook y otra PC (la de los estudios de semillas en paralelo, `utils/scripts/seed_run/`).
+Al retomar en cualquiera: `git pull` y `git lfs pull` en `correcciones-jurado`. El estado de trabajo nuevo se anota
+en este archivo y se commitea; la memoria local de cada PC no viaja.
 
 ## Variabilidad por semilla (estado al 2026-11-15)
 
@@ -63,8 +70,10 @@ páginas en `dict/correcciones.md`; se aplican con `/jury-corrections`.
   redes distintas, trayectorias idénticas. No es un error.
 - Modelos por semilla y `result.json` en `h1/general/work/seeds/` (binarios en Git LFS: `git lfs pull`). Los
   `run_stdout*.log` de entrenamiento (cientos de MB) no se versionan.
-- En la tesis: Apéndice E.3 (`ap:seeds`, actualizado a n = 10 el 2026-11-15) y primer ítem de §7.3 (sin cantidades;
-  no cambió); material en `dict/defensa/README.md` §3.
+- En la tesis (desde el 2026-11-16, A22/A24/A26): antecedentes en §3.5 (`sec:soa-seeds`, cita `Colas2018`), método en §4.9 (`sec:seeds-methods`), resultados en §5.6
+  (`sec:res-seeds`), discusión en §6.4 (`sec:disc-seeds`) y detalle con las Tablas E.3/E.4 en el Apéndice E.3
+  (`ap:seeds`). §7.3 sólo conserva extender el estudio a los escenarios de generalización. Material en
+  `dict/defensa/README.md` §3.
 - Páginas: recompilado el 2026-11-15, 66 páginas; el cuerpo sigue en 1–42 (tope) y E.3 ocupa las págs. 65–66 del
   PDF.
 - Ampliado el 2026-11-15 a Double Q-Learning, DQN recurrente y A2C (10 semillas cada uno; el DQN recurrente usa la

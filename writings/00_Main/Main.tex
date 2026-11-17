@@ -229,6 +229,10 @@
 \appendixpage
 \addappheadtotoc
 
+\makeatletter % marcadores del PDF: las secciones del ap\'endice cuelgan de <<Ap\'endice>>, como las de cada cap\'itulo
+\def\toclevel@section{2}
+\def\toclevel@subsection{3}
+\makeatother
 \begin{appendices}
     \subfile{../01_Chapters/Appendix}
 \end{appendices}
