@@ -1,0 +1,14 @@
+{
+  "hyperparameters": {
+    "confidence_power": 1.4518192753253305,
+    "gate_slope": 2.397348683066998,
+    "trf_confidence_threshold": 0.22218599600116365,
+    "weight_a2c": 0.06744818497247712,
+    "weight_dqn": 0.8366798203030911,
+    "weight_rdqn": 2.5612692034199602,
+    "weight_trf": 2.6012631118864875
+  },
+  "mean_perf": 0.9279100112174109,
+  "std_perf": 0.04570341654867821,
+  "value": 0.9279100112174109
+}

@@ -1,0 +1,28 @@
+{
+  // ─────────────────────────────────────────────────────────────────────────
+  //  Pyright project configuration for mPES
+  //  Run from the workspace root:
+  //    pyright --project utils/config/pyrightconfig.json
+  //  Paths are relative to this file (utils/config/ -> ../../ is the root).
+  // ─────────────────────────────────────────────────────────────────────────
+
+  "include": ["../.."],
+
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "../../win_mpes_env",
+    "../../linux_mpes_env"
+  ],
+
+  // Resolve third-party imports from the project virtual environment.
+  "venvPath": "../..",
+  "venv": "win_mpes_env",
+
+  // Workspace root on the search path so cross-package imports such as
+  // ``utils.scripts.*`` resolve as namespace packages.
+  "extraPaths": ["../.."],
+
+  "pythonVersion": "3.12"
+}

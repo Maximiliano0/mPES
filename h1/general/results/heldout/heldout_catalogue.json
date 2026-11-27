@@ -1,0 +1,558 @@
+{
+  "generated": "2026-09-29T00:18:25.979854+00:00",
+  "reference_pkg": "pes_dqn",
+  "purpose": "Held-out replicas of the reference condition: fresh i.i.d. draws from the empirical frequencies of the reference CSVs, never used for training selection or Optuna. Excluded from the stress/generalisation aggregates.",
+  "sampling_distribution": {
+    "severity": {
+      "values": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "counts": [
+        40,
+        64,
+        64,
+        80,
+        56,
+        16,
+        40
+      ],
+      "probabilities": [
+        0.1111111111111111,
+        0.17777777777777778,
+        0.17777777777777778,
+        0.2222222222222222,
+        0.15555555555555556,
+        0.044444444444444446,
+        0.1111111111111111
+      ],
+      "n": 360,
+      "source": "ml/pes_dqn/inputs/initial_severity.csv",
+      "source_sha256": "0fccaf8c09280e17581d2ddc34b58875a27cadad658f770fa747c6b4692a6b77"
+    },
+    "length": {
+      "values": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "counts": [
+        12,
+        9,
+        10,
+        13,
+        8,
+        7,
+        2,
+        3
+      ],
+      "probabilities": [
+        0.1875,
+        0.140625,
+        0.15625,
+        0.203125,
+        0.125,
+        0.109375,
+        0.03125,
+        0.046875
+      ],
+      "n": 64,
+      "source": "ml/pes_dqn/inputs/sequence_lengths.csv",
+      "source_sha256": "58b2624149ae2353747402709accfe5aea6fca1a4e150e8abca913187ca409d0"
+    }
+  },
+  "replicas": [
+    {
+      "scenario": "heldout_s1",
+      "description": "Held-out replica 1: i.i.d. draws from the empirical severity and length frequencies (seed offset 1).",
+      "base_seed": 42,
+      "seed_offset": 1,
+      "effective_seed": 43,
+      "structure": {
+        "num_blocks": 8,
+        "num_sequences_per_block": 8,
+        "n_sequences": 64,
+        "n_trials": 340
+      },
+      "observed": {
+        "severity": {
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "counts": [
+            33,
+            56,
+            60,
+            79,
+            58,
+            15,
+            39
+          ],
+          "frequencies": [
+            0.09705882352941177,
+            0.16470588235294117,
+            0.17647058823529413,
+            0.2323529411764706,
+            0.17058823529411765,
+            0.04411764705882353,
+            0.11470588235294117
+          ],
+          "n": 340
+        },
+        "length": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "counts": [
+            15,
+            11,
+            10,
+            13,
+            4,
+            6,
+            3,
+            2
+          ],
+          "frequencies": [
+            0.234375,
+            0.171875,
+            0.15625,
+            0.203125,
+            0.0625,
+            0.09375,
+            0.046875,
+            0.03125
+          ],
+          "n": 64
+        }
+      },
+      "outputs_sha256": {
+        "initial_severity.csv": "818fc61067b6edc0674bd85361d7133cd6a8712e510d130ef02e9b217430bd9b",
+        "sequence_lengths.csv": "d388153bb0b16b1e1077b601eb805c74af81b11f7e533325b9451a7d1d8a1255"
+      },
+      "work_copies": {
+        "pes_base": "match",
+        "pes_ql": "match",
+        "pes_dql": "match",
+        "pes_dqn": "match",
+        "pes_rdqn": "match",
+        "pes_a2c": "match",
+        "pes_trf": "match",
+        "pes_ens": "match",
+        "pes_ens_sprb": "match",
+        "pes_ens_accq": "match",
+        "pes_ens_consensus": "match",
+        "pes_ens_consensus_prior": "match",
+        "pes_ens_trf_guard": "match"
+      }
+    },
+    {
+      "scenario": "heldout_s2",
+      "description": "Held-out replica 2: i.i.d. draws from the empirical severity and length frequencies (seed offset 2).",
+      "base_seed": 42,
+      "seed_offset": 2,
+      "effective_seed": 44,
+      "structure": {
+        "num_blocks": 8,
+        "num_sequences_per_block": 8,
+        "n_sequences": 64,
+        "n_trials": 374
+      },
+      "observed": {
+        "severity": {
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "counts": [
+            40,
+            81,
+            67,
+            75,
+            63,
+            18,
+            30
+          ],
+          "frequencies": [
+            0.10695187165775401,
+            0.21657754010695188,
+            0.17914438502673796,
+            0.20053475935828877,
+            0.16844919786096257,
+            0.0481283422459893,
+            0.08021390374331551
+          ],
+          "n": 374
+        },
+        "length": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "counts": [
+            8,
+            14,
+            9,
+            8,
+            11,
+            7,
+            2,
+            5
+          ],
+          "frequencies": [
+            0.125,
+            0.21875,
+            0.140625,
+            0.125,
+            0.171875,
+            0.109375,
+            0.03125,
+            0.078125
+          ],
+          "n": 64
+        }
+      },
+      "outputs_sha256": {
+        "initial_severity.csv": "06d277affe5c51125082a6f6e664bfdff0c84c07c3f550f48f2f7c1d3b277f19",
+        "sequence_lengths.csv": "629dfe94000eff903b119f4ed3d2cc7794c6d0c00b5e55774d585529f18c6a02"
+      },
+      "work_copies": {
+        "pes_base": "match",
+        "pes_ql": "match",
+        "pes_dql": "match",
+        "pes_dqn": "match",
+        "pes_rdqn": "match",
+        "pes_a2c": "match",
+        "pes_trf": "match",
+        "pes_ens": "match",
+        "pes_ens_sprb": "match",
+        "pes_ens_accq": "match",
+        "pes_ens_consensus": "match",
+        "pes_ens_consensus_prior": "match",
+        "pes_ens_trf_guard": "match"
+      }
+    },
+    {
+      "scenario": "heldout_s3",
+      "description": "Held-out replica 3: i.i.d. draws from the empirical severity and length frequencies (seed offset 3).",
+      "base_seed": 42,
+      "seed_offset": 3,
+      "effective_seed": 45,
+      "structure": {
+        "num_blocks": 8,
+        "num_sequences_per_block": 8,
+        "n_sequences": 64,
+        "n_trials": 369
+      },
+      "observed": {
+        "severity": {
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "counts": [
+            38,
+            72,
+            53,
+            93,
+            54,
+            18,
+            41
+          ],
+          "frequencies": [
+            0.10298102981029811,
+            0.1951219512195122,
+            0.14363143631436315,
+            0.25203252032520324,
+            0.14634146341463414,
+            0.04878048780487805,
+            0.1111111111111111
+          ],
+          "n": 369
+        },
+        "length": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            10
+          ],
+          "counts": [
+            13,
+            4,
+            10,
+            12,
+            16,
+            5,
+            4
+          ],
+          "frequencies": [
+            0.203125,
+            0.0625,
+            0.15625,
+            0.1875,
+            0.25,
+            0.078125,
+            0.0625
+          ],
+          "n": 64
+        }
+      },
+      "outputs_sha256": {
+        "initial_severity.csv": "1386b38af7ebd398f0979f7870b4a74449bd9f5a4fc1835ec9cf2016c1925559",
+        "sequence_lengths.csv": "0ea02df079694f74fcf5b5bc3c9a8700a6e373ee8f715c7854dce4eb974c06b2"
+      },
+      "work_copies": {
+        "pes_base": "match",
+        "pes_ql": "match",
+        "pes_dql": "match",
+        "pes_dqn": "match",
+        "pes_rdqn": "match",
+        "pes_a2c": "match",
+        "pes_trf": "match",
+        "pes_ens": "match",
+        "pes_ens_sprb": "match",
+        "pes_ens_accq": "match",
+        "pes_ens_consensus": "match",
+        "pes_ens_consensus_prior": "match",
+        "pes_ens_trf_guard": "match"
+      }
+    },
+    {
+      "scenario": "heldout_s4",
+      "description": "Held-out replica 4: i.i.d. draws from the empirical severity and length frequencies (seed offset 4).",
+      "base_seed": 42,
+      "seed_offset": 4,
+      "effective_seed": 46,
+      "structure": {
+        "num_blocks": 8,
+        "num_sequences_per_block": 8,
+        "n_sequences": 64,
+        "n_trials": 346
+      },
+      "observed": {
+        "severity": {
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "counts": [
+            39,
+            71,
+            68,
+            74,
+            48,
+            11,
+            35
+          ],
+          "frequencies": [
+            0.11271676300578035,
+            0.20520231213872833,
+            0.19653179190751446,
+            0.2138728323699422,
+            0.13872832369942195,
+            0.031791907514450865,
+            0.10115606936416185
+          ],
+          "n": 346
+        },
+        "length": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "counts": [
+            15,
+            7,
+            9,
+            17,
+            8,
+            4,
+            2,
+            2
+          ],
+          "frequencies": [
+            0.234375,
+            0.109375,
+            0.140625,
+            0.265625,
+            0.125,
+            0.0625,
+            0.03125,
+            0.03125
+          ],
+          "n": 64
+        }
+      },
+      "outputs_sha256": {
+        "initial_severity.csv": "8a43126825ff6d884e4fc2a334fabc8a0f8109f4932fdf2a5f489f91e86b6856",
+        "sequence_lengths.csv": "17c7db38d082a016cc4708c11638a5ccc7973935206007d0b24862339957af24"
+      },
+      "work_copies": {
+        "pes_base": "match",
+        "pes_ql": "match",
+        "pes_dql": "match",
+        "pes_dqn": "match",
+        "pes_rdqn": "match",
+        "pes_a2c": "match",
+        "pes_trf": "match",
+        "pes_ens": "match",
+        "pes_ens_sprb": "match",
+        "pes_ens_accq": "match",
+        "pes_ens_consensus": "match",
+        "pes_ens_consensus_prior": "match",
+        "pes_ens_trf_guard": "match"
+      }
+    },
+    {
+      "scenario": "heldout_s5",
+      "description": "Held-out replica 5: i.i.d. draws from the empirical severity and length frequencies (seed offset 5).",
+      "base_seed": 42,
+      "seed_offset": 5,
+      "effective_seed": 47,
+      "structure": {
+        "num_blocks": 8,
+        "num_sequences_per_block": 8,
+        "n_sequences": 64,
+        "n_trials": 389
+      },
+      "observed": {
+        "severity": {
+          "values": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "counts": [
+            45,
+            68,
+            77,
+            82,
+            59,
+            13,
+            45
+          ],
+          "frequencies": [
+            0.11568123393316196,
+            0.17480719794344474,
+            0.19794344473007713,
+            0.21079691516709512,
+            0.15167095115681234,
+            0.033419023136246784,
+            0.11568123393316196
+          ],
+          "n": 389
+        },
+        "length": {
+          "values": [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "counts": [
+            9,
+            7,
+            8,
+            14,
+            11,
+            7,
+            3,
+            5
+          ],
+          "frequencies": [
+            0.140625,
+            0.109375,
+            0.125,
+            0.21875,
+            0.171875,
+            0.109375,
+            0.046875,
+            0.078125
+          ],
+          "n": 64
+        }
+      },
+      "outputs_sha256": {
+        "initial_severity.csv": "78b75de21114411249e5db853b6ecebc4de2a3360d32b1065510d42467f4ad2c",
+        "sequence_lengths.csv": "e969e91038ed2d052d00d3efee66776e41e78e3bd1abda42614ec5d084ef9486"
+      },
+      "work_copies": {
+        "pes_base": "match",
+        "pes_ql": "match",
+        "pes_dql": "match",
+        "pes_dqn": "match",
+        "pes_rdqn": "match",
+        "pes_a2c": "match",
+        "pes_trf": "match",
+        "pes_ens": "match",
+        "pes_ens_sprb": "match",
+        "pes_ens_accq": "match",
+        "pes_ens_consensus": "match",
+        "pes_ens_consensus_prior": "match",
+        "pes_ens_trf_guard": "match"
+      }
+    }
+  ]
+}

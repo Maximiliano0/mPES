@@ -1,0 +1,154 @@
+{
+  "scenario": "heldout_s1",
+  "family": "heldout",
+  "description": "Held-out replica 1: i.i.d. draws from the empirical severity and length frequencies (seed offset 1).",
+  "procedure": "i.i.d. resampling: each sequence length is drawn independently from sampling_distribution.length and each initial severity independently from sampling_distribution.severity; severities do not depend on the length or on the position in the sequence. Lengths are drawn first (num_blocks x num_sequences_per_block), then one severity per trial.",
+  "rng": "numpy.random.default_rng(effective_seed).choice(values, p=probabilities)",
+  "base_seed": 42,
+  "seed_offset": 1,
+  "effective_seed": 43,
+  "structure": {
+    "num_blocks": 8,
+    "num_sequences_per_block": 8,
+    "n_sequences": 64,
+    "n_trials": 340
+  },
+  "sampling_distribution": {
+    "severity": {
+      "values": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "counts": [
+        40,
+        64,
+        64,
+        80,
+        56,
+        16,
+        40
+      ],
+      "probabilities": [
+        0.1111111111111111,
+        0.17777777777777778,
+        0.17777777777777778,
+        0.2222222222222222,
+        0.15555555555555556,
+        0.044444444444444446,
+        0.1111111111111111
+      ],
+      "n": 360,
+      "source": "ml/pes_dqn/inputs/initial_severity.csv",
+      "source_sha256": "0fccaf8c09280e17581d2ddc34b58875a27cadad658f770fa747c6b4692a6b77"
+    },
+    "length": {
+      "values": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "counts": [
+        12,
+        9,
+        10,
+        13,
+        8,
+        7,
+        2,
+        3
+      ],
+      "probabilities": [
+        0.1875,
+        0.140625,
+        0.15625,
+        0.203125,
+        0.125,
+        0.109375,
+        0.03125,
+        0.046875
+      ],
+      "n": 64,
+      "source": "ml/pes_dqn/inputs/sequence_lengths.csv",
+      "source_sha256": "58b2624149ae2353747402709accfe5aea6fca1a4e150e8abca913187ca409d0"
+    }
+  },
+  "observed": {
+    "severity": {
+      "values": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "counts": [
+        33,
+        56,
+        60,
+        79,
+        58,
+        15,
+        39
+      ],
+      "frequencies": [
+        0.09705882352941177,
+        0.16470588235294117,
+        0.17647058823529413,
+        0.2323529411764706,
+        0.17058823529411765,
+        0.04411764705882353,
+        0.11470588235294117
+      ],
+      "n": 340
+    },
+    "length": {
+      "values": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "counts": [
+        15,
+        11,
+        10,
+        13,
+        4,
+        6,
+        3,
+        2
+      ],
+      "frequencies": [
+        0.234375,
+        0.171875,
+        0.15625,
+        0.203125,
+        0.0625,
+        0.09375,
+        0.046875,
+        0.03125
+      ],
+      "n": 64
+    }
+  },
+  "outputs_sha256": {
+    "initial_severity.csv": "818fc61067b6edc0674bd85361d7133cd6a8712e510d130ef02e9b217430bd9b",
+    "sequence_lengths.csv": "d388153bb0b16b1e1077b601eb805c74af81b11f7e533325b9451a7d1d8a1255"
+  }
+}

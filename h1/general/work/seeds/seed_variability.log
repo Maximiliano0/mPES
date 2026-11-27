@@ -1,0 +1,2282 @@
+[2026-11-11 18:57:37] ql semilla 0: inicio
+[2026-11-11 18:57:40] ql semilla 0: fin en 0.00 h; referencia 0.8866, held-out 0.8813
+[2026-11-11 18:57:40] ql semilla 0: ya hecha, se omite
+[2026-11-11 18:57:40] dqn semilla 0: inicio
+[2026-11-11 18:57:55] dqn semilla 0: fin en 0.00 h; referencia 0.8937, held-out 0.8915
+[2026-11-11 18:57:55] dqn semilla 0: ya hecha, se omite
+[2026-11-11 18:57:55] trf semilla 0: inicio
+[2026-11-11 18:59:09] trf semilla 0: fin en 0.00 h; referencia 0.9272, held-out 0.9286
+[2026-11-11 18:59:09] trf semilla 0: ya hecha, se omite
+[2026-11-11 18:59:09] ql: n=1  ref 0.8866 ± 0.0000  held-out 0.8813 ± 0.0000
+[2026-11-11 18:59:09] dqn: n=1  ref 0.8937 ± 0.0000  held-out 0.8915 ± 0.0000
+[2026-11-11 18:59:09] trf: n=1  ref 0.9272 ± 0.0000  held-out 0.9286 ± 0.0000
+[2026-11-11 18:59:30] ql semilla 0: ya hecha, se omite
+[2026-11-11 18:59:30] ql semilla 1001: inicio
+[2026-11-11 19:02:46] ql semilla 1001: fin en 0.05 h; referencia 0.8357, held-out 0.8415
+[2026-11-11 19:02:46] ql semilla 1002: inicio
+[2026-11-11 19:05:55] ql semilla 1002: fin en 0.05 h; referencia 0.8617, held-out 0.8730
+[2026-11-11 19:05:55] ql semilla 1003: inicio
+[2026-11-11 19:09:07] ql semilla 1003: fin en 0.05 h; referencia 0.8466, held-out 0.8669
+[2026-11-11 19:09:07] ql semilla 1004: inicio
+[2026-11-11 19:11:57] ql semilla 1004: fin en 0.05 h; referencia 0.8572, held-out 0.8615
+[2026-11-11 19:11:57] ql semilla 1005: inicio
+[2026-11-11 19:14:46] ql semilla 1005: fin en 0.05 h; referencia 0.8952, held-out 0.8856
+[2026-11-11 19:14:46] dqn semilla 0: ya hecha, se omite
+[2026-11-11 19:14:46] dqn semilla 1001: inicio
+[2026-11-11 19:33:11] dqn semilla 1001: fin en 0.30 h; referencia 0.8664, held-out 0.8684
+[2026-11-11 19:33:11] dqn semilla 1002: inicio
+[2026-11-11 19:51:38] dqn semilla 1002: fin en 0.31 h; referencia 0.8755, held-out 0.8771
+[2026-11-11 19:51:38] dqn semilla 1003: inicio
+[2026-11-11 20:10:00] dqn semilla 1003: fin en 0.30 h; referencia 0.8778, held-out 0.8793
+[2026-11-11 20:10:00] dqn semilla 1004: inicio
+[2026-11-11 20:28:20] dqn semilla 1004: fin en 0.30 h; referencia 0.8716, held-out 0.8725
+[2026-11-11 20:28:20] dqn semilla 1005: inicio
+[2026-11-11 20:46:38] dqn semilla 1005: fin en 0.30 h; referencia 0.8795, held-out 0.8809
+[2026-11-11 20:46:38] trf semilla 0: ya hecha, se omite
+[2026-11-11 20:46:38] trf semilla 1001: inicio
+[2026-11-12 12:06:34] ql semilla 0: ya hecha, se omite
+[2026-11-12 12:06:34] ql semilla 1001: ya hecha, se omite
+[2026-11-12 12:06:34] ql semilla 1002: ya hecha, se omite
+[2026-11-12 12:06:34] ql semilla 1003: ya hecha, se omite
+[2026-11-12 12:06:34] ql semilla 1004: ya hecha, se omite
+[2026-11-12 12:06:34] ql semilla 1005: ya hecha, se omite
+[2026-11-12 12:06:34] dqn semilla 0: ya hecha, se omite
+[2026-11-12 12:06:34] dqn semilla 1001: ya hecha, se omite
+[2026-11-12 12:06:34] dqn semilla 1002: ya hecha, se omite
+[2026-11-12 12:06:34] dqn semilla 1003: ya hecha, se omite
+[2026-11-12 12:06:34] dqn semilla 1004: ya hecha, se omite
+[2026-11-12 12:06:34] dqn semilla 1005: ya hecha, se omite
+[2026-11-12 12:06:34] trf semilla 0: ya hecha, se omite
+[2026-11-12 12:06:34] trf semilla 1001: inicio
+[2026-11-12 12:31:14] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
+[2026-11-12 12:31:14] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
+[2026-11-12 12:31:14] trf: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-12 15:23:40] trf semilla 1001: fin en 3.26 h; referencia 0.9141, held-out 0.9125
+[2026-11-12 15:23:40] trf semilla 1002: inicio
+[2026-11-12 20:35:34] cadena: arrancan trf 1004 y 1005
+[2026-11-12 20:35:37] trf semilla 0: ya hecha, se omite
+[2026-11-12 20:35:37] trf semilla 1004: inicio
+[2026-11-12 20:37:04] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
+[2026-11-12 20:37:04] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
+[2026-11-12 20:37:04] trf: semillas nuevas n=1  ref 0.9141 ± 0.0000  held-out 0.9125 ± 0.0000
+[2026-11-13 03:07:35] trf semilla 1004: fin en 6.48 h; referencia 0.9308, held-out 0.9336
+[2026-11-13 03:07:35] trf semilla 1005: inicio
+[2026-11-13 09:39:43] trf semilla 1005: fin en 6.50 h; referencia 0.9333, held-out 0.9296
+[2026-11-13 09:39:43] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
+[2026-11-13 09:39:43] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
+[2026-11-13 09:39:43] trf: semillas nuevas n=3  ref 0.9261 ± 0.0105  held-out 0.9252 ± 0.0112
+[2026-11-13 09:39:44] cadena: fin (codigo 0)
+[2026-11-13 09:40:19] cadena 2: arrancan trf 1002 y 1003
+[2026-11-13 09:40:21] trf semilla 0: ya hecha, se omite
+[2026-11-13 09:40:21] trf semilla 1002: inicio
+[2026-11-13 09:40:29] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
+[2026-11-13 09:40:29] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
+[2026-11-13 09:40:29] trf: semillas nuevas n=3  ref 0.9261 ± 0.0105  held-out 0.9252 ± 0.0112
+[2026-11-13 16:39:59] trf semilla 1002: fin en 6.95 h; referencia 0.9298, held-out 0.9335
+[2026-11-13 16:39:59] trf semilla 1003: inicio
+[2026-11-13 17:34:55] corte manual: trf semilla 1003 interrumpida (~15 %); el estudio queda con 4 semillas nuevas del Transformer
+[2026-11-13 17:35:06] ql: semillas nuevas n=5  ref 0.8593 ± 0.0224  held-out 0.8657 ± 0.0162
+[2026-11-13 17:35:06] dqn: semillas nuevas n=5  ref 0.8741 ± 0.0052  held-out 0.8756 ± 0.0051
+[2026-11-13 17:35:06] trf: semillas nuevas n=4  ref 0.9270 ± 0.0088  held-out 0.9273 ± 0.0101
+[2026-11-14 20:50:05] trf semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] trf semilla 1003: inicio
+[2026-11-14 20:50:05] trf semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] trf semilla 1006: inicio
+[2026-11-14 20:50:05] trf semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] trf semilla 1010: inicio
+[2026-11-14 20:50:05] trf semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] trf semilla 1007: inicio
+[2026-11-14 20:50:05] trf semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] trf semilla 1009: inicio
+[2026-11-14 20:50:05] trf semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] trf semilla 1008: inicio
+[2026-11-14 20:50:05] ql semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] ql semilla 1006: inicio
+[2026-11-14 20:50:05] ql semilla 0: ya hecha, se omite
+[2026-11-14 20:50:05] ql semilla 1009: inicio
+[2026-11-14 20:53:07] ql semilla 1009: fin en 0.05 h; referencia 0.8592, held-out 0.8446
+[2026-11-14 20:53:07] ql semilla 1010: inicio
+[2026-11-14 20:53:17] ql semilla 1006: fin en 0.05 h; referencia 0.8694, held-out 0.8709
+[2026-11-14 20:53:17] ql semilla 1007: inicio
+[2026-11-14 20:56:10] ql semilla 1010: fin en 0.05 h; referencia 0.8817, held-out 0.8894
+[2026-11-14 20:56:10] dqn semilla 0: ya hecha, se omite
+[2026-11-14 20:56:10] dqn semilla 1009: inicio
+[2026-11-14 20:56:19] ql semilla 1007: fin en 0.05 h; referencia 0.8783, held-out 0.8857
+[2026-11-14 20:56:19] ql semilla 1008: inicio
+[2026-11-14 20:59:29] ql semilla 1008: fin en 0.05 h; referencia 0.8663, held-out 0.8704
+[2026-11-14 20:59:29] dqn semilla 0: ya hecha, se omite
+[2026-11-14 20:59:29] dqn semilla 1006: inicio
+[2026-11-14 21:20:51] dqn semilla 1009: fin en 0.41 h; referencia 0.8580, held-out 0.8598
+[2026-11-14 21:20:51] dqn semilla 1010: inicio
+[2026-11-14 21:24:04] dqn semilla 1006: fin en 0.41 h; referencia 0.8773, held-out 0.8804
+[2026-11-14 21:24:04] dqn semilla 1007: inicio
+[2026-11-14 21:43:31] dqn semilla 1010: fin en 0.38 h; referencia 0.8580, held-out 0.8598
+[2026-11-14 21:43:31] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-14 21:43:31] dqn: semillas nuevas n=8  ref 0.8705 ± 0.0088  held-out 0.8723 ± 0.0088
+[2026-11-14 21:43:31] trf: semillas nuevas n=4  ref 0.9270 ± 0.0088  held-out 0.9273 ± 0.0101
+[2026-11-14 21:46:59] dqn semilla 1007: fin en 0.38 h; referencia 0.8580, held-out 0.8598
+[2026-11-14 21:46:59] dqn semilla 1008: inicio
+[2026-11-14 22:09:56] dqn semilla 1008: fin en 0.38 h; referencia 0.8638, held-out 0.8672
+[2026-11-14 22:09:56] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-14 22:09:56] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-14 22:09:56] trf: semillas nuevas n=4  ref 0.9270 ± 0.0088  held-out 0.9273 ± 0.0101
+[2026-11-14 23:59:30] trf semilla 1007: fin en 3.14 h; referencia 0.9214, held-out 0.9256
+[2026-11-14 23:59:30] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-14 23:59:30] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-14 23:59:30] trf: semillas nuevas n=5  ref 0.9259 ± 0.0080  held-out 0.9270 ± 0.0087
+[2026-11-14 23:59:30] trf semilla 1010: fin en 3.14 h; referencia 0.9181, held-out 0.9089
+[2026-11-14 23:59:30] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-14 23:59:30] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-14 23:59:30] trf: semillas nuevas n=6  ref 0.9246 ± 0.0078  held-out 0.9240 ± 0.0108
+[2026-11-14 23:59:49] trf semilla 1003: fin en 3.14 h; referencia 0.9214, held-out 0.9196
+[2026-11-14 23:59:49] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-14 23:59:49] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-14 23:59:49] trf: semillas nuevas n=7  ref 0.9241 ± 0.0072  held-out 0.9233 ± 0.0100
+[2026-11-15 00:00:01] trf semilla 1006: fin en 3.15 h; referencia 0.9026, held-out 0.9104
+[2026-11-15 00:00:01] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 00:00:01] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 00:00:01] trf: semillas nuevas n=8  ref 0.9214 ± 0.0101  held-out 0.9217 ± 0.0103
+[2026-11-15 00:00:08] trf semilla 1008: fin en 3.15 h; referencia 0.9195, held-out 0.9207
+[2026-11-15 00:00:08] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 00:00:08] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 00:00:08] trf: semillas nuevas n=9  ref 0.9212 ± 0.0095  held-out 0.9216 ± 0.0096
+[2026-11-15 00:00:13] trf semilla 1009: fin en 3.15 h; referencia 0.8953, held-out 0.9014
+[2026-11-15 00:00:13] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 00:00:13] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 00:00:13] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 00:09:56] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 00:09:56] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 00:09:56] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 00:35:20] a2c: en un proceso propio (configuración de hilos de TensorFlow incompatible)
+[2026-11-15 00:35:20] a2c: en un proceso propio (configuración de hilos de TensorFlow incompatible)
+[2026-11-15 00:39:08] dql semilla 0: inicio
+[2026-11-15 00:39:13] dql semilla 0: fin en 0.00 h; referencia 0.8963, held-out 0.9002
+[2026-11-15 00:39:14] rdqn semilla 0: inicio
+[2026-11-15 00:39:40] rdqn semilla 0: fin en 0.00 h; referencia 0.8987, held-out 0.9029
+[2026-11-15 00:39:41] a2c semilla 0: inicio
+[2026-11-15 00:39:49] a2c semilla 0: fin en 0.00 h; referencia 0.8872, held-out 0.8869
+[2026-11-15 00:48:59] dql semilla 0: ya hecha, se omite
+
+[2026-11-15 00:48:59] rdqn semilla 1001: inicio
+[2026-11-15 00:48:59] a2c semilla 1001: inicio
+[2026-11-15 00:48:59] dql semilla 1001: inicio
+[2026-11-15 00:48:59] a2c semilla 1006: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1002: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1003: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1004: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1006: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1005: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1007: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1008: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1009: inicio
+[2026-11-15 00:48:59] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 00:48:59] rdqn semilla 1010: inicio
+[2026-11-15 00:51:19] dql semilla 1001: fin en 0.04 h; referencia 0.8662, held-out 0.8660
+[2026-11-15 00:51:19] dql semilla 1002: inicio
+[2026-11-15 00:53:30] dql semilla 1002: fin en 0.04 h; referencia 0.8698, held-out 0.8725
+[2026-11-15 00:53:30] dql semilla 1003: inicio
+[2026-11-15 00:55:35] dql semilla 1003: fin en 0.03 h; referencia 0.8547, held-out 0.8595
+[2026-11-15 00:55:35] dql semilla 1004: inicio
+[2026-11-15 00:57:36] dql semilla 1004: fin en 0.03 h; referencia 0.8790, held-out 0.8803
+[2026-11-15 00:57:36] dql semilla 1005: inicio
+[2026-11-15 01:01:50] corrida 2 cortada por reinicio manual a las 00:58 (dql 1001-1004 terminadas); se relanza
+[2026-11-15 01:01:52] dql semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] a2c semilla 1006: inicio
+[2026-11-15 01:01:52] dql semilla 1001: ya hecha, se omite
+[2026-11-15 01:01:52] a2c semilla 1001: inicio
+[2026-11-15 01:01:52] dql semilla 1002: ya hecha, se omite
+[2026-11-15 01:01:52] dql semilla 1003: ya hecha, se omite
+[2026-11-15 01:01:52] dql semilla 1004: ya hecha, se omite
+[2026-11-15 01:01:52] dql semilla 1005: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1001: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1003: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1004: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1002: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1005: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1006: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1007: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1008: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1010: inicio
+[2026-11-15 01:01:52] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:01:52] rdqn semilla 1009: inicio
+[2026-11-15 01:04:18] dql semilla 1005: fin en 0.04 h; referencia 0.8789, held-out 0.8825
+[2026-11-15 01:04:18] dql semilla 1006: inicio
+[2026-11-15 01:06:25] dql semilla 1006: fin en 0.04 h; referencia 0.8809, held-out 0.8762
+[2026-11-15 01:06:25] dql semilla 1007: inicio
+[2026-11-15 01:08:32] dql semilla 1007: fin en 0.04 h; referencia 0.8809, held-out 0.8781
+[2026-11-15 01:08:32] dql semilla 1008: inicio
+[2026-11-15 01:10:27] dql semilla 1008: fin en 0.03 h; referencia 0.8789, held-out 0.8819
+[2026-11-15 01:10:27] dql semilla 1009: inicio
+[2026-11-15 01:10:46] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:10:46] rdqn semilla 1006: inicio
+[2026-11-15 01:10:54] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:10:54] rdqn semilla 1004: inicio
+[2026-11-15 01:10:57] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:10:57] a2c semilla 1001: inicio
+[2026-11-15 01:11:05] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:11:05] a2c semilla 1001: inicio
+[2026-11-15 01:11:09] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:09] rdqn semilla 1004: inicio
+[2026-11-15 01:11:15] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:15] rdqn semilla 1001: inicio
+[2026-11-15 01:11:17] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:17] rdqn semilla 1001: inicio
+[2026-11-15 01:11:22] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:22] rdqn semilla 1010: inicio
+[2026-11-15 01:11:24] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:11:24] a2c semilla 1006: inicio
+[2026-11-15 01:11:28] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:28] rdqn semilla 1009: inicio
+[2026-11-15 01:11:32] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:11:32] rdqn semilla 1002: inicio
+[2026-11-15 01:11:46] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:11:46] a2c semilla 1006: inicio
+[2026-11-15 01:12:05] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:05] rdqn semilla 1007: inicio
+[2026-11-15 01:12:07] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:07] rdqn semilla 1009: inicio
+[2026-11-15 01:12:08] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:08] rdqn semilla 1008: inicio
+[2026-11-15 01:12:10] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:10] rdqn semilla 1005: inicio
+[2026-11-15 01:12:11] dql semilla 1009: fin en 0.03 h; referencia 0.8739, held-out 0.8757
+[2026-11-15 01:12:11] dql semilla 1010: inicio
+[2026-11-15 01:12:13] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:13] rdqn semilla 1007: inicio
+[2026-11-15 01:12:18] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:18] rdqn semilla 1003: inicio
+[2026-11-15 01:12:27] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:27] rdqn semilla 1008: inicio
+[2026-11-15 01:12:29] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:29] rdqn semilla 1006: inicio
+[2026-11-15 01:12:32] dql semilla 0: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1001: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1002: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1003: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1004: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1005: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1006: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1007: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1008: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1009: ya hecha, se omite
+[2026-11-15 01:12:32] dql semilla 1010: inicio
+[2026-11-15 01:12:34] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:12:34] rdqn semilla 1003: inicio
+[2026-11-15 01:19:31] corrida 2 relanzada en 6 carriles (prioridad inferior a la normal, CPUs 2-11)
+[2026-11-15 01:19:37] dql semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1001: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1002: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1003: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1004: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1005: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1006: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1007: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1008: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1009: ya hecha, se omite
+[2026-11-15 01:19:37] dql semilla 1010: inicio
+[2026-11-15 01:19:37] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] a2c semilla 1006: inicio
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 1001: inicio
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 1003: inicio
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 01:19:37] rdqn semilla 1005: inicio
+[2026-11-15 01:21:26] dql semilla 1010: fin en 0.03 h; referencia 0.8793, held-out 0.8829
+[2026-11-15 01:21:26] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 01:21:26] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 01:21:26] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 01:21:26] rdqn: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 01:21:26] a2c: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 01:21:26] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 01:21:27] a2c semilla 0: ya hecha, se omite
+[2026-11-15 01:21:27] a2c semilla 1001: inicio
+[2026-11-15 01:33:20] a2c semilla 1006: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:33:20] a2c semilla 1007: inicio
+[2026-11-15 01:35:14] a2c semilla 1001: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:35:14] a2c semilla 1002: inicio
+[2026-11-15 01:47:59] a2c semilla 1007: fin en 0.24 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:47:59] a2c semilla 1008: inicio
+[2026-11-15 01:49:53] a2c semilla 1002: fin en 0.24 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 01:49:53] a2c semilla 1003: inicio
+[2026-11-15 02:01:46] a2c semilla 1008: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 02:01:46] a2c semilla 1009: inicio
+[2026-11-15 02:03:38] a2c semilla 1003: fin en 0.23 h; referencia 0.8108, held-out 0.8135
+[2026-11-15 02:03:38] a2c semilla 1004: inicio
+[2026-11-15 02:15:45] a2c semilla 1009: fin en 0.23 h; referencia 0.8872, held-out 0.8869
+[2026-11-15 02:15:45] a2c semilla 1010: inicio
+[2026-11-15 02:17:35] a2c semilla 1004: fin en 0.23 h; referencia 0.7857, held-out 0.7796
+[2026-11-15 02:17:35] a2c semilla 1005: inicio
+[2026-11-15 02:29:42] a2c semilla 1010: fin en 0.23 h; referencia 0.8580, held-out 0.8598
+[2026-11-15 02:29:42] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:29:42] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:29:42] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:29:42] rdqn: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 02:29:42] a2c: semillas nuevas n=9  ref 0.8479 ± 0.0304  held-out 0.8488 ± 0.0320
+[2026-11-15 02:29:42] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:29:43] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:29:43] rdqn semilla 1010: inicio
+[2026-11-15 02:31:24] a2c semilla 1005: fin en 0.23 h; referencia 0.7857, held-out 0.7796
+[2026-11-15 02:31:24] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:31:24] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:31:24] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:31:24] rdqn: semillas nuevas n=0  ref nan ± nan  held-out nan ± nan
+[2026-11-15 02:31:24] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:31:24] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:31:25] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:31:25] rdqn semilla 1009: inicio
+[2026-11-15 02:41:00] rdqn semilla 1007: fin en 1.34 h; referencia 0.9209, held-out 0.9171
+[2026-11-15 02:41:00] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:41:00] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:41:00] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:41:00] rdqn: semillas nuevas n=1  ref 0.9209 ± 0.0000  held-out 0.9171 ± 0.0000
+[2026-11-15 02:41:00] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:41:00] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:41:02] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:41:02] rdqn semilla 1008: inicio
+[2026-11-15 02:41:25] rdqn semilla 1003: fin en 1.35 h; referencia 0.8642, held-out 0.8617
+[2026-11-15 02:41:25] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:41:25] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:41:25] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:41:25] rdqn: semillas nuevas n=2  ref 0.8925 ± 0.0401  held-out 0.8894 ± 0.0392
+[2026-11-15 02:41:25] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:41:25] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:41:26] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:41:26] rdqn semilla 1004: inicio
+[2026-11-15 02:41:42] rdqn semilla 1005: fin en 1.35 h; referencia 0.9182, held-out 0.9198
+[2026-11-15 02:41:42] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:41:42] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:41:42] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:41:42] rdqn: semillas nuevas n=3  ref 0.9011 ± 0.0320  held-out 0.8995 ± 0.0328
+[2026-11-15 02:41:42] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:41:42] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:41:43] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:41:43] rdqn semilla 1006: inicio
+[2026-11-15 02:43:40] rdqn semilla 1001: fin en 1.39 h; referencia 0.9092, held-out 0.8976
+[2026-11-15 02:43:40] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 02:43:40] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 02:43:40] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 02:43:40] rdqn: semillas nuevas n=4  ref 0.9031 ± 0.0264  held-out 0.8991 ± 0.0268
+[2026-11-15 02:43:40] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 02:43:40] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 02:43:41] rdqn semilla 0: ya hecha, se omite
+[2026-11-15 02:43:41] rdqn semilla 1002: inicio
+[2026-11-15 03:48:31] rdqn semilla 1010: fin en 1.30 h; referencia 0.8978, held-out 0.8909
+[2026-11-15 03:48:31] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 03:48:31] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 03:48:31] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 03:48:31] rdqn: semillas nuevas n=5  ref 0.9021 ± 0.0230  held-out 0.8974 ± 0.0235
+[2026-11-15 03:48:31] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 03:48:31] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 03:50:17] rdqn semilla 1009: fin en 1.30 h; referencia 0.8714, held-out 0.8628
+[2026-11-15 03:50:17] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 03:50:17] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 03:50:17] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 03:50:17] rdqn: semillas nuevas n=6  ref 0.8969 ± 0.0241  held-out 0.8916 ± 0.0253
+[2026-11-15 03:50:17] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 03:50:17] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:00:02] rdqn semilla 1004: fin en 1.30 h; referencia 0.8994, held-out 0.9094
+[2026-11-15 04:00:02] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:00:02] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:00:02] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:00:02] rdqn: semillas nuevas n=7  ref 0.8973 ± 0.0220  held-out 0.8942 ± 0.0241
+[2026-11-15 04:00:02] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:00:02] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:00:33] rdqn semilla 1008: fin en 1.31 h; referencia 0.9168, held-out 0.9119
+[2026-11-15 04:00:33] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:00:33] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:00:33] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:00:33] rdqn: semillas nuevas n=8  ref 0.8997 ± 0.0215  held-out 0.8964 ± 0.0232
+[2026-11-15 04:00:33] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:00:33] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:00:56] rdqn semilla 1006: fin en 1.31 h; referencia 0.9038, held-out 0.8805
+[2026-11-15 04:00:56] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:00:56] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:00:56] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:00:56] rdqn: semillas nuevas n=9  ref 0.9002 ± 0.0202  held-out 0.8946 ± 0.0223
+[2026-11-15 04:00:57] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:00:57] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-15 04:01:18] rdqn semilla 1002: fin en 1.28 h; referencia 0.9199, held-out 0.9236
+[2026-11-15 04:01:18] ql: semillas nuevas n=10  ref 0.8651 ± 0.0173  held-out 0.8690 ± 0.0163
+[2026-11-15 04:01:18] dql: semillas nuevas n=10  ref 0.8742 ± 0.0085  held-out 0.8756 ± 0.0077
+[2026-11-15 04:01:18] dqn: semillas nuevas n=10  ref 0.8686 ± 0.0088  held-out 0.8705 ± 0.0088
+[2026-11-15 04:01:18] rdqn: semillas nuevas n=10  ref 0.9022 ± 0.0200  held-out 0.8975 ± 0.0229
+[2026-11-15 04:01:18] a2c: semillas nuevas n=10  ref 0.8417 ± 0.0348  held-out 0.8418 ± 0.0373
+[2026-11-15 04:01:18] trf: semillas nuevas n=10  ref 0.9186 ± 0.0121  held-out 0.9196 ± 0.0111
+[2026-11-18 12:41:59] ql semilla 0: evaluación de 27 escenarios
+[2026-11-18 12:42:15] ql semilla 0 sev_base: 0.8866 (0 s)
+[2026-11-18 12:42:15] ql semilla 0 heldout_s1: 0.8843 (0 s)
+[2026-11-18 12:42:15] ql semilla 0 heldout_s2: 0.8749 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 heldout_s3: 0.8900 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 heldout_s4: 0.8713 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 heldout_s5: 0.8860 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 joint_extrap_both: 0.8073 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 joint_high_long: 0.9026 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 joint_low_short: 0.9358 (0 s)
+[2026-11-18 12:42:16] ql semilla 0 joint_uniform_geom: 0.8464 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 len_all_long: 0.8589 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 len_all_short: 0.9426 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 len_extrapolate_long: 0.8350 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 len_geometric: 0.8695 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 len_poisson: 0.8783 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 sev_beta_highskew: 0.9144 (0 s)
+[2026-11-18 12:42:17] ql semilla 0 sev_beta_lowskew: 0.8542 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_bimodal: 0.8638 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_extrapolate_high: 0.7623 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_gauss_high: 0.9093 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_gauss_low: 0.8952 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_gauss_mid: 0.8799 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_uniform: 0.8431 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 sev_weibull: 0.8416 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 struct_few_long_blocks: 0.8866 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 struct_many_short_blocks: 0.8866 (0 s)
+[2026-11-18 12:42:18] ql semilla 0 struct_more_total: 0.8866 (0 s)
+[2026-11-18 12:42:41] ql semilla 0: evaluación ya hecha, se omite
+[2026-11-18 12:42:41] ql semilla 1001: evaluación de 27 escenarios
+[2026-11-18 12:42:47] ql semilla 1001 sev_base: 0.8357 (0 s)
+[2026-11-18 12:42:47] ql semilla 1001 heldout_s1: 0.8558 (0 s)
+[2026-11-18 12:42:48] ql semilla 1001 heldout_s2: 0.8474 (0 s)
+[2026-11-18 12:42:48] ql semilla 1001 heldout_s3: 0.8352 (0 s)
+[2026-11-18 12:42:48] ql semilla 1001 heldout_s4: 0.8384 (0 s)
+[2026-11-18 12:42:48] ql semilla 1001 heldout_s5: 0.8310 (0 s)
+[2026-11-18 12:42:48] ql semilla 1001 joint_extrap_both: 0.6345 (0 s)
+[2026-11-18 12:42:48] ql semilla 1001 joint_high_long: 0.8511 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 joint_low_short: 0.9596 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 joint_uniform_geom: 0.8138 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 len_all_long: 0.7788 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 len_all_short: 0.9153 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 len_extrapolate_long: 0.7802 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 len_geometric: 0.8383 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 len_poisson: 0.8654 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 sev_beta_highskew: 0.9013 (0 s)
+[2026-11-18 12:42:49] ql semilla 1001 sev_beta_lowskew: 0.8556 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_bimodal: 0.8547 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_extrapolate_high: 0.5227 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_gauss_high: 0.8532 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_gauss_low: 0.8790 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_gauss_mid: 0.8403 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_uniform: 0.8204 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 sev_weibull: 0.8100 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 struct_few_long_blocks: 0.8357 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 struct_many_short_blocks: 0.8357 (0 s)
+[2026-11-18 12:42:50] ql semilla 1001 struct_more_total: 0.8357 (0 s)
+[2026-11-18 12:42:51] dqn semilla 0: evaluación de 27 escenarios
+[2026-11-18 12:43:26] dqn semilla 0 sev_base: 0.8937 (3 s)
+[2026-11-18 12:43:30] dqn semilla 0 heldout_s1: 0.8908 (3 s)
+[2026-11-18 12:43:32] dqn semilla 0 heldout_s2: 0.8944 (2 s)
+[2026-11-18 12:43:34] dqn semilla 0 heldout_s3: 0.8944 (2 s)
+[2026-11-18 12:43:36] dqn semilla 0 heldout_s4: 0.8811 (2 s)
+[2026-11-18 12:43:38] dqn semilla 0 heldout_s5: 0.8968 (2 s)
+[2026-11-18 12:43:45] dqn semilla 0 joint_extrap_both: 0.9197 (7 s)
+[2026-11-18 12:43:49] dqn semilla 0 joint_high_long: 0.9354 (3 s)
+[2026-11-18 12:43:50] dqn semilla 0 joint_low_short: 0.9877 (1 s)
+[2026-11-18 12:43:52] dqn semilla 0 joint_uniform_geom: 0.8641 (2 s)
+[2026-11-18 12:43:56] dqn semilla 0 len_all_long: 0.8601 (4 s)
+[2026-11-18 12:43:57] dqn semilla 0 len_all_short: 0.9347 (1 s)
+[2026-11-18 12:44:04] dqn semilla 0 len_extrapolate_long: 0.8412 (7 s)
+[2026-11-18 12:44:07] dqn semilla 0 len_geometric: 0.8878 (3 s)
+[2026-11-18 12:44:09] dqn semilla 0 len_poisson: 0.9026 (2 s)
+[2026-11-18 12:44:11] dqn semilla 0 sev_beta_highskew: 0.9347 (2 s)
+[2026-11-18 12:44:13] dqn semilla 0 sev_beta_lowskew: 0.8794 (2 s)
+[2026-11-18 12:44:16] dqn semilla 0 sev_bimodal: 0.8772 (2 s)
+[2026-11-18 12:44:17] dqn semilla 0 sev_extrapolate_high: 0.8898 (2 s)
+[2026-11-18 12:44:19] dqn semilla 0 sev_gauss_high: 0.9303 (2 s)
+[2026-11-18 12:44:21] dqn semilla 0 sev_gauss_low: 0.8955 (2 s)
+[2026-11-18 12:44:23] dqn semilla 0 sev_gauss_mid: 0.8952 (2 s)
+[2026-11-18 12:44:25] dqn semilla 0 sev_uniform: 0.8735 (2 s)
+[2026-11-18 12:44:27] dqn semilla 0 sev_weibull: 0.8828 (2 s)
+[2026-11-18 12:44:30] dqn semilla 0 struct_few_long_blocks: 0.8937 (2 s)
+[2026-11-18 12:44:32] dqn semilla 0 struct_many_short_blocks: 0.8937 (2 s)
+[2026-11-18 12:44:35] dqn semilla 0 struct_more_total: 0.8937 (3 s)
+[2026-11-18 12:47:04] ql semilla 0: evaluación ya hecha, se omite
+[2026-11-18 12:47:04] ql semilla 1001: evaluación ya hecha, se omite
+[2026-11-18 12:47:04] ql semilla 1002: evaluación de 27 escenarios
+[2026-11-18 12:47:08] ql semilla 1002 sev_base: 0.8617 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 heldout_s1: 0.8897 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 heldout_s2: 0.8691 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 heldout_s3: 0.8628 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 heldout_s4: 0.8669 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 heldout_s5: 0.8765 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 joint_extrap_both: 0.8180 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 joint_high_long: 0.8972 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 joint_low_short: 0.9166 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 joint_uniform_geom: 0.8437 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 len_all_long: 0.8466 (0 s)
+[2026-11-18 12:47:08] ql semilla 1002 len_all_short: 0.8898 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 len_extrapolate_long: 0.8360 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 len_geometric: 0.8792 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 len_poisson: 0.8725 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_beta_highskew: 0.9209 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_beta_lowskew: 0.8500 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_bimodal: 0.8586 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_extrapolate_high: 0.7813 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_gauss_high: 0.9130 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_gauss_low: 0.8540 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_gauss_mid: 0.8647 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_uniform: 0.8277 (0 s)
+[2026-11-18 12:47:09] ql semilla 1002 sev_weibull: 0.8309 (0 s)
+[2026-11-18 12:47:10] ql semilla 1002 struct_few_long_blocks: 0.8617 (0 s)
+[2026-11-18 12:47:10] ql semilla 1002 struct_many_short_blocks: 0.8617 (0 s)
+[2026-11-18 12:47:10] ql semilla 1002 struct_more_total: 0.8617 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003: evaluación de 27 escenarios
+[2026-11-18 12:47:10] ql semilla 1003 sev_base: 0.8466 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003 heldout_s1: 0.8868 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003 heldout_s2: 0.8614 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003 heldout_s3: 0.8603 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003 heldout_s4: 0.8641 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003 heldout_s5: 0.8619 (0 s)
+[2026-11-18 12:47:10] ql semilla 1003 joint_extrap_both: 0.5381 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 joint_high_long: 0.8708 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 joint_low_short: 0.9452 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 joint_uniform_geom: 0.8013 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 len_all_long: 0.8264 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 len_all_short: 0.9298 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 len_extrapolate_long: 0.8093 (0 s)
+[2026-11-18 12:47:11] ql semilla 1003 len_geometric: 0.8565 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 len_poisson: 0.8653 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_beta_highskew: 0.9056 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_beta_lowskew: 0.8849 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_bimodal: 0.8446 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_extrapolate_high: 0.4459 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_gauss_high: 0.8683 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_gauss_low: 0.8926 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_gauss_mid: 0.8542 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_uniform: 0.8029 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 sev_weibull: 0.8132 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 struct_few_long_blocks: 0.8466 (0 s)
+[2026-11-18 12:47:12] ql semilla 1003 struct_many_short_blocks: 0.8466 (0 s)
+[2026-11-18 12:47:13] ql semilla 1003 struct_more_total: 0.8466 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004: evaluación de 27 escenarios
+[2026-11-18 12:47:13] ql semilla 1004 sev_base: 0.8572 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 heldout_s1: 0.8648 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 heldout_s2: 0.8571 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 heldout_s3: 0.8555 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 heldout_s4: 0.8644 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 heldout_s5: 0.8655 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 joint_extrap_both: 0.6982 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 joint_high_long: 0.8712 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 joint_low_short: 0.9661 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 joint_uniform_geom: 0.8112 (0 s)
+[2026-11-18 12:47:13] ql semilla 1004 len_all_long: 0.8355 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 len_all_short: 0.9388 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 len_extrapolate_long: 0.8115 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 len_geometric: 0.8651 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 len_poisson: 0.8803 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_beta_highskew: 0.9029 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_beta_lowskew: 0.8574 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_bimodal: 0.8538 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_extrapolate_high: 0.6278 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_gauss_high: 0.8931 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_gauss_low: 0.8627 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_gauss_mid: 0.8341 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_uniform: 0.8247 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 sev_weibull: 0.8071 (0 s)
+[2026-11-18 12:47:14] ql semilla 1004 struct_few_long_blocks: 0.8572 (0 s)
+[2026-11-18 12:47:15] ql semilla 1004 struct_many_short_blocks: 0.8572 (0 s)
+[2026-11-18 12:47:15] ql semilla 1004 struct_more_total: 0.8572 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005: evaluación de 27 escenarios
+[2026-11-18 12:47:15] ql semilla 1005 sev_base: 0.8952 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 heldout_s1: 0.8913 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 heldout_s2: 0.8864 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 heldout_s3: 0.8781 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 heldout_s4: 0.8844 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 heldout_s5: 0.8878 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 joint_extrap_both: 0.4912 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 joint_high_long: 0.8790 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 joint_low_short: 0.9571 (0 s)
+[2026-11-18 12:47:15] ql semilla 1005 joint_uniform_geom: 0.8058 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 len_all_long: 0.8573 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 len_all_short: 0.9367 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 len_extrapolate_long: 0.8356 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 len_geometric: 0.8861 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 len_poisson: 0.8921 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_beta_highskew: 0.9190 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_beta_lowskew: 0.8744 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_bimodal: 0.8475 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_extrapolate_high: 0.3486 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_gauss_high: 0.8788 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_gauss_low: 0.8866 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_gauss_mid: 0.8669 (0 s)
+[2026-11-18 12:47:16] ql semilla 1005 sev_uniform: 0.8128 (0 s)
+[2026-11-18 12:47:17] ql semilla 1005 sev_weibull: 0.8219 (0 s)
+[2026-11-18 12:47:17] ql semilla 1005 struct_few_long_blocks: 0.8952 (0 s)
+[2026-11-18 12:47:17] ql semilla 1005 struct_many_short_blocks: 0.8952 (0 s)
+[2026-11-18 12:47:17] ql semilla 1005 struct_more_total: 0.8952 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006: evaluación de 27 escenarios
+[2026-11-18 12:47:17] ql semilla 1006 sev_base: 0.8694 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 heldout_s1: 0.8812 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 heldout_s2: 0.8739 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 heldout_s3: 0.8669 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 heldout_s4: 0.8614 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 heldout_s5: 0.8712 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 joint_extrap_both: 0.6571 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 joint_high_long: 0.8807 (0 s)
+[2026-11-18 12:47:17] ql semilla 1006 joint_low_short: 0.9456 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 joint_uniform_geom: 0.8351 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 len_all_long: 0.8279 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 len_all_short: 0.9431 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 len_extrapolate_long: 0.8056 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 len_geometric: 0.8699 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 len_poisson: 0.8853 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_beta_highskew: 0.9117 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_beta_lowskew: 0.8639 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_bimodal: 0.8485 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_extrapolate_high: 0.5741 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_gauss_high: 0.8945 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_gauss_low: 0.8789 (0 s)
+[2026-11-18 12:47:18] ql semilla 1006 sev_gauss_mid: 0.8631 (0 s)
+[2026-11-18 12:47:19] ql semilla 1006 sev_uniform: 0.8287 (0 s)
+[2026-11-18 12:47:19] ql semilla 1006 sev_weibull: 0.7904 (0 s)
+[2026-11-18 12:47:19] ql semilla 1006 struct_few_long_blocks: 0.8694 (0 s)
+[2026-11-18 12:47:19] ql semilla 1006 struct_many_short_blocks: 0.8694 (0 s)
+[2026-11-18 12:47:19] ql semilla 1006 struct_more_total: 0.8694 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007: evaluación de 27 escenarios
+[2026-11-18 12:47:19] ql semilla 1007 sev_base: 0.8783 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007 heldout_s1: 0.8916 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007 heldout_s2: 0.8849 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007 heldout_s3: 0.8742 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007 heldout_s4: 0.8892 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007 heldout_s5: 0.8888 (0 s)
+[2026-11-18 12:47:19] ql semilla 1007 joint_extrap_both: 0.6912 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 joint_high_long: 0.8815 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 joint_low_short: 0.9439 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 joint_uniform_geom: 0.8307 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 len_all_long: 0.8413 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 len_all_short: 0.9472 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 len_extrapolate_long: 0.8181 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 len_geometric: 0.8814 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 len_poisson: 0.9041 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 sev_beta_highskew: 0.9193 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 sev_beta_lowskew: 0.8757 (0 s)
+[2026-11-18 12:47:20] ql semilla 1007 sev_bimodal: 0.8770 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 sev_extrapolate_high: 0.6211 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 sev_gauss_high: 0.9051 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 sev_gauss_low: 0.8832 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 sev_gauss_mid: 0.8731 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 sev_uniform: 0.8500 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 sev_weibull: 0.8496 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 struct_few_long_blocks: 0.8783 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 struct_many_short_blocks: 0.8783 (0 s)
+[2026-11-18 12:47:21] ql semilla 1007 struct_more_total: 0.8783 (0 s)
+[2026-11-18 12:47:21] ql semilla 1008: evaluación de 27 escenarios
+[2026-11-18 12:47:21] ql semilla 1008 sev_base: 0.8663 (0 s)
+[2026-11-18 12:47:21] ql semilla 1008 heldout_s1: 0.8750 (0 s)
+[2026-11-18 12:47:21] ql semilla 1008 heldout_s2: 0.8745 (0 s)
+[2026-11-18 12:47:21] ql semilla 1008 heldout_s3: 0.8634 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 heldout_s4: 0.8732 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 heldout_s5: 0.8661 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 joint_extrap_both: 0.5596 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 joint_high_long: 0.8649 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 joint_low_short: 0.8545 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 joint_uniform_geom: 0.7744 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 len_all_long: 0.8261 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 len_all_short: 0.9580 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 len_extrapolate_long: 0.8135 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 len_geometric: 0.8727 (0 s)
+[2026-11-18 12:47:22] ql semilla 1008 len_poisson: 0.8810 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_beta_highskew: 0.8880 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_beta_lowskew: 0.7685 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_bimodal: 0.8230 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_extrapolate_high: 0.4185 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_gauss_high: 0.8617 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_gauss_low: 0.8222 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_gauss_mid: 0.8598 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_uniform: 0.7955 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 sev_weibull: 0.7803 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 struct_few_long_blocks: 0.8663 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 struct_many_short_blocks: 0.8663 (0 s)
+[2026-11-18 12:47:23] ql semilla 1008 struct_more_total: 0.8663 (0 s)
+[2026-11-18 12:47:23] ql semilla 1009: evaluación de 27 escenarios
+[2026-11-18 12:47:23] ql semilla 1009 sev_base: 0.8592 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 heldout_s1: 0.8482 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 heldout_s2: 0.8409 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 heldout_s3: 0.8511 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 heldout_s4: 0.8417 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 heldout_s5: 0.8412 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 joint_extrap_both: 0.9391 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 joint_high_long: 0.8818 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 joint_low_short: 0.9265 (0 s)
+[2026-11-18 12:47:24] ql semilla 1009 joint_uniform_geom: 0.8260 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 len_all_long: 0.8355 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 len_all_short: 0.9140 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 len_extrapolate_long: 0.8031 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 len_geometric: 0.8435 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 len_poisson: 0.8563 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 sev_beta_highskew: 0.8945 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 sev_beta_lowskew: 0.8068 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 sev_bimodal: 0.8467 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 sev_extrapolate_high: 0.9163 (0 s)
+[2026-11-18 12:47:25] ql semilla 1009 sev_gauss_high: 0.9058 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 sev_gauss_low: 0.8563 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 sev_gauss_mid: 0.8443 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 sev_uniform: 0.8258 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 sev_weibull: 0.8367 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 struct_few_long_blocks: 0.8592 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 struct_many_short_blocks: 0.8592 (0 s)
+[2026-11-18 12:47:26] ql semilla 1009 struct_more_total: 0.8592 (0 s)
+[2026-11-18 12:47:26] ql semilla 1010: evaluación de 27 escenarios
+[2026-11-18 12:47:26] ql semilla 1010 sev_base: 0.8817 (0 s)
+[2026-11-18 12:47:26] ql semilla 1010 heldout_s1: 0.8979 (0 s)
+[2026-11-18 12:47:26] ql semilla 1010 heldout_s2: 0.8850 (0 s)
+[2026-11-18 12:47:26] ql semilla 1010 heldout_s3: 0.8894 (0 s)
+[2026-11-18 12:47:26] ql semilla 1010 heldout_s4: 0.8842 (0 s)
+[2026-11-18 12:47:26] ql semilla 1010 heldout_s5: 0.8908 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 joint_extrap_both: 0.8197 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 joint_high_long: 0.8877 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 joint_low_short: 0.9772 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 joint_uniform_geom: 0.8350 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 len_all_long: 0.8791 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 len_all_short: 0.9468 (0 s)
+[2026-11-18 12:47:27] ql semilla 1010 len_extrapolate_long: 0.8434 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 len_geometric: 0.8777 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 len_poisson: 0.9018 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_beta_highskew: 0.9049 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_beta_lowskew: 0.8879 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_bimodal: 0.8469 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_extrapolate_high: 0.7576 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_gauss_high: 0.8919 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_gauss_low: 0.8992 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_gauss_mid: 0.8849 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_uniform: 0.8534 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 sev_weibull: 0.8366 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 struct_few_long_blocks: 0.8817 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 struct_many_short_blocks: 0.8817 (0 s)
+[2026-11-18 12:47:28] ql semilla 1010 struct_more_total: 0.8817 (0 s)
+[2026-11-18 12:47:28] dql semilla 0: evaluación de 27 escenarios
+[2026-11-18 12:47:36] dql semilla 0 sev_base: 0.8963 (0 s)
+[2026-11-18 12:47:36] dql semilla 0 heldout_s1: 0.9073 (0 s)
+[2026-11-18 12:47:36] dql semilla 0 heldout_s2: 0.9030 (0 s)
+[2026-11-18 12:47:36] dql semilla 0 heldout_s3: 0.8933 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 heldout_s4: 0.8964 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 heldout_s5: 0.9010 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 joint_extrap_both: 0.8286 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 joint_high_long: 0.9209 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 joint_low_short: 0.9136 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 joint_uniform_geom: 0.8163 (0 s)
+[2026-11-18 12:47:37] dql semilla 0 len_all_long: 0.8776 (0 s)
+[2026-11-18 12:47:38] dql semilla 0 len_all_short: 0.9218 (0 s)
+[2026-11-18 12:47:38] dql semilla 0 len_extrapolate_long: 0.8443 (0 s)
+[2026-11-18 12:47:38] dql semilla 0 len_geometric: 0.8979 (0 s)
+[2026-11-18 12:47:38] dql semilla 0 len_poisson: 0.9093 (0 s)
+[2026-11-18 12:47:38] dql semilla 0 sev_beta_highskew: 0.9238 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_beta_lowskew: 0.8605 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_bimodal: 0.8528 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_extrapolate_high: 0.7854 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_gauss_high: 0.9164 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_gauss_low: 0.8902 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_gauss_mid: 0.8880 (0 s)
+[2026-11-18 12:47:39] dql semilla 0 sev_uniform: 0.8401 (0 s)
+[2026-11-18 12:47:40] dql semilla 0 sev_weibull: 0.8455 (0 s)
+[2026-11-18 12:47:40] dql semilla 0 struct_few_long_blocks: 0.8963 (0 s)
+[2026-11-18 12:47:40] dql semilla 0 struct_many_short_blocks: 0.8963 (0 s)
+[2026-11-18 12:47:40] dql semilla 0 struct_more_total: 0.8963 (0 s)
+[2026-11-18 12:47:40] dql semilla 1001: evaluación de 27 escenarios
+[2026-11-18 12:47:40] dql semilla 1001 sev_base: 0.8662 (0 s)
+[2026-11-18 12:47:40] dql semilla 1001 heldout_s1: 0.8820 (0 s)
+[2026-11-18 12:47:41] dql semilla 1001 heldout_s2: 0.8626 (0 s)
+[2026-11-18 12:47:41] dql semilla 1001 heldout_s3: 0.8615 (0 s)
+[2026-11-18 12:47:41] dql semilla 1001 heldout_s4: 0.8635 (0 s)
+[2026-11-18 12:47:41] dql semilla 1001 heldout_s5: 0.8606 (0 s)
+[2026-11-18 12:47:41] dql semilla 1001 joint_extrap_both: 0.4441 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 joint_high_long: 0.8289 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 joint_low_short: 0.8898 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 joint_uniform_geom: 0.7635 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 len_all_long: 0.7966 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 len_all_short: 0.9941 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 len_extrapolate_long: 0.7716 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 len_geometric: 0.8666 (0 s)
+[2026-11-18 12:47:42] dql semilla 1001 len_poisson: 0.8832 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_beta_highskew: 0.9198 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_beta_lowskew: 0.8187 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_bimodal: 0.7992 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_extrapolate_high: 0.3060 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_gauss_high: 0.8569 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_gauss_low: 0.8546 (0 s)
+[2026-11-18 12:47:43] dql semilla 1001 sev_gauss_mid: 0.8428 (0 s)
+[2026-11-18 12:47:44] dql semilla 1001 sev_uniform: 0.7930 (0 s)
+[2026-11-18 12:47:44] dql semilla 1001 sev_weibull: 0.7758 (0 s)
+[2026-11-18 12:47:44] dql semilla 1001 struct_few_long_blocks: 0.8662 (0 s)
+[2026-11-18 12:47:44] dql semilla 1001 struct_many_short_blocks: 0.8662 (0 s)
+[2026-11-18 12:47:44] dql semilla 1001 struct_more_total: 0.8662 (0 s)
+[2026-11-18 12:47:44] dql semilla 1002: evaluación de 27 escenarios
+[2026-11-18 12:47:44] dql semilla 1002 sev_base: 0.8698 (0 s)
+[2026-11-18 12:47:45] dql semilla 1002 heldout_s1: 0.8816 (0 s)
+[2026-11-18 12:47:45] dql semilla 1002 heldout_s2: 0.8747 (0 s)
+[2026-11-18 12:47:45] dql semilla 1002 heldout_s3: 0.8671 (0 s)
+[2026-11-18 12:47:45] dql semilla 1002 heldout_s4: 0.8694 (0 s)
+[2026-11-18 12:47:45] dql semilla 1002 heldout_s5: 0.8697 (0 s)
+[2026-11-18 12:47:45] dql semilla 1002 joint_extrap_both: 0.6255 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 joint_high_long: 0.8744 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 joint_low_short: 0.8861 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 joint_uniform_geom: 0.7236 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 len_all_long: 0.8083 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 len_all_short: 0.9794 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 len_extrapolate_long: 0.7955 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 len_geometric: 0.8691 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 len_poisson: 0.8877 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 sev_beta_highskew: 0.9141 (0 s)
+[2026-11-18 12:47:46] dql semilla 1002 sev_beta_lowskew: 0.7937 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_bimodal: 0.8226 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_extrapolate_high: 0.4995 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_gauss_high: 0.8713 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_gauss_low: 0.8438 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_gauss_mid: 0.8503 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_uniform: 0.7613 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 sev_weibull: 0.7865 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 struct_few_long_blocks: 0.8698 (0 s)
+[2026-11-18 12:47:47] dql semilla 1002 struct_many_short_blocks: 0.8698 (0 s)
+[2026-11-18 12:47:48] dql semilla 1002 struct_more_total: 0.8698 (0 s)
+[2026-11-18 12:47:48] dql semilla 1003: evaluación de 27 escenarios
+[2026-11-18 12:47:48] dql semilla 1003 sev_base: 0.8547 (0 s)
+[2026-11-18 12:47:48] dql semilla 1003 heldout_s1: 0.8773 (0 s)
+[2026-11-18 12:47:48] dql semilla 1003 heldout_s2: 0.8510 (0 s)
+[2026-11-18 12:47:48] dql semilla 1003 heldout_s3: 0.8524 (0 s)
+[2026-11-18 12:47:48] dql semilla 1003 heldout_s4: 0.8572 (0 s)
+[2026-11-18 12:47:48] dql semilla 1003 heldout_s5: 0.8598 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 joint_extrap_both: 0.7245 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 joint_high_long: 0.8709 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 joint_low_short: 0.9023 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 joint_uniform_geom: 0.8461 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 len_all_long: 0.7812 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 len_all_short: 0.9808 (0 s)
+[2026-11-18 12:47:49] dql semilla 1003 len_extrapolate_long: 0.7673 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 len_geometric: 0.8566 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 len_poisson: 0.8729 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_beta_highskew: 0.9423 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_beta_lowskew: 0.8373 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_bimodal: 0.8435 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_extrapolate_high: 0.6564 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_gauss_high: 0.9275 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_gauss_low: 0.8558 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_gauss_mid: 0.8557 (0 s)
+[2026-11-18 12:47:50] dql semilla 1003 sev_uniform: 0.8291 (0 s)
+[2026-11-18 12:47:51] dql semilla 1003 sev_weibull: 0.8269 (0 s)
+[2026-11-18 12:47:51] dql semilla 1003 struct_few_long_blocks: 0.8547 (0 s)
+[2026-11-18 12:47:51] dql semilla 1003 struct_many_short_blocks: 0.8547 (0 s)
+[2026-11-18 12:47:51] dql semilla 1003 struct_more_total: 0.8547 (0 s)
+[2026-11-18 12:47:51] dql semilla 1004: evaluación de 27 escenarios
+[2026-11-18 12:47:51] dql semilla 1004 sev_base: 0.8790 (0 s)
+[2026-11-18 12:47:52] dql semilla 1004 heldout_s1: 0.8789 (0 s)
+[2026-11-18 12:47:52] dql semilla 1004 heldout_s2: 0.8769 (0 s)
+[2026-11-18 12:47:52] dql semilla 1004 heldout_s3: 0.8808 (0 s)
+[2026-11-18 12:47:52] dql semilla 1004 heldout_s4: 0.8789 (0 s)
+[2026-11-18 12:47:52] dql semilla 1004 heldout_s5: 0.8861 (0 s)
+[2026-11-18 12:47:52] dql semilla 1004 joint_extrap_both: 0.5448 (0 s)
+[2026-11-18 12:47:53] dql semilla 1004 joint_high_long: 0.9058 (0 s)
+[2026-11-18 12:47:53] dql semilla 1004 joint_low_short: 0.9427 (0 s)
+[2026-11-18 12:47:53] dql semilla 1004 joint_uniform_geom: 0.8333 (0 s)
+[2026-11-18 12:47:53] dql semilla 1004 len_all_long: 0.8477 (0 s)
+[2026-11-18 12:47:53] dql semilla 1004 len_all_short: 0.9242 (0 s)
+[2026-11-18 12:47:54] dql semilla 1004 len_extrapolate_long: 0.8315 (0 s)
+[2026-11-18 12:47:54] dql semilla 1004 len_geometric: 0.8860 (0 s)
+[2026-11-18 12:47:54] dql semilla 1004 len_poisson: 0.8957 (0 s)
+[2026-11-18 12:47:54] dql semilla 1004 sev_beta_highskew: 0.9143 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_beta_lowskew: 0.8654 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_bimodal: 0.8676 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_extrapolate_high: 0.4491 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_gauss_high: 0.9065 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_gauss_low: 0.8901 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_gauss_mid: 0.8802 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_uniform: 0.8250 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 sev_weibull: 0.8132 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 struct_few_long_blocks: 0.8790 (0 s)
+[2026-11-18 12:47:55] dql semilla 1004 struct_many_short_blocks: 0.8790 (0 s)
+[2026-11-18 12:47:56] dql semilla 1004 struct_more_total: 0.8790 (0 s)
+[2026-11-18 12:47:56] dql semilla 1005: evaluación de 27 escenarios
+[2026-11-18 12:47:56] dql semilla 1005 sev_base: 0.8789 (0 s)
+[2026-11-18 12:47:56] dql semilla 1005 heldout_s1: 0.8922 (0 s)
+[2026-11-18 12:47:56] dql semilla 1005 heldout_s2: 0.8861 (0 s)
+[2026-11-18 12:47:56] dql semilla 1005 heldout_s3: 0.8755 (0 s)
+[2026-11-18 12:47:56] dql semilla 1005 heldout_s4: 0.8776 (0 s)
+[2026-11-18 12:47:56] dql semilla 1005 heldout_s5: 0.8811 (0 s)
+[2026-11-18 12:47:57] dql semilla 1005 joint_extrap_both: 0.3443 (0 s)
+[2026-11-18 12:47:57] dql semilla 1005 joint_high_long: 0.8592 (0 s)
+[2026-11-18 12:47:57] dql semilla 1005 joint_low_short: 0.9417 (0 s)
+[2026-11-18 12:47:57] dql semilla 1005 joint_uniform_geom: 0.7833 (0 s)
+[2026-11-18 12:47:57] dql semilla 1005 len_all_long: 0.8178 (0 s)
+[2026-11-18 12:47:57] dql semilla 1005 len_all_short: 0.9786 (0 s)
+[2026-11-18 12:47:58] dql semilla 1005 len_extrapolate_long: 0.8115 (0 s)
+[2026-11-18 12:47:58] dql semilla 1005 len_geometric: 0.8820 (0 s)
+[2026-11-18 12:47:58] dql semilla 1005 len_poisson: 0.8938 (0 s)
+[2026-11-18 12:47:58] dql semilla 1005 sev_beta_highskew: 0.9066 (0 s)
+[2026-11-18 12:47:58] dql semilla 1005 sev_beta_lowskew: 0.8624 (0 s)
+[2026-11-18 12:47:58] dql semilla 1005 sev_bimodal: 0.8333 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 sev_extrapolate_high: 0.1961 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 sev_gauss_high: 0.8558 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 sev_gauss_low: 0.8745 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 sev_gauss_mid: 0.8591 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 sev_uniform: 0.7775 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 sev_weibull: 0.8070 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 struct_few_long_blocks: 0.8789 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 struct_many_short_blocks: 0.8789 (0 s)
+[2026-11-18 12:47:59] dql semilla 1005 struct_more_total: 0.8789 (0 s)
+[2026-11-18 12:47:59] dql semilla 1006: evaluación de 27 escenarios
+[2026-11-18 12:48:00] dql semilla 1006 sev_base: 0.8809 (0 s)
+[2026-11-18 12:48:00] dql semilla 1006 heldout_s1: 0.8793 (0 s)
+[2026-11-18 12:48:00] dql semilla 1006 heldout_s2: 0.8810 (0 s)
+[2026-11-18 12:48:00] dql semilla 1006 heldout_s3: 0.8830 (0 s)
+[2026-11-18 12:48:00] dql semilla 1006 heldout_s4: 0.8650 (0 s)
+[2026-11-18 12:48:00] dql semilla 1006 heldout_s5: 0.8728 (0 s)
+[2026-11-18 12:48:00] dql semilla 1006 joint_extrap_both: 0.6556 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 joint_high_long: 0.8960 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 joint_low_short: 0.7990 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 joint_uniform_geom: 0.7423 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 len_all_long: 0.8344 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 len_all_short: 0.9519 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 len_extrapolate_long: 0.8149 (0 s)
+[2026-11-18 12:48:01] dql semilla 1006 len_geometric: 0.8629 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 len_poisson: 0.8916 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_beta_highskew: 0.9132 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_beta_lowskew: 0.7753 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_bimodal: 0.8013 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_extrapolate_high: 0.5695 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_gauss_high: 0.8815 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_gauss_low: 0.8329 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_gauss_mid: 0.8591 (0 s)
+[2026-11-18 12:48:02] dql semilla 1006 sev_uniform: 0.7858 (0 s)
+[2026-11-18 12:48:03] dql semilla 1006 sev_weibull: 0.8054 (0 s)
+[2026-11-18 12:48:03] dql semilla 1006 struct_few_long_blocks: 0.8809 (0 s)
+[2026-11-18 12:48:03] dql semilla 1006 struct_many_short_blocks: 0.8809 (0 s)
+[2026-11-18 12:48:03] dql semilla 1006 struct_more_total: 0.8809 (0 s)
+[2026-11-18 12:48:03] dql semilla 1007: evaluación de 27 escenarios
+[2026-11-18 12:48:03] dql semilla 1007 sev_base: 0.8809 (0 s)
+[2026-11-18 12:48:03] dql semilla 1007 heldout_s1: 0.8865 (0 s)
+[2026-11-18 12:48:03] dql semilla 1007 heldout_s2: 0.8787 (0 s)
+[2026-11-18 12:48:03] dql semilla 1007 heldout_s3: 0.8656 (0 s)
+[2026-11-18 12:48:03] dql semilla 1007 heldout_s4: 0.8809 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 heldout_s5: 0.8789 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 joint_extrap_both: 0.6187 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 joint_high_long: 0.8912 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 joint_low_short: 0.9070 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 joint_uniform_geom: 0.8125 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 len_all_long: 0.8583 (0 s)
+[2026-11-18 12:48:04] dql semilla 1007 len_all_short: 0.9262 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 len_extrapolate_long: 0.8206 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 len_geometric: 0.8784 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 len_poisson: 0.8827 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_beta_highskew: 0.9159 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_beta_lowskew: 0.8562 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_bimodal: 0.8420 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_extrapolate_high: 0.5690 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_gauss_high: 0.8947 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_gauss_low: 0.8824 (0 s)
+[2026-11-18 12:48:05] dql semilla 1007 sev_gauss_mid: 0.8603 (0 s)
+[2026-11-18 12:48:06] dql semilla 1007 sev_uniform: 0.8152 (0 s)
+[2026-11-18 12:48:06] dql semilla 1007 sev_weibull: 0.8242 (0 s)
+[2026-11-18 12:48:06] dql semilla 1007 struct_few_long_blocks: 0.8809 (0 s)
+[2026-11-18 12:48:06] dql semilla 1007 struct_many_short_blocks: 0.8809 (0 s)
+[2026-11-18 12:48:06] dql semilla 1007 struct_more_total: 0.8809 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008: evaluación de 27 escenarios
+[2026-11-18 12:48:06] dql semilla 1008 sev_base: 0.8789 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008 heldout_s1: 0.8915 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008 heldout_s2: 0.8811 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008 heldout_s3: 0.8755 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008 heldout_s4: 0.8807 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008 heldout_s5: 0.8808 (0 s)
+[2026-11-18 12:48:06] dql semilla 1008 joint_extrap_both: 0.7805 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 joint_high_long: 0.8771 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 joint_low_short: 0.8977 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 joint_uniform_geom: 0.8345 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 len_all_long: 0.8172 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 len_all_short: 0.9764 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 len_extrapolate_long: 0.7982 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 len_geometric: 0.8776 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 len_poisson: 0.8929 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 sev_beta_highskew: 0.9322 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 sev_beta_lowskew: 0.8336 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 sev_bimodal: 0.8487 (0 s)
+[2026-11-18 12:48:07] dql semilla 1008 sev_extrapolate_high: 0.7624 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 sev_gauss_high: 0.9186 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 sev_gauss_low: 0.8546 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 sev_gauss_mid: 0.8678 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 sev_uniform: 0.8332 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 sev_weibull: 0.8286 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 struct_few_long_blocks: 0.8789 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 struct_many_short_blocks: 0.8789 (0 s)
+[2026-11-18 12:48:08] dql semilla 1008 struct_more_total: 0.8789 (0 s)
+[2026-11-18 12:48:08] dql semilla 1009: evaluación de 27 escenarios
+[2026-11-18 12:48:08] dql semilla 1009 sev_base: 0.8739 (0 s)
+[2026-11-18 12:48:08] dql semilla 1009 heldout_s1: 0.8828 (0 s)
+[2026-11-18 12:48:08] dql semilla 1009 heldout_s2: 0.8768 (0 s)
+[2026-11-18 12:48:08] dql semilla 1009 heldout_s3: 0.8716 (0 s)
+[2026-11-18 12:48:08] dql semilla 1009 heldout_s4: 0.8692 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 heldout_s5: 0.8784 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 joint_extrap_both: 0.5562 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 joint_high_long: 0.8694 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 joint_low_short: 0.9420 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 joint_uniform_geom: 0.7866 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 len_all_long: 0.8356 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 len_all_short: 0.9619 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 len_extrapolate_long: 0.8102 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 len_geometric: 0.8700 (0 s)
+[2026-11-18 12:48:09] dql semilla 1009 len_poisson: 0.8856 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_beta_highskew: 0.9155 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_beta_lowskew: 0.8423 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_bimodal: 0.8048 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_extrapolate_high: 0.4462 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_gauss_high: 0.8556 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_gauss_low: 0.8611 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_gauss_mid: 0.8608 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_uniform: 0.8216 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 sev_weibull: 0.8135 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 struct_few_long_blocks: 0.8739 (0 s)
+[2026-11-18 12:48:10] dql semilla 1009 struct_many_short_blocks: 0.8739 (0 s)
+[2026-11-18 12:48:11] dql semilla 1009 struct_more_total: 0.8739 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010: evaluación de 27 escenarios
+[2026-11-18 12:48:11] dql semilla 1010 sev_base: 0.8793 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 heldout_s1: 0.8922 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 heldout_s2: 0.8848 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 heldout_s3: 0.8842 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 heldout_s4: 0.8708 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 heldout_s5: 0.8823 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 joint_extrap_both: 0.7663 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 joint_high_long: 0.8947 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 joint_low_short: 0.9583 (0 s)
+[2026-11-18 12:48:11] dql semilla 1010 joint_uniform_geom: 0.7988 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 len_all_long: 0.8365 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 len_all_short: 0.9653 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 len_extrapolate_long: 0.8217 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 len_geometric: 0.8806 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 len_poisson: 0.8873 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 sev_beta_highskew: 0.9293 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 sev_beta_lowskew: 0.8556 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 sev_bimodal: 0.8632 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 sev_extrapolate_high: 0.6880 (0 s)
+[2026-11-18 12:48:12] dql semilla 1010 sev_gauss_high: 0.9100 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 sev_gauss_low: 0.8684 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 sev_gauss_mid: 0.8762 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 sev_uniform: 0.8284 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 sev_weibull: 0.8359 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 struct_few_long_blocks: 0.8793 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 struct_many_short_blocks: 0.8793 (0 s)
+[2026-11-18 12:48:13] dql semilla 1010 struct_more_total: 0.8793 (0 s)
+[2026-11-18 13:08:58] rdqn semilla 0: evaluación de 27 escenarios
+[2026-11-18 13:08:58] dqn semilla 0: evaluación ya hecha, se omite
+[2026-11-18 13:08:58] dqn semilla 1001: evaluación de 27 escenarios
+[2026-11-18 13:09:19] dqn semilla 1001 sev_base: 0.8664 (5 s)
+[2026-11-18 13:09:23] dqn semilla 1001 heldout_s1: 0.8831 (4 s)
+[2026-11-18 13:09:28] dqn semilla 1001 heldout_s2: 0.8693 (4 s)
+[2026-11-18 13:09:32] dqn semilla 1001 heldout_s3: 0.8632 (4 s)
+[2026-11-18 13:09:36] dqn semilla 1001 heldout_s4: 0.8621 (4 s)
+[2026-11-18 13:09:41] dqn semilla 1001 heldout_s5: 0.8641 (5 s)
+[2026-11-18 13:09:43] rdqn semilla 0 sev_base: 0.8987 (28 s)
+[2026-11-18 13:09:54] dqn semilla 1001 joint_extrap_both: 0.9949 (13 s)
+[2026-11-18 13:10:01] dqn semilla 1001 joint_high_long: 0.8850 (8 s)
+[2026-11-18 13:10:04] dqn semilla 1001 joint_low_short: 0.9900 (2 s)
+[2026-11-18 13:10:08] dqn semilla 1001 joint_uniform_geom: 0.8595 (5 s)
+[2026-11-18 13:10:10] rdqn semilla 0 heldout_s1: 0.9108 (27 s)
+[2026-11-18 13:10:16] dqn semilla 1001 len_all_long: 0.8013 (8 s)
+[2026-11-18 13:10:18] dqn semilla 1001 len_all_short: 0.9859 (2 s)
+[2026-11-18 13:10:30] dqn semilla 1001 len_extrapolate_long: 0.7808 (12 s)
+[2026-11-18 13:10:35] dqn semilla 1001 len_geometric: 0.8669 (5 s)
+[2026-11-18 13:10:39] rdqn semilla 0 heldout_s2: 0.9001 (29 s)
+[2026-11-18 13:10:39] dqn semilla 1001 len_poisson: 0.8849 (4 s)
+[2026-11-18 13:10:43] dqn semilla 1001 sev_beta_highskew: 0.9434 (4 s)
+[2026-11-18 13:10:48] dqn semilla 1001 sev_beta_lowskew: 0.8222 (4 s)
+[2026-11-18 13:10:52] dqn semilla 1001 sev_bimodal: 0.8609 (4 s)
+[2026-11-18 13:10:57] dqn semilla 1001 sev_extrapolate_high: 0.9931 (4 s)
+[2026-11-18 13:11:01] dqn semilla 1001 sev_gauss_high: 0.9451 (4 s)
+[2026-11-18 13:11:05] dqn semilla 1001 sev_gauss_low: 0.8221 (4 s)
+[2026-11-18 13:11:06] rdqn semilla 0 heldout_s3: 0.9110 (28 s)
+[2026-11-18 13:11:09] dqn semilla 1001 sev_gauss_mid: 0.8644 (4 s)
+[2026-11-18 13:11:13] dqn semilla 1001 sev_uniform: 0.8481 (4 s)
+[2026-11-18 13:11:17] dqn semilla 1001 sev_weibull: 0.8668 (4 s)
+[2026-11-18 13:11:21] dqn semilla 1001 struct_few_long_blocks: 0.8664 (4 s)
+[2026-11-18 13:11:25] dqn semilla 1001 struct_many_short_blocks: 0.8664 (4 s)
+[2026-11-18 13:11:30] dqn semilla 1001 struct_more_total: 0.8664 (4 s)
+[2026-11-18 13:11:30] dqn semilla 1002: evaluación de 27 escenarios
+[2026-11-18 13:11:32] rdqn semilla 0 heldout_s4: 0.8948 (26 s)
+[2026-11-18 13:11:34] dqn semilla 1002 sev_base: 0.8755 (4 s)
+[2026-11-18 13:11:38] dqn semilla 1002 heldout_s1: 0.8889 (4 s)
+[2026-11-18 13:11:42] dqn semilla 1002 heldout_s2: 0.8806 (4 s)
+[2026-11-18 13:11:47] dqn semilla 1002 heldout_s3: 0.8727 (4 s)
+[2026-11-18 13:11:50] dqn semilla 1002 heldout_s4: 0.8696 (4 s)
+[2026-11-18 13:11:55] dqn semilla 1002 heldout_s5: 0.8738 (4 s)
+[2026-11-18 13:12:01] rdqn semilla 0 heldout_s5: 0.8978 (29 s)
+[2026-11-18 13:12:06] dqn semilla 1002 joint_extrap_both: 0.9744 (12 s)
+[2026-11-18 13:12:14] dqn semilla 1002 joint_high_long: 0.9033 (7 s)
+[2026-11-18 13:12:16] dqn semilla 1002 joint_low_short: 0.9877 (2 s)
+[2026-11-18 13:12:20] dqn semilla 1002 joint_uniform_geom: 0.8713 (4 s)
+[2026-11-18 13:12:28] dqn semilla 1002 len_all_long: 0.8249 (8 s)
+[2026-11-18 13:12:30] dqn semilla 1002 len_all_short: 0.9723 (2 s)
+[2026-11-18 13:12:43] dqn semilla 1002 len_extrapolate_long: 0.8039 (13 s)
+[2026-11-18 13:12:47] dqn semilla 1002 len_geometric: 0.8752 (4 s)
+[2026-11-18 13:12:51] dqn semilla 1002 len_poisson: 0.8879 (4 s)
+[2026-11-18 13:12:55] dqn semilla 1002 sev_beta_highskew: 0.9411 (4 s)
+[2026-11-18 13:13:00] dqn semilla 1002 sev_beta_lowskew: 0.8553 (4 s)
+[2026-11-18 13:13:04] dqn semilla 1002 sev_bimodal: 0.8721 (4 s)
+[2026-11-18 13:13:08] dqn semilla 1002 sev_extrapolate_high: 0.9651 (4 s)
+[2026-11-18 13:13:13] dqn semilla 1002 sev_gauss_high: 0.9425 (4 s)
+[2026-11-18 13:13:17] dqn semilla 1002 sev_gauss_low: 0.8646 (4 s)
+[2026-11-18 13:13:18] rdqn semilla 0 joint_extrap_both: 0.8675 (77 s)
+[2026-11-18 13:13:21] dqn semilla 1002 sev_gauss_mid: 0.8761 (4 s)
+[2026-11-18 13:13:25] dqn semilla 1002 sev_uniform: 0.8653 (4 s)
+[2026-11-18 13:13:29] dqn semilla 1002 sev_weibull: 0.8748 (4 s)
+[2026-11-18 13:13:33] dqn semilla 1002 struct_few_long_blocks: 0.8755 (4 s)
+[2026-11-18 13:13:38] dqn semilla 1002 struct_many_short_blocks: 0.8755 (5 s)
+[2026-11-18 13:13:44] dqn semilla 1002 struct_more_total: 0.8755 (6 s)
+[2026-11-18 13:13:44] dqn semilla 1003: evaluación de 27 escenarios
+[2026-11-18 13:13:50] dqn semilla 1003 sev_base: 0.8778 (6 s)
+[2026-11-18 13:13:55] dqn semilla 1003 heldout_s1: 0.8904 (5 s)
+[2026-11-18 13:14:00] dqn semilla 1003 heldout_s2: 0.8810 (5 s)
+[2026-11-18 13:14:05] dqn semilla 1003 heldout_s3: 0.8753 (4 s)
+[2026-11-18 13:14:09] dqn semilla 1003 heldout_s4: 0.8728 (4 s)
+[2026-11-18 13:14:13] dqn semilla 1003 heldout_s5: 0.8767 (4 s)
+[2026-11-18 13:14:14] rdqn semilla 0 joint_high_long: 0.9297 (56 s)
+[2026-11-18 13:14:25] dqn semilla 1003 joint_extrap_both: 0.9934 (12 s)
+[2026-11-18 13:14:27] rdqn semilla 0 joint_low_short: 0.8947 (13 s)
+[2026-11-18 13:14:32] dqn semilla 1003 joint_high_long: 0.8943 (7 s)
+[2026-11-18 13:14:34] dqn semilla 1003 joint_low_short: 0.9877 (2 s)
+[2026-11-18 13:14:39] dqn semilla 1003 joint_uniform_geom: 0.8653 (4 s)
+[2026-11-18 13:14:47] dqn semilla 1003 len_all_long: 0.8257 (8 s)
+[2026-11-18 13:14:49] dqn semilla 1003 len_all_short: 0.9773 (2 s)
+[2026-11-18 13:14:56] rdqn semilla 0 joint_uniform_geom: 0.8411 (29 s)
+[2026-11-18 13:15:01] dqn semilla 1003 len_extrapolate_long: 0.8006 (12 s)
+[2026-11-18 13:15:06] dqn semilla 1003 len_geometric: 0.8781 (5 s)
+[2026-11-18 13:15:10] dqn semilla 1003 len_poisson: 0.8913 (4 s)
+[2026-11-18 13:15:14] dqn semilla 1003 sev_beta_highskew: 0.9460 (4 s)
+[2026-11-18 13:15:19] dqn semilla 1003 sev_beta_lowskew: 0.8435 (4 s)
+[2026-11-18 13:15:23] dqn semilla 1003 sev_bimodal: 0.8690 (4 s)
+[2026-11-18 13:15:28] dqn semilla 1003 sev_extrapolate_high: 0.9909 (4 s)
+[2026-11-18 13:15:32] dqn semilla 1003 sev_gauss_high: 0.9477 (4 s)
+[2026-11-18 13:15:36] dqn semilla 1003 sev_gauss_low: 0.8432 (4 s)
+[2026-11-18 13:15:40] dqn semilla 1003 sev_gauss_mid: 0.8740 (4 s)
+[2026-11-18 13:15:48] dqn semilla 1003 sev_uniform: 0.8565 (8 s)
+[2026-11-18 13:15:50] rdqn semilla 0 len_all_long: 0.9007 (54 s)
+[2026-11-18 13:15:53] dqn semilla 1003 sev_weibull: 0.8759 (5 s)
+[2026-11-18 13:15:58] dqn semilla 1003 struct_few_long_blocks: 0.8778 (5 s)
+[2026-11-18 13:16:02] dqn semilla 1003 struct_many_short_blocks: 0.8778 (4 s)
+[2026-11-18 13:16:06] rdqn semilla 0 len_all_short: 0.8692 (16 s)
+[2026-11-18 13:16:07] dqn semilla 1003 struct_more_total: 0.8778 (5 s)
+[2026-11-18 13:16:07] dqn semilla 1004: evaluación de 27 escenarios
+[2026-11-18 13:16:12] dqn semilla 1004 sev_base: 0.8716 (5 s)
+[2026-11-18 13:16:16] dqn semilla 1004 heldout_s1: 0.8870 (5 s)
+[2026-11-18 13:16:23] dqn semilla 1004 heldout_s2: 0.8733 (6 s)
+[2026-11-18 13:16:28] dqn semilla 1004 heldout_s3: 0.8662 (6 s)
+[2026-11-18 13:16:33] dqn semilla 1004 heldout_s4: 0.8666 (4 s)
+[2026-11-18 13:16:38] dqn semilla 1004 heldout_s5: 0.8695 (5 s)
+[2026-11-18 13:16:50] dqn semilla 1004 joint_extrap_both: 1.0000 (13 s)
+[2026-11-18 13:16:58] dqn semilla 1004 joint_high_long: 0.8850 (8 s)
+[2026-11-18 13:17:00] dqn semilla 1004 joint_low_short: 0.9905 (2 s)
+[2026-11-18 13:17:05] dqn semilla 1004 joint_uniform_geom: 0.8758 (5 s)
+[2026-11-18 13:17:14] dqn semilla 1004 len_all_long: 0.8098 (8 s)
+[2026-11-18 13:17:16] dqn semilla 1004 len_all_short: 0.9859 (2 s)
+[2026-11-18 13:17:28] dqn semilla 1004 len_extrapolate_long: 0.7843 (12 s)
+[2026-11-18 13:17:30] rdqn semilla 0 len_extrapolate_long: 0.8895 (84 s)
+[2026-11-18 13:17:33] dqn semilla 1004 len_geometric: 0.8717 (5 s)
+[2026-11-18 13:17:37] dqn semilla 1004 len_poisson: 0.8882 (4 s)
+[2026-11-18 13:17:41] dqn semilla 1004 sev_beta_highskew: 0.9445 (4 s)
+[2026-11-18 13:17:46] dqn semilla 1004 sev_beta_lowskew: 0.8492 (4 s)
+[2026-11-18 13:17:51] dqn semilla 1004 sev_bimodal: 0.8774 (5 s)
+[2026-11-18 13:17:56] dqn semilla 1004 sev_extrapolate_high: 1.0000 (5 s)
+[2026-11-18 13:18:01] dqn semilla 1004 sev_gauss_high: 0.9451 (5 s)
+[2026-11-18 13:18:02] rdqn semilla 0 len_geometric: 0.8951 (32 s)
+[2026-11-18 13:18:06] dqn semilla 1004 sev_gauss_low: 0.8507 (5 s)
+[2026-11-18 13:18:10] dqn semilla 1004 sev_gauss_mid: 0.8713 (5 s)
+[2026-11-18 13:18:15] dqn semilla 1004 sev_uniform: 0.8632 (4 s)
+[2026-11-18 13:18:20] dqn semilla 1004 sev_weibull: 0.8758 (5 s)
+[2026-11-18 13:18:24] dqn semilla 1004 struct_few_long_blocks: 0.8716 (4 s)
+[2026-11-18 13:18:28] dqn semilla 1004 struct_many_short_blocks: 0.8716 (4 s)
+[2026-11-18 13:18:29] rdqn semilla 0 len_poisson: 0.8940 (27 s)
+[2026-11-18 13:18:33] dqn semilla 1004 struct_more_total: 0.8716 (4 s)
+[2026-11-18 13:18:33] dqn semilla 1005: evaluación de 27 escenarios
+[2026-11-18 13:18:37] dqn semilla 1005 sev_base: 0.8795 (4 s)
+[2026-11-18 13:18:42] dqn semilla 1005 heldout_s1: 0.8903 (4 s)
+[2026-11-18 13:18:47] dqn semilla 1005 heldout_s2: 0.8827 (5 s)
+[2026-11-18 13:18:51] dqn semilla 1005 heldout_s3: 0.8751 (5 s)
+[2026-11-18 13:18:56] dqn semilla 1005 heldout_s4: 0.8789 (5 s)
+[2026-11-18 13:18:59] rdqn semilla 0 sev_beta_highskew: 0.9261 (30 s)
+[2026-11-18 13:19:01] dqn semilla 1005 heldout_s5: 0.8776 (5 s)
+[2026-11-18 13:19:14] dqn semilla 1005 joint_extrap_both: 0.9856 (13 s)
+[2026-11-18 13:19:23] dqn semilla 1005 joint_high_long: 0.9057 (8 s)
+[2026-11-18 13:19:27] dqn semilla 1005 joint_low_short: 0.9676 (3 s)
+[2026-11-18 13:19:29] rdqn semilla 0 sev_beta_lowskew: 0.8911 (30 s)
+[2026-11-18 13:19:32] dqn semilla 1005 joint_uniform_geom: 0.8755 (5 s)
+[2026-11-18 13:19:42] dqn semilla 1005 len_all_long: 0.8547 (9 s)
+[2026-11-18 13:19:45] dqn semilla 1005 len_all_short: 0.9406 (3 s)
+[2026-11-18 13:19:58] dqn semilla 1005 len_extrapolate_long: 0.8311 (13 s)
+[2026-11-18 13:20:00] rdqn semilla 0 sev_bimodal: 0.8625 (32 s)
+[2026-11-18 13:20:03] dqn semilla 1005 len_geometric: 0.8762 (5 s)
+[2026-11-18 13:20:08] dqn semilla 1005 len_poisson: 0.8898 (5 s)
+[2026-11-18 13:20:13] dqn semilla 1005 sev_beta_highskew: 0.9249 (5 s)
+[2026-11-18 13:20:18] dqn semilla 1005 sev_beta_lowskew: 0.8643 (5 s)
+[2026-11-18 13:20:23] dqn semilla 1005 sev_bimodal: 0.8703 (5 s)
+[2026-11-18 13:20:28] dqn semilla 1005 sev_extrapolate_high: 0.9818 (5 s)
+[2026-11-18 13:20:32] rdqn semilla 0 sev_extrapolate_high: 0.8311 (31 s)
+[2026-11-18 13:20:32] dqn semilla 1005 sev_gauss_high: 0.9288 (4 s)
+[2026-11-18 13:20:36] dqn semilla 1005 sev_gauss_low: 0.8759 (4 s)
+[2026-11-18 13:20:41] dqn semilla 1005 sev_gauss_mid: 0.8784 (4 s)
+[2026-11-18 13:20:46] dqn semilla 1005 sev_uniform: 0.8760 (5 s)
+[2026-11-18 13:20:50] dqn semilla 1005 sev_weibull: 0.8807 (4 s)
+[2026-11-18 13:20:55] dqn semilla 1005 struct_few_long_blocks: 0.8795 (4 s)
+[2026-11-18 13:20:59] dqn semilla 1005 struct_many_short_blocks: 0.8795 (4 s)
+[2026-11-18 13:21:00] rdqn semilla 0 sev_gauss_high: 0.9319 (29 s)
+[2026-11-18 13:21:03] dqn semilla 1005 struct_more_total: 0.8795 (4 s)
+[2026-11-18 13:21:03] dqn semilla 1006: evaluación de 27 escenarios
+[2026-11-18 13:21:08] dqn semilla 1006 sev_base: 0.8773 (5 s)
+[2026-11-18 13:21:12] dqn semilla 1006 heldout_s1: 0.8924 (4 s)
+[2026-11-18 13:21:16] dqn semilla 1006 heldout_s2: 0.8820 (4 s)
+[2026-11-18 13:21:21] dqn semilla 1006 heldout_s3: 0.8750 (5 s)
+[2026-11-18 13:21:25] dqn semilla 1006 heldout_s4: 0.8761 (4 s)
+[2026-11-18 13:21:29] rdqn semilla 0 sev_gauss_low: 0.9055 (28 s)
+[2026-11-18 13:21:30] dqn semilla 1006 heldout_s5: 0.8764 (5 s)
+[2026-11-18 13:21:43] dqn semilla 1006 joint_extrap_both: 0.9801 (13 s)
+[2026-11-18 13:21:51] dqn semilla 1006 joint_high_long: 0.9059 (8 s)
+[2026-11-18 13:21:54] dqn semilla 1006 joint_low_short: 0.9829 (2 s)
+[2026-11-18 13:21:58] rdqn semilla 0 sev_gauss_mid: 0.8887 (29 s)
+[2026-11-18 13:21:58] dqn semilla 1006 joint_uniform_geom: 0.8816 (4 s)
+[2026-11-18 13:22:06] dqn semilla 1006 len_all_long: 0.8436 (7 s)
+[2026-11-18 13:22:08] dqn semilla 1006 len_all_short: 0.9578 (2 s)
+[2026-11-18 13:22:21] dqn semilla 1006 len_extrapolate_long: 0.8210 (12 s)
+[2026-11-18 13:22:25] dqn semilla 1006 len_geometric: 0.8761 (5 s)
+[2026-11-18 13:22:26] rdqn semilla 0 sev_uniform: 0.8696 (28 s)
+[2026-11-18 13:22:29] dqn semilla 1006 len_poisson: 0.8904 (4 s)
+[2026-11-18 13:22:34] dqn semilla 1006 sev_beta_highskew: 0.9331 (4 s)
+[2026-11-18 13:22:38] dqn semilla 1006 sev_beta_lowskew: 0.8677 (4 s)
+[2026-11-18 13:22:42] dqn semilla 1006 sev_bimodal: 0.8761 (4 s)
+[2026-11-18 13:22:47] dqn semilla 1006 sev_extrapolate_high: 0.9727 (4 s)
+[2026-11-18 13:22:51] dqn semilla 1006 sev_gauss_high: 0.9360 (4 s)
+[2026-11-18 13:22:54] rdqn semilla 0 sev_weibull: 0.8809 (28 s)
+[2026-11-18 13:22:56] dqn semilla 1006 sev_gauss_low: 0.8705 (5 s)
+[2026-11-18 13:23:00] dqn semilla 1006 sev_gauss_mid: 0.8823 (5 s)
+[2026-11-18 13:23:04] dqn semilla 1006 sev_uniform: 0.8740 (4 s)
+[2026-11-18 13:23:09] dqn semilla 1006 sev_weibull: 0.8789 (4 s)
+[2026-11-18 13:23:13] dqn semilla 1006 struct_few_long_blocks: 0.8773 (4 s)
+[2026-11-18 13:23:18] dqn semilla 1006 struct_many_short_blocks: 0.8773 (4 s)
+[2026-11-18 13:23:22] dqn semilla 1006 struct_more_total: 0.8773 (4 s)
+[2026-11-18 13:23:22] dqn semilla 1007: evaluación de 27 escenarios
+[2026-11-18 13:23:22] rdqn semilla 0 struct_few_long_blocks: 0.8987 (28 s)
+[2026-11-18 13:23:26] dqn semilla 1007 sev_base: 0.8580 (4 s)
+[2026-11-18 13:23:30] dqn semilla 1007 heldout_s1: 0.8766 (4 s)
+[2026-11-18 13:23:35] dqn semilla 1007 heldout_s2: 0.8591 (5 s)
+[2026-11-18 13:23:39] dqn semilla 1007 heldout_s3: 0.8545 (4 s)
+[2026-11-18 13:23:44] dqn semilla 1007 heldout_s4: 0.8544 (4 s)
+[2026-11-18 13:23:48] dqn semilla 1007 heldout_s5: 0.8544 (5 s)
+[2026-11-18 13:23:50] rdqn semilla 0 struct_many_short_blocks: 0.8987 (28 s)
+[2026-11-18 13:24:01] dqn semilla 1007 joint_extrap_both: 1.0000 (13 s)
+[2026-11-18 13:24:09] dqn semilla 1007 joint_high_long: 0.8666 (8 s)
+[2026-11-18 13:24:11] dqn semilla 1007 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:24:16] dqn semilla 1007 joint_uniform_geom: 0.8668 (5 s)
+[2026-11-18 13:24:19] rdqn semilla 0 struct_more_total: 0.8987 (29 s)
+[2026-11-18 13:24:19] rdqn semilla 1001: evaluación de 27 escenarios
+[2026-11-18 13:24:23] dqn semilla 1007 len_all_long: 0.7768 (8 s)
+[2026-11-18 13:24:26] dqn semilla 1007 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:24:38] dqn semilla 1007 len_extrapolate_long: 0.7563 (12 s)
+[2026-11-18 13:24:43] dqn semilla 1007 len_geometric: 0.8609 (5 s)
+[2026-11-18 13:24:47] dqn semilla 1007 len_poisson: 0.8800 (4 s)
+[2026-11-18 13:24:47] rdqn semilla 1001 sev_base: 0.9092 (28 s)
+[2026-11-18 13:24:52] dqn semilla 1007 sev_beta_highskew: 0.9446 (5 s)
+[2026-11-18 13:24:56] dqn semilla 1007 sev_beta_lowskew: 0.8245 (4 s)
+[2026-11-18 13:25:01] dqn semilla 1007 sev_bimodal: 0.8640 (5 s)
+[2026-11-18 13:25:06] dqn semilla 1007 sev_extrapolate_high: 1.0000 (5 s)
+[2026-11-18 13:25:10] dqn semilla 1007 sev_gauss_high: 0.9452 (5 s)
+[2026-11-18 13:25:15] rdqn semilla 1001 heldout_s1: 0.8965 (27 s)
+[2026-11-18 13:25:15] dqn semilla 1007 sev_gauss_low: 0.8296 (4 s)
+[2026-11-18 13:25:19] dqn semilla 1007 sev_gauss_mid: 0.8565 (5 s)
+[2026-11-18 13:25:24] dqn semilla 1007 sev_uniform: 0.8536 (5 s)
+[2026-11-18 13:25:29] dqn semilla 1007 sev_weibull: 0.8650 (5 s)
+[2026-11-18 13:25:34] dqn semilla 1007 struct_few_long_blocks: 0.8580 (5 s)
+[2026-11-18 13:25:38] dqn semilla 1007 struct_many_short_blocks: 0.8580 (5 s)
+[2026-11-18 13:25:43] dqn semilla 1007 struct_more_total: 0.8580 (5 s)
+[2026-11-18 13:25:43] dqn semilla 1008: evaluación de 27 escenarios
+[2026-11-18 13:25:46] rdqn semilla 1001 heldout_s2: 0.8986 (31 s)
+[2026-11-18 13:25:48] dqn semilla 1008 sev_base: 0.8638 (4 s)
+[2026-11-18 13:25:52] dqn semilla 1008 heldout_s1: 0.8819 (4 s)
+[2026-11-18 13:25:56] dqn semilla 1008 heldout_s2: 0.8645 (4 s)
+[2026-11-18 13:26:01] dqn semilla 1008 heldout_s3: 0.8609 (4 s)
+[2026-11-18 13:26:05] dqn semilla 1008 heldout_s4: 0.8665 (4 s)
+[2026-11-18 13:26:10] dqn semilla 1008 heldout_s5: 0.8621 (5 s)
+[2026-11-18 13:26:15] rdqn semilla 1001 heldout_s3: 0.8954 (29 s)
+[2026-11-18 13:26:22] dqn semilla 1008 joint_extrap_both: 1.0000 (12 s)
+[2026-11-18 13:26:30] dqn semilla 1008 joint_high_long: 0.8666 (8 s)
+[2026-11-18 13:26:32] dqn semilla 1008 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:26:37] dqn semilla 1008 joint_uniform_geom: 0.8827 (5 s)
+[2026-11-18 13:26:42] rdqn semilla 1001 heldout_s4: 0.8917 (27 s)
+[2026-11-18 13:26:44] dqn semilla 1008 len_all_long: 0.7822 (8 s)
+[2026-11-18 13:26:47] dqn semilla 1008 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:27:00] dqn semilla 1008 len_extrapolate_long: 0.7639 (13 s)
+[2026-11-18 13:27:05] dqn semilla 1008 len_geometric: 0.8670 (5 s)
+[2026-11-18 13:27:09] dqn semilla 1008 len_poisson: 0.8904 (4 s)
+[2026-11-18 13:27:13] rdqn semilla 1001 heldout_s5: 0.9059 (32 s)
+[2026-11-18 13:27:13] dqn semilla 1008 sev_beta_highskew: 0.9446 (4 s)
+[2026-11-18 13:27:18] dqn semilla 1008 sev_beta_lowskew: 0.8492 (4 s)
+[2026-11-18 13:27:22] dqn semilla 1008 sev_bimodal: 0.8820 (4 s)
+[2026-11-18 13:27:27] dqn semilla 1008 sev_extrapolate_high: 1.0000 (4 s)
+[2026-11-18 13:27:31] dqn semilla 1008 sev_gauss_high: 0.9452 (5 s)
+[2026-11-18 13:27:36] dqn semilla 1008 sev_gauss_low: 0.8636 (4 s)
+[2026-11-18 13:27:40] dqn semilla 1008 sev_gauss_mid: 0.8639 (5 s)
+[2026-11-18 13:27:45] dqn semilla 1008 sev_uniform: 0.8723 (4 s)
+[2026-11-18 13:27:49] dqn semilla 1008 sev_weibull: 0.8771 (4 s)
+[2026-11-18 13:27:54] dqn semilla 1008 struct_few_long_blocks: 0.8638 (4 s)
+[2026-11-18 13:27:58] dqn semilla 1008 struct_many_short_blocks: 0.8638 (4 s)
+[2026-11-18 13:28:03] dqn semilla 1008 struct_more_total: 0.8638 (4 s)
+[2026-11-18 13:28:03] dqn semilla 1009: evaluación de 27 escenarios
+[2026-11-18 13:28:07] dqn semilla 1009 sev_base: 0.8580 (4 s)
+[2026-11-18 13:28:11] dqn semilla 1009 heldout_s1: 0.8766 (4 s)
+[2026-11-18 13:28:16] dqn semilla 1009 heldout_s2: 0.8591 (5 s)
+[2026-11-18 13:28:20] dqn semilla 1009 heldout_s3: 0.8545 (5 s)
+[2026-11-18 13:28:24] dqn semilla 1009 heldout_s4: 0.8544 (4 s)
+[2026-11-18 13:28:29] dqn semilla 1009 heldout_s5: 0.8544 (5 s)
+[2026-11-18 13:28:34] rdqn semilla 1001 joint_extrap_both: 0.8298 (81 s)
+[2026-11-18 13:28:42] dqn semilla 1009 joint_extrap_both: 1.0000 (13 s)
+[2026-11-18 13:28:51] dqn semilla 1009 joint_high_long: 0.8666 (8 s)
+[2026-11-18 13:28:53] dqn semilla 1009 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:28:58] dqn semilla 1009 joint_uniform_geom: 0.8643 (5 s)
+[2026-11-18 13:29:06] dqn semilla 1009 len_all_long: 0.7768 (8 s)
+[2026-11-18 13:29:09] dqn semilla 1009 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:29:22] dqn semilla 1009 len_extrapolate_long: 0.7563 (13 s)
+[2026-11-18 13:29:27] rdqn semilla 1001 joint_high_long: 0.8722 (53 s)
+[2026-11-18 13:29:27] dqn semilla 1009 len_geometric: 0.8609 (5 s)
+[2026-11-18 13:29:31] dqn semilla 1009 len_poisson: 0.8800 (4 s)
+[2026-11-18 13:29:35] dqn semilla 1009 sev_beta_highskew: 0.9446 (4 s)
+[2026-11-18 13:29:40] dqn semilla 1009 sev_beta_lowskew: 0.8206 (4 s)
+[2026-11-18 13:29:42] rdqn semilla 1001 joint_low_short: 0.8371 (15 s)
+[2026-11-18 13:29:44] dqn semilla 1009 sev_bimodal: 0.8624 (4 s)
+[2026-11-18 13:29:48] dqn semilla 1009 sev_extrapolate_high: 1.0000 (4 s)
+[2026-11-18 13:29:53] dqn semilla 1009 sev_gauss_high: 0.9452 (4 s)
+[2026-11-18 13:29:57] dqn semilla 1009 sev_gauss_low: 0.8228 (4 s)
+[2026-11-18 13:30:02] dqn semilla 1009 sev_gauss_mid: 0.8558 (5 s)
+[2026-11-18 13:30:06] dqn semilla 1009 sev_uniform: 0.8505 (4 s)
+[2026-11-18 13:30:10] dqn semilla 1009 sev_weibull: 0.8637 (4 s)
+[2026-11-18 13:30:12] rdqn semilla 1001 joint_uniform_geom: 0.8257 (30 s)
+[2026-11-18 13:30:14] dqn semilla 1009 struct_few_long_blocks: 0.8580 (4 s)
+[2026-11-18 13:30:19] dqn semilla 1009 struct_many_short_blocks: 0.8580 (4 s)
+[2026-11-18 13:30:23] dqn semilla 1009 struct_more_total: 0.8580 (4 s)
+[2026-11-18 13:30:23] dqn semilla 1010: evaluación de 27 escenarios
+[2026-11-18 13:30:27] dqn semilla 1010 sev_base: 0.8580 (4 s)
+[2026-11-18 13:30:31] dqn semilla 1010 heldout_s1: 0.8766 (4 s)
+[2026-11-18 13:30:36] dqn semilla 1010 heldout_s2: 0.8591 (5 s)
+[2026-11-18 13:30:41] dqn semilla 1010 heldout_s3: 0.8545 (5 s)
+[2026-11-18 13:30:45] dqn semilla 1010 heldout_s4: 0.8544 (4 s)
+[2026-11-18 13:30:50] dqn semilla 1010 heldout_s5: 0.8544 (5 s)
+[2026-11-18 13:31:02] rdqn semilla 1001 len_all_long: 0.9198 (50 s)
+[2026-11-18 13:31:02] dqn semilla 1010 joint_extrap_both: 1.0000 (12 s)
+[2026-11-18 13:31:10] dqn semilla 1010 joint_high_long: 0.8666 (7 s)
+[2026-11-18 13:31:12] dqn semilla 1010 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:31:16] rdqn semilla 1001 len_all_short: 0.8434 (14 s)
+[2026-11-18 13:31:17] dqn semilla 1010 joint_uniform_geom: 0.8563 (5 s)
+[2026-11-18 13:31:24] dqn semilla 1010 len_all_long: 0.7768 (8 s)
+[2026-11-18 13:31:27] dqn semilla 1010 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:31:39] dqn semilla 1010 len_extrapolate_long: 0.7563 (12 s)
+[2026-11-18 13:31:44] dqn semilla 1010 len_geometric: 0.8609 (5 s)
+[2026-11-18 13:31:49] dqn semilla 1010 len_poisson: 0.8800 (5 s)
+[2026-11-18 13:31:53] dqn semilla 1010 sev_beta_highskew: 0.9446 (5 s)
+[2026-11-18 13:31:58] dqn semilla 1010 sev_beta_lowskew: 0.8025 (5 s)
+[2026-11-18 13:32:07] dqn semilla 1010 sev_bimodal: 0.8580 (9 s)
+[2026-11-18 13:32:12] dqn semilla 1010 sev_extrapolate_high: 1.0000 (5 s)
+[2026-11-18 13:32:17] dqn semilla 1010 sev_gauss_high: 0.9452 (5 s)
+[2026-11-18 13:32:22] dqn semilla 1010 sev_gauss_low: 0.7998 (5 s)
+[2026-11-18 13:32:27] dqn semilla 1010 sev_gauss_mid: 0.8546 (5 s)
+[2026-11-18 13:32:33] dqn semilla 1010 sev_uniform: 0.8444 (5 s)
+[2026-11-18 13:32:38] dqn semilla 1010 sev_weibull: 0.8586 (5 s)
+[2026-11-18 13:32:43] dqn semilla 1010 struct_few_long_blocks: 0.8580 (5 s)
+[2026-11-18 13:32:47] rdqn semilla 1001 len_extrapolate_long: 0.8768 (90 s)
+[2026-11-18 13:32:47] dqn semilla 1010 struct_many_short_blocks: 0.8580 (5 s)
+[2026-11-18 13:32:52] dqn semilla 1010 struct_more_total: 0.8580 (5 s)
+[2026-11-18 13:32:54] a2c semilla 0: evaluación de 27 escenarios
+[2026-11-18 13:33:18] a2c semilla 0 sev_base: 0.8872 (4 s)
+[2026-11-18 13:33:19] rdqn semilla 1001 len_geometric: 0.8897 (32 s)
+[2026-11-18 13:33:22] a2c semilla 0 heldout_s1: 0.8926 (4 s)
+[2026-11-18 13:33:25] a2c semilla 0 heldout_s2: 0.8901 (4 s)
+[2026-11-18 13:33:29] a2c semilla 0 heldout_s3: 0.8851 (4 s)
+[2026-11-18 13:33:32] a2c semilla 0 heldout_s4: 0.8773 (4 s)
+[2026-11-18 13:33:36] a2c semilla 0 heldout_s5: 0.8892 (4 s)
+[2026-11-18 13:33:47] a2c semilla 0 joint_extrap_both: 0.9486 (11 s)
+[2026-11-18 13:33:47] rdqn semilla 1001 len_poisson: 0.8795 (28 s)
+[2026-11-18 13:33:54] a2c semilla 0 joint_high_long: 0.9218 (7 s)
+[2026-11-18 13:33:56] a2c semilla 0 joint_low_short: 0.9877 (2 s)
+[2026-11-18 13:34:00] a2c semilla 0 joint_uniform_geom: 0.8607 (4 s)
+[2026-11-18 13:34:08] a2c semilla 0 len_all_long: 0.8481 (8 s)
+[2026-11-18 13:34:10] a2c semilla 0 len_all_short: 0.9579 (2 s)
+[2026-11-18 13:34:19] rdqn semilla 1001 sev_beta_highskew: 0.8859 (32 s)
+[2026-11-18 13:34:20] a2c semilla 0 len_extrapolate_long: 0.8257 (10 s)
+[2026-11-18 13:34:24] a2c semilla 0 len_geometric: 0.8836 (4 s)
+[2026-11-18 13:34:27] a2c semilla 0 len_poisson: 0.8977 (3 s)
+[2026-11-18 13:34:31] a2c semilla 0 sev_beta_highskew: 0.9440 (3 s)
+[2026-11-18 13:34:34] a2c semilla 0 sev_beta_lowskew: 0.8580 (4 s)
+[2026-11-18 13:34:38] a2c semilla 0 sev_bimodal: 0.8717 (3 s)
+[2026-11-18 13:34:41] a2c semilla 0 sev_extrapolate_high: 0.9294 (4 s)
+[2026-11-18 13:34:45] a2c semilla 0 sev_gauss_high: 0.9407 (4 s)
+[2026-11-18 13:34:49] a2c semilla 0 sev_gauss_low: 0.8604 (3 s)
+[2026-11-18 13:34:49] rdqn semilla 1001 sev_beta_lowskew: 0.8915 (29 s)
+[2026-11-18 13:34:52] a2c semilla 0 sev_gauss_mid: 0.8858 (4 s)
+[2026-11-18 13:34:56] a2c semilla 0 sev_uniform: 0.8605 (4 s)
+[2026-11-18 13:34:59] a2c semilla 0 sev_weibull: 0.8772 (3 s)
+[2026-11-18 13:35:03] a2c semilla 0 struct_few_long_blocks: 0.8872 (4 s)
+[2026-11-18 13:35:08] a2c semilla 0 struct_many_short_blocks: 0.8872 (4 s)
+[2026-11-18 13:35:11] a2c semilla 0 struct_more_total: 0.8872 (4 s)
+[2026-11-18 13:35:11] a2c semilla 1001: evaluación de 27 escenarios
+[2026-11-18 13:35:15] a2c semilla 1001 sev_base: 0.8580 (4 s)
+[2026-11-18 13:35:19] a2c semilla 1001 heldout_s1: 0.8766 (4 s)
+[2026-11-18 13:35:21] rdqn semilla 1001 sev_bimodal: 0.8445 (32 s)
+[2026-11-18 13:35:24] a2c semilla 1001 heldout_s2: 0.8591 (5 s)
+[2026-11-18 13:35:28] a2c semilla 1001 heldout_s3: 0.8545 (4 s)
+[2026-11-18 13:35:32] a2c semilla 1001 heldout_s4: 0.8544 (4 s)
+[2026-11-18 13:35:36] a2c semilla 1001 heldout_s5: 0.8544 (4 s)
+[2026-11-18 13:35:46] a2c semilla 1001 joint_extrap_both: 1.0000 (10 s)
+[2026-11-18 13:35:52] rdqn semilla 1001 sev_extrapolate_high: 0.7765 (32 s)
+[2026-11-18 13:35:52] a2c semilla 1001 joint_high_long: 0.8666 (6 s)
+[2026-11-18 13:35:54] a2c semilla 1001 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:35:58] a2c semilla 1001 joint_uniform_geom: 0.8560 (4 s)
+[2026-11-18 13:36:04] a2c semilla 1001 len_all_long: 0.7768 (6 s)
+[2026-11-18 13:36:06] a2c semilla 1001 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:36:16] a2c semilla 1001 len_extrapolate_long: 0.7563 (10 s)
+[2026-11-18 13:36:20] a2c semilla 1001 len_geometric: 0.8609 (4 s)
+[2026-11-18 13:36:23] rdqn semilla 1001 sev_gauss_high: 0.8897 (31 s)
+[2026-11-18 13:36:25] a2c semilla 1001 len_poisson: 0.8800 (4 s)
+[2026-11-18 13:36:28] a2c semilla 1001 sev_beta_highskew: 0.9446 (4 s)
+[2026-11-18 13:36:32] a2c semilla 1001 sev_beta_lowskew: 0.8010 (4 s)
+[2026-11-18 13:36:36] a2c semilla 1001 sev_bimodal: 0.8566 (4 s)
+[2026-11-18 13:36:39] a2c semilla 1001 sev_extrapolate_high: 1.0000 (4 s)
+[2026-11-18 13:36:43] a2c semilla 1001 sev_gauss_high: 0.9452 (4 s)
+[2026-11-18 13:36:47] a2c semilla 1001 sev_gauss_low: 0.7964 (4 s)
+[2026-11-18 13:36:50] a2c semilla 1001 sev_gauss_mid: 0.8539 (3 s)
+[2026-11-18 13:36:53] rdqn semilla 1001 sev_gauss_low: 0.8909 (31 s)
+[2026-11-18 13:36:54] a2c semilla 1001 sev_uniform: 0.8408 (4 s)
+[2026-11-18 13:36:58] a2c semilla 1001 sev_weibull: 0.8586 (4 s)
+[2026-11-18 13:37:01] a2c semilla 1001 struct_few_long_blocks: 0.8580 (4 s)
+[2026-11-18 13:37:05] a2c semilla 1001 struct_many_short_blocks: 0.8580 (4 s)
+[2026-11-18 13:37:09] a2c semilla 1001 struct_more_total: 0.8580 (4 s)
+[2026-11-18 13:37:09] a2c semilla 1002: evaluación de 27 escenarios
+[2026-11-18 13:37:13] a2c semilla 1002 sev_base: 0.8580 (4 s)
+[2026-11-18 13:37:17] a2c semilla 1002 heldout_s1: 0.8766 (4 s)
+[2026-11-18 13:37:21] a2c semilla 1002 heldout_s2: 0.8591 (4 s)
+[2026-11-18 13:37:25] a2c semilla 1002 heldout_s3: 0.8545 (4 s)
+[2026-11-18 13:37:25] rdqn semilla 1001 sev_gauss_mid: 0.8847 (32 s)
+[2026-11-18 13:37:28] a2c semilla 1002 heldout_s4: 0.8544 (4 s)
+[2026-11-18 13:37:32] a2c semilla 1002 heldout_s5: 0.8544 (4 s)
+[2026-11-18 13:37:42] a2c semilla 1002 joint_extrap_both: 1.0000 (10 s)
+[2026-11-18 13:37:48] a2c semilla 1002 joint_high_long: 0.8666 (6 s)
+[2026-11-18 13:37:50] a2c semilla 1002 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:37:54] a2c semilla 1002 joint_uniform_geom: 0.8560 (4 s)
+[2026-11-18 13:37:55] rdqn semilla 1001 sev_uniform: 0.8535 (29 s)
+[2026-11-18 13:38:01] a2c semilla 1002 len_all_long: 0.7768 (7 s)
+[2026-11-18 13:38:03] a2c semilla 1002 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:38:13] a2c semilla 1002 len_extrapolate_long: 0.7563 (10 s)
+[2026-11-18 13:38:17] a2c semilla 1002 len_geometric: 0.8609 (4 s)
+[2026-11-18 13:38:20] a2c semilla 1002 len_poisson: 0.8800 (3 s)
+[2026-11-18 13:38:23] a2c semilla 1002 sev_beta_highskew: 0.9446 (3 s)
+[2026-11-18 13:38:25] rdqn semilla 1001 sev_weibull: 0.8634 (30 s)
+[2026-11-18 13:38:27] a2c semilla 1002 sev_beta_lowskew: 0.8010 (4 s)
+[2026-11-18 13:38:31] a2c semilla 1002 sev_bimodal: 0.8566 (4 s)
+[2026-11-18 13:38:34] a2c semilla 1002 sev_extrapolate_high: 1.0000 (4 s)
+[2026-11-18 13:38:38] a2c semilla 1002 sev_gauss_high: 0.9452 (4 s)
+[2026-11-18 13:38:43] a2c semilla 1002 sev_gauss_low: 0.7964 (4 s)
+[2026-11-18 13:38:46] a2c semilla 1002 sev_gauss_mid: 0.8539 (4 s)
+[2026-11-18 13:38:50] a2c semilla 1002 sev_uniform: 0.8408 (4 s)
+[2026-11-18 13:38:54] a2c semilla 1002 sev_weibull: 0.8586 (4 s)
+[2026-11-18 13:38:57] rdqn semilla 1001 struct_few_long_blocks: 0.9092 (32 s)
+[2026-11-18 13:38:58] a2c semilla 1002 struct_few_long_blocks: 0.8580 (4 s)
+[2026-11-18 13:39:02] a2c semilla 1002 struct_many_short_blocks: 0.8580 (4 s)
+[2026-11-18 13:39:05] a2c semilla 1002 struct_more_total: 0.8580 (4 s)
+[2026-11-18 13:39:05] a2c semilla 1003: evaluación de 27 escenarios
+[2026-11-18 13:39:09] a2c semilla 1003 sev_base: 0.8108 (3 s)
+[2026-11-18 13:39:12] a2c semilla 1003 heldout_s1: 0.7932 (3 s)
+[2026-11-18 13:39:16] a2c semilla 1003 heldout_s2: 0.8164 (4 s)
+[2026-11-18 13:39:19] a2c semilla 1003 heldout_s3: 0.8580 (3 s)
+[2026-11-18 13:39:23] a2c semilla 1003 heldout_s4: 0.7969 (3 s)
+[2026-11-18 13:39:27] a2c semilla 1003 heldout_s5: 0.8031 (4 s)
+[2026-11-18 13:39:27] rdqn semilla 1001 struct_many_short_blocks: 0.9092 (30 s)
+[2026-11-18 13:39:37] a2c semilla 1003 joint_extrap_both: 0.4445 (10 s)
+[2026-11-18 13:39:43] a2c semilla 1003 joint_high_long: 0.6728 (6 s)
+[2026-11-18 13:39:45] a2c semilla 1003 joint_low_short: 0.9877 (2 s)
+[2026-11-18 13:39:49] a2c semilla 1003 joint_uniform_geom: 0.7352 (4 s)
+[2026-11-18 13:39:55] a2c semilla 1003 len_all_long: 0.7310 (6 s)
+[2026-11-18 13:39:57] rdqn semilla 1001 struct_more_total: 0.9092 (30 s)
+[2026-11-18 13:39:57] rdqn semilla 1002: evaluación de 27 escenarios
+[2026-11-18 13:39:57] a2c semilla 1003 len_all_short: 0.8825 (2 s)
+[2026-11-18 13:40:07] a2c semilla 1003 len_extrapolate_long: 0.7401 (10 s)
+[2026-11-18 13:40:11] a2c semilla 1003 len_geometric: 0.8073 (4 s)
+[2026-11-18 13:40:15] a2c semilla 1003 len_poisson: 0.8274 (3 s)
+[2026-11-18 13:40:19] a2c semilla 1003 sev_beta_highskew: 0.6491 (4 s)
+[2026-11-18 13:40:23] a2c semilla 1003 sev_beta_lowskew: 0.8525 (4 s)
+[2026-11-18 13:40:26] a2c semilla 1003 sev_bimodal: 0.7235 (4 s)
+[2026-11-18 13:40:28] rdqn semilla 1002 sev_base: 0.9199 (31 s)
+[2026-11-18 13:40:30] a2c semilla 1003 sev_extrapolate_high: 0.3558 (4 s)
+[2026-11-18 13:40:34] a2c semilla 1003 sev_gauss_high: 0.6328 (4 s)
+[2026-11-18 13:40:38] a2c semilla 1003 sev_gauss_low: 0.8604 (4 s)
+[2026-11-18 13:40:41] a2c semilla 1003 sev_gauss_mid: 0.8636 (4 s)
+[2026-11-18 13:40:45] a2c semilla 1003 sev_uniform: 0.7473 (4 s)
+[2026-11-18 13:40:49] a2c semilla 1003 sev_weibull: 0.7911 (4 s)
+[2026-11-18 13:40:52] a2c semilla 1003 struct_few_long_blocks: 0.8108 (4 s)
+[2026-11-18 13:40:56] a2c semilla 1003 struct_many_short_blocks: 0.8108 (4 s)
+[2026-11-18 13:40:57] rdqn semilla 1002 heldout_s1: 0.9180 (29 s)
+[2026-11-18 13:41:00] a2c semilla 1003 struct_more_total: 0.8108 (3 s)
+[2026-11-18 13:41:00] a2c semilla 1004: evaluación de 27 escenarios
+[2026-11-18 13:41:03] a2c semilla 1004 sev_base: 0.7857 (4 s)
+[2026-11-18 13:41:07] a2c semilla 1004 heldout_s1: 0.7650 (3 s)
+[2026-11-18 13:41:11] a2c semilla 1004 heldout_s2: 0.7810 (4 s)
+[2026-11-18 13:41:14] a2c semilla 1004 heldout_s3: 0.8196 (4 s)
+[2026-11-18 13:41:18] a2c semilla 1004 heldout_s4: 0.7663 (4 s)
+[2026-11-18 13:41:22] a2c semilla 1004 heldout_s5: 0.7663 (4 s)
+[2026-11-18 13:41:28] rdqn semilla 1002 heldout_s2: 0.9216 (31 s)
+[2026-11-18 13:41:32] a2c semilla 1004 joint_extrap_both: 0.6039 (10 s)
+[2026-11-18 13:41:38] a2c semilla 1004 joint_high_long: 0.6611 (6 s)
+[2026-11-18 13:41:40] a2c semilla 1004 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:41:44] a2c semilla 1004 joint_uniform_geom: 0.7139 (4 s)
+[2026-11-18 13:41:51] a2c semilla 1004 len_all_long: 0.6343 (7 s)
+[2026-11-18 13:41:53] a2c semilla 1004 len_all_short: 0.9335 (2 s)
+[2026-11-18 13:42:00] rdqn semilla 1002 heldout_s3: 0.9223 (32 s)
+[2026-11-18 13:42:03] a2c semilla 1004 len_extrapolate_long: 0.6635 (11 s)
+[2026-11-18 13:42:08] a2c semilla 1004 len_geometric: 0.7822 (4 s)
+[2026-11-18 13:42:11] a2c semilla 1004 len_poisson: 0.8149 (4 s)
+[2026-11-18 13:42:20] a2c semilla 1004 sev_beta_highskew: 0.7161 (8 s)
+[2026-11-18 13:42:26] a2c semilla 1004 sev_beta_lowskew: 0.7915 (6 s)
+[2026-11-18 13:42:31] a2c semilla 1004 sev_bimodal: 0.6881 (5 s)
+[2026-11-18 13:42:34] a2c semilla 1004 sev_extrapolate_high: 0.5549 (4 s)
+[2026-11-18 13:42:38] a2c semilla 1004 sev_gauss_high: 0.7014 (3 s)
+[2026-11-18 13:42:38] rdqn semilla 1002 heldout_s4: 0.9210 (38 s)
+[2026-11-18 13:42:41] a2c semilla 1004 sev_gauss_low: 0.7964 (3 s)
+[2026-11-18 13:42:44] a2c semilla 1004 sev_gauss_mid: 0.8328 (3 s)
+[2026-11-18 13:42:48] a2c semilla 1004 sev_uniform: 0.7061 (3 s)
+[2026-11-18 13:42:51] a2c semilla 1004 sev_weibull: 0.7584 (3 s)
+[2026-11-18 13:42:54] a2c semilla 1004 struct_few_long_blocks: 0.7857 (3 s)
+[2026-11-18 13:42:57] a2c semilla 1004 struct_many_short_blocks: 0.7857 (3 s)
+[2026-11-18 13:43:01] a2c semilla 1004 struct_more_total: 0.7857 (4 s)
+[2026-11-18 13:43:01] a2c semilla 1005: evaluación de 27 escenarios
+[2026-11-18 13:43:05] a2c semilla 1005 sev_base: 0.7857 (3 s)
+[2026-11-18 13:43:07] a2c semilla 1005 heldout_s1: 0.7650 (3 s)
+[2026-11-18 13:43:08] rdqn semilla 1002 heldout_s5: 0.9351 (30 s)
+[2026-11-18 13:43:11] a2c semilla 1005 heldout_s2: 0.7810 (4 s)
+[2026-11-18 13:43:14] a2c semilla 1005 heldout_s3: 0.8196 (3 s)
+[2026-11-18 13:43:18] a2c semilla 1005 heldout_s4: 0.7663 (3 s)
+[2026-11-18 13:43:21] a2c semilla 1005 heldout_s5: 0.7662 (4 s)
+[2026-11-18 13:43:31] a2c semilla 1005 joint_extrap_both: 0.6134 (9 s)
+[2026-11-18 13:43:37] a2c semilla 1005 joint_high_long: 0.6610 (6 s)
+[2026-11-18 13:43:38] a2c semilla 1005 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:43:42] a2c semilla 1005 joint_uniform_geom: 0.7138 (4 s)
+[2026-11-18 13:43:48] a2c semilla 1005 len_all_long: 0.6335 (6 s)
+[2026-11-18 13:43:50] a2c semilla 1005 len_all_short: 0.9335 (2 s)
+[2026-11-18 13:44:00] a2c semilla 1005 len_extrapolate_long: 0.6630 (10 s)
+[2026-11-18 13:44:04] a2c semilla 1005 len_geometric: 0.7822 (3 s)
+[2026-11-18 13:44:07] a2c semilla 1005 len_poisson: 0.8149 (3 s)
+[2026-11-18 13:44:10] a2c semilla 1005 sev_beta_highskew: 0.7161 (3 s)
+[2026-11-18 13:44:13] a2c semilla 1005 sev_beta_lowskew: 0.7915 (3 s)
+[2026-11-18 13:44:17] a2c semilla 1005 sev_bimodal: 0.6881 (3 s)
+[2026-11-18 13:44:20] a2c semilla 1005 sev_extrapolate_high: 0.5554 (3 s)
+[2026-11-18 13:44:23] a2c semilla 1005 sev_gauss_high: 0.7014 (3 s)
+[2026-11-18 13:44:27] a2c semilla 1005 sev_gauss_low: 0.7964 (3 s)
+[2026-11-18 13:44:29] rdqn semilla 1002 joint_extrap_both: 0.9671 (81 s)
+[2026-11-18 13:44:30] a2c semilla 1005 sev_gauss_mid: 0.8328 (3 s)
+[2026-11-18 13:44:33] a2c semilla 1005 sev_uniform: 0.7061 (3 s)
+[2026-11-18 13:44:37] a2c semilla 1005 sev_weibull: 0.7582 (3 s)
+[2026-11-18 13:44:40] a2c semilla 1005 struct_few_long_blocks: 0.7857 (3 s)
+[2026-11-18 13:44:44] a2c semilla 1005 struct_many_short_blocks: 0.7857 (3 s)
+[2026-11-18 13:44:47] a2c semilla 1005 struct_more_total: 0.7857 (3 s)
+[2026-11-18 13:44:47] a2c semilla 1006: evaluación de 27 escenarios
+[2026-11-18 13:44:50] a2c semilla 1006 sev_base: 0.8580 (3 s)
+[2026-11-18 13:44:53] a2c semilla 1006 heldout_s1: 0.8766 (3 s)
+[2026-11-18 13:44:56] a2c semilla 1006 heldout_s2: 0.8591 (3 s)
+[2026-11-18 13:44:59] a2c semilla 1006 heldout_s3: 0.8545 (3 s)
+[2026-11-18 13:45:03] a2c semilla 1006 heldout_s4: 0.8544 (3 s)
+[2026-11-18 13:45:06] a2c semilla 1006 heldout_s5: 0.8544 (4 s)
+[2026-11-18 13:45:16] a2c semilla 1006 joint_extrap_both: 1.0000 (10 s)
+[2026-11-18 13:45:19] rdqn semilla 1002 joint_high_long: 0.9035 (50 s)
+[2026-11-18 13:45:22] a2c semilla 1006 joint_high_long: 0.8666 (6 s)
+[2026-11-18 13:45:24] a2c semilla 1006 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:45:28] a2c semilla 1006 joint_uniform_geom: 0.8560 (3 s)
+[2026-11-18 13:45:33] a2c semilla 1006 len_all_long: 0.7768 (6 s)
+[2026-11-18 13:45:34] rdqn semilla 1002 joint_low_short: 0.9148 (15 s)
+[2026-11-18 13:45:35] a2c semilla 1006 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:45:45] a2c semilla 1006 len_extrapolate_long: 0.7563 (10 s)
+[2026-11-18 13:45:48] a2c semilla 1006 len_geometric: 0.8609 (3 s)
+[2026-11-18 13:45:52] a2c semilla 1006 len_poisson: 0.8800 (3 s)
+[2026-11-18 13:45:55] a2c semilla 1006 sev_beta_highskew: 0.9446 (3 s)
+[2026-11-18 13:45:58] a2c semilla 1006 sev_beta_lowskew: 0.8010 (3 s)
+[2026-11-18 13:46:02] a2c semilla 1006 sev_bimodal: 0.8566 (3 s)
+[2026-11-18 13:46:03] rdqn semilla 1002 joint_uniform_geom: 0.9034 (29 s)
+[2026-11-18 13:46:05] a2c semilla 1006 sev_extrapolate_high: 1.0000 (4 s)
+[2026-11-18 13:46:09] a2c semilla 1006 sev_gauss_high: 0.9452 (3 s)
+[2026-11-18 13:46:12] a2c semilla 1006 sev_gauss_low: 0.7964 (4 s)
+[2026-11-18 13:46:16] a2c semilla 1006 sev_gauss_mid: 0.8539 (3 s)
+[2026-11-18 13:46:19] a2c semilla 1006 sev_uniform: 0.8408 (3 s)
+[2026-11-18 13:46:22] a2c semilla 1006 sev_weibull: 0.8586 (3 s)
+[2026-11-18 13:46:26] a2c semilla 1006 struct_few_long_blocks: 0.8580 (3 s)
+[2026-11-18 13:46:29] a2c semilla 1006 struct_many_short_blocks: 0.8580 (3 s)
+[2026-11-18 13:46:32] a2c semilla 1006 struct_more_total: 0.8580 (3 s)
+[2026-11-18 13:46:32] a2c semilla 1007: evaluación de 27 escenarios
+[2026-11-18 13:46:36] a2c semilla 1007 sev_base: 0.8580 (3 s)
+[2026-11-18 13:46:39] a2c semilla 1007 heldout_s1: 0.8766 (3 s)
+[2026-11-18 13:46:42] a2c semilla 1007 heldout_s2: 0.8591 (3 s)
+[2026-11-18 13:46:46] a2c semilla 1007 heldout_s3: 0.8545 (4 s)
+[2026-11-18 13:46:49] a2c semilla 1007 heldout_s4: 0.8544 (3 s)
+[2026-11-18 13:46:53] a2c semilla 1007 heldout_s5: 0.8544 (4 s)
+[2026-11-18 13:46:54] rdqn semilla 1002 len_all_long: 0.9071 (51 s)
+[2026-11-18 13:47:03] a2c semilla 1007 joint_extrap_both: 0.5955 (10 s)
+[2026-11-18 13:47:09] a2c semilla 1007 joint_high_long: 0.8666 (6 s)
+[2026-11-18 13:47:09] rdqn semilla 1002 len_all_short: 0.8649 (15 s)
+[2026-11-18 13:47:10] a2c semilla 1007 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:47:14] a2c semilla 1007 joint_uniform_geom: 0.8560 (3 s)
+[2026-11-18 13:47:20] a2c semilla 1007 len_all_long: 0.7768 (6 s)
+[2026-11-18 13:47:21] a2c semilla 1007 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:47:31] a2c semilla 1007 len_extrapolate_long: 0.7563 (10 s)
+[2026-11-18 13:47:34] a2c semilla 1007 len_geometric: 0.8609 (4 s)
+[2026-11-18 13:47:38] a2c semilla 1007 len_poisson: 0.8800 (3 s)
+[2026-11-18 13:47:41] a2c semilla 1007 sev_beta_highskew: 0.9446 (3 s)
+[2026-11-18 13:47:44] a2c semilla 1007 sev_beta_lowskew: 0.8010 (3 s)
+[2026-11-18 13:47:47] a2c semilla 1007 sev_bimodal: 0.8566 (3 s)
+[2026-11-18 13:47:51] a2c semilla 1007 sev_extrapolate_high: 0.5549 (3 s)
+[2026-11-18 13:47:54] a2c semilla 1007 sev_gauss_high: 0.9452 (3 s)
+[2026-11-18 13:47:56] a2c semilla 1007 sev_gauss_low: 0.7964 (3 s)
+[2026-11-18 13:48:00] a2c semilla 1007 sev_gauss_mid: 0.8539 (4 s)
+[2026-11-18 13:48:04] a2c semilla 1007 sev_uniform: 0.8408 (4 s)
+[2026-11-18 13:48:07] a2c semilla 1007 sev_weibull: 0.8586 (3 s)
+[2026-11-18 13:48:11] a2c semilla 1007 struct_few_long_blocks: 0.8580 (3 s)
+[2026-11-18 13:48:14] a2c semilla 1007 struct_many_short_blocks: 0.8580 (3 s)
+[2026-11-18 13:48:18] a2c semilla 1007 struct_more_total: 0.8580 (3 s)
+[2026-11-18 13:48:18] a2c semilla 1008: evaluación de 27 escenarios
+[2026-11-18 13:48:21] a2c semilla 1008 sev_base: 0.8580 (4 s)
+[2026-11-18 13:48:25] a2c semilla 1008 heldout_s1: 0.8766 (3 s)
+[2026-11-18 13:48:28] a2c semilla 1008 heldout_s2: 0.8591 (4 s)
+[2026-11-18 13:48:29] rdqn semilla 1002 len_extrapolate_long: 0.8882 (80 s)
+[2026-11-18 13:48:32] a2c semilla 1008 heldout_s3: 0.8545 (4 s)
+[2026-11-18 13:48:35] a2c semilla 1008 heldout_s4: 0.8544 (3 s)
+[2026-11-18 13:48:39] a2c semilla 1008 heldout_s5: 0.8544 (4 s)
+[2026-11-18 13:48:48] a2c semilla 1008 joint_extrap_both: 1.0000 (9 s)
+[2026-11-18 13:48:54] a2c semilla 1008 joint_high_long: 0.8666 (6 s)
+[2026-11-18 13:48:56] a2c semilla 1008 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:48:58] rdqn semilla 1002 len_geometric: 0.9055 (29 s)
+[2026-11-18 13:48:59] a2c semilla 1008 joint_uniform_geom: 0.8560 (4 s)
+[2026-11-18 13:49:05] a2c semilla 1008 len_all_long: 0.7768 (6 s)
+[2026-11-18 13:49:07] a2c semilla 1008 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:49:16] a2c semilla 1008 len_extrapolate_long: 0.7563 (9 s)
+[2026-11-18 13:49:20] a2c semilla 1008 len_geometric: 0.8609 (3 s)
+[2026-11-18 13:49:23] a2c semilla 1008 len_poisson: 0.8800 (3 s)
+[2026-11-18 13:49:24] rdqn semilla 1002 len_poisson: 0.9001 (25 s)
+[2026-11-18 13:49:26] a2c semilla 1008 sev_beta_highskew: 0.9446 (3 s)
+[2026-11-18 13:49:29] a2c semilla 1008 sev_beta_lowskew: 0.8010 (3 s)
+[2026-11-18 13:49:33] a2c semilla 1008 sev_bimodal: 0.8566 (3 s)
+[2026-11-18 13:49:36] a2c semilla 1008 sev_extrapolate_high: 1.0000 (3 s)
+[2026-11-18 13:49:39] a2c semilla 1008 sev_gauss_high: 0.9452 (3 s)
+[2026-11-18 13:49:42] a2c semilla 1008 sev_gauss_low: 0.7964 (3 s)
+[2026-11-18 13:49:46] a2c semilla 1008 sev_gauss_mid: 0.8539 (3 s)
+[2026-11-18 13:49:49] a2c semilla 1008 sev_uniform: 0.8408 (3 s)
+[2026-11-18 13:49:51] rdqn semilla 1002 sev_beta_highskew: 0.9074 (27 s)
+[2026-11-18 13:49:52] a2c semilla 1008 sev_weibull: 0.8586 (3 s)
+[2026-11-18 13:49:55] a2c semilla 1008 struct_few_long_blocks: 0.8580 (3 s)
+[2026-11-18 13:49:59] a2c semilla 1008 struct_many_short_blocks: 0.8580 (3 s)
+[2026-11-18 13:50:02] a2c semilla 1008 struct_more_total: 0.8580 (3 s)
+[2026-11-18 13:50:02] a2c semilla 1009: evaluación de 27 escenarios
+[2026-11-18 13:50:05] a2c semilla 1009 sev_base: 0.8872 (3 s)
+[2026-11-18 13:50:09] a2c semilla 1009 heldout_s1: 0.8926 (3 s)
+[2026-11-18 13:50:12] a2c semilla 1009 heldout_s2: 0.8901 (3 s)
+[2026-11-18 13:50:16] a2c semilla 1009 heldout_s3: 0.8851 (3 s)
+[2026-11-18 13:50:18] rdqn semilla 1002 sev_beta_lowskew: 0.8866 (27 s)
+[2026-11-18 13:50:19] a2c semilla 1009 heldout_s4: 0.8773 (3 s)
+[2026-11-18 13:50:22] a2c semilla 1009 heldout_s5: 0.8892 (3 s)
+[2026-11-18 13:50:32] a2c semilla 1009 joint_extrap_both: 0.9486 (9 s)
+[2026-11-18 13:50:38] a2c semilla 1009 joint_high_long: 0.9218 (6 s)
+[2026-11-18 13:50:39] a2c semilla 1009 joint_low_short: 0.9877 (2 s)
+[2026-11-18 13:50:43] a2c semilla 1009 joint_uniform_geom: 0.8607 (3 s)
+[2026-11-18 13:50:45] rdqn semilla 1002 sev_bimodal: 0.9008 (27 s)
+[2026-11-18 13:50:49] a2c semilla 1009 len_all_long: 0.8481 (6 s)
+[2026-11-18 13:50:50] a2c semilla 1009 len_all_short: 0.9579 (2 s)
+[2026-11-18 13:50:59] a2c semilla 1009 len_extrapolate_long: 0.8257 (8 s)
+[2026-11-18 13:51:02] a2c semilla 1009 len_geometric: 0.8836 (3 s)
+[2026-11-18 13:51:05] a2c semilla 1009 len_poisson: 0.8977 (3 s)
+[2026-11-18 13:51:09] a2c semilla 1009 sev_beta_highskew: 0.9440 (3 s)
+[2026-11-18 13:51:12] a2c semilla 1009 sev_beta_lowskew: 0.8580 (3 s)
+[2026-11-18 13:51:12] rdqn semilla 1002 sev_extrapolate_high: 0.9574 (26 s)
+[2026-11-18 13:51:15] a2c semilla 1009 sev_bimodal: 0.8717 (3 s)
+[2026-11-18 13:51:18] a2c semilla 1009 sev_extrapolate_high: 0.9294 (3 s)
+[2026-11-18 13:51:21] a2c semilla 1009 sev_gauss_high: 0.9407 (3 s)
+[2026-11-18 13:51:25] a2c semilla 1009 sev_gauss_low: 0.8604 (3 s)
+[2026-11-18 13:51:28] a2c semilla 1009 sev_gauss_mid: 0.8858 (3 s)
+[2026-11-18 13:51:31] a2c semilla 1009 sev_uniform: 0.8605 (3 s)
+[2026-11-18 13:51:34] a2c semilla 1009 sev_weibull: 0.8772 (3 s)
+[2026-11-18 13:51:38] a2c semilla 1009 struct_few_long_blocks: 0.8872 (3 s)
+[2026-11-18 13:51:39] rdqn semilla 1002 sev_gauss_high: 0.9092 (27 s)
+[2026-11-18 13:51:41] a2c semilla 1009 struct_many_short_blocks: 0.8872 (3 s)
+[2026-11-18 13:51:44] a2c semilla 1009 struct_more_total: 0.8872 (3 s)
+[2026-11-18 13:51:44] a2c semilla 1010: evaluación de 27 escenarios
+[2026-11-18 13:51:48] a2c semilla 1010 sev_base: 0.8580 (3 s)
+[2026-11-18 13:51:51] a2c semilla 1010 heldout_s1: 0.8766 (3 s)
+[2026-11-18 13:51:54] a2c semilla 1010 heldout_s2: 0.8591 (4 s)
+[2026-11-18 13:51:58] a2c semilla 1010 heldout_s3: 0.8545 (4 s)
+[2026-11-18 13:52:01] a2c semilla 1010 heldout_s4: 0.8544 (3 s)
+[2026-11-18 13:52:05] a2c semilla 1010 heldout_s5: 0.8544 (4 s)
+[2026-11-18 13:52:08] rdqn semilla 1002 sev_gauss_low: 0.8812 (28 s)
+[2026-11-18 13:52:14] a2c semilla 1010 joint_extrap_both: 1.0000 (9 s)
+[2026-11-18 13:52:20] a2c semilla 1010 joint_high_long: 0.8666 (6 s)
+[2026-11-18 13:52:21] a2c semilla 1010 joint_low_short: 1.0000 (2 s)
+[2026-11-18 13:52:25] a2c semilla 1010 joint_uniform_geom: 0.8560 (4 s)
+[2026-11-18 13:52:31] a2c semilla 1010 len_all_long: 0.7768 (6 s)
+[2026-11-18 13:52:33] a2c semilla 1010 len_all_short: 1.0000 (2 s)
+[2026-11-18 13:52:35] rdqn semilla 1002 sev_gauss_mid: 0.9097 (28 s)
+[2026-11-18 13:52:42] a2c semilla 1010 len_extrapolate_long: 0.7563 (9 s)
+[2026-11-18 13:52:46] a2c semilla 1010 len_geometric: 0.8609 (4 s)
+[2026-11-18 13:52:49] a2c semilla 1010 len_poisson: 0.8800 (3 s)
+[2026-11-18 13:52:52] a2c semilla 1010 sev_beta_highskew: 0.9446 (3 s)
+[2026-11-18 13:52:55] a2c semilla 1010 sev_beta_lowskew: 0.8010 (3 s)
+[2026-11-18 13:52:59] a2c semilla 1010 sev_bimodal: 0.8566 (3 s)
+[2026-11-18 13:53:02] a2c semilla 1010 sev_extrapolate_high: 1.0000 (3 s)
+[2026-11-18 13:53:03] rdqn semilla 1002 sev_uniform: 0.8970 (28 s)
+[2026-11-18 13:53:06] a2c semilla 1010 sev_gauss_high: 0.9452 (3 s)
+[2026-11-18 13:53:09] a2c semilla 1010 sev_gauss_low: 0.7964 (3 s)
+[2026-11-18 13:53:12] a2c semilla 1010 sev_gauss_mid: 0.8539 (3 s)
+[2026-11-18 13:53:15] a2c semilla 1010 sev_uniform: 0.8408 (3 s)
+[2026-11-18 13:53:19] a2c semilla 1010 sev_weibull: 0.8586 (3 s)
+[2026-11-18 13:53:22] a2c semilla 1010 struct_few_long_blocks: 0.8580 (3 s)
+[2026-11-18 13:53:25] a2c semilla 1010 struct_many_short_blocks: 0.8580 (3 s)
+[2026-11-18 13:53:28] a2c semilla 1010 struct_more_total: 0.8580 (3 s)
+[2026-11-18 13:53:30] rdqn semilla 0: evaluación ya hecha, se omite
+[2026-11-18 13:53:30] rdqn semilla 1006: evaluación de 27 escenarios
+[2026-11-18 13:53:30] rdqn semilla 1002 sev_weibull: 0.9121 (27 s)
+[2026-11-18 13:53:58] rdqn semilla 1002 struct_few_long_blocks: 0.9199 (28 s)
+[2026-11-18 13:54:16] rdqn semilla 1006 sev_base: 0.9038 (27 s)
+[2026-11-18 13:54:24] rdqn semilla 1002 struct_many_short_blocks: 0.9199 (26 s)
+[2026-11-18 13:54:41] rdqn semilla 1006 heldout_s1: 0.8772 (25 s)
+[2026-11-18 13:54:51] rdqn semilla 1002 struct_more_total: 0.9199 (28 s)
+[2026-11-18 13:54:51] rdqn semilla 1003: evaluación de 27 escenarios
+[2026-11-18 13:55:09] rdqn semilla 1006 heldout_s2: 0.8787 (28 s)
+[2026-11-18 13:55:20] rdqn semilla 1003 sev_base: 0.8642 (28 s)
+[2026-11-18 13:55:38] rdqn semilla 1006 heldout_s3: 0.8735 (29 s)
+[2026-11-18 13:55:46] rdqn semilla 1003 heldout_s1: 0.8454 (26 s)
+[2026-11-18 13:56:05] rdqn semilla 1006 heldout_s4: 0.8937 (27 s)
+[2026-11-18 13:56:15] rdqn semilla 1003 heldout_s2: 0.8585 (29 s)
+[2026-11-18 13:56:34] rdqn semilla 1006 heldout_s5: 0.8793 (30 s)
+[2026-11-18 13:56:43] rdqn semilla 1003 heldout_s3: 0.8648 (28 s)
+[2026-11-18 13:57:10] rdqn semilla 1003 heldout_s4: 0.8645 (27 s)
+[2026-11-18 13:57:40] rdqn semilla 1003 heldout_s5: 0.8753 (30 s)
+[2026-11-18 13:57:53] rdqn semilla 1006 joint_extrap_both: 1.0000 (79 s)
+[2026-11-18 13:58:42] rdqn semilla 1006 joint_high_long: 0.8791 (49 s)
+[2026-11-18 13:58:57] rdqn semilla 1006 joint_low_short: 0.7920 (14 s)
+[2026-11-18 13:58:59] rdqn semilla 1003 joint_extrap_both: 0.8273 (79 s)
+[2026-11-18 13:59:27] rdqn semilla 1006 joint_uniform_geom: 0.8217 (30 s)
+[2026-11-18 13:59:50] rdqn semilla 1003 joint_high_long: 0.9286 (51 s)
+[2026-11-18 14:00:05] rdqn semilla 1003 joint_low_short: 0.8357 (15 s)
+[2026-11-18 14:00:16] rdqn semilla 1006 len_all_long: 0.8438 (50 s)
+[2026-11-18 14:00:31] rdqn semilla 1006 len_all_short: 0.9380 (15 s)
+[2026-11-18 14:00:35] rdqn semilla 1003 joint_uniform_geom: 0.8211 (30 s)
+[2026-11-18 14:01:24] rdqn semilla 1003 len_all_long: 0.8944 (50 s)
+[2026-11-18 14:01:39] rdqn semilla 1003 len_all_short: 0.7586 (15 s)
+[2026-11-18 14:01:49] rdqn semilla 1006 len_extrapolate_long: 0.8241 (78 s)
+[2026-11-18 14:02:10] rdqn semilla 1006 len_geometric: 0.8791 (21 s)
+[2026-11-18 14:02:24] rdqn semilla 1006 len_poisson: 0.8888 (15 s)
+[2026-11-18 14:02:33] rdqn semilla 1003 len_extrapolate_long: 0.8855 (53 s)
+[2026-11-18 14:02:41] rdqn semilla 1006 sev_beta_highskew: 0.9392 (17 s)
+[2026-11-18 14:02:50] rdqn semilla 1003 len_geometric: 0.8622 (18 s)
+[2026-11-18 14:02:58] rdqn semilla 1006 sev_beta_lowskew: 0.8427 (17 s)
+[2026-11-18 14:03:08] rdqn semilla 1003 len_poisson: 0.8553 (18 s)
+[2026-11-18 14:03:17] rdqn semilla 1006 sev_bimodal: 0.8308 (19 s)
+[2026-11-18 14:03:26] rdqn semilla 1003 sev_beta_highskew: 0.9174 (18 s)
+[2026-11-18 14:03:34] rdqn semilla 1006 sev_extrapolate_high: 1.0000 (17 s)
+[2026-11-18 14:03:44] rdqn semilla 1003 sev_beta_lowskew: 0.8229 (18 s)
+[2026-11-18 14:03:52] rdqn semilla 1006 sev_gauss_high: 0.9414 (18 s)
+[2026-11-18 14:04:02] rdqn semilla 1003 sev_bimodal: 0.8028 (18 s)
+[2026-11-18 14:04:10] rdqn semilla 1006 sev_gauss_low: 0.8650 (18 s)
+[2026-11-18 14:04:20] rdqn semilla 1003 sev_extrapolate_high: 0.7804 (18 s)
+[2026-11-18 14:04:28] rdqn semilla 1006 sev_gauss_mid: 0.8767 (18 s)
+[2026-11-18 14:04:38] rdqn semilla 1003 sev_gauss_high: 0.9327 (18 s)
+[2026-11-18 14:04:45] rdqn semilla 1006 sev_uniform: 0.8404 (17 s)
+[2026-11-18 14:04:55] rdqn semilla 1003 sev_gauss_low: 0.8441 (17 s)
+[2026-11-18 14:05:03] rdqn semilla 1006 sev_weibull: 0.8812 (18 s)
+[2026-11-18 14:05:14] rdqn semilla 1003 sev_gauss_mid: 0.8517 (18 s)
+[2026-11-18 14:05:21] rdqn semilla 1006 struct_few_long_blocks: 0.9038 (18 s)
+[2026-11-18 14:05:31] rdqn semilla 1003 sev_uniform: 0.8337 (17 s)
+[2026-11-18 14:05:38] rdqn semilla 1006 struct_many_short_blocks: 0.9038 (17 s)
+[2026-11-18 14:05:48] rdqn semilla 1003 sev_weibull: 0.8607 (17 s)
+[2026-11-18 14:05:55] rdqn semilla 1006 struct_more_total: 0.9038 (17 s)
+[2026-11-18 14:05:55] rdqn semilla 1007: evaluación de 27 escenarios
+[2026-11-18 14:06:06] rdqn semilla 1003 struct_few_long_blocks: 0.8642 (18 s)
+[2026-11-18 14:06:14] rdqn semilla 1007 sev_base: 0.9209 (19 s)
+[2026-11-18 14:06:24] rdqn semilla 1003 struct_many_short_blocks: 0.8642 (18 s)
+[2026-11-18 14:06:30] rdqn semilla 1007 heldout_s1: 0.9192 (16 s)
+[2026-11-18 14:06:42] rdqn semilla 1003 struct_more_total: 0.8642 (17 s)
+[2026-11-18 14:06:42] rdqn semilla 1004: evaluación de 27 escenarios
+[2026-11-18 14:06:48] rdqn semilla 1007 heldout_s2: 0.9182 (18 s)
+[2026-11-18 14:07:00] rdqn semilla 1004 sev_base: 0.8994 (18 s)
+[2026-11-18 14:07:08] rdqn semilla 1007 heldout_s3: 0.9170 (19 s)
+[2026-11-18 14:07:18] rdqn semilla 1004 heldout_s1: 0.9105 (18 s)
+[2026-11-18 14:07:25] rdqn semilla 1007 heldout_s4: 0.9092 (17 s)
+[2026-11-18 14:07:36] rdqn semilla 1004 heldout_s2: 0.9103 (18 s)
+[2026-11-18 14:07:44] rdqn semilla 1007 heldout_s5: 0.9218 (19 s)
+[2026-11-18 14:07:55] rdqn semilla 1004 heldout_s3: 0.9106 (19 s)
+[2026-11-18 14:08:13] rdqn semilla 1004 heldout_s4: 0.8999 (19 s)
+[2026-11-18 14:08:32] rdqn semilla 1004 heldout_s5: 0.9159 (19 s)
+[2026-11-18 14:08:35] rdqn semilla 1007 joint_extrap_both: 0.9314 (52 s)
+[2026-11-18 14:09:08] rdqn semilla 1007 joint_high_long: 0.9253 (33 s)
+[2026-11-18 14:09:18] rdqn semilla 1007 joint_low_short: 0.8314 (10 s)
+[2026-11-18 14:09:24] rdqn semilla 1004 joint_extrap_both: 0.8738 (52 s)
+[2026-11-18 14:09:38] rdqn semilla 1007 joint_uniform_geom: 0.8684 (19 s)
+[2026-11-18 14:09:56] rdqn semilla 1004 joint_high_long: 0.9335 (32 s)
+[2026-11-18 14:10:07] rdqn semilla 1004 joint_low_short: 0.9419 (10 s)
+[2026-11-18 14:10:10] rdqn semilla 1007 len_all_long: 0.8869 (33 s)
+[2026-11-18 14:10:20] rdqn semilla 1007 len_all_short: 0.8842 (10 s)
+[2026-11-18 14:10:26] rdqn semilla 1004 joint_uniform_geom: 0.8816 (20 s)
+[2026-11-18 14:10:57] rdqn semilla 1004 len_all_long: 0.8922 (31 s)
+[2026-11-18 14:11:08] rdqn semilla 1004 len_all_short: 0.8471 (10 s)
+[2026-11-18 14:11:12] rdqn semilla 1007 len_extrapolate_long: 0.8789 (51 s)
+[2026-11-18 14:11:30] rdqn semilla 1007 len_geometric: 0.9119 (19 s)
+[2026-11-18 14:11:47] rdqn semilla 1007 len_poisson: 0.9200 (17 s)
+[2026-11-18 14:11:59] rdqn semilla 1004 len_extrapolate_long: 0.8760 (51 s)
+[2026-11-18 14:12:05] rdqn semilla 1007 sev_beta_highskew: 0.9431 (18 s)
+[2026-11-18 14:12:19] rdqn semilla 1004 len_geometric: 0.8972 (20 s)
+[2026-11-18 14:12:24] rdqn semilla 1007 sev_beta_lowskew: 0.8066 (19 s)
+[2026-11-18 14:12:36] rdqn semilla 1004 len_poisson: 0.8955 (17 s)
+[2026-11-18 14:12:42] rdqn semilla 1007 sev_bimodal: 0.8708 (18 s)
+[2026-11-18 14:12:55] rdqn semilla 1004 sev_beta_highskew: 0.9317 (19 s)
+[2026-11-18 14:13:14] rdqn semilla 1007 sev_extrapolate_high: 0.9070 (32 s)
+[2026-11-18 14:13:33] rdqn semilla 1004 sev_beta_lowskew: 0.9065 (38 s)
+[2026-11-18 14:13:42] rdqn semilla 1007 sev_gauss_high: 0.9403 (28 s)
+[2026-11-18 14:14:01] rdqn semilla 1004 sev_bimodal: 0.9007 (28 s)
+[2026-11-18 14:14:11] rdqn semilla 1007 sev_gauss_low: 0.8611 (28 s)
+[2026-11-18 14:14:29] rdqn semilla 1004 sev_extrapolate_high: 0.8355 (28 s)
+[2026-11-18 14:14:39] rdqn semilla 1007 sev_gauss_mid: 0.9122 (28 s)
+[2026-11-18 14:14:57] rdqn semilla 1004 sev_gauss_high: 0.9212 (28 s)
+[2026-11-18 14:15:07] rdqn semilla 1007 sev_uniform: 0.8809 (29 s)
+[2026-11-18 14:15:25] rdqn semilla 1004 sev_gauss_low: 0.9147 (28 s)
+[2026-11-18 14:15:34] rdqn semilla 1007 sev_weibull: 0.8909 (27 s)
+[2026-11-18 14:15:53] rdqn semilla 1004 sev_gauss_mid: 0.9016 (28 s)
+[2026-11-18 14:16:00] rdqn semilla 1007 struct_few_long_blocks: 0.9209 (26 s)
+[2026-11-18 14:16:10] rdqn semilla 1004 sev_uniform: 0.8927 (17 s)
+[2026-11-18 14:16:15] rdqn semilla 1007 struct_many_short_blocks: 0.9209 (16 s)
+[2026-11-18 14:16:27] rdqn semilla 1004 sev_weibull: 0.9069 (17 s)
+[2026-11-18 14:16:31] rdqn semilla 1007 struct_more_total: 0.9209 (16 s)
+[2026-11-18 14:16:31] rdqn semilla 1008: evaluación de 27 escenarios
+[2026-11-18 14:16:43] rdqn semilla 1004 struct_few_long_blocks: 0.8994 (16 s)
+[2026-11-18 14:16:48] rdqn semilla 1008 sev_base: 0.9168 (17 s)
+[2026-11-18 14:17:00] rdqn semilla 1004 struct_many_short_blocks: 0.8994 (17 s)
+[2026-11-18 14:17:03] rdqn semilla 1008 heldout_s1: 0.9110 (15 s)
+[2026-11-18 14:17:17] rdqn semilla 1004 struct_more_total: 0.8994 (17 s)
+[2026-11-18 14:17:17] rdqn semilla 1005: evaluación de 27 escenarios
+[2026-11-18 14:17:20] rdqn semilla 1008 heldout_s2: 0.9168 (17 s)
+[2026-11-18 14:17:32] rdqn semilla 1005 sev_base: 0.9182 (16 s)
+[2026-11-18 14:17:36] rdqn semilla 1008 heldout_s3: 0.9144 (16 s)
+[2026-11-18 14:17:48] rdqn semilla 1005 heldout_s1: 0.9118 (15 s)
+[2026-11-18 14:17:52] rdqn semilla 1008 heldout_s4: 0.9106 (15 s)
+[2026-11-18 14:18:06] rdqn semilla 1005 heldout_s2: 0.9171 (18 s)
+[2026-11-18 14:18:11] rdqn semilla 1008 heldout_s5: 0.9065 (19 s)
+[2026-11-18 14:18:23] rdqn semilla 1005 heldout_s3: 0.9168 (17 s)
+[2026-11-18 14:18:38] rdqn semilla 1005 heldout_s4: 0.9215 (15 s)
+[2026-11-18 14:19:08] rdqn semilla 1005 heldout_s5: 0.9318 (29 s)
+[2026-11-18 14:19:11] rdqn semilla 1008 joint_extrap_both: 0.8092 (60 s)
+[2026-11-18 14:19:45] rdqn semilla 1008 joint_high_long: 0.9106 (34 s)
+[2026-11-18 14:19:53] rdqn semilla 1008 joint_low_short: 0.9388 (9 s)
+[2026-11-18 14:20:02] rdqn semilla 1005 joint_extrap_both: 0.9807 (55 s)
+[2026-11-18 14:20:13] rdqn semilla 1008 joint_uniform_geom: 0.8809 (19 s)
+[2026-11-18 14:20:33] rdqn semilla 1005 joint_high_long: 0.9059 (31 s)
+[2026-11-18 14:20:45] rdqn semilla 1005 joint_low_short: 0.8429 (12 s)
+[2026-11-18 14:20:48] rdqn semilla 1008 len_all_long: 0.8888 (35 s)
+[2026-11-18 14:21:00] rdqn semilla 1008 len_all_short: 0.8937 (12 s)
+[2026-11-18 14:21:08] rdqn semilla 1005 joint_uniform_geom: 0.9053 (23 s)
+[2026-11-18 14:21:45] rdqn semilla 1005 len_all_long: 0.8807 (37 s)
+[2026-11-18 14:21:53] rdqn semilla 1005 len_all_short: 0.8466 (9 s)
+[2026-11-18 14:21:55] rdqn semilla 1008 len_extrapolate_long: 0.8792 (55 s)
+[2026-11-18 14:22:15] rdqn semilla 1008 len_geometric: 0.9067 (21 s)
+[2026-11-18 14:22:31] rdqn semilla 1008 len_poisson: 0.9071 (15 s)
+[2026-11-18 14:22:43] rdqn semilla 1005 len_extrapolate_long: 0.8735 (49 s)
+[2026-11-18 14:22:46] rdqn semilla 1008 sev_beta_highskew: 0.9208 (16 s)
+[2026-11-18 14:23:00] rdqn semilla 1005 len_geometric: 0.9123 (17 s)
+[2026-11-18 14:23:03] rdqn semilla 1008 sev_beta_lowskew: 0.9049 (16 s)
+[2026-11-18 14:23:15] rdqn semilla 1005 len_poisson: 0.9121 (15 s)
+[2026-11-18 14:23:20] rdqn semilla 1008 sev_bimodal: 0.9016 (17 s)
+[2026-11-18 14:23:33] rdqn semilla 1005 sev_beta_highskew: 0.9482 (18 s)
+[2026-11-18 14:23:37] rdqn semilla 1008 sev_extrapolate_high: 0.8062 (17 s)
+[2026-11-18 14:23:49] rdqn semilla 1005 sev_beta_lowskew: 0.8987 (16 s)
+[2026-11-18 14:23:53] rdqn semilla 1008 sev_gauss_high: 0.9224 (16 s)
+[2026-11-18 14:24:05] rdqn semilla 1005 sev_bimodal: 0.9007 (16 s)
+[2026-11-18 14:24:09] rdqn semilla 1008 sev_gauss_low: 0.9106 (16 s)
+[2026-11-18 14:24:21] rdqn semilla 1005 sev_extrapolate_high: 0.9769 (16 s)
+[2026-11-18 14:24:24] rdqn semilla 1008 sev_gauss_mid: 0.9048 (16 s)
+[2026-11-18 14:24:37] rdqn semilla 1005 sev_gauss_high: 0.9510 (16 s)
+[2026-11-18 14:24:40] rdqn semilla 1008 sev_uniform: 0.9080 (16 s)
+[2026-11-18 14:24:54] rdqn semilla 1005 sev_gauss_low: 0.8836 (18 s)
+[2026-11-18 14:24:58] rdqn semilla 1008 sev_weibull: 0.9068 (17 s)
+[2026-11-18 14:25:16] rdqn semilla 1005 sev_gauss_mid: 0.9140 (21 s)
+[2026-11-18 14:25:19] rdqn semilla 1008 struct_few_long_blocks: 0.9168 (21 s)
+[2026-11-18 14:25:37] rdqn semilla 1005 sev_uniform: 0.9165 (21 s)
+[2026-11-18 14:25:42] rdqn semilla 1008 struct_many_short_blocks: 0.9168 (23 s)
+[2026-11-18 14:25:58] rdqn semilla 1005 sev_weibull: 0.9083 (21 s)
+[2026-11-18 14:26:01] rdqn semilla 1008 struct_more_total: 0.9168 (19 s)
+[2026-11-18 14:26:01] rdqn semilla 1009: evaluación de 27 escenarios
+[2026-11-18 14:26:16] rdqn semilla 1005 struct_few_long_blocks: 0.9182 (18 s)
+[2026-11-18 14:26:19] rdqn semilla 1009 sev_base: 0.8714 (18 s)
+[2026-11-18 14:26:34] rdqn semilla 1005 struct_many_short_blocks: 0.9182 (18 s)
+[2026-11-18 14:26:35] rdqn semilla 1009 heldout_s1: 0.8742 (17 s)
+[2026-11-18 14:26:51] rdqn semilla 1005 struct_more_total: 0.9182 (18 s)
+[2026-11-18 14:26:53] trf semilla 0: evaluación de 27 escenarios
+[2026-11-18 14:26:54] rdqn semilla 1009 heldout_s2: 0.8572 (18 s)
+[2026-11-18 14:27:12] rdqn semilla 1009 heldout_s3: 0.8600 (18 s)
+[2026-11-18 14:27:27] trf semilla 0 sev_base: 0.9272 (22 s)
+[2026-11-18 14:27:28] rdqn semilla 1009 heldout_s4: 0.8673 (16 s)
+[2026-11-18 14:27:46] rdqn semilla 1009 heldout_s5: 0.8552 (18 s)
+[2026-11-18 14:27:46] trf semilla 0 heldout_s1: 0.9343 (19 s)
+[2026-11-18 14:28:09] trf semilla 0 heldout_s2: 0.9289 (23 s)
+[2026-11-18 14:28:31] trf semilla 0 heldout_s3: 0.9259 (22 s)
+[2026-11-18 14:28:35] rdqn semilla 1009 joint_extrap_both: 0.7481 (48 s)
+[2026-11-18 14:28:52] trf semilla 0 heldout_s4: 0.9267 (21 s)
+[2026-11-18 14:29:07] rdqn semilla 1009 joint_high_long: 0.8308 (32 s)
+[2026-11-18 14:29:17] rdqn semilla 1009 joint_low_short: 0.8640 (10 s)
+[2026-11-18 14:29:18] trf semilla 0 heldout_s5: 0.9274 (26 s)
+[2026-11-18 14:29:37] rdqn semilla 1009 joint_uniform_geom: 0.8239 (20 s)
+[2026-11-18 14:30:07] rdqn semilla 1009 len_all_long: 0.8586 (30 s)
+[2026-11-18 14:30:16] rdqn semilla 1009 len_all_short: 0.8466 (9 s)
+[2026-11-18 14:30:20] trf semilla 0 joint_extrap_both: 0.9969 (62 s)
+[2026-11-18 14:30:59] trf semilla 0 joint_high_long: 0.9303 (39 s)
+[2026-11-18 14:31:04] rdqn semilla 1009 len_extrapolate_long: 0.8249 (49 s)
+[2026-11-18 14:31:12] trf semilla 0 joint_low_short: 0.9695 (12 s)
+[2026-11-18 14:31:22] rdqn semilla 1009 len_geometric: 0.8521 (18 s)
+[2026-11-18 14:31:34] trf semilla 0 joint_uniform_geom: 0.9205 (22 s)
+[2026-11-18 14:31:37] rdqn semilla 1009 len_poisson: 0.8720 (15 s)
+[2026-11-18 14:31:55] rdqn semilla 1009 sev_beta_highskew: 0.8522 (18 s)
+[2026-11-18 14:32:13] rdqn semilla 1009 sev_beta_lowskew: 0.8696 (18 s)
+[2026-11-18 14:32:14] trf semilla 0 len_all_long: 0.8757 (40 s)
+[2026-11-18 14:32:26] trf semilla 0 len_all_short: 0.9357 (12 s)
+[2026-11-18 14:32:31] rdqn semilla 1009 sev_bimodal: 0.8425 (18 s)
+[2026-11-18 14:32:48] rdqn semilla 1009 sev_extrapolate_high: 0.7073 (17 s)
+[2026-11-18 14:33:08] rdqn semilla 1009 sev_gauss_high: 0.8484 (20 s)
+[2026-11-18 14:33:25] rdqn semilla 1009 sev_gauss_low: 0.8855 (18 s)
+[2026-11-18 14:33:32] trf semilla 0 len_extrapolate_long: 0.8597 (65 s)
+[2026-11-18 14:33:42] rdqn semilla 1009 sev_gauss_mid: 0.8671 (16 s)
+[2026-11-18 14:33:53] trf semilla 0 len_geometric: 0.9165 (22 s)
+[2026-11-18 14:33:59] rdqn semilla 1009 sev_uniform: 0.8311 (17 s)
+[2026-11-18 14:34:14] trf semilla 0 len_poisson: 0.9331 (21 s)
+[2026-11-18 14:34:16] rdqn semilla 1009 sev_weibull: 0.8479 (18 s)
+[2026-11-18 14:34:34] rdqn semilla 1009 struct_few_long_blocks: 0.8714 (17 s)
+[2026-11-18 14:34:36] trf semilla 0 sev_beta_highskew: 0.9423 (22 s)
+[2026-11-18 14:34:52] rdqn semilla 1009 struct_many_short_blocks: 0.8714 (18 s)
+[2026-11-18 14:34:59] trf semilla 0 sev_beta_lowskew: 0.9047 (23 s)
+[2026-11-18 14:35:09] rdqn semilla 1009 struct_more_total: 0.8714 (18 s)
+[2026-11-18 14:35:09] rdqn semilla 1010: evaluación de 27 escenarios
+[2026-11-18 14:35:21] trf semilla 0 sev_bimodal: 0.9255 (22 s)
+[2026-11-18 14:35:27] rdqn semilla 1010 sev_base: 0.8978 (18 s)
+[2026-11-18 14:35:44] rdqn semilla 1010 heldout_s1: 0.8895 (16 s)
+[2026-11-18 14:35:44] trf semilla 0 sev_extrapolate_high: 0.9957 (23 s)
+[2026-11-18 14:36:01] rdqn semilla 1010 heldout_s2: 0.8969 (17 s)
+[2026-11-18 14:36:07] trf semilla 0 sev_gauss_high: 0.9495 (23 s)
+[2026-11-18 14:36:20] rdqn semilla 1010 heldout_s3: 0.8988 (19 s)
+[2026-11-18 14:36:28] trf semilla 0 sev_gauss_low: 0.9136 (21 s)
+[2026-11-18 14:36:37] rdqn semilla 1010 heldout_s4: 0.8783 (17 s)
+[2026-11-18 14:36:58] trf semilla 0 sev_gauss_mid: 0.9202 (29 s)
+[2026-11-18 14:37:02] rdqn semilla 1010 heldout_s5: 0.8910 (25 s)
+[2026-11-18 14:37:20] trf semilla 0 sev_uniform: 0.9229 (22 s)
+[2026-11-18 14:37:43] trf semilla 0 sev_weibull: 0.9291 (23 s)
+[2026-11-18 14:37:51] rdqn semilla 1010 joint_extrap_both: 0.9263 (50 s)
+[2026-11-18 14:38:08] trf semilla 0 struct_few_long_blocks: 0.9272 (25 s)
+[2026-11-18 14:38:26] rdqn semilla 1010 joint_high_long: 0.8703 (34 s)
+[2026-11-18 14:38:31] trf semilla 0 struct_many_short_blocks: 0.9272 (23 s)
+[2026-11-18 14:38:34] rdqn semilla 1010 joint_low_short: 0.8985 (9 s)
+[2026-11-18 14:38:52] rdqn semilla 1010 joint_uniform_geom: 0.8902 (17 s)
+[2026-11-18 14:38:52] trf semilla 0 struct_more_total: 0.9272 (21 s)
+[2026-11-18 14:38:52] trf semilla 1001: evaluación de 27 escenarios
+[2026-11-18 14:39:14] trf semilla 1001 sev_base: 0.9141 (22 s)
+[2026-11-18 14:39:22] rdqn semilla 1010 len_all_long: 0.8981 (30 s)
+[2026-11-18 14:39:31] rdqn semilla 1010 len_all_short: 0.8415 (9 s)
+[2026-11-18 14:39:34] trf semilla 1001 heldout_s1: 0.9160 (20 s)
+[2026-11-18 14:39:57] trf semilla 1001 heldout_s2: 0.9170 (23 s)
+[2026-11-18 14:40:17] rdqn semilla 1010 len_extrapolate_long: 0.8734 (46 s)
+[2026-11-18 14:40:18] trf semilla 1001 heldout_s3: 0.9041 (21 s)
+[2026-11-18 14:40:35] rdqn semilla 1010 len_geometric: 0.8776 (18 s)
+[2026-11-18 14:40:39] trf semilla 1001 heldout_s4: 0.9093 (21 s)
+[2026-11-18 14:40:50] rdqn semilla 1010 len_poisson: 0.8655 (15 s)
+[2026-11-18 14:41:01] trf semilla 1001 heldout_s5: 0.9160 (22 s)
+[2026-11-18 14:41:06] rdqn semilla 1010 sev_beta_highskew: 0.9132 (16 s)
+[2026-11-18 14:41:21] rdqn semilla 1010 sev_beta_lowskew: 0.9020 (15 s)
+[2026-11-18 14:41:37] rdqn semilla 1010 sev_bimodal: 0.8994 (16 s)
+[2026-11-18 14:41:53] rdqn semilla 1010 sev_extrapolate_high: 0.9186 (16 s)
+[2026-11-18 14:41:58] trf semilla 1001 joint_extrap_both: 1.0000 (57 s)
+[2026-11-18 14:42:09] rdqn semilla 1010 sev_gauss_high: 0.9092 (16 s)
+[2026-11-18 14:42:25] rdqn semilla 1010 sev_gauss_low: 0.9042 (16 s)
+[2026-11-18 14:42:34] trf semilla 1001 joint_high_long: 0.8978 (36 s)
+[2026-11-18 14:42:41] rdqn semilla 1010 sev_gauss_mid: 0.8739 (16 s)
+[2026-11-18 14:42:45] trf semilla 1001 joint_low_short: 0.9555 (11 s)
+[2026-11-18 14:42:58] rdqn semilla 1010 sev_uniform: 0.8916 (17 s)
+[2026-11-18 14:43:07] trf semilla 1001 joint_uniform_geom: 0.9074 (23 s)
+[2026-11-18 14:43:14] rdqn semilla 1010 sev_weibull: 0.9065 (16 s)
+[2026-11-18 14:43:31] rdqn semilla 1010 struct_few_long_blocks: 0.8978 (17 s)
+[2026-11-18 14:43:47] trf semilla 1001 len_all_long: 0.8776 (40 s)
+[2026-11-18 14:43:49] rdqn semilla 1010 struct_many_short_blocks: 0.8978 (18 s)
+[2026-11-18 14:43:58] trf semilla 1001 len_all_short: 0.9360 (11 s)
+[2026-11-18 14:44:05] rdqn semilla 1010 struct_more_total: 0.8978 (16 s)
+[2026-11-18 14:44:07] trf semilla 0: evaluación ya hecha, se omite
+[2026-11-18 14:44:07] trf semilla 1006: evaluación de 27 escenarios
+[2026-11-18 14:44:42] trf semilla 1006 sev_base: 0.9026 (23 s)
+[2026-11-18 14:45:02] trf semilla 1001 len_extrapolate_long: 0.8624 (63 s)
+[2026-11-18 14:45:03] trf semilla 1006 heldout_s1: 0.9098 (22 s)
+[2026-11-18 14:45:23] trf semilla 1001 len_geometric: 0.9117 (22 s)
+[2026-11-18 14:45:24] trf semilla 1006 heldout_s2: 0.9062 (21 s)
+[2026-11-18 14:45:42] trf semilla 1001 len_poisson: 0.9269 (19 s)
+[2026-11-18 14:45:45] trf semilla 1006 heldout_s3: 0.9088 (20 s)
+[2026-11-18 14:46:02] trf semilla 1001 sev_beta_highskew: 0.9569 (20 s)
+[2026-11-18 14:46:05] trf semilla 1006 heldout_s4: 0.9138 (20 s)
+[2026-11-18 14:46:24] trf semilla 1001 sev_beta_lowskew: 0.8934 (22 s)
+[2026-11-18 14:46:28] trf semilla 1006 heldout_s5: 0.9135 (23 s)
+[2026-11-18 14:46:46] trf semilla 1001 sev_bimodal: 0.9105 (22 s)
+[2026-11-18 14:47:09] trf semilla 1001 sev_extrapolate_high: 1.0000 (22 s)
+[2026-11-18 14:47:31] trf semilla 1006 joint_extrap_both: 1.0000 (64 s)
+[2026-11-18 14:47:32] trf semilla 1001 sev_gauss_high: 0.9518 (24 s)
+[2026-11-18 14:47:59] trf semilla 1001 sev_gauss_low: 0.9144 (27 s)
+[2026-11-18 14:48:18] trf semilla 1006 joint_high_long: 0.9014 (47 s)
+[2026-11-18 14:48:28] trf semilla 1001 sev_gauss_mid: 0.9086 (29 s)
+[2026-11-18 14:48:35] trf semilla 1006 joint_low_short: 0.9223 (18 s)
+[2026-11-18 14:48:54] trf semilla 1001 sev_uniform: 0.9150 (26 s)
+[2026-11-18 14:49:00] trf semilla 1006 joint_uniform_geom: 0.9150 (25 s)
+[2026-11-18 14:49:16] trf semilla 1001 sev_weibull: 0.9005 (22 s)
+[2026-11-18 14:49:39] trf semilla 1001 struct_few_long_blocks: 0.9141 (23 s)
+[2026-11-18 14:49:41] trf semilla 1006 len_all_long: 0.9012 (41 s)
+[2026-11-18 14:49:57] trf semilla 1006 len_all_short: 0.8804 (17 s)
+[2026-11-18 14:50:10] trf semilla 1001 struct_many_short_blocks: 0.9141 (30 s)
+[2026-11-18 14:50:40] trf semilla 1001 struct_more_total: 0.9141 (30 s)
+[2026-11-18 14:50:40] trf semilla 1002: evaluación de 27 escenarios
+[2026-11-18 14:51:15] trf semilla 1002 sev_base: 0.9298 (35 s)
+[2026-11-18 14:51:23] trf semilla 1006 len_extrapolate_long: 0.8807 (85 s)
+[2026-11-18 14:51:43] trf semilla 1002 heldout_s1: 0.9341 (28 s)
+[2026-11-18 14:51:52] trf semilla 1006 len_geometric: 0.9044 (30 s)
+[2026-11-18 14:52:12] trf semilla 1002 heldout_s2: 0.9342 (29 s)
+[2026-11-18 14:52:19] trf semilla 1006 len_poisson: 0.9015 (27 s)
+[2026-11-18 14:52:39] trf semilla 1002 heldout_s3: 0.9297 (27 s)
+[2026-11-18 14:52:46] trf semilla 1006 sev_beta_highskew: 0.9340 (27 s)
+[2026-11-18 14:53:05] trf semilla 1002 heldout_s4: 0.9329 (26 s)
+[2026-11-18 14:53:11] trf semilla 1006 sev_beta_lowskew: 0.9247 (26 s)
+[2026-11-18 14:53:35] trf semilla 1002 heldout_s5: 0.9366 (30 s)
+[2026-11-18 14:53:38] trf semilla 1006 sev_bimodal: 0.9227 (26 s)
+[2026-11-18 14:54:06] trf semilla 1006 sev_extrapolate_high: 1.0000 (28 s)
+[2026-11-18 14:54:32] trf semilla 1006 sev_gauss_high: 0.9425 (26 s)
+[2026-11-18 14:54:53] trf semilla 1002 joint_extrap_both: 1.0000 (78 s)
+[2026-11-18 14:55:01] trf semilla 1006 sev_gauss_low: 0.9287 (28 s)
+[2026-11-18 14:55:25] trf semilla 1006 sev_gauss_mid: 0.9041 (24 s)
+[2026-11-18 14:55:38] trf semilla 1002 joint_high_long: 0.9227 (45 s)
+[2026-11-18 14:55:51] trf semilla 1006 sev_uniform: 0.9184 (26 s)
+[2026-11-18 14:55:53] trf semilla 1002 joint_low_short: 0.8630 (15 s)
+[2026-11-18 14:56:18] trf semilla 1006 sev_weibull: 0.9257 (26 s)
+[2026-11-18 14:56:22] trf semilla 1002 joint_uniform_geom: 0.9274 (29 s)
+[2026-11-18 14:56:43] trf semilla 1006 struct_few_long_blocks: 0.9026 (25 s)
+[2026-11-18 14:57:12] trf semilla 1006 struct_many_short_blocks: 0.9026 (30 s)
+[2026-11-18 14:57:15] trf semilla 1002 len_all_long: 0.9103 (53 s)
+[2026-11-18 14:57:30] trf semilla 1002 len_all_short: 0.8627 (15 s)
+[2026-11-18 14:57:44] trf semilla 1006 struct_more_total: 0.9026 (31 s)
+[2026-11-18 14:57:44] trf semilla 1007: evaluación de 27 escenarios
+[2026-11-18 14:58:16] trf semilla 1007 sev_base: 0.9214 (32 s)
+[2026-11-18 14:58:42] trf semilla 1007 heldout_s1: 0.9195 (26 s)
+[2026-11-18 14:58:57] trf semilla 1002 len_extrapolate_long: 0.8961 (87 s)
+[2026-11-18 14:59:13] trf semilla 1007 heldout_s2: 0.9287 (30 s)
+[2026-11-18 14:59:29] trf semilla 1002 len_geometric: 0.9257 (32 s)
+[2026-11-18 14:59:41] trf semilla 1007 heldout_s3: 0.9237 (29 s)
+[2026-11-18 14:59:57] trf semilla 1002 len_poisson: 0.9213 (28 s)
+[2026-11-18 15:00:07] trf semilla 1007 heldout_s4: 0.9247 (25 s)
+[2026-11-18 15:00:21] trf semilla 1002 sev_beta_highskew: 0.9551 (24 s)
+[2026-11-18 15:00:32] trf semilla 1007 heldout_s5: 0.9316 (25 s)
+[2026-11-18 15:00:44] trf semilla 1002 sev_beta_lowskew: 0.8905 (24 s)
+[2026-11-18 15:01:08] trf semilla 1002 sev_bimodal: 0.9410 (24 s)
+[2026-11-18 15:01:34] trf semilla 1002 sev_extrapolate_high: 1.0000 (26 s)
+[2026-11-18 15:01:40] trf semilla 1007 joint_extrap_both: 0.9981 (68 s)
+[2026-11-18 15:01:58] trf semilla 1002 sev_gauss_high: 0.9578 (24 s)
+[2026-11-18 15:02:23] trf semilla 1002 sev_gauss_low: 0.9117 (25 s)
+[2026-11-18 15:02:25] trf semilla 1007 joint_high_long: 0.9538 (44 s)
+[2026-11-18 15:02:38] trf semilla 1007 joint_low_short: 0.8599 (13 s)
+[2026-11-18 15:02:48] trf semilla 1002 sev_gauss_mid: 0.9245 (25 s)
+[2026-11-18 15:03:04] trf semilla 1007 joint_uniform_geom: 0.8981 (26 s)
+[2026-11-18 15:03:13] trf semilla 1002 sev_uniform: 0.9316 (25 s)
+[2026-11-18 15:03:37] trf semilla 1002 sev_weibull: 0.9347 (24 s)
+[2026-11-18 15:03:47] trf semilla 1007 len_all_long: 0.9364 (44 s)
+[2026-11-18 15:04:03] trf semilla 1007 len_all_short: 0.8418 (15 s)
+[2026-11-18 15:04:04] trf semilla 1002 struct_few_long_blocks: 0.9298 (27 s)
+[2026-11-18 15:04:28] trf semilla 1002 struct_many_short_blocks: 0.9298 (24 s)
+[2026-11-18 15:04:53] trf semilla 1002 struct_more_total: 0.9298 (25 s)
+[2026-11-18 15:04:53] trf semilla 1003: evaluación de 27 escenarios
+[2026-11-18 15:24:18] trf semilla 0: evaluación ya hecha, se omite
+[2026-11-18 15:24:18] trf semilla 0: evaluación ya hecha, se omite
+[2026-11-18 15:24:18] trf semilla 1003: evaluación de 27 escenarios
+[2026-11-18 15:24:18] trf semilla 1007: evaluación de 15 escenarios
+[2026-11-18 15:25:46] trf semilla 1003 sev_base: 0.9214 (50 s)
+[2026-11-18 15:26:11] trf semilla 1003 heldout_s1: 0.9186 (26 s)
+[2026-11-18 15:26:26] trf semilla 1007 len_extrapolate_long: 0.9099 (90 s)
+[2026-11-18 15:26:44] trf semilla 1003 heldout_s2: 0.9167 (33 s)
+[2026-11-18 15:26:59] trf semilla 1007 len_geometric: 0.9194 (33 s)
+[2026-11-18 15:27:22] trf semilla 1003 heldout_s3: 0.9180 (37 s)
+[2026-11-18 15:27:28] trf semilla 1007 len_poisson: 0.9056 (29 s)
+[2026-11-18 15:27:52] trf semilla 1003 heldout_s4: 0.9230 (30 s)
+[2026-11-18 15:28:04] trf semilla 1007 sev_beta_highskew: 0.9341 (36 s)
+[2026-11-18 15:28:28] trf semilla 1003 heldout_s5: 0.9219 (36 s)
+[2026-11-18 15:28:34] trf semilla 1007 sev_beta_lowskew: 0.8679 (30 s)
+[2026-11-18 15:29:08] trf semilla 1007 sev_bimodal: 0.9232 (35 s)
+[2026-11-18 15:29:51] trf semilla 1007 sev_extrapolate_high: 0.9986 (42 s)
+[2026-11-18 15:30:27] trf semilla 1003 joint_extrap_both: 1.0000 (119 s)
+[2026-11-18 15:30:32] trf semilla 1007 sev_gauss_high: 0.9374 (41 s)
+[2026-11-18 15:31:13] trf semilla 1007 sev_gauss_low: 0.8568 (40 s)
+[2026-11-18 15:31:32] trf semilla 1003 joint_high_long: 0.8881 (66 s)
+[2026-11-18 15:31:48] trf semilla 1007 sev_gauss_mid: 0.9167 (35 s)
+[2026-11-18 15:31:48] trf semilla 1003 joint_low_short: 0.8617 (16 s)
+[2026-11-18 15:32:21] trf semilla 1007 sev_uniform: 0.9073 (33 s)
+[2026-11-18 15:32:23] trf semilla 1003 joint_uniform_geom: 0.9199 (35 s)
+[2026-11-18 15:32:51] trf semilla 1007 sev_weibull: 0.9232 (30 s)
+[2026-11-18 15:33:20] trf semilla 1003 len_all_long: 0.9043 (57 s)
+[2026-11-18 15:33:22] trf semilla 1007 struct_few_long_blocks: 0.9214 (31 s)
+[2026-11-18 15:33:36] trf semilla 1003 len_all_short: 0.9321 (16 s)
+[2026-11-18 15:33:53] trf semilla 1007 struct_many_short_blocks: 0.9214 (31 s)
+[2026-11-18 15:34:30] trf semilla 1007 struct_more_total: 0.9214 (37 s)
+[2026-11-18 15:34:30] trf semilla 1008: evaluación de 27 escenarios
+[2026-11-18 15:35:06] trf semilla 1008 sev_base: 0.9195 (36 s)
+[2026-11-18 15:35:18] trf semilla 1003 len_extrapolate_long: 0.8685 (102 s)
+[2026-11-18 15:35:33] trf semilla 1008 heldout_s1: 0.9227 (27 s)
+[2026-11-18 15:35:51] trf semilla 1003 len_geometric: 0.9182 (34 s)
+[2026-11-18 15:36:14] trf semilla 1008 heldout_s2: 0.9162 (41 s)
+[2026-11-18 15:36:21] trf semilla 1003 len_poisson: 0.9233 (30 s)
+[2026-11-18 15:36:47] trf semilla 1008 heldout_s3: 0.9172 (33 s)
+[2026-11-18 15:36:52] trf semilla 1003 sev_beta_highskew: 0.9467 (31 s)
+[2026-11-18 15:37:24] trf semilla 1008 heldout_s4: 0.9273 (37 s)
+[2026-11-18 15:37:37] trf semilla 1003 sev_beta_lowskew: 0.9029 (45 s)
+[2026-11-18 15:38:13] trf semilla 1008 heldout_s5: 0.9203 (50 s)
+[2026-11-18 15:38:14] trf semilla 1003 sev_bimodal: 0.9275 (37 s)
+[2026-11-18 15:38:42] trf semilla 1003 sev_extrapolate_high: 1.0000 (28 s)
+[2026-11-18 15:39:10] trf semilla 1003 sev_gauss_high: 0.9517 (28 s)
+[2026-11-18 15:39:43] trf semilla 1008 joint_extrap_both: 1.0000 (89 s)
+[2026-11-18 15:39:54] trf semilla 1003 sev_gauss_low: 0.9259 (44 s)
+[2026-11-18 15:40:26] trf semilla 1003 sev_gauss_mid: 0.9187 (32 s)
+[2026-11-18 15:40:38] trf semilla 1008 joint_high_long: 0.8881 (55 s)
+[2026-11-18 15:40:55] trf semilla 1008 joint_low_short: 0.9052 (16 s)
+[2026-11-18 15:40:56] trf semilla 1003 sev_uniform: 0.9160 (30 s)
+[2026-11-18 15:41:27] trf semilla 1003 sev_weibull: 0.9214 (31 s)
+[2026-11-18 15:41:28] trf semilla 1008 joint_uniform_geom: 0.9257 (34 s)
+[2026-11-18 15:42:00] trf semilla 1003 struct_few_long_blocks: 0.9214 (33 s)
+[2026-11-18 15:42:27] trf semilla 1008 len_all_long: 0.9003 (59 s)
+[2026-11-18 15:42:33] trf semilla 1003 struct_many_short_blocks: 0.9214 (34 s)
+[2026-11-18 15:42:46] trf semilla 1008 len_all_short: 0.9106 (18 s)
+[2026-11-18 15:43:14] trf semilla 1003 struct_more_total: 0.9214 (41 s)
+[2026-11-18 15:43:14] trf semilla 1004: evaluación de 27 escenarios
+[2026-11-18 15:44:23] trf semilla 1004 sev_base: 0.9308 (68 s)
+[2026-11-18 15:45:18] trf semilla 1004 heldout_s1: 0.9356 (55 s)
+[2026-11-18 15:45:21] trf semilla 1008 len_extrapolate_long: 0.8716 (155 s)
+[2026-11-18 15:45:51] trf semilla 1004 heldout_s2: 0.9315 (34 s)
+[2026-11-18 15:45:56] trf semilla 1008 len_geometric: 0.9112 (35 s)
+[2026-11-18 15:46:33] trf semilla 1008 len_poisson: 0.9159 (37 s)
+[2026-11-18 15:46:52] trf semilla 1004 heldout_s3: 0.9279 (61 s)
+[2026-11-18 15:47:10] trf semilla 1008 sev_beta_highskew: 0.9477 (37 s)
+[2026-11-18 15:47:26] trf semilla 1004 heldout_s4: 0.9362 (34 s)
+[2026-11-18 15:47:46] trf semilla 1008 sev_beta_lowskew: 0.9035 (36 s)
+[2026-11-18 15:48:32] trf semilla 1004 heldout_s5: 0.9369 (66 s)
+[2026-11-18 15:48:38] trf semilla 1008 sev_bimodal: 0.9261 (52 s)
+[2026-11-18 15:49:31] trf semilla 1008 sev_extrapolate_high: 1.0000 (52 s)
+[2026-11-18 15:50:13] trf semilla 1008 sev_gauss_high: 0.9544 (42 s)
+[2026-11-18 15:50:46] trf semilla 1008 sev_gauss_low: 0.9130 (33 s)
+[2026-11-18 15:51:07] trf semilla 1004 joint_extrap_both: 0.9824 (155 s)
+[2026-11-18 15:51:22] trf semilla 1008 sev_gauss_mid: 0.9148 (36 s)
+[2026-11-18 15:51:55] trf semilla 1008 sev_uniform: 0.9149 (33 s)
+[2026-11-18 15:52:07] trf semilla 1004 joint_high_long: 0.9276 (61 s)
+[2026-11-18 15:52:27] trf semilla 1004 joint_low_short: 0.9222 (19 s)
+[2026-11-18 15:52:33] trf semilla 1008 sev_weibull: 0.9288 (38 s)
+[2026-11-18 15:53:04] trf semilla 1004 joint_uniform_geom: 0.9176 (38 s)
+[2026-11-18 15:53:08] trf semilla 1008 struct_few_long_blocks: 0.9195 (35 s)
+[2026-11-18 15:53:40] trf semilla 1008 struct_many_short_blocks: 0.9195 (32 s)
+[2026-11-18 15:54:03] trf semilla 1004 len_all_long: 0.8778 (59 s)
+[2026-11-18 15:54:15] trf semilla 1008 struct_more_total: 0.9195 (34 s)
+[2026-11-18 15:54:15] trf semilla 1009: evaluación de 27 escenarios
+[2026-11-18 15:54:19] trf semilla 1004 len_all_short: 0.9300 (16 s)
+[2026-11-18 15:54:43] trf semilla 1009 sev_base: 0.8953 (28 s)
+[2026-11-18 15:55:22] trf semilla 1009 heldout_s1: 0.9030 (40 s)
+[2026-11-18 15:56:02] trf semilla 1009 heldout_s2: 0.9030 (39 s)
+[2026-11-18 15:56:14] trf semilla 1004 len_extrapolate_long: 0.8660 (115 s)
+[2026-11-18 15:56:31] trf semilla 1009 heldout_s3: 0.8940 (30 s)
+[2026-11-18 15:56:45] trf semilla 1004 len_geometric: 0.9260 (31 s)
+[2026-11-18 15:57:02] trf semilla 1009 heldout_s4: 0.9016 (30 s)
+[2026-11-18 15:57:11] trf semilla 1004 len_poisson: 0.9358 (26 s)
+[2026-11-18 15:57:49] trf semilla 1009 heldout_s5: 0.9051 (47 s)
+[2026-11-18 15:57:53] trf semilla 1004 sev_beta_highskew: 0.9510 (42 s)
+[2026-11-18 15:58:28] trf semilla 1004 sev_beta_lowskew: 0.9167 (35 s)
+[2026-11-18 15:59:05] trf semilla 1004 sev_bimodal: 0.9244 (37 s)
+[2026-11-18 15:59:22] trf semilla 1009 joint_extrap_both: 0.9877 (94 s)
+[2026-11-18 15:59:36] trf semilla 1004 sev_extrapolate_high: 0.9765 (31 s)
+[2026-11-18 16:00:22] trf semilla 1004 sev_gauss_high: 0.9561 (45 s)
+[2026-11-18 16:00:42] trf semilla 1009 joint_high_long: 0.9002 (77 s)
+[2026-11-18 16:01:05] trf semilla 1009 joint_low_short: 0.8658 (24 s)
+[2026-11-18 16:01:36] trf semilla 1004 sev_gauss_low: 0.9289 (74 s)
+[2026-11-18 16:01:46] trf semilla 1009 joint_uniform_geom: 0.8772 (41 s)
+[2026-11-18 16:02:09] trf semilla 1004 sev_gauss_mid: 0.9248 (33 s)
+[2026-11-18 16:02:40] trf semilla 1004 sev_uniform: 0.9243 (31 s)
+[2026-11-18 16:02:48] trf semilla 1009 len_all_long: 0.9022 (62 s)
+[2026-11-18 16:03:07] trf semilla 1009 len_all_short: 0.8988 (19 s)
+[2026-11-18 16:03:18] trf semilla 1004 sev_weibull: 0.9308 (38 s)
+[2026-11-18 16:03:53] trf semilla 1004 struct_few_long_blocks: 0.9308 (35 s)
+[2026-11-18 16:04:23] trf semilla 1004 struct_many_short_blocks: 0.9308 (31 s)
+[2026-11-18 16:04:38] trf semilla 1009 len_extrapolate_long: 0.8784 (90 s)
+[2026-11-18 16:04:52] trf semilla 1004 struct_more_total: 0.9308 (29 s)
+[2026-11-18 16:04:52] trf semilla 1005: evaluación de 27 escenarios
+[2026-11-18 16:05:09] trf semilla 1009 len_geometric: 0.8977 (31 s)
+[2026-11-18 16:05:23] trf semilla 1005 sev_base: 0.9333 (31 s)
+[2026-11-18 16:05:36] trf semilla 1009 len_poisson: 0.8989 (27 s)
+[2026-11-18 16:05:51] trf semilla 1005 heldout_s1: 0.9261 (28 s)
+[2026-11-18 16:06:11] trf semilla 1009 sev_beta_highskew: 0.9313 (35 s)
+[2026-11-18 16:06:39] trf semilla 1005 heldout_s2: 0.9311 (47 s)
+[2026-11-18 16:06:44] trf semilla 1009 sev_beta_lowskew: 0.8706 (33 s)
+[2026-11-18 16:07:08] trf semilla 1005 heldout_s3: 0.9319 (30 s)
+[2026-11-18 16:07:13] trf semilla 1009 sev_bimodal: 0.8797 (29 s)
+[2026-11-18 16:07:38] trf semilla 1005 heldout_s4: 0.9309 (29 s)
+[2026-11-18 16:07:43] trf semilla 1009 sev_extrapolate_high: 0.9838 (30 s)
+[2026-11-18 16:08:08] trf semilla 1005 heldout_s5: 0.9279 (30 s)
+[2026-11-18 16:08:11] trf semilla 1009 sev_gauss_high: 0.9371 (28 s)
+[2026-11-18 16:08:39] trf semilla 1009 sev_gauss_low: 0.9075 (28 s)
+[2026-11-18 16:09:07] trf semilla 1009 sev_gauss_mid: 0.8927 (28 s)
+[2026-11-18 16:09:26] trf semilla 1005 joint_extrap_both: 0.9882 (78 s)
+[2026-11-18 16:09:35] trf semilla 1009 sev_uniform: 0.8739 (28 s)
+[2026-11-18 16:10:14] trf semilla 1009 sev_weibull: 0.8924 (39 s)
+[2026-11-18 16:10:26] trf semilla 1005 joint_high_long: 0.9072 (60 s)
+[2026-11-18 16:10:43] trf semilla 1005 joint_low_short: 0.9004 (17 s)
+[2026-11-18 16:10:47] trf semilla 1009 struct_few_long_blocks: 0.8953 (33 s)
+[2026-11-18 16:11:15] trf semilla 1005 joint_uniform_geom: 0.9145 (32 s)
+[2026-11-18 16:11:17] trf semilla 1009 struct_many_short_blocks: 0.8953 (30 s)
+[2026-11-18 16:11:57] trf semilla 1009 struct_more_total: 0.8953 (40 s)
+[2026-11-18 16:11:57] trf semilla 1010: evaluación de 27 escenarios
+[2026-11-18 16:12:18] trf semilla 1005 len_all_long: 0.8889 (63 s)
+[2026-11-18 16:12:35] trf semilla 1010 sev_base: 0.9181 (37 s)
+[2026-11-18 16:12:37] trf semilla 1005 len_all_short: 0.9248 (19 s)
+[2026-11-18 16:13:08] trf semilla 1010 heldout_s1: 0.9050 (33 s)
+[2026-11-18 16:13:42] trf semilla 1010 heldout_s2: 0.9060 (34 s)
+[2026-11-18 16:14:11] trf semilla 1005 len_extrapolate_long: 0.8704 (94 s)
+[2026-11-18 16:14:18] trf semilla 1010 heldout_s3: 0.9092 (35 s)
+[2026-11-18 16:14:47] trf semilla 1005 len_geometric: 0.9230 (36 s)
+[2026-11-18 16:14:50] trf semilla 1010 heldout_s4: 0.9109 (33 s)
+[2026-11-18 16:15:17] trf semilla 1005 len_poisson: 0.9264 (31 s)
+[2026-11-18 16:15:27] trf semilla 1010 heldout_s5: 0.9132 (37 s)
+[2026-11-18 16:15:50] trf semilla 1005 sev_beta_highskew: 0.9456 (33 s)
+[2026-11-18 16:16:22] trf semilla 1005 sev_beta_lowskew: 0.9193 (32 s)
+[2026-11-18 16:16:56] trf semilla 1005 sev_bimodal: 0.9171 (33 s)
+[2026-11-18 16:17:01] trf semilla 1010 joint_extrap_both: 1.0000 (94 s)
+[2026-11-18 16:17:29] trf semilla 1005 sev_extrapolate_high: 0.9869 (33 s)
+[2026-11-18 16:17:59] trf semilla 1010 joint_high_long: 0.8969 (57 s)
+[2026-11-18 16:18:01] trf semilla 1005 sev_gauss_high: 0.9473 (32 s)
+[2026-11-18 16:18:16] trf semilla 1010 joint_low_short: 0.9272 (18 s)
+[2026-11-18 16:18:34] trf semilla 1005 sev_gauss_low: 0.9307 (33 s)
+[2026-11-18 16:18:51] trf semilla 1010 joint_uniform_geom: 0.9017 (34 s)
+[2026-11-18 16:19:05] trf semilla 1005 sev_gauss_mid: 0.9282 (31 s)
+[2026-11-18 16:19:36] trf semilla 1005 sev_uniform: 0.9048 (31 s)
+[2026-11-18 16:19:46] trf semilla 1010 len_all_long: 0.8907 (55 s)
+[2026-11-18 16:20:03] trf semilla 1010 len_all_short: 0.9216 (17 s)
+[2026-11-18 16:20:10] trf semilla 1005 sev_weibull: 0.9329 (34 s)
+[2026-11-18 16:20:42] trf semilla 1005 struct_few_long_blocks: 0.9333 (32 s)
+[2026-11-18 16:21:17] trf semilla 1005 struct_many_short_blocks: 0.9333 (35 s)
+[2026-11-18 16:21:39] trf semilla 1010 len_extrapolate_long: 0.8629 (97 s)
+[2026-11-18 16:21:50] trf semilla 1005 struct_more_total: 0.9333 (33 s)
+[2026-11-18 16:22:08] trf semilla 1010 len_geometric: 0.9151 (28 s)
+[2026-11-18 16:22:33] trf semilla 1010 len_poisson: 0.9046 (26 s)
+[2026-11-18 16:23:19] trf semilla 1010 sev_beta_highskew: 0.9392 (46 s)
+[2026-11-18 16:24:01] trf semilla 1010 sev_beta_lowskew: 0.8949 (42 s)
+[2026-11-18 16:24:30] trf semilla 1010 sev_bimodal: 0.9092 (29 s)
+[2026-11-18 16:25:02] trf semilla 1010 sev_extrapolate_high: 1.0000 (31 s)
+[2026-11-18 16:25:38] trf semilla 1010 sev_gauss_high: 0.9411 (36 s)
+[2026-11-18 16:26:09] trf semilla 1010 sev_gauss_low: 0.9175 (32 s)
+[2026-11-18 16:26:39] trf semilla 1010 sev_gauss_mid: 0.9022 (30 s)
+[2026-11-18 16:27:08] trf semilla 1010 sev_uniform: 0.9054 (29 s)
+[2026-11-18 16:27:35] trf semilla 1010 sev_weibull: 0.9160 (27 s)
+[2026-11-18 16:28:06] trf semilla 1010 struct_few_long_blocks: 0.9181 (30 s)
+[2026-11-18 16:28:37] trf semilla 1010 struct_many_short_blocks: 0.9181 (31 s)
+[2026-11-18 16:29:07] trf semilla 1010 struct_more_total: 0.9181 (30 s)

@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "subject_id": "2026-09-28_ENS_CONSENSUS_PRIOR",
+    "timestamp": "2026-09-28T19:24:54.445226",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "ENS_CONSENSUS_PRIOR"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 30,
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.9512530662893635,
+    "overall_median": 0.9511925633810485,
+    "overall_std": 0.02433189691389887,
+    "overall_min": 0.8528645833333334,
+    "overall_max": 0.9919729279388912,
+    "total_sequences": 64,
+    "first_block_mean": 0.9666732088290382,
+    "last_block_mean": 0.9477484578357553,
+    "improvement": -0.018924750993282835,
+    "percentile_25": 0.9392715612442535,
+    "percentile_75": 0.9647319278554711,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.9666732088290382,
+        "median": 0.9650867489534951,
+        "std": 0.01807693381704965,
+        "min": 0.9423990496476498,
+        "max": 0.9910253451578989,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 2,
+        "mean": 0.9507775950666876,
+        "median": 0.951032649777337,
+        "std": 0.02183744270485063,
+        "min": 0.9162848975539839,
+        "max": 0.9871134020618557,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 3,
+        "mean": 0.9399823037549584,
+        "median": 0.9502196193265007,
+        "std": 0.02535680239337539,
+        "min": 0.8924622556487322,
+        "max": 0.9722126904662032,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 4,
+        "mean": 0.9533017943281676,
+        "median": 0.9562542491669754,
+        "std": 0.014564080547714466,
+        "min": 0.930410122164049,
+        "max": 0.9740264790668851,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 5,
+        "mean": 0.9537199079471388,
+        "median": 0.955725640837733,
+        "std": 0.018420578026073872,
+        "min": 0.9149060483968864,
+        "max": 0.979611587844377,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 6,
+        "mean": 0.9377716093886399,
+        "median": 0.9516751624118776,
+        "std": 0.03671008252322516,
+        "min": 0.8528645833333334,
+        "max": 0.9742268041237113,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 7,
+        "mean": 0.9600496531645217,
+        "median": 0.950280684262218,
+        "std": 0.018982425930954727,
+        "min": 0.9412576910033428,
+        "max": 0.9919729279388912,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 8,
+        "mean": 0.9477484578357553,
+        "median": 0.9408753975327495,
+        "std": 0.019585416745374548,
+        "min": 0.9243083418797267,
+        "max": 0.9871134020618556,
+        "num_sequences": 8
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 30,
+    "agent_type": "ENS_CONSENSUS_PRIOR",
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_ENS_CONSENSUS_PRIOR_results_2026-09-28_ENS_CONSENSUS_PRIOR.png",
+    "this_file": "PES_ENS_CONSENSUS_PRIOR_results_2026-09-28_ENS_CONSENSUS_PRIOR.json"
+  }
+}

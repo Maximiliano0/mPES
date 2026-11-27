@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "subject_id": "2026-05-04_RDQN_AGENT",
+    "timestamp": "2026-05-04T17:36:04.798369",
+    "report_type": "PES_Experiment_Results_v2",
+    "model_type": "RDQN_AGENT"
+  },
+  "configuration": {
+    "total_resources_per_sequence": 39,
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_sessions": 64
+  },
+  "performance_statistics": {
+    "overall_mean": 0.8808522224090762,
+    "overall_median": 0.9045676751436107,
+    "overall_std": 0.09568577881341307,
+    "overall_min": 0.5431205410225027,
+    "overall_max": 1.0,
+    "total_sequences": 64,
+    "first_block_mean": 0.9002621911503037,
+    "last_block_mean": 0.8985910882651116,
+    "improvement": -0.0016711028851921217,
+    "percentile_25": 0.8491143973918366,
+    "percentile_75": 0.9488606264327376,
+    "per_block_statistics": [
+      {
+        "block_number": 1,
+        "mean": 0.9002621911503037,
+        "median": 0.9512836273217262,
+        "std": 0.0943008378878769,
+        "min": 0.703495132822144,
+        "max": 0.9849370368138821,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 2,
+        "mean": 0.9058134321117332,
+        "median": 0.9382906269459556,
+        "std": 0.06911861650941088,
+        "min": 0.7974960876369327,
+        "max": 0.9752212323182453,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 3,
+        "mean": 0.8311702227399311,
+        "median": 0.8610342492143103,
+        "std": 0.1242788126009765,
+        "min": 0.5431205410225027,
+        "max": 0.9701670644391408,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 4,
+        "mean": 0.8607876556468592,
+        "median": 0.8813275455690801,
+        "std": 0.05868039508752244,
+        "min": 0.7504975486626861,
+        "max": 0.9454658772203178,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 5,
+        "mean": 0.8669529350099916,
+        "median": 0.8730829042325372,
+        "std": 0.10798039577246418,
+        "min": 0.6149227367457937,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 6,
+        "mean": 0.9071272224467541,
+        "median": 0.9426133392437581,
+        "std": 0.13551984335938996,
+        "min": 0.5556166045047501,
+        "max": 1.0,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 7,
+        "mean": 0.876113031901925,
+        "median": 0.875405818981966,
+        "std": 0.06266540258388247,
+        "min": 0.7433659007437311,
+        "max": 0.9685786293837257,
+        "num_sequences": 8
+      },
+      {
+        "block_number": 8,
+        "mean": 0.8985910882651116,
+        "median": 0.9111041954725786,
+        "std": 0.04054339063888152,
+        "min": 0.8199121522693998,
+        "max": 0.9515493457087579,
+        "num_sequences": 8
+      }
+    ]
+  },
+  "resources_allocation": {
+    "total_resources_per_sequence": 39,
+    "agent_type": "RDQN_AGENT",
+    "num_blocks": 8,
+    "num_sequences": 8,
+    "total_trials": 64
+  },
+  "file_references": {
+    "results_file": "PES_RDQN_results_2026-05-04_RDQN_AGENT.png",
+    "this_file": "PES_RDQN_results_2026-05-04_RDQN_AGENT.json"
+  }
+}
