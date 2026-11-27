@@ -1,0 +1,2 @@
+h1/general/work/seeds/**/*.keras filter=lfs diff=lfs merge=lfs -text
+h1/general/work/seeds/**/*.npy filter=lfs diff=lfs merge=lfs -text

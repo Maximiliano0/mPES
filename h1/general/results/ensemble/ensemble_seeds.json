@@ -1,0 +1,984 @@
+{
+ "escenarios": [
+  "sev_base",
+  "heldout_s1",
+  "heldout_s2",
+  "heldout_s3",
+  "heldout_s4",
+  "heldout_s5"
+ ],
+ "plan": {
+  "criterio": "r̄ medio en la referencia y las 5 réplicas held-out de cada semilla",
+  "semilla_del_sorteo": 20261115,
+  "puntajes": {
+   "dqn": {
+    "1001": 0.8680407344600763,
+    "1002": 0.8768264324368573,
+    "1003": 0.8790083665843546,
+    "1004": 0.8723755767884702,
+    "1005": 0.8806706447233382,
+    "1006": 0.8798581243117923,
+    "1007": 0.8594835255283483,
+    "1008": 0.8666338647597964,
+    "1009": 0.8594835255283483,
+    "1010": 0.8594835255283483
+   },
+   "rdqn": {
+    "1001": 0.8995720713617085,
+    "1002": 0.9229750505885125,
+    "1003": 0.8621089154974175,
+    "1004": 0.9077369411463124,
+    "1005": 0.919530465214331,
+    "1006": 0.8843448250382098,
+    "1007": 0.9177190428188102,
+    "1008": 0.9126843332883641,
+    "1009": 0.864194417139065,
+    "1010": 0.8920422894349569
+   },
+   "trf": {
+    "1001": 0.9127476135057306,
+    "1002": 0.9328794678848972,
+    "1003": 0.9199373839679184,
+    "1004": 0.9331652975125614,
+    "1005": 0.9302157221259323,
+    "1006": 0.9091162820625907,
+    "1007": 0.9249351028296301,
+    "1008": 0.9205449118279804,
+    "1009": 0.9003484374014695,
+    "1010": 0.9104074124675252
+   },
+   "a2c": {
+    "1001": 0.8594835255283483,
+    "1002": 0.8594835255283483,
+    "1003": 0.8130737522762637,
+    "1004": 0.7806444576298927,
+    "1005": 0.7806306016621248,
+    "1006": 0.8594835255283483,
+    "1007": 0.8594835255283483,
+    "1008": 0.8594835255283483,
+    "1009": 0.8869187324004167,
+    "1010": 0.8594835255283483
+   }
+  },
+  "combinaciones": [
+   {
+    "id": "c01_mejores",
+    "tipo": "mejores",
+    "semillas": {
+     "dqn": 1005,
+     "rdqn": 1002,
+     "trf": 1004,
+     "a2c": 1009
+    }
+   },
+   {
+    "id": "c02_peores",
+    "tipo": "peores",
+    "semillas": {
+     "dqn": 1007,
+     "rdqn": 1003,
+     "trf": 1009,
+     "a2c": 1005
+    }
+   },
+   {
+    "id": "c03_media",
+    "tipo": "media",
+    "semillas": {
+     "dqn": 1001,
+     "rdqn": 1001,
+     "trf": 1003,
+     "a2c": 1001
+    }
+   },
+   {
+    "id": "c04_azar1",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1005,
+     "rdqn": 1006,
+     "trf": 1002,
+     "a2c": 1004
+    }
+   },
+   {
+    "id": "c05_azar2",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1009,
+     "rdqn": 1006,
+     "trf": 1009,
+     "a2c": 1003
+    }
+   },
+   {
+    "id": "c06_azar3",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1004,
+     "rdqn": 1007,
+     "trf": 1002,
+     "a2c": 1004
+    }
+   },
+   {
+    "id": "c07_azar4",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1004,
+     "rdqn": 1005,
+     "trf": 1007,
+     "a2c": 1006
+    }
+   },
+   {
+    "id": "c08_azar5",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1001,
+     "rdqn": 1010,
+     "trf": 1005,
+     "a2c": 1004
+    }
+   },
+   {
+    "id": "c09_azar6",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1010,
+     "rdqn": 1007,
+     "trf": 1007,
+     "a2c": 1008
+    }
+   },
+   {
+    "id": "c10_azar7",
+    "tipo": "azar",
+    "semillas": {
+     "dqn": 1009,
+     "rdqn": 1008,
+     "trf": 1001,
+     "a2c": 1007
+    }
+   }
+  ]
+ },
+ "ensambles": {
+  "pes_ens": {
+   "entregado": {
+    "tipo": "entregado",
+    "semillas": null,
+    "referencia": 0.9373125,
+    "heldout": 0.938848125,
+    "dif_max_con_benchmark": 0.0
+   },
+   "combinaciones": {
+    "c01_mejores": {
+     "tipo": "mejores",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1002,
+      "trf": 1004,
+      "a2c": 1009
+     },
+     "referencia": 0.9365281249999999,
+     "heldout": 0.9396218749999999
+    },
+    "c02_peores": {
+     "tipo": "peores",
+     "semillas": {
+      "dqn": 1007,
+      "rdqn": 1003,
+      "trf": 1009,
+      "a2c": 1005
+     },
+     "referencia": 0.9267484375,
+     "heldout": 0.9274018749999999
+    },
+    "c03_media": {
+     "tipo": "media",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1001,
+      "trf": 1003,
+      "a2c": 1001
+     },
+     "referencia": 0.9310765624999999,
+     "heldout": 0.9357159375
+    },
+    "c04_azar1": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1006,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9265187500000001,
+     "heldout": 0.9290681249999999
+    },
+    "c05_azar2": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1006,
+      "trf": 1009,
+      "a2c": 1003
+     },
+     "referencia": 0.9254734375,
+     "heldout": 0.9281434375
+    },
+    "c06_azar3": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1007,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.933375,
+     "heldout": 0.9337671875
+    },
+    "c07_azar4": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1005,
+      "trf": 1007,
+      "a2c": 1006
+     },
+     "referencia": 0.9253078125,
+     "heldout": 0.9317465625000001
+    },
+    "c08_azar5": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1010,
+      "trf": 1005,
+      "a2c": 1004
+     },
+     "referencia": 0.9351515625,
+     "heldout": 0.9357409375
+    },
+    "c09_azar6": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1010,
+      "rdqn": 1007,
+      "trf": 1007,
+      "a2c": 1008
+     },
+     "referencia": 0.927990625,
+     "heldout": 0.9299149999999999
+    },
+    "c10_azar7": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1008,
+      "trf": 1001,
+      "a2c": 1007
+     },
+     "referencia": 0.9162453125,
+     "heldout": 0.9272828125
+    }
+   },
+   "semillas_variadas": {
+    "n": 10,
+    "referencia": {
+     "media": 0.9284415625,
+     "desviacion": 0.005924005003919066,
+     "minimo": 0.9162453125,
+     "maximo": 0.9365281249999999
+    },
+    "heldout": {
+     "media": 0.9318403749999999,
+     "desviacion": 0.004216883604123934,
+     "minimo": 0.9272828125,
+     "maximo": 0.9396218749999999
+    }
+   }
+  },
+  "pes_ens_sprb": {
+   "entregado": {
+    "tipo": "entregado",
+    "semillas": null,
+    "referencia": 0.914201624905493,
+    "heldout": 0.9169620395928384,
+    "dif_max_con_benchmark": 0.0
+   },
+   "combinaciones": {
+    "c01_mejores": {
+     "tipo": "mejores",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1002,
+      "trf": 1004,
+      "a2c": 1009
+     },
+     "referencia": 0.9253958746360751,
+     "heldout": 0.9274688324577969
+    },
+    "c02_peores": {
+     "tipo": "peores",
+     "semillas": {
+      "dqn": 1007,
+      "rdqn": 1003,
+      "trf": 1009,
+      "a2c": 1005
+     },
+     "referencia": 0.855833797759147,
+     "heldout": 0.8663890674433435
+    },
+    "c03_media": {
+     "tipo": "media",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1001,
+      "trf": 1003,
+      "a2c": 1001
+     },
+     "referencia": 0.9056312006906191,
+     "heldout": 0.9036334308322592
+    },
+    "c04_azar1": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1006,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9103085439020691,
+     "heldout": 0.8929291056618425
+    },
+    "c05_azar2": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1006,
+      "trf": 1009,
+      "a2c": 1003
+     },
+     "referencia": 0.908136794053158,
+     "heldout": 0.8889464395318895
+    },
+    "c06_azar3": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1007,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9209083303126218,
+     "heldout": 0.9183037091332927
+    },
+    "c07_azar4": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1005,
+      "trf": 1007,
+      "a2c": 1006
+     },
+     "referencia": 0.9201173841148589,
+     "heldout": 0.9210034765330853
+    },
+    "c08_azar5": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1010,
+      "trf": 1005,
+      "a2c": 1004
+     },
+     "referencia": 0.9104657339594158,
+     "heldout": 0.8953177755455266
+    },
+    "c09_azar6": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1010,
+      "rdqn": 1007,
+      "trf": 1007,
+      "a2c": 1008
+     },
+     "referencia": 0.919400079401584,
+     "heldout": 0.9200827363435151
+    },
+    "c10_azar7": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1008,
+      "trf": 1001,
+      "a2c": 1007
+     },
+     "referencia": 0.9027516501915642,
+     "heldout": 0.8977794541729429
+    }
+   },
+   "semillas_variadas": {
+    "n": 10,
+    "referencia": {
+     "media": 0.9078949389021114,
+     "desviacion": 0.019753539343208372,
+     "minimo": 0.855833797759147,
+     "maximo": 0.9253958746360751
+    },
+    "heldout": {
+     "media": 0.9031854027655495,
+     "desviacion": 0.018780860069876767,
+     "minimo": 0.8663890674433435,
+     "maximo": 0.9274688324577969
+    }
+   }
+  },
+  "pes_ens_accq": {
+   "entregado": {
+    "tipo": "entregado",
+    "semillas": null,
+    "referencia": 0.9142330348959209,
+    "heldout": 0.9162037594927381,
+    "dif_max_con_benchmark": 0.0
+   },
+   "combinaciones": {
+    "c01_mejores": {
+     "tipo": "mejores",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1002,
+      "trf": 1004,
+      "a2c": 1009
+     },
+     "referencia": 0.925482496106928,
+     "heldout": 0.9283889694097983
+    },
+    "c02_peores": {
+     "tipo": "peores",
+     "semillas": {
+      "dqn": 1007,
+      "rdqn": 1003,
+      "trf": 1009,
+      "a2c": 1005
+     },
+     "referencia": 0.8624562020059433,
+     "heldout": 0.867692864776324
+    },
+    "c03_media": {
+     "tipo": "media",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1001,
+      "trf": 1003,
+      "a2c": 1001
+     },
+     "referencia": 0.9138626286444775,
+     "heldout": 0.9024484942199633
+    },
+    "c04_azar1": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1006,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9130375206555212,
+     "heldout": 0.8916069245993412
+    },
+    "c05_azar2": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1006,
+      "trf": 1009,
+      "a2c": 1003
+     },
+     "referencia": 0.9099819875905788,
+     "heldout": 0.8986201357870682
+    },
+    "c06_azar3": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1007,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9208823855495423,
+     "heldout": 0.9180777362749737
+    },
+    "c07_azar4": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1005,
+      "trf": 1007,
+      "a2c": 1006
+     },
+     "referencia": 0.9054805630890065,
+     "heldout": 0.9137397325380053
+    },
+    "c08_azar5": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1010,
+      "trf": 1005,
+      "a2c": 1004
+     },
+     "referencia": 0.907509383380797,
+     "heldout": 0.9009618813527422
+    },
+    "c09_azar6": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1010,
+      "rdqn": 1007,
+      "trf": 1007,
+      "a2c": 1008
+     },
+     "referencia": 0.9195066172355888,
+     "heldout": 0.9205839687246403
+    },
+    "c10_azar7": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1008,
+      "trf": 1001,
+      "a2c": 1007
+     },
+     "referencia": 0.9163490738135391,
+     "heldout": 0.907872376431017
+    }
+   },
+   "semillas_variadas": {
+    "n": 10,
+    "referencia": {
+     "media": 0.9094548858071922,
+     "desviacion": 0.017629006969992523,
+     "minimo": 0.8624562020059433,
+     "maximo": 0.925482496106928
+    },
+    "heldout": {
+     "media": 0.9049993084113874,
+     "desviacion": 0.017257142425902355,
+     "minimo": 0.867692864776324,
+     "maximo": 0.9283889694097983
+    }
+   }
+  },
+  "pes_ens_consensus": {
+   "entregado": {
+    "tipo": "entregado",
+    "semillas": null,
+    "referencia": 0.8893172824074216,
+    "heldout": 0.8930645426517095,
+    "dif_max_con_benchmark": 0.0
+   },
+   "combinaciones": {
+    "c01_mejores": {
+     "tipo": "mejores",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1002,
+      "trf": 1004,
+      "a2c": 1009
+     },
+     "referencia": 0.8890154444998417,
+     "heldout": 0.8901873481904785
+    },
+    "c02_peores": {
+     "tipo": "peores",
+     "semillas": {
+      "dqn": 1007,
+      "rdqn": 1003,
+      "trf": 1009,
+      "a2c": 1005
+     },
+     "referencia": 0.8572437563730386,
+     "heldout": 0.856663980345062
+    },
+    "c03_media": {
+     "tipo": "media",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1001,
+      "trf": 1003,
+      "a2c": 1001
+     },
+     "referencia": 0.8533684877403989,
+     "heldout": 0.8619161876667109
+    },
+    "c04_azar1": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1006,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.8579614408532934,
+     "heldout": 0.8597879424633591
+    },
+    "c05_azar2": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1006,
+      "trf": 1009,
+      "a2c": 1003
+     },
+     "referencia": 0.8857170972929276,
+     "heldout": 0.8863162394828809
+    },
+    "c06_azar3": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1007,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.8957130816972423,
+     "heldout": 0.887782505823637
+    },
+    "c07_azar4": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1005,
+      "trf": 1007,
+      "a2c": 1006
+     },
+     "referencia": 0.8739815746953984,
+     "heldout": 0.864084139025924
+    },
+    "c08_azar5": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1010,
+      "trf": 1005,
+      "a2c": 1004
+     },
+     "referencia": 0.8662996200273481,
+     "heldout": 0.8679621899886817
+    },
+    "c09_azar6": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1010,
+      "rdqn": 1007,
+      "trf": 1007,
+      "a2c": 1008
+     },
+     "referencia": 0.8805007154015363,
+     "heldout": 0.8702288424002056
+    },
+    "c10_azar7": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1008,
+      "trf": 1001,
+      "a2c": 1007
+     },
+     "referencia": 0.8579614408532934,
+     "heldout": 0.8597879424633591
+    }
+   },
+   "semillas_variadas": {
+    "n": 10,
+    "referencia": {
+     "media": 0.8717762659434319,
+     "desviacion": 0.015301485684233677,
+     "minimo": 0.8533684877403989,
+     "maximo": 0.8957130816972423
+    },
+    "heldout": {
+     "media": 0.8704717317850299,
+     "desviacion": 0.01281801263983602,
+     "minimo": 0.856663980345062,
+     "maximo": 0.8901873481904785
+    }
+   }
+  },
+  "pes_ens_consensus_prior": {
+   "entregado": {
+    "tipo": "entregado",
+    "semillas": null,
+    "referencia": 0.9177002817437712,
+    "heldout": 0.9148154319209809,
+    "dif_max_con_benchmark": 0.0
+   },
+   "combinaciones": {
+    "c01_mejores": {
+     "tipo": "mejores",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1002,
+      "trf": 1004,
+      "a2c": 1009
+     },
+     "referencia": 0.9244254405220238,
+     "heldout": 0.9160664679302482
+    },
+    "c02_peores": {
+     "tipo": "peores",
+     "semillas": {
+      "dqn": 1007,
+      "rdqn": 1003,
+      "trf": 1009,
+      "a2c": 1005
+     },
+     "referencia": 0.8806637898669468,
+     "heldout": 0.8688687608220338
+    },
+    "c03_media": {
+     "tipo": "media",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1001,
+      "trf": 1003,
+      "a2c": 1001
+     },
+     "referencia": 0.9148013267910706,
+     "heldout": 0.9076884979226655
+    },
+    "c04_azar1": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1006,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.8746613976066755,
+     "heldout": 0.8626243028524943
+    },
+    "c05_azar2": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1006,
+      "trf": 1009,
+      "a2c": 1003
+     },
+     "referencia": 0.8542867100430143,
+     "heldout": 0.8539182674585293
+    },
+    "c06_azar3": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1007,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9063546378180244,
+     "heldout": 0.9076997408433012
+    },
+    "c07_azar4": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1005,
+      "trf": 1007,
+      "a2c": 1006
+     },
+     "referencia": 0.9119478992746665,
+     "heldout": 0.9091716526240295
+    },
+    "c08_azar5": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1010,
+      "trf": 1005,
+      "a2c": 1004
+     },
+     "referencia": 0.887328540558042,
+     "heldout": 0.8894635737727542
+    },
+    "c09_azar6": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1010,
+      "rdqn": 1007,
+      "trf": 1007,
+      "a2c": 1008
+     },
+     "referencia": 0.9076579605493027,
+     "heldout": 0.9100232203017941
+    },
+    "c10_azar7": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1008,
+      "trf": 1001,
+      "a2c": 1007
+     },
+     "referencia": 0.8906339866550252,
+     "heldout": 0.8935445828187275
+    }
+   },
+   "semillas_variadas": {
+    "n": 10,
+    "referencia": {
+     "media": 0.8952761689684792,
+     "desviacion": 0.021572205534471582,
+     "minimo": 0.8542867100430143,
+     "maximo": 0.9244254405220238
+    },
+    "heldout": {
+     "media": 0.8919069067346577,
+     "desviacion": 0.02248071896053079,
+     "minimo": 0.8539182674585293,
+     "maximo": 0.9160664679302482
+    }
+   }
+  },
+  "pes_ens_trf_guard": {
+   "entregado": {
+    "tipo": "entregado",
+    "semillas": null,
+    "referencia": 0.9279100112174109,
+    "heldout": 0.927575452407462,
+    "dif_max_con_benchmark": 0.0
+   },
+   "combinaciones": {
+    "c01_mejores": {
+     "tipo": "mejores",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1002,
+      "trf": 1004,
+      "a2c": 1009
+     },
+     "referencia": 0.9316490291082564,
+     "heldout": 0.9344205569154148
+    },
+    "c02_peores": {
+     "tipo": "peores",
+     "semillas": {
+      "dqn": 1007,
+      "rdqn": 1003,
+      "trf": 1009,
+      "a2c": 1005
+     },
+     "referencia": 0.89365102652804,
+     "heldout": 0.9006761861848165
+    },
+    "c03_media": {
+     "tipo": "media",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1001,
+      "trf": 1003,
+      "a2c": 1001
+     },
+     "referencia": 0.9180147633899874,
+     "heldout": 0.9206496225756295
+    },
+    "c04_azar1": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1005,
+      "rdqn": 1006,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9338684616943155,
+     "heldout": 0.9350689866218065
+    },
+    "c05_azar2": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1006,
+      "trf": 1009,
+      "a2c": 1003
+     },
+     "referencia": 0.8954814578648703,
+     "heldout": 0.9004553446317762
+    },
+    "c06_azar3": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1007,
+      "trf": 1002,
+      "a2c": 1004
+     },
+     "referencia": 0.9334247256785423,
+     "heldout": 0.9338868025158458
+    },
+    "c07_azar4": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1004,
+      "rdqn": 1005,
+      "trf": 1007,
+      "a2c": 1006
+     },
+     "referencia": 0.9206537453326145,
+     "heldout": 0.9249527824792381
+    },
+    "c08_azar5": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1001,
+      "rdqn": 1010,
+      "trf": 1005,
+      "a2c": 1004
+     },
+     "referencia": 0.9301353722227577,
+     "heldout": 0.9260302377696975
+    },
+    "c09_azar6": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1010,
+      "rdqn": 1007,
+      "trf": 1007,
+      "a2c": 1008
+     },
+     "referencia": 0.9201399786745474,
+     "heldout": 0.925380779517124
+    },
+    "c10_azar7": {
+     "tipo": "azar",
+     "semillas": {
+      "dqn": 1009,
+      "rdqn": 1008,
+      "trf": 1001,
+      "a2c": 1007
+     },
+     "referencia": 0.916068211499558,
+     "heldout": 0.9089471074055588
+    }
+   },
+   "semillas_variadas": {
+    "n": 10,
+    "referencia": {
+     "media": 0.9193086771993491,
+     "desviacion": 0.014611556613706798,
+     "minimo": 0.89365102652804,
+     "maximo": 0.9338684616943155
+    },
+    "heldout": {
+     "media": 0.9210468406616907,
+     "desviacion": 0.013269638436179874,
+     "minimo": 0.9004553446317762,
+     "maximo": 0.9350689866218065
+    }
+   }
+  }
+ }
+}

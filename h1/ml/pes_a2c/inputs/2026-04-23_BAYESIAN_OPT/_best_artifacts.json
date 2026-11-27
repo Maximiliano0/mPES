@@ -1,0 +1,14 @@
+{
+  "value": 0.8782305866863376,
+  "hidden_units": [
+    128,
+    128
+  ],
+  "critic_hidden_units": [
+    32,
+    32
+  ],
+  "trial_seed": 155,
+  "trial_number": 112,
+  "n_weights": 6
+}

@@ -1,0 +1,33 @@
+{
+  "opt_date": "2026-04-29",
+  "best_trial_number": 14,
+  "mean_perf": 0.9259850017549169,
+  "std_perf": 0.037392511181562144,
+  "min_perf": 0.7736797988264879,
+  "max_perf": 0.9810808611550265,
+  "trial_seed": 57,
+  "hidden_units": [
+    96,
+    96
+  ],
+  "hyperparameters": {
+    "batch_size": 64,
+    "buffer_size": 60000,
+    "discount_factor": 0.971927101925925,
+    "epsilon_initial": 0.8882905282719732,
+    "epsilon_min": 0.08869362616978604,
+    "hidden_layer_size": 96,
+    "history_len": 6,
+    "learning_rate": 0.002415187706879797,
+    "learning_starts_frac": 0.20214436623673876,
+    "lstm_units": 32,
+    "max_grad_norm": 3.4745683846777657,
+    "num_episodes": 30000,
+    "num_hidden_layers": 2,
+    "penalty_coeff": 0.002630939227551139,
+    "target_ratio": 0.5990470166095718,
+    "target_sync_freq": 2000,
+    "use_pbrs": 1,
+    "warmup_ratio": 0.12367091251239982
+  }
+}

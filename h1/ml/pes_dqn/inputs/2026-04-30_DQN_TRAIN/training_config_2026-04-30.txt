@@ -1,0 +1,41 @@
+================================================================================
+DQN-AGENT TRAINING CONFIGURATION
+================================================================================
+
+Training Date: 2026-04-30
+Training Time: 2026-04-30 18:45:40
+
+DQN HYPERPARAMETERS
+--------------------------------------------------------------------------------
+Learning Rate (Adam):        0.0015083436603048935
+Discount Factor (γ):         0.9634244388615337
+Initial Epsilon (ε):         0.9627337198502147
+Minimum Epsilon (ε_min):     0.06914686776995618
+Number of Episodes:          40,000
+Epsilon Decay:               Exponential with warm-up (0.9627337198502147 → 0.06914686776995618, warmup_ratio=0.2779025551585237, target_ratio=0.6290206520891799)
+Hidden Units:                [64, 64]
+Batch Size:                  128
+Replay Buffer Size:          20,000
+Target Sync Frequency:       1,000 steps
+Max Gradient Norm:           3.9528553802652735
+PBRS β (penalty_coeff):      0.02258267089059471
+Learning starts (frac):      0.16154748671160965 → 3,230 transitions
+
+TRAINING RESULTS
+--------------------------------------------------------------------------------
+Network Parameters:          5,131
+State Space Dimension:       3 (resources, trial, severity)
+Action Space:                11 (0-10)
+Rewards History Length:       4
+
+OUTPUT FILES
+--------------------------------------------------------------------------------
+Model File:                  dqn_model_2026-04-30.keras
+Rewards File:                rewards_2026-04-30.npy
+Configuration File:          training_config_2026-04-30.txt
+
+DESCRIPTION
+--------------------------------------------------------------------------------
+Files saved from DQN training on the Pandemic Scenario.
+The model maps normalised (resources, trial, severity) states to Q-values.
+The rewards file contains average reward progression every 10,000 episodes.

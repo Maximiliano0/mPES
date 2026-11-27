@@ -1,0 +1,45 @@
+================================================================================
+A2C TRAINING CONFIGURATION
+================================================================================
+
+Training Date: 2026-04-24
+Training Time: 2026-04-24 22:05:59
+
+A2C HYPERPARAMETERS
+--------------------------------------------------------------------------------
+Actor Learning Rate:         0.0006475886789033675
+Critic Learning Rate:        0.004299396121439639
+Discount Factor (γ):         0.8545464903255913
+Entropy Coefficient:         0.005278050634190006
+Initial Epsilon (ε):         0.0
+Minimum Epsilon (ε_min):     0.0
+Number of Episodes:          125,000
+Epsilon Decay:               Exponential (warm-up 0%, target 100%)
+PBRS Coefficient (β):        0.1527141911212227
+GAE(λ):                      0.9134752045271409
+Max Gradient Norm:           1.200061343068206
+LR Min Ratio (cosine):       0.23749310142258717
+Actor Hidden Units:          [128]
+Critic Hidden Units:         [128]
+Training Seed:               132
+
+NETWORK ARCHITECTURE
+--------------------------------------------------------------------------------
+State Dimension:             3 (resources, trial, severity)
+Action Dimension:            11
+Actor Parameters:            1931
+Input normalisation:         [res/30, trial/10, sev/9]
+
+OUTPUT FILES
+--------------------------------------------------------------------------------
+Actor Model File:            ac_actor_2026-04-24.keras
+Rewards File:                rewards_2026-04-24.npy
+Configuration File:          training_config_2026-04-24.txt
+
+DESCRIPTION
+--------------------------------------------------------------------------------
+Advantage Actor-Critic (A2C) trained on the Pandemic Scenario.
+The Actor maps normalised (resources, trial, severity) states
+to action probabilities via softmax for 11 resource allocations.
+The Critic estimates state-value V(s) for advantage computation.
+The rewards file contains average reward progression every 10,000 episodes.

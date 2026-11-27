@@ -1,0 +1,11 @@
+{
+  "csv_sha256": {
+    "initial_severity.csv": "0fccaf8c09280e17581d2ddc34b58875a27cadad658f770fa747c6b4692a6b77",
+    "sequence_lengths.csv": "58b2624149ae2353747402709accfe5aea6fca1a4e150e8abca913187ca409d0"
+  },
+  "git_commit": "dcf75588e2997da99c07c9ea322780d5e622e97f",
+  "numpy_version": "2.4.3",
+  "platform": "Windows",
+  "python_version": "3.12.10",
+  "seed": 42
+}
